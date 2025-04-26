@@ -1,0 +1,118 @@
+openapi: 3.0.0
+info:
+  title: Analytics Export API
+  description: API for managing analytics data exports
+  version: 1.0.0
+servers:
+  - url: https://api.example.com/v1
+    description: Production server
+
+paths:
+  /exports:
+    get:
+      tags: [Exports]
+      summary: List all exports
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Export'
+              example:
+                - id: 1
+                  status: "completed"
+                  file_path: "exports/analytics-export-1.csv"
+                  created_at: "2025-04-23T10:00:00Z"
+    post:
+      tags: [Exports]
+      summary: Create new export
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewExport'
+            example:
+              start_date: "2025-04-01"
+              end_date: "2025-04-23"
+              anonymize: true
+              anonymization_options:
+                remove_emails: true
+                hash_user_ids: true
+      responses:
+        '201':
+          description: Export created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Export'
+
+  /exports/{id}:
+    get:
+      tags: [Exports]
+      summary: Get export by ID
+      parameters:
+        - $ref: '#/components/parameters/ExportId'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Export'
+    delete:
+      tags: [Exports]
+      summary: Delete export
+      parameters:
+        - $ref: '#/components/parameters/ExportId'
+      responses:
+        '204':
+          description: Export deleted
+
+components:
+  schemas:
+    Export:
+      type: object
+      properties:
+        id:
+          type: integer
+        status:
+          type: string
+          enum: [pending, processing, completed, failed]
+        file_path:
+          type: string
+        anonymize:
+          type: boolean
+        anonymization_options:
+          type: object
+        created_at:
+          type: string
+          format: date-time
+    NewExport:
+      type: object
+      required:
+        - start_date
+        - end_date
+      properties:
+        start_date:
+          type: string
+          format: date
+        end_date:
+          type: string
+          format: date
+        anonymize:
+          type: boolean
+          default: false
+        anonymization_options:
+          type: object
+  parameters:
+    ExportId:
+      name: id
+      in: path
+      description: ID of export
+      required: true
+      schema:
+        type: integer

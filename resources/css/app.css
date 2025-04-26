@@ -1,0 +1,81 @@
+.diff-container {
+    padding: 1rem;
+    border-radius: 0.5rem;
+    position: relative;
+}
+
+.diff-container:focus {
+    box-shadow: 0 0 0 2px #3b82f6;
+    outline: none;
+}
+
+.diff-container .diff-inserted {
+    background-color: #e6ffec;
+    color: #0a5c36;
+    text-decoration: underline;
+    padding: 0.1em 0.2em;
+    border-radius: 0.2em;
+    position: relative;
+}
+
+.diff-container .diff-deleted {
+    background-color: #ffebee;
+    color: #b71c1c;
+    text-decoration: line-through;
+    padding: 0.1em 0.2em;
+    border-radius: 0.2em;
+    position: relative;
+}
+
+.diff-container ins {
+    background-color: #e6ffec;
+    color: #0a5c36;
+    text-decoration: none;
+    padding: 0.1em 0.2em;
+    border-radius: 0.2em;
+}
+
+.diff-container del {
+    background-color: #ffebee;
+    color: #b71c1c;
+    text-decoration: none;
+    padding: 0.1em 0.2em;
+    border-radius: 0.2em;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+    .diff-container {
+        padding: 0.5rem;
+        overflow-x: auto;
+    }
+}
+
+/* Keyboard navigation */
+.diff-container [tabindex="0"]:focus {
+    box-shadow: 0 0 0 2px #3b82f6;
+    outline: none;
+}
+
+/* WCAG compliant contrast */
+.diff-container .diff-inserted {
+    background-color: #e6ffec;
+    color: #0a5c36;
+}
+
+.diff-container .diff-deleted {
+    background-color: #ffebee;
+    color: #b71c1c;
+}
+
+.dark .diff-container .diff-inserted {
+    background-color: #1b5e20;
+    color: #c8e6c9;
+}
+
+.dark .diff-container .diff-deleted {
+    background-color: #4a1c1c;
+    color: #ffcdd2;
+}
+
+@import 'version-comparison.css';
