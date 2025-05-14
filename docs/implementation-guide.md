@@ -15,6 +15,36 @@ cp .env.example .env
 php artisan key:generate
 ```
 
+## Database Migrations
+
+### Key Changes Implemented:
+
+1. **Duplicate Migration Prevention**:
+   - System now scans migrations for duplicate table creation attempts
+   - Conflicts show original migration timestamp for resolution
+   - Example check from AppServiceProvider:
+   ```php
+   if (Schema::hasTable($tableName)) {
+       throw new Exception("Table $tableName already exists (originally created by migration X)");
+   }
+   ```
+
+2. **Idempotent Migration Patterns**:
+   - All migrations now check for existing columns/tables:
+   ```php
+   // Safe column addition example
+   if (!Schema::hasColumn('content_versions', 'approval_status')) {
+       $table->string('approval_status')->default('pending');
+   }
+   ```
+
+3. **Error Handling**:
+   - Transactions wrap all migration operations
+   - Detailed error messages for troubleshooting
+   - Automatic rollback on failure
+
+```
+
 ## First Implementation Steps
 
 ### Media Gallery
@@ -71,7 +101,44 @@ public function boot() {
    - Documentation updates
    - Code review approval
 
+## Analytics Integration
+### WebSocket Implementation
+1. Endpoint: `/api/version-analytics/ws-connect`
+2. Authentication via Sanctum tokens
+3. Rate limited to 30 connections/minute
+
+### Rate Limiting Configuration
+```php
+'analytics' => [
+    'api' => '120,1',    // 120 requests/minute (main API)
+    'realtime' => '30,1', // 30 connections/minute (WebSocket)
+    'export' => '10,5',   // 10 exports/5 minutes
+],
+```
+
+### User Preferences
+- Stored in browser local storage
+- Can sync with backend via:
+```bash
+PATCH /api/user/preferences
+```
+- Supported preferences:
+  - Dashboard layout
+  - Default time range
+  - Notification settings
+
+### Notification System
+- Triggers for:
+  - Significant content changes (>50% diff)
+  - High traffic volume alerts
+  - Failed export attempts
+- Delivered via:
+  - WebSocket (real-time)
+  - Email (digest)
+
 ## Next Immediate Actions
 1. Implement Media Gallery database schema
 2. Create basic theme structure
 3. Set up CI/CD pipeline
+4. Monitor analytics rate limits
+5. Review WebSocket connection scaling

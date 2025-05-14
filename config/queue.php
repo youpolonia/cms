@@ -66,11 +66,41 @@ return [
         'redis' => [
             'driver' => 'redis',
             'connection' => env('REDIS_QUEUE_CONNECTION', 'default'),
-            'queue' => env('REDIS_QUEUE', 'default,tracking,media'),
+            'queue' => env('REDIS_QUEUE', 'high,medium,low,default,tracking,media'),
             'retry_after' => (int) env('REDIS_QUEUE_RETRY_AFTER', 90),
-            'block_for' => null,
-            'after_commit' => false,
+            'block_for' => 5,
+            'after_commit' => true,
+            'backoff' => [
+                'high' => [1, 5, 10],
+                'medium' => [5, 10, 20],
+                'low' => [10, 30, 60],
+                'default' => [5, 15, 30],
+            ],
+            'worker_processes' => (int) env('REDIS_WORKER_PROCESSES', 4),
+            'balance' => 'auto',
+            'max_jobs' => 1000,
+            'memory' => 128,
+            'timeout' => 60,
+            'sleep' => 3,
+            'max_tries' => 3,
         ],
+
+        /*
+        |--------------------------------------------------------------------------
+        | Priority Queue Configuration
+        |--------------------------------------------------------------------------
+        |
+        | The following queues are prioritized in this order:
+        | 1. high - For critical workflows (e.g., content publishing, notifications)
+        | 2. medium - For important but not urgent tasks
+        | 3. low - For background processing and non-critical tasks
+        |
+        | Existing queues (default,tracking,media) maintain their current priority
+        | level between medium and low. To prioritize jobs, dispatch them to the
+        | appropriate queue:
+        | Queue::pushOn('high', new CriticalJob());
+        |
+        */
 
     ],
 

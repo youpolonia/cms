@@ -1,5 +1,41 @@
 # Technical Specifications v2
 
+## Version Comparison System Requirements
+
+### GPU-Accelerated Path
+- WebGL 2.0 support
+- Modern GPU drivers (NVIDIA 450+, AMD 20.10+, Intel 27.20+)
+- Minimum 2GB dedicated VRAM
+- Chrome 90+, Firefox 88+, Safari 15.4+
+
+### CPU Fallback Path
+- SSE4.2 instruction set support
+- 4GB+ system RAM
+- All modern browsers supported
+
+### Error Handling
+- Automatic fallback to CPU rendering on:
+  - WebGL context creation failure
+  - Shader compilation errors
+  - GPU memory allocation failures
+  - Rendering timeouts (>500ms)
+
+### Troubleshooting
+```bash
+# Check WebGL support in browser console
+(() => {
+    const canvas = document.createElement('canvas');
+    const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+    console.log('WebGL Support:', gl ? 'Available' : 'Unavailable');
+    
+    if (gl) {
+        const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
+        console.log('GPU Vendor:', debugInfo ? gl.getParameter(debugInfo.UNMASKED_VENDOR_WEBGL) : 'Unknown');
+        console.log('GPU Model:', debugInfo ? gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL) : 'Unknown');
+    }
+})();
+```
+
 ## 1. Version Restoration System
 ```mermaid
 graph TD

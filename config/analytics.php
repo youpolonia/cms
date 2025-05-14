@@ -1,6 +1,39 @@
 <?php
 
 return [
+    'real_time' => [
+        'enabled' => env('ANALYTICS_REAL_TIME', true),
+        'sample_rates' => [
+            'page_views' => 1.0,
+            'api_calls' => 1.0,
+            'content_ops' => 1.0,
+            'ai_usage' => 1.0
+        ],
+        'storage' => [
+            'primary' => env('ANALYTICS_STORAGE', 'redis'),
+            'fallback' => 'database',
+            'ttl' => 604800 // 7 days in seconds
+        ],
+        'processing' => [
+            'batch_size' => 1000,
+            'workers' => 4,
+            'queue' => 'analytics'
+        ],
+        'mcp_integration' => [
+            'enabled' => true,
+            'services' => [
+                'personalization' => [
+                    'endpoint' => env('MCP_PERSONALIZATION_ENDPOINT'),
+                    'timeout' => 5
+                ],
+                'search' => [
+                    'endpoint' => env('MCP_SEARCH_ENDPOINT'),
+                    'timeout' => 5
+                ]
+            ]
+        ]
+    ],
+
     'exports' => [
         'default_expiration_days' => 30,
         'warning_days_before' => 1,
@@ -31,6 +64,15 @@ return [
                 'metrics' => ['requests', 'tokens', 'users'],
                 'chart_type' => 'pie',
                 'threshold' => 1000
+            ],
+            'content_operations' => [
+                'metrics' => ['generated_words', 'comparisons', 'restorations'],
+                'chart_type' => 'bar',
+                'stacked' => true
+            ],
+            'engagement' => [
+                'metrics' => ['engagement_score', 'comparison_time', 'generation_time'],
+                'chart_type' => 'radar'
             ]
         ]
     ],
@@ -42,6 +84,33 @@ return [
         'unique_views' => 'Unique visitors',
         'requests' => 'AI API requests',
         'tokens' => 'AI tokens consumed',
-        'users' => 'Active AI users'
+        'users' => 'Active AI users',
+        'generated_words' => 'AI generated words',
+        'generation_time' => 'Content generation time (seconds)',
+        'comparisons' => 'Version comparisons',
+        'comparison_time' => 'Version comparison duration (seconds)',
+        'restorations' => 'Content restorations',
+        'engagement_score' => 'User engagement score'
+    ],
+    'content_operations' => [
+        'generation' => [
+            'track_words' => true,
+            'track_time' => true,
+            'track_templates' => true
+        ],
+        'comparison' => [
+            'track_views' => true,
+            'track_duration' => true,
+            'track_changes' => true
+        ],
+        'restoration' => [
+            'track_count' => true,
+            'track_reasons' => true
+        ]
+    ],
+    'retention' => [
+        'raw_events' => 30, // days
+        'aggregates' => 365, // days
+        'anonymized' => 730 // days
     ]
 ];

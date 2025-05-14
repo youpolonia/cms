@@ -1,22 +1,13 @@
 {
-  "name": "Default Theme",
-  "version": "1.0.0",
-  "description": "The default theme for the CMS",
-  "author": "CMS Team",
-  "license": "MIT",
-  "screenshot": "screenshot.png",
-  "config": {
-    "colors": {
-      "primary": "#3b82f6",
-      "secondary": "#6b7280",
-      "accent": "#10b981"
-    },
-    "fonts": {
-      "primary": "Inter",
-      "secondary": "Roboto"
-    }
-  },
-  "requires": {
-    "cms": ">=1.0.0"
-  }
+    "name": "Default Theme",
+    "version": "1.0.0",
+    "description": "The default theme for the CMS",
+    "author": "CMS Team",
+    "template": "public/templates/home.php",
+    "styles": [
+        "public/assets/css/style.css"
+    ],
+    "scripts": [
+        "public/assets/js/main.js"
+    ]
 }

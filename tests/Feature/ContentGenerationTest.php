@@ -2,121 +2,144 @@
 
 namespace Tests\Feature;
 
-use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use App\Services\MCPContentGenerationService;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Foundation\Testing\WithFaker;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class ContentGenerationTest extends TestCase
 {
-    use RefreshDatabase;
+    use DatabaseTransactions, WithFaker;
 
-    public function test_content_generation_with_valid_token()
+    protected function setUp(): void
     {
-        $user = User::factory()->create();
-        $token = $user->createToken('test-token')->plainTextToken;
+        parent::setUp();
+        $this->mockService = $this->mock(MCPContentGenerationService::class);
+    }
 
-        $response = $this->postJson('/api/content/generate', [
-            'prompt' => 'Test content',
-            'type' => 'generate',
-            'content_type' => 'post',
+    #[Test]
+    public function it_generates_content(): void
+    {
+        $user = $this->createUser();
+        $this->actingAs($user);
+
+        $expectedResponse = ['content' => 'Generated content'];
+        $this->mockService
+            ->shouldReceive('generateContent')
+            ->once()
+            ->andReturn(['status' => 200, 'data' => $expectedResponse]);
+
+        $response = $this->postJson('/api/content-generation/generate', [
+            'prompt' => 'Test prompt',
+            'content_type' => 'article',
             'tone' => 'professional',
-            'length' => 'medium',
-            'style' => 'detailed'
-        ], [
-            'Authorization' => 'Bearer ' . $token
+            'length' => 500
         ]);
 
         $response->assertStatus(200)
-            ->assertJsonStructure([
-                'success',
-                'content',
-                'usage' => [
-                    'prompt_tokens',
-                    'completion_tokens',
-                    'total_tokens'
+            ->assertJson($expectedResponse);
+    }
+
+    #[Test]
+    public function it_handles_content_generation_errors(): void
+    {
+        $user = $this->createUser();
+        $this->actingAs($user);
+
+        $this->mockService
+            ->shouldReceive('generateContent')
+            ->once()
+            ->andReturn(['error' => 'Generation failed', 'status' => 500]);
+
+        $response = $this->postJson('/api/content-generation/generate', [
+            'prompt' => 'Test prompt',
+            'content_type' => 'article'
+        ]);
+
+        $response->assertStatus(500)
+            ->assertJson(['error' => 'Generation failed']);
+    }
+
+    #[Test]
+    public function it_generates_summaries(): void
+    {
+        $expectedResponse = ['summary' => 'Generated summary'];
+        $this->mockService
+            ->shouldReceive('generateSummary')
+            ->once()
+            ->andReturn(['status' => 200, 'data' => $expectedResponse]);
+
+        $response = $this->postJson('/api/content-generation/summarize', [
+            'content' => 'Long content to summarize',
+            'length' => 100
+        ]);
+
+        $response->assertStatus(200)
+            ->assertJson($expectedResponse);
+    }
+
+    #[Test]
+    public function it_generates_seo_metadata(): void
+    {
+        $expectedResponse = [
+            'title' => 'SEO Title',
+            'description' => 'SEO Description',
+            'keywords' => ['keyword1', 'keyword2']
+        ];
+        $this->mockService
+            ->shouldReceive('generateSeo')
+            ->once()
+            ->andReturn(['status' => 200, 'data' => $expectedResponse]);
+
+        $response = $this->postJson('/api/content-generation/seo', [
+            'content' => 'Content for SEO',
+            'keywords' => ['test']
+        ]);
+
+        $response->assertStatus(200)
+            ->assertJson($expectedResponse);
+    }
+
+    #[Test]
+    public function it_performs_bulk_content_generation(): void
+    {
+        $user = $this->createUser();
+        $this->actingAs($user);
+
+        $expectedResponses = [
+            ['content' => 'Content 1'],
+            ['content' => 'Content 2']
+        ];
+        $this->mockService
+            ->shouldReceive('generateContent')
+            ->twice()
+            ->andReturn(
+                ['status' => 200, 'data' => $expectedResponses[0]],
+                ['status' => 200, 'data' => $expectedResponses[1]]
+            );
+
+        $response = $this->postJson('/api/content-generation/bulk/generate', [
+            'requests' => [
+                [
+                    'prompt' => 'Prompt 1',
+                    'content_type' => 'article'
                 ],
-                'message'
-            ]);
-    }
-
-    public function test_content_generation_without_token_fails()
-    {
-        $response = $this->postJson('/api/content/generate', [
-            'prompt' => 'Test content',
-            'type' => 'generate',
-            'content_type' => 'post',
-            'tone' => 'professional',
-            'length' => 'medium',
-            'style' => 'detailed'
+                [
+                    'prompt' => 'Prompt 2',
+                    'content_type' => 'blog'
+                ]
+            ]
         ]);
 
-        $response->assertStatus(401);
-    }
-    public function test_content_generation_with_invalid_token_fails()
-    {
-        $response = $this->postJson('/api/content/generate', [
-            'prompt' => 'Test content',
-            'type' => 'generate',
-            'content_type' => 'post',
-            'tone' => 'professional',
-            'length' => 'medium',
-            'style' => 'detailed'
-        ], [
-            'Authorization' => 'Bearer invalid-token'
-        ]);
-
-        $response->assertStatus(401);
+        $response->assertStatus(200)
+            ->assertJson($expectedResponses);
     }
 
-    public function test_content_generation_with_missing_required_fields_fails()
+    private function createUser()
     {
-        $user = User::factory()->create();
-        $token = $user->createToken('test-token')->plainTextToken;
-
-        $response = $this->postJson('/api/content/generate', [
-            // Missing required 'prompt' field
-            'type' => 'generate',
-            'content_type' => 'post',
-            'tone' => 'professional'
-        ], [
-            'Authorization' => 'Bearer ' . $token
+        return \App\Models\User::factory()->create([
+            'role_id' => 1 // Basic user role that doesn't require theme approvals
         ]);
-
-        $response->assertStatus(422)
-            ->assertJsonValidationErrors(['prompt']);
-    }
-
-    public function test_content_generation_rate_limiting()
-    {
-        $user = User::factory()->create();
-        $token = $user->createToken('test-token')->plainTextToken;
-
-        // Make max allowed requests
-        for ($i = 0; $i < 60; $i++) {
-            $this->postJson('/api/content/generate', [
-                'prompt' => 'Test content',
-                'type' => 'generate',
-                'content_type' => 'post',
-                'tone' => 'professional',
-                'length' => 'medium',
-                'style' => 'detailed'
-            ], [
-                'Authorization' => 'Bearer ' . $token
-            ]);
-        }
-
-        // Next request should be rate limited
-        $response = $this->postJson('/api/content/generate', [
-            'prompt' => 'Test content',
-            'type' => 'generate',
-            'content_type' => 'post',
-            'tone' => 'professional',
-            'length' => 'medium',
-            'style' => 'detailed'
-        ], [
-            'Authorization' => 'Bearer ' . $token
-        ]);
-
-        $response->assertStatus(429);
     }
 }

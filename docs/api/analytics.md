@@ -80,6 +80,53 @@
 }
 ```
 
+### Predictive Analytics
+
+#### Train Model
+`POST /api/analytics/train-model`
+
+**Response:**
+```json
+{
+  "message": "Model training completed"
+}
+```
+
+#### Get Performance Prediction
+`GET /api/analytics/predict/{contentId}`
+
+**Response:**
+```json
+{
+  "content_id": 123,
+  "prediction": {
+    "expected_engagement": 0.85,
+    "conversion_probability": 0.72
+  }
+}
+```
+
+#### Compare Versions (Predictive)
+`GET /api/analytics/compare/{version1Id}/{version2Id}`
+
+**Response:**
+```json
+{
+  "version1": {
+    "id": 1,
+    "predicted_engagement": 0.82
+  },
+  "version2": {
+    "id": 2,
+    "predicted_engagement": 0.91
+  },
+  "difference": {
+    "engagement": 0.09,
+    "conversion": 0.12
+  }
+}
+```
+
 ## Authentication
 All endpoints require `Authorization: Bearer {token}` header.
 
@@ -233,3 +280,36 @@ Example version comparison data:
   "line_changes": 8,
   "compared_at": "datetime"
 }
+
+## Workflow Integration
+
+### Export Status Values
+- `pending` - Export queued
+- `processing` - Export in progress
+- `completed` - Export ready for download
+- `failed` - Export failed
+- `archived` - Export older than 30 days
+
+### Performance Thresholds
+- Export generation: ≤2s (small), ≤10s (large)
+- Analytics queries: ≤0.5s
+- Concurrent exports: 3 max per user
+
+### Locking Mechanism
+```php
+DB::transaction(function () use ($exportId) {
+    $export = Export::lockForUpdate()->find($exportId);
+    // Process export operations
+});
+```
+
+### Audit Logging
+- `/api/analytics/audit` - Get analytics operation logs
+- `/api/analytics/performance` - Get performance metrics
+- Logs include:
+  - Operation type (export/query)
+  - User ID
+  - Timestamp
+  - Status
+  - Performance metrics
+  - Data volume processed

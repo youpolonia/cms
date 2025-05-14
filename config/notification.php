@@ -1,27 +1,51 @@
 <?php
 
 return [
-    'templates' => [
-        'default' => [
-            'name' => 'Default Notification',
-            'subject' => 'New Notification',
-            'content' => 'You have a new notification: {message}',
-            'variables' => ['message'],
-            'is_active' => true
+    'channels' => [
+        'in_app' => [
+            'driver' => 'database',
+            'enabled' => true,
+            'rate_limit' => null, // No rate limit
+            'batch_size' => 100,
         ],
-        'content-update' => [
-            'name' => 'Content Update',
-            'subject' => 'Content Updated: {title}',
-            'content' => 'The content "{title}" has been updated by {author}',
-            'variables' => ['title', 'author'],
-            'is_active' => true
+        'email' => [
+            'driver' => 'mail',
+            'enabled' => true,
+            'rate_limit' => '100/hour',
+            'batch_size' => 50,
+            'default_from' => env('MAIL_FROM_ADDRESS', 'notifications@example.com'),
         ],
-        'system-alert' => [
-            'name' => 'System Alert',
-            'subject' => 'System Notification: {alert_type}',
-            'content' => 'System notification: {alert_message}',
-            'variables' => ['alert_type', 'alert_message'],
-            'is_active' => true
-        ]
-    ]
+        'webhook' => [
+            'driver' => 'http',
+            'enabled' => true,
+            'rate_limit' => '30/minute',
+            'batch_size' => 10,
+            'timeout' => 5, // seconds
+        ],
+        'sms' => [
+            'driver' => 'twilio',
+            'enabled' => false, // Disabled by default
+            'rate_limit' => '1/second',
+            'batch_size' => 1,
+            'from' => env('TWILIO_FROM_NUMBER'),
+        ],
+    ],
+
+    'default_preferences' => [
+        'channels' => ['in_app', 'email'],
+        'frequency' => 'immediate',
+        'content_filters' => [],
+    ],
+
+    'batch_processing' => [
+        'enabled' => true,
+        'queue' => 'notifications',
+        'retry_after' => 60, // seconds
+        'tries' => 3,
+    ],
+
+    'delivery_tracking' => [
+        'enabled' => true,
+        'retention_days' => 30,
+    ],
 ];

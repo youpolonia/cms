@@ -2,54 +2,60 @@
 
 namespace App\Console\Commands;
 
-use App\Models\ScheduledContent;
+use App\Models\Content;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 
 class ProcessScheduledContent extends Command
 {
     protected $signature = 'content:process-scheduled';
-    protected $description = 'Process scheduled content for publishing/depublishing';
+    protected $description = 'Process scheduled content publishing and expiration';
 
     public function handle()
     {
         $this->processPublishing();
-        $this->processDepublishing();
+        $this->processArchiving();
+        $this->processExpiration();
+        $this->processVersionExpiration();
     }
 
     protected function processPublishing()
     {
-        $toPublish = ScheduledContent::where('publish_at', '<=', now())
-            ->where('status', 'pending')
-            ->get();
-
-        foreach ($toPublish as $scheduled) {
-            try {
-                $scheduled->content->update(['published_at' => now()]);
-                $scheduled->update(['status' => 'published']);
-                Log::info("Published content {$scheduled->content_id} as scheduled");
-            } catch (\Exception $e) {
-                Log::error("Failed to publish content {$scheduled->content_id}: " . $e->getMessage());
-                $scheduled->update(['status' => 'failed']);
-            }
-        }
+        Content::scheduled()
+            ->where('publish_at', '<=', now())
+            ->each(function ($content) {
+                $content->publish();
+                Log::info("Published scheduled content ID: {$content->id}");
+            });
     }
 
-    protected function processDepublishing()
+    protected function processArchiving()
     {
-        $toDepublish = ScheduledContent::where('depublish_at', '<=', now())
-            ->where('status', 'published')
-            ->get();
+        Content::published()
+            ->where('archive_at', '<=', now())
+            ->each(function ($content) {
+                $content->archive();
+                Log::info("Archived content ID: {$content->id}");
+            });
+    }
 
-        foreach ($toDepublish as $scheduled) {
-            try {
-                $scheduled->content->update(['published_at' => null]);
-                $scheduled->update(['status' => 'depublished']);
-                Log::info("Depublished content {$scheduled->content_id} as scheduled");
-            } catch (\Exception $e) {
-                Log::error("Failed to depublish content {$scheduled->content_id}: " . $e->getMessage());
-                $scheduled->update(['status' => 'failed']);
-            }
-        }
+    protected function processExpiration()
+    {
+        Content::where('expire_at', '<=', now())
+            ->where('lifecycle_status', '!=', 'expired')
+            ->each(function ($content) {
+                $content->expire();
+                Log::info("Expired content ID: {$content->id}");
+            });
+    }
+
+    protected function processVersionExpiration()
+    {
+        ContentVersion::where('expire_at', '<=', now())
+            ->where('version_status', '!=', 'expired')
+            ->each(function ($version) {
+                $version->markExpired();
+                Log::info("Expired content version ID: {$version->id}");
+            });
     }
 }

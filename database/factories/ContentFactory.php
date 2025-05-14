@@ -12,8 +12,9 @@ class ContentFactory extends Factory
     public function definition()
     {
         return [
-            'title' => $this->faker->sentence,
-            'content' => $this->faker->paragraphs(3, true),
+            'base_slug' => $this->faker->slug,
+            'default_locale' => $this->faker->paragraphs(3, true),
+            'available_locales' => json_encode([$this->faker->locale, 'en']),
             'slug' => $this->faker->slug,
             'seo_title' => $this->faker->optional()->sentence,
             'seo_description' => $this->faker->optional()->paragraph,

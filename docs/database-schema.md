@@ -1,99 +1,71 @@
-# Database Schema Documentation
+# Database Schema
 
-## Core Content Tables
+## Entity Relationship Diagram
 
-### contents
-- id (integer, primary key)
-- title (string)
-- slug (string)
-- content (text)
-- status (string)
-- created_at (timestamp)
-- updated_at (timestamp)
-- published_at (timestamp, nullable)
-- created_by (integer, foreign key to users)
-- current_version_id (integer, foreign key to content_versions)
+```mermaid
+erDiagram
+    CONTENTS ||--o{ CONTENT_VERSIONS : has
+    CONTENTS ||--o{ CATEGORY_CONTENT : categorized
+    CATEGORIES ||--o{ CATEGORY_CONTENT : has
+    CONTENTS {
+        bigint id PK
+        string title
+        text body
+        string status
+        timestamp created_at
+        timestamp updated_at
+    }
+    CONTENT_VERSIONS {
+        bigint id PK
+        bigint content_id FK
+        text body
+        boolean is_autosave
+        timestamp created_at
+    }
+    CATEGORIES {
+        bigint id PK
+        string name
+        string slug
+        text seo_description
+        timestamp created_at
+        timestamp updated_at
+    }
+    CATEGORY_CONTENT {
+        bigint id PK
+        bigint category_id FK
+        bigint content_id FK
+        timestamp created_at
+    }
+```
 
-### content_versions
-- id (integer, primary key)
-- content_id (integer, foreign key to contents)
-- version_number (integer)
-- title (string)
-- content (text)
-- created_at (timestamp)
-- updated_at (timestamp)
-- is_autosave (boolean)
-- status (string)
-- restore_count (integer)
+## Key Tables
 
-### content_schedules
-- id (integer, primary key)
-- content_id (integer, foreign key to contents)
-- version_id (integer, foreign key to content_versions)
-- publish_at (datetime)
-- unpublish_at (datetime, nullable)
-- timezone (string)
-- status (string)
-- metadata (text, nullable)
-- created_by (integer, foreign key to users)
+### Contents
+- Stores all content items
+- Fields: id, title, body, status, created_at, updated_at
+- Relationships: Has many versions, belongs to many categories
 
-## Category System
+### Content Versions
+- Tracks historical versions of content
+- Fields: id, content_id, body, is_autosave, created_at
+- Relationships: Belongs to content
 
-### categories
-- id (integer, primary key)
-- name (string)
-- slug (string)
-- description (text, nullable)
-- parent_id (integer, nullable, self-referential)
-- seo_title (string, nullable)
-- seo_description (text, nullable)
-- created_at (timestamp)
-- updated_at (timestamp)
+### Categories
+- Organizes content into hierarchical categories
+- Fields: id, name, slug, seo_description, created_at, updated_at
+- Relationships: Belongs to many contents
 
-### category_content
-- id (integer, primary key)
-- category_id (integer, foreign key to categories)
-- content_id (integer, foreign key to contents)
-- created_at (timestamp)
-- updated_at (timestamp)
+### Category Content
+- Junction table for content categorization
+- Fields: id, category_id, content_id, created_at
 
-## Analytics Tables
+## Indexes
+- `contents(status)` - For filtering by publication status
+- `content_versions(content_id)` - For version lookup
+- `categories(slug)` - For URL routing
+- `category_content(category_id, content_id)` - For efficient categorization queries
 
-### content_user_views
-- id (integer, primary key)
-- content_id (integer, foreign key to contents)
-- user_id (integer, foreign key to users)
-- view_count (integer)
-- last_viewed_at (timestamp)
-
-### analytics_exports
-- id (integer, primary key)
-- type (string)
-- parameters (json)
-- status (string)
-- file_path (string, nullable)
-- created_at (timestamp)
-- updated_at (timestamp)
-
-## Moderation System
-
-### moderation_queue
-- id (integer, primary key)
-- content_version_id (integer, foreign key to content_versions)
-- status (string)
-- notes (text, nullable)
-- moderated_by (integer, foreign key to users)
-- created_at (timestamp)
-- updated_at (timestamp)
-
-## Relationships
-- contents hasMany content_versions
-- content_versions belongsTo contents
-- contents belongsToMany categories through category_content
-- categories belongsToMany contents through category_content
-- content_schedules belongsTo contents
-- content_schedules belongsTo content_versions
-- content_user_views belongsTo contents
-- content_user_views belongsTo users
-- moderation_queue belongsTo content_versions
-- moderation_queue belongsTo users (as moderator)
+## Data Retention
+- Content versions are retained indefinitely
+- Soft deletes used for all main tables
+- Automated archiving of old versions after 1 year

@@ -1,65 +1,88 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const cors = require('cors');
-require('dotenv').config();
+const { LocalStorageAdapter } = require('./src/storage/StorageAdapter');
+const MediaProcessingService = require('./src/MediaProcessingService');
+const CDNService = require('./src/cdn/CDNService');
+const MonitoringServer = require('./src/monitoring/MonitoringServer');
+const config = require('./config');
 
-const app = express();
-const PORT = process.env.PORT || 8081;
-
-app.use(cors());
-app.use(bodyParser.json());
-
-// Standard MCP endpoints
-app.get('/ping', (req, res) => {
-  res.json({ status: 'ok', timestamp: new Date().toISOString() });
-});
-
-app.get('/api/v1/version', (req, res) => {
-  res.json({
-    version: '1.0.0',
-    protocol: 'mcp-v1',
-    capabilities: ['media-processing']
-  });
-});
-
-app.get('/api/v1/health', (req, res) => {
-  res.json({
-    status: 'healthy',
-    uptime: process.uptime(),
-    memory: process.memoryUsage()
-  });
-});
-
-app.get('/api/v1/auth/verify', (req, res) => {
-  const apiKey = req.headers['authorization'];
-  if (apiKey === `Bearer ${process.env.API_KEY}`) {
-    res.json({ valid: true });
-  } else {
-    res.status(401).json({ valid: false });
+class MediaProcessingServer {
+  constructor() {
+    this.app = express();
+    this.setupMiddleware();
+    this.initServices();
+    this.setupRoutes();
   }
-});
 
-// Media Processing endpoints
-app.post('/process/image', (req, res) => {
-  // TODO: Implement image processing logic
-  res.json({ status: 'received', data: req.body });
-});
+  setupMiddleware() {
+    this.app.use(bodyParser.json());
+    this.app.use(bodyParser.urlencoded({ extended: true }));
+  }
 
-app.post('/process/video', (req, res) => {
-  // TODO: Implement video processing logic
-  res.json({ status: 'received', data: req.body });
-});
+  initServices() {
+    // Initialize storage adapter
+    this.storageAdapter = new LocalStorageAdapter(config.storage);
+    
+    // Initialize CDN service
+    this.cdnService = new CDNService(config.cdn);
+    
+    // Initialize media processing service
+    this.mediaService = new MediaProcessingService(
+      this.storageAdapter,
+      this.cdnService
+    );
+    
+    // Initialize monitoring
+    this.monitoringServer = new MonitoringServer(
+      this.mediaService,
+      config.monitoring
+    );
+  }
 
-app.post('/tag/ai', (req, res) => {
-  // TODO: Implement AI tagging logic
-  res.json({ status: 'received', data: req.body });
-});
+  setupRoutes() {
+    // Image optimization endpoint
+    this.app.post('/api/images/optimize', async (req, res) => {
+      try {
+        const result = await this.mediaService.optimizeImage(
+          req.body.filePath,
+          req.body.options
+        );
+        res.json(result);
+      } catch (error) {
+        res.status(500).json({ error: error.message });
+      }
+    });
 
-app.post('/moderate/content', (req, res) => {
-  // TODO: Implement content moderation logic
-  res.json({ status: 'received', data: req.body });
-});
+    // Video transcoding endpoint
+    this.app.post('/api/videos/transcode', async (req, res) => {
+      try {
+        const result = await this.mediaService.transcodeVideo(
+          req.body.filePath,
+          req.body.options
+        );
+        res.json(result);
+      } catch (error) {
+        res.status(500).json({ error: error.message });
+      }
+    });
 
-app.listen(PORT, () => {
-  console.log(`MCP Media Processing Server running on port ${PORT}`);
-});
+    // Health check endpoint
+    this.app.get('/health', (req, res) => {
+      res.json({ status: 'ok' });
+    });
+  }
+
+  start() {
+    // Start monitoring server
+    this.monitoringServer.start();
+    
+    // Start main server
+    return this.app.listen(config.port, () => {
+      console.log(`Media processing server running on port ${config.port}`);
+    });
+  }
+}
+
+// Start the server
+const server = new MediaProcessingServer();
+server.start();

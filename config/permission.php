@@ -177,6 +177,3562 @@ return [
     /* Cache-specific settings */
 
     'cache' => [
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
+                'store' => env('PERMISSION_CACHE_STORE', 'redis'),
+                'expiration_time' => env('PERMISSION_CACHE_EXPIRATION', 86400), // 1 day
+                'key' => 'spatie.permission.cache',
+                'model_key' => 'permission_cache',
+                'block_idle_timeout' => 8,
+                'redis_connection' => env('PERMISSION_CACHE_REDIS_CONNECTION', 'default'),
+            
 
         /*
          * By default all permissions are cached for 24 hours to speed up performance.

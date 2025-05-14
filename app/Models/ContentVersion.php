@@ -3,45 +3,56 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class ContentVersion extends Model
 {
     protected $fillable = [
+        'content_id',
+        'version_number',
         'title',
-        'content',
-        'branch_id',
+        'body',
         'is_autosave',
-        'restored_from_id'
+        'version_status',
+        'expire_at'
     ];
 
     protected $casts = [
-        'is_autosave' => 'boolean'
+        'is_autosave' => 'boolean',
+        'expire_at' => 'datetime',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime'
     ];
 
-    public function contentItem(): BelongsTo
+    public function content()
     {
-        return $this->belongsTo(Content::class, 'content_id');
+        return $this->belongsTo(Content::class);
     }
 
-    public function diffs(): HasMany
+    public function markSuperseded()
     {
-        return $this->hasMany(ContentVersionDiff::class);
+        $this->update(['version_status' => 'superseded']);
     }
 
-    public function restoredFrom(): BelongsTo
+    public function markExpired()
     {
-        return $this->belongsTo(self::class, 'restored_from_id');
+        $this->update([
+            'version_status' => 'expired',
+            'expire_at' => null
+        ]);
     }
 
-    public function branch(): BelongsTo
+    public function scopeActive($query)
     {
-        return $this->belongsTo(Branch::class);
+        return $query->where('version_status', 'active');
     }
 
-    public function children(): HasMany
+    public function scopeSuperseded($query)
     {
-        return $this->hasMany(ContentVersion::class, 'restored_from_id');
+        return $query->where('version_status', 'superseded');
+    }
+
+    public function scopeExpired($query)
+    {
+        return $query->where('version_status', 'expired');
     }
 }

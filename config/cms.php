@@ -1,6 +1,12 @@
 <?php
 
 return [
+    'framework' => [
+        'legacy' => 'laravel',
+        'current' => 'custom',
+        'transition_complete' => true,
+        'completed_at' => '2025-05-10',
+    ],
     'themes' => [
         'active' => env('ACTIVE_THEME', 'default'),
         'path' => resource_path('themes'),

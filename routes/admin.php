@@ -1,43 +1,35 @@
 <?php
+declare(strict_types=1);
 
-use App\Http\Controllers\ModerationQueueController;
-use App\Http\Controllers\ContentScheduleController;
-use App\Http\Controllers\Admin\CategoryController;
-use App\Http\Controllers\Admin\RoleController;
-use App\Http\Controllers\Admin\ContentController;
-use App\Http\Controllers\ContentAnalyticsController;
-use Illuminate\Support\Facades\Route;
+use Includes\Routing\Router;
+use Includes\Controllers\Admin\{
+    DashboardController,
+    ContentController,
+    UserController
+};
 
-Route::middleware(['auth', 'can:moderate_content'])->group(function () {
-    Route::get('moderation', [ModerationQueueController::class, 'index'])
-        ->name('moderation.index');
-    Route::get('moderation/{moderation}', [ModerationQueueController::class, 'show'])
-        ->name('moderation.show');
-    Route::post('moderation/{moderation}/approve', [ModerationQueueController::class, 'approve'])
-        ->name('moderation.approve');
-    Route::post('moderation/{moderation}/reject', [ModerationQueueController::class, 'reject'])
-        ->name('moderation.reject');
-});
+$router = Router::getInstance();
 
-Route::middleware(['auth', 'can:manage_content'])->group(function () {
-    Route::resource('contents', \App\Http\Controllers\ContentController::class);
-    Route::post('contents/{content}/categories', [\App\Http\Controllers\ContentController::class, 'syncCategories'])
-        ->name('contents.categories.sync');
-    Route::get('content-analytics', [ContentAnalyticsController::class, 'index'])
-        ->name('content.analytics');
-    Route::get('content-analytics/data', [ContentAnalyticsController::class, 'getContentAnalytics'])
-        ->name('content.analytics.data');
-});
+// Admin Dashboard
+$router->get('/admin', [DashboardController::class, 'index']);
 
-Route::middleware(['auth', 'can:manage_content'])->group(function () {
-    Route::resource('content/schedules', ContentScheduleController::class)
-        ->only(['index', 'store', 'update', 'destroy']);
-    Route::get('content/{content}/schedules', [ContentScheduleController::class, 'contentSchedules'])
-        ->name('content.schedules.index');
-});
+// Content Management
+$router->get('/admin/content', [ContentController::class, 'index']);
+$router->get('/admin/content/create', [ContentController::class, 'create']);
+$router->post('/admin/content/create', [ContentController::class, 'create']);
+$router->get('/admin/content/edit/{id}', [ContentController::class, 'edit']);
+$router->post('/admin/content/edit/{id}', [ContentController::class, 'edit']);
+$router->post('/admin/content/delete/{id}', [ContentController::class, 'delete']);
 
-Route::middleware(['auth', 'verified', 'can:admin'])->group(function () {
-    Route::resource('categories', CategoryController::class);
-    Route::resource('roles', RoleController::class);
-    Route::resource('content', ContentController::class);
+// User Management
+$router->get('/admin/users', [UserController::class, 'index']);
+$router->get('/admin/users/create', [UserController::class, 'create']);
+$router->post('/admin/users/create', [UserController::class, 'create']);
+$router->get('/admin/users/edit/{id}', [UserController::class, 'edit']);
+$router->post('/admin/users/edit/{id}', [UserController::class, 'edit']);
+$router->post('/admin/users/delete/{id}', [UserController::class, 'delete']);
+
+// Add authentication middleware to all admin routes
+$router->group(['middleware' => ['auth', 'admin']], function() use ($router) {
+    // All routes defined above will inherit these middleware
 });

@@ -1,42 +1,28 @@
 <?php
 
 return [
-
-    /*
-    |--------------------------------------------------------------------------
-    | Third Party Services
-    |--------------------------------------------------------------------------
-    |
-    | This file is for storing the credentials for third party services such
-    | as Mailgun, Postmark, AWS and more. This file provides the de facto
-    | location for this type of information, allowing packages to have
-    | a conventional file to locate the various service credentials.
-    |
-    */
-
-    'mailgun' => [
-        'domain' => env('MAILGUN_DOMAIN'),
-        'secret' => env('MAILGUN_SECRET'),
-        'endpoint' => env('MAILGUN_ENDPOINT', 'api.mailgun.net'),
-        'scheme' => 'https',
-    ],
-
-    'postmark' => [
-        'token' => env('POSTMARK_TOKEN'),
-    ],
-
-    'ses' => [
-        'key' => env('AWS_ACCESS_KEY_ID'),
-        'secret' => env('AWS_SECRET_ACCESS_KEY'),
-        'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
-    ],
-
     'openai' => [
         'key' => env('OPENAI_API_KEY'),
-        'organization' => env('OPENAI_ORGANIZATION'),
-        'model' => env('OPENAI_MODEL', 'gpt-4'),
-        'max_tokens' => env('OPENAI_MAX_TOKENS', 1000),
-        'temperature' => env('OPENAI_TEMPERATURE', 0.7),
+        'organization' => env('OPENAI_ORGANIZATION')
     ],
 
+    'copyleaks' => [
+        'key' => env('COPYLEAKS_API_KEY'),
+        'base_url' => 'https://api.copyleaks.com/v3'
+    ],
+
+    'tone_analyzer' => [
+        'key' => env('TONE_ANALYZER_API_KEY'),
+        'base_url' => 'https://api.toneanalyzer.com/v1'
+    ],
+
+    'ai_rate_limits' => [
+        'per_minute' => env('AI_RATE_LIMIT_PER_MINUTE', 60),
+        'per_hour' => env('AI_RATE_LIMIT_PER_HOUR', 1000),
+        'per_day' => env('AI_RATE_LIMIT_PER_DAY', 10000)
+    ],
+
+    'n8n' => [
+        'webhook_secret' => env('N8N_WEBHOOK_SECRET')
+    ]
 ];

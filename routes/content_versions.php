@@ -1,70 +1,41 @@
 <?php
+/**
+ * Content Version Routes - Framework-free implementation
+ */
 
-use App\Http\Controllers\ContentBranchingController;
-use App\Http\Controllers\ContentVersionComparisonController;
-use App\Http\Controllers\ContentVersionHistoryController;
-use App\Http\Controllers\ContentVersionRestorationController;
-use Illuminate\Support\Facades\Route;
+require_once __DIR__.'/../includes/routing/Router.php';
 
-Route::prefix('content/{content}/versions')->group(function () {
-    // Version history route
-    Route::get('/', [ContentVersionHistoryController::class, 'index'])
-        ->name('content.versions.index');
-    
-    // Version comparison routes
-    Route::prefix('compare')->group(function () {
-        Route::get('/', [ContentVersionComparisonController::class, 'index'])
-            ->name('content.version-comparison.index');
-        Route::post('/', [ContentVersionComparisonController::class, 'compare'])
-            ->name('content.version-comparison.compare');
-        Route::get('/{diff}', [ContentVersionComparisonController::class, 'show'])
-            ->name('content.version-comparison.show');
-        Route::delete('/{diff}', [ContentVersionComparisonController::class, 'destroy'])
-            ->name('content.version-comparison.destroy');
-        Route::get('/analytics', [ContentVersionComparisonController::class, 'analytics'])
-            ->name('content.version-comparison.analytics');
-    });
-    
-    // Direct version comparison route
-    Route::get('/compare/{oldVersion}/{newVersion}', [ContentVersionRestorationController::class, 'compare'])
-        ->name('content.versions.compare');
-    
-    // Version resource routes
-    Route::get('/{version}', [ContentVersionRestorationController::class, 'show'])
-        ->name('content.versions.show');
-    Route::put('/{version}', [ContentVersionRestorationController::class, 'update'])
-        ->name('content.versions.update');
-    Route::delete('/{version}', [ContentVersionRestorationController::class, 'destroy'])
-        ->name('content.versions.destroy');
+$router = new Router();
 
-    // Version comparison route
-    Route::get('/{version}/compare', [ContentVersionRestorationController::class, 'compare'])
-        ->name('content.versions.compare');
-        
-    // Rollback preparation route
-    Route::post('/{version}/prepare-restore', [ContentVersionRestorationController::class, 'prepareRestore'])
-        ->name('content.versions.prepare-restore');
-        
-    // Rollback confirmation route
-    Route::post('/{version}/confirm-restore', [ContentVersionRestorationController::class, 'confirmRestore'])
-        ->name('content.versions.confirm-restore');
-        
-    // Version analytics route
-    Route::get('/{version}/analytics', [ContentVersionRestorationController::class, 'analytics'])
-        ->name('content.versions.analytics');
-        
-    // Branch management routes
-    Route::prefix('branches')->group(function () {
-        Route::post('/', [ContentBranchingController::class, 'store'])
-            ->middleware(['auth', 'verified'])
-            ->name('content.branches.store');
-            
-        Route::get('/', [ContentBranchingController::class, 'index'])
-            ->middleware(['auth', 'verified'])
-            ->name('content.branches.index');
-            
-        Route::post('/{branch}/merge', [ContentBranchingController::class, 'merge'])
-            ->middleware(['auth', 'verified'])
-            ->name('content.branches.merge');
-    });
-});
+// Version history route
+$router->get('/content/{content}/versions', 'ContentVersionHistoryController@index');
+
+// Simple comparison route (redirects to comparison UI)
+$router->get('/content/{content}/versions/compare', 'ContentVersionComparisonController@index');
+
+// Version comparison routes
+$router->get('/content/{content}/versions/compare', 'ContentVersionComparisonController@index');
+$router->post('/content/{content}/versions/compare', 'ContentVersionComparisonController@compare');
+$router->post('/content/{content}/versions/compare/chunked', 'ContentVersionComparisonController@compareChunked');
+$router->get('/content/{content}/versions/compare/{diff}', 'ContentVersionComparisonController@show');
+$router->delete('/content/{content}/versions/compare/{diff}', 'ContentVersionComparisonController@destroy');
+$router->get('/content/{content}/versions/compare/analytics', 'ContentVersionComparisonController@analytics');
+
+// Direct version comparison routes
+$router->get('/content/{content}/versions/compare/{oldVersion}/{newVersion}', 'ContentVersionRestorationController@compare');
+$router->get('/content/{content}/versions/{version}/compare', 'ContentVersionRestorationController@compare');
+
+// Version resource routes
+$router->get('/content/{content}/versions/{version}', 'ContentVersionRestorationController@show');
+$router->put('/content/{content}/versions/{version}', 'ContentVersionRestorationController@update');
+$router->delete('/content/{content}/versions/{version}', 'ContentVersionRestorationController@destroy');
+
+// Rollback routes
+$router->post('/content/{content}/versions/{version}/prepare-restore', 'ContentVersionRestorationController@prepareRestore');
+$router->post('/content/{content}/versions/{version}/confirm-restore', 'ContentVersionRestorationController@confirmRestore');
+$router->get('/content/{content}/versions/{version}/analytics', 'ContentVersionRestorationController@analytics');
+
+// Branch management routes
+$router->post('/content/{content}/versions/branches', 'ContentBranchingController@store');
+$router->get('/content/{content}/versions/branches', 'ContentBranchingController@index');
+$router->post('/content/{content}/versions/branches/{branch}/merge', 'ContentBranchingController@merge');

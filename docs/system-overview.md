@@ -27,11 +27,92 @@
 - User roles/permissions
 - Basic analytics
 
+### Workflow System Architecture
+- Polymorphic workflow assignments
+- Standardized status values
+- Performance thresholds:
+  - Transition processing: ≤0.5s
+  - History cleanup: ≤1.0s
+  - Concurrent locks: 5s timeout
+- Database locking mechanism
+  - Optimistic locking for workflow transitions
+  - Queue processing isolation
+
+### Audit Logging Improvements
+- Granular workflow transition logging
+- Automated purge of old logs (30d retention)
+- Contextual logging for:
+  - Status changes
+  - Assignment changes
+  - Performance events
+- Log analysis endpoints:
+  - `/api/audit/workflows`
+  - `/api/audit/performance`
+
 ### Notification System
 - Preferences management
 - Email notifications
 - In-app alerts
 - Event-based triggers
+
+## Enhanced Workflow System
+
+### New Status Values
+```mermaid
+stateDiagram-v2
+    [*] --> pending_review
+    pending_review --> initial_approved
+    pending_review --> rejected
+    initial_approved --> editor_approved
+    initial_approved --> needs_revision
+    editor_approved --> published
+    editor_approved --> escalated
+    escalated --> legal_review
+    legal_review --> published
+    legal_review --> rejected
+```
+
+### Polymorphic Assignment
+- Supports multiple content types:
+  - Content
+  - Media
+  - Comments
+  - User profiles
+- Dynamic workflow selection based on content type
+- Customizable rules per content type
+
+### Configurable Performance
+```php
+// config/performance.php
+'workflows' => [
+    'max_processing_time' => 0.5,
+    'history_cleanup_time' => 1.0,
+    'lock_timeout' => 5,
+    'batch_size' => 50,
+    'priority_weights' => [
+        'content_type' => 0.3,
+        'severity' => 0.4,
+        'author' => 0.2,
+        'age' => 0.1
+    ]
+]
+```
+
+### Database Locking
+- Row-level locking for workflow transitions
+- Table-level locking for batch operations
+- Deadlock detection with automatic retry
+- Lock wait timeout: 5s (configurable)
+
+### Audit Logging
+- `/api/audit/workflows` endpoint
+- Logs include:
+  - Status transitions
+  - Moderator actions
+  - System events
+  - Performance metrics
+  - Lock wait times
+- Retention: 90 days (configurable)
 
 ## Pending Features
 

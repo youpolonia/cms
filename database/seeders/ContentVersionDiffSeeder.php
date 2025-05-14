@@ -62,7 +62,6 @@ class ContentVersionDiffSeeder extends Seeder
                 'content_id' => $content1->id,
                 'user_id' => 1,
                 'content' => 'This is the original content body text.',
-                'content_data' => json_encode(['body' => 'This is the original content body text.']),
                 'status' => 'draft',
                 'version_number' => 1,
                 'is_autosave' => false
@@ -72,7 +71,6 @@ class ContentVersionDiffSeeder extends Seeder
                 'content_id' => $content1->id,
                 'user_id' => 1,
                 'content' => 'This is the updated content body with some changes.',
-                'content_data' => json_encode(['body' => 'This is the updated content body with some changes.']),
                 'status' => 'published',
                 'version_number' => 2,
                 'is_autosave' => false
@@ -82,7 +80,6 @@ class ContentVersionDiffSeeder extends Seeder
                 'content_id' => $content2->id,
                 'user_id' => 1,
                 'content' => 'Laravel is a PHP framework.',
-                'content_data' => json_encode(['body' => 'Laravel is a PHP framework.']),
                 'status' => 'draft',
                 'version_number' => 1,
                 'is_autosave' => false
@@ -92,7 +89,6 @@ class ContentVersionDiffSeeder extends Seeder
                 'content_id' => $content2->id,
                 'user_id' => 1,
                 'content' => 'Laravel is a modern PHP framework.',
-                'content_data' => json_encode(['body' => 'Laravel is a modern PHP framework.']),
                 'status' => 'published',
                 'version_number' => 2,
                 'is_autosave' => false
@@ -149,7 +145,6 @@ class ContentVersionDiffSeeder extends Seeder
         $version3 = \App\Models\ContentVersion::create([
             'content_id' => $content2->id,
             'content' => 'Laravel is a PHP framework.',
-            'content_data' => json_encode(['body' => 'Laravel is a PHP framework.']),
             'status' => 'draft',
             'version_number' => 3,
             'is_autosave' => false,
@@ -159,7 +154,6 @@ class ContentVersionDiffSeeder extends Seeder
         $version4 = \App\Models\ContentVersion::create([
             'content_id' => $content2->id,
             'content' => 'Laravel is a modern PHP framework.',
-            'content_data' => json_encode(['body' => 'Laravel is a modern PHP framework.']),
             'status' => 'published',
             'version_number' => 4,
             'is_autosave' => false,
