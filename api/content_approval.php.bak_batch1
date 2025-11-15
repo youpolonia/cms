@@ -1,0 +1,55 @@
+<?php
+declare(strict_types=1);
+
+require_once __DIR__.'/../includes/Core/ContentApproval.php';
+require_once __DIR__ . '/../includes/core/auth.php';
+
+header('Content-Type: application/json');
+
+try {
+    // Verify authentication
+    if (!Auth::verifyToken()) {
+        http_response_code(401);
+        echo json_encode(['error' => 'Unauthorized']);
+        exit;
+    }
+
+    $method = $_SERVER['REQUEST_METHOD'];
+    $input = json_decode(file_get_contents('php://input'), true);
+
+    switch ($method) {
+        case 'GET':
+            // Get available states or transitions
+            if (isset($_GET['current_state'])) {
+                $states = ContentApproval::getNextStates($_GET['current_state']);
+                echo json_encode(['next_states' => $states]);
+            } else {
+                $states = ContentApproval::getAvailableStates();
+                echo json_encode(['states' => $states]);
+            }
+            break;
+
+        case 'POST':
+            // Validate transition
+            if (!isset($input['current_state'], $input['new_state'])) {
+                http_response_code(400);
+                echo json_encode(['error' => 'Missing state parameters']);
+                break;
+            }
+
+            if (ContentApproval::isValidTransition($input['current_state'], $input['new_state'])) {
+                echo json_encode(['success' => true]);
+            } else {
+                http_response_code(400);
+                echo json_encode(['error' => 'Invalid state transition']);
+            }
+            break;
+
+        default:
+            http_response_code(405);
+            echo json_encode(['error' => 'Method not allowed']);
+    }
+} catch (Exception $e) {
+    http_response_code(500);
+    echo json_encode(['error' => $e->getMessage()]);
+}

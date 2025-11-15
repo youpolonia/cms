@@ -1,0 +1,5 @@
+# Prevent direct access to cache files
+<FilesMatch "\.cache$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>

@@ -1,0 +1,265 @@
+openapi: 3.0.0
+info:
+  title: CMS API
+  description: API for the AI-powered CMS system
+  version: 1.0.0
+servers:
+  - url: /api/v1
+    description: Main API server
+paths:
+  /content:
+    get:
+      tags: [content]
+      summary: List all content
+      description: Returns a paginated list of content items
+      operationId: list-content
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Content'
+    post:
+      tags: [content]
+      summary: Create new content
+      description: Creates a new content item
+      operationId: create-content
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Content'
+      responses:
+        '201':
+          description: Content created
+        '400':
+          description: Invalid input
+
+components:
+  schemas:
+    Content:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        tenant_id:
+          type: string
+          format: uuid
+          description: "Tenant identifier"
+          example: "550e8400-e29b-41d4-a716-446655440000"
+        title:
+          type: string
+          example: "Sample Content"
+        body:
+          type: string
+          example: "This is sample content"
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+        - title
+        - body
+        - tenant_id
+/version-control/compare/{baseVersionId}/{compareVersionId}:
+    get:
+      tags: [version-control]
+      summary: Compare two versions
+      description: Returns structured diff data between two content versions
+      operationId: compare-versions
+      parameters:
+        - name: baseVersionId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: compareVersionId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Successful comparison
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VersionComparison'
+        '404':
+          description: Version not found
+        '422':
+          description: Invalid version IDs
+
+  /version-control/merge:
+    post:
+      tags: [version-control]
+      summary: Merge two versions
+      description: Merges content from two versions using specified strategy
+      operationId: merge-versions
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MergeRequest'
+      responses:
+        '201':
+          description: Successful merge
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MergedContent'
+        '400':
+          description: Invalid merge request
+        '422':
+          description: Validation error
+
+components:
+  schemas:
+    VersionComparison:
+      type: object
+      properties:
+        baseVersionId:
+          type: string
+          format: uuid
+        compareVersionId:
+          type: string
+          format: uuid
+        contentDiffs:
+          type: array
+          items:
+            $ref: '#/components/schemas/ContentDiff'
+        metadataChanges:
+          type: array
+          items:
+            $ref: '#/components/schemas/MetadataChange'
+        semanticAnalysis:
+          type: object
+          properties:
+            similarityScore:
+              type: number
+              format: float
+            significantChanges:
+              type: array
+              items: string
+
+    ContentDiff:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [added, removed, changed]
+        path:
+          type: string
+        before:
+          type: string
+          nullable: true
+        after:
+          type: string
+          nullable: true
+
+    MetadataChange:
+      type: object
+      properties:
+        field:
+          type: string
+        before:
+          type: string
+          nullable: true
+        after:
+          type: string
+          nullable: true
+
+    MergeRequest:
+      type: object
+      required: [baseVersionId, compareVersionId, mergeStrategy]
+      properties:
+        baseVersionId:
+          type: string
+          format: uuid
+        compareVersionId:
+          type: string
+          format: uuid
+        mergeStrategy:
+          type: string
+          enum: [overwrite, combine, smart]
+        conflictResolution:
+          type: object
+          nullable: true
+
+    MergedContent:
+      type: object
+      properties:
+        mergedVersionId:
+          type: string
+          format: uuid
+        content:
+          type: string
+        metadata:
+          type: object
+ /tenant/{tenant_id}/content:
+   get:
+     tags: [tenant]
+     summary: Get tenant content
+     description: Returns content for a specific tenant
+     operationId: get-tenant-content
+     parameters:
+       - name: tenant_id
+         in: path
+         required: true
+         schema:
+           type: string
+           format: uuid
+     responses:
+       '200':
+         description: Successful operation
+         content:
+           application/json:
+             schema:
+               type: array
+               items:
+                 $ref: '#/components/schemas/Content'
+       '404':
+         description: Tenant not found
+
+ /shared-content:
+   post:
+     tags: [shared-content]
+     summary: Share content between tenants
+     description: Creates a shared content relationship
+     operationId: share-content
+     requestBody:
+       required: true
+       content:
+         application/json:
+           schema:
+             type: object
+             properties:
+               source_tenant_id:
+                 type: string
+                 format: uuid
+               target_tenant_id:
+                 type: string
+                 format: uuid
+               content_id:
+                 type: string
+                 format: uuid
+             required:
+               - source_tenant_id
+               - target_tenant_id
+               - content_id
+     responses:
+       '201':
+         description: Content shared successfully
+       '400':
+         description: Invalid sharing request
+       '403':
+         description: Sharing not allowed

@@ -1,0 +1,11 @@
+{
+    "name": "Light Theme",
+    "description": "Clean light theme with high contrast",
+    "colors": {
+        "background": "#ffffff",
+        "text": "#333333",
+        "primary": "#4285f4",
+        "secondary": "#34a853",
+        "accent": "#ea4335"
+    }
+}

@@ -1,0 +1,32 @@
+<?php
+declare(strict_types=1);
+
+require_once __DIR__ . '/../includes/core/personalizationengine.php';
+require_once __DIR__ . '/../includes/core/userprofileanalyzer.php';
+require_once __DIR__ . '/../includes/core/contentscorer.php';
+
+header('Content-Type: application/json');
+
+try {
+    $userId = (int)($_GET['user_id'] ?? 0);
+    $contentType = $_GET['content_type'] ?? 'article';
+    $limit = min((int)($_GET['limit'] ?? 10), 50);
+
+    if ($userId <= 0) {
+        throw new InvalidArgumentException('Invalid user ID');
+    }
+
+    $engine = new PersonalizationEngine();
+    $recommendations = $engine->getRecommendations($userId, $contentType, $limit);
+
+    echo json_encode([
+        'status' => 'success',
+        'data' => $recommendations
+    ]);
+} catch (Throwable $e) {
+    http_response_code(400);
+    echo json_encode([
+        'status' => 'error',
+        'message' => $e->getMessage()
+    ]);
+}

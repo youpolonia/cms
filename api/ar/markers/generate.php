@@ -1,0 +1,32 @@
+<?php
+declare(strict_types=1);
+
+require_once __DIR__ . '/../../../includes/core/apiauth.php';
+require_once __DIR__ . '/../../../includes/ar/markermanager.php';
+
+ApiAuth::authenticate();
+
+header('Content-Type: application/json');
+
+try {
+    $input = json_decode(file_get_contents('php://input'), true);
+    $count = (int)($input['count'] ?? 1);
+    
+    if ($count <= 0 || $count > 100) {
+        throw new InvalidArgumentException('Count must be between 1 and 100');
+    }
+
+    $markers = MarkerManager::generateMarkers($count);
+    
+    echo json_encode([
+        'status' => 'success',
+        'markers' => $markers,
+        'count' => count($markers)
+    ]);
+} catch (Exception $e) {
+    http_response_code(400);
+    echo json_encode([
+        'status' => 'error',
+        'message' => $e->getMessage()
+    ]);
+}

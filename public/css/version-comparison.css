@@ -1,0 +1,98 @@
+.diff-container {
+    display: flex;
+    gap: 20px;
+    margin: 20px 0;
+}
+
+.diff-view {
+    display: flex;
+    width: 100%;
+    gap: 20px;
+}
+
+.old-version, .new-version {
+    flex: 1;
+    border: 1px solid #ddd;
+    padding: 15px;
+    border-radius: 4px;
+    background: #f9f9f9;
+}
+
+.diff-line {
+    font-family: monospace;
+    white-space: pre;
+    padding: 2px 5px;
+    margin: 1px 0;
+}
+
+.diff-line.unchanged {
+    color: #333;
+}
+
+.diff-line.added {
+    background-color: #e6ffed;
+    color: #22863a;
+}
+
+.diff-line.removed {
+    background-color: #ffeef0;
+    color: #cb2431;
+    text-decoration: line-through;
+}
+
+.diff-line.changed {
+    background-color: #fff5b1;
+    color: #735c0f;
+}
+
+.diff-line.diff-highlight {
+    background-color: #d1e6ff;
+    border-left: 3px solid #0366d6;
+}
+
+.loading {
+    padding: 20px;
+    text-align: center;
+    color: #666;
+}
+
+.error {
+    padding: 20px;
+    background: #ffebee;
+    color: #b71c1c;
+    border-radius: 4px;
+    margin: 20px 0;
+}
+
+.nav-buttons {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.nav-btn {
+    padding: 8px 15px;
+    background: #0366d6;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.nav-btn:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+}
+
+.version-select {
+    flex-grow: 1;
+    padding: 8px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+}
+
+.current-version {
+    margin-top: 10px;
+    font-style: italic;
+    color: #666;
+}

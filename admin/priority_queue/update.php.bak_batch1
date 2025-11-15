@@ -1,0 +1,40 @@
+<?php
+require_once __DIR__ . '/../../core/csrf.php';
+require_once __DIR__ . '/../../../includes/CoreLoader.php';
+
+$id = $_POST['id'] ?? null;
+if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') { csrf_validate_or_403(); }
+$name = $_POST['name'] ?? null;
+$priority = $_POST['priority'] ?? null;
+
+if (!$id || !$name || !$priority) {
+    Flash::add('Missing required fields', 'error');
+    header("Location: /admin/priority_queue/edit.php?id=$id");
+    exit;
+}
+
+$priority = (int)$priority;
+if ($priority < 1 || $priority > 10) {
+    Flash::add('Priority must be between 1-10', 'error');
+    header("Location: /admin/priority_queue/edit.php?id=$id");
+    exit;
+}
+
+try {
+    $queue = PriorityQueue::find($id);
+    if (!$queue) {
+        throw new Exception('Queue not found');
+    }
+
+    $queue->name = $name;
+    $queue->priority = $priority;
+    $queue->save();
+
+    Flash::add('Queue updated successfully');
+    header('Location: /admin/priority_queue/index.php');
+    exit;
+} catch (Exception $e) {
+    Flash::add($e->getMessage(), 'error');
+    header("Location: /admin/priority_queue/edit.php?id=$id");
+    exit;
+}

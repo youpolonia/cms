@@ -1,0 +1,66 @@
+.editor-container {
+    display: flex;
+    height: 100vh;
+    font-family: Arial, sans-serif;
+}
+
+.block-palette {
+    width: 250px;
+    background: #f5f5f5;
+    padding: 15px;
+    border-right: 1px solid #ddd;
+}
+
+.block-palette button {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 8px;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.block-palette button:hover {
+    background: #f0f0f0;
+}
+
+.editing-canvas {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.ai-tools-panel {
+    width: 300px;
+    background: #f9f9f9;
+    padding: 15px;
+    border-left: 1px solid #ddd;
+}
+
+.content-block {
+    margin-bottom: 20px;
+    border: 1px solid #eee;
+    border-radius: 4px;
+    padding: 15px;
+    background: #fff;
+}
+
+.block-toolbar {
+    margin-top: 10px;
+    display: flex;
+    gap: 8px;
+}
+
+.block-toolbar button {
+    padding: 5px 10px;
+    background: #f0f0f0;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.block-toolbar button:hover {
+    background: #e0e0e0;
+}

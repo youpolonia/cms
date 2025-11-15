@@ -1,0 +1,19 @@
+{
+  "name": "Default Theme",
+  "description": "Base theme for the CMS",
+  "version": 1,
+  "author": "CMS Team",
+  "css": "",
+  "preview_html": "<div class='theme-preview'><h1>Default Theme Preview</h1><p>This is a preview of the default theme</p></div>",
+  "config": {
+    "colors": {
+      "primary": "#007bff",
+      "secondary": "#6c757d",
+      "background": "#ffffff"
+    },
+    "fonts": {
+      "main": "Arial, sans-serif",
+      "headings": "Arial, sans-serif"
+    }
+  }
+}

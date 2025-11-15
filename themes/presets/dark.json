@@ -1,0 +1,11 @@
+{
+    "name": "Dark Theme",
+    "description": "Dark theme with vibrant accents",
+    "colors": {
+        "background": "#1a1a1a",
+        "text": "#e6e6e6",
+        "primary": "#8ab4f8",
+        "secondary": "#81c995",
+        "accent": "#f28b82"
+    }
+}

@@ -1,0 +1,11 @@
+{
+    "name": "ExamplePlugin",
+    "version": "1.0.0",
+    "description": "Example plugin demonstrating the CMS plugin system",
+    "author": "CMS Developer",
+    "requires": "1.0.0",
+    "hooks": {
+        "action": ["init", "admin_init"],
+        "filter": ["content_before_render"]
+    }
+}

@@ -1,0 +1,83 @@
+/**
+ * Phase 15 Analytics Dashboard Styles
+ */
+.analytics-container {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    color: #333;
+}
+
+.dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.access-indicator {
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    background: #f0f0f0;
+}
+
+.dashboard-content {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 30px;
+}
+
+.summary-section, 
+.realtime-section,
+.report-section {
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.chart-container {
+    position: relative;
+    height: 400px;
+    margin-top: 20px;
+}
+
+.event-stream {
+    max-height: 300px;
+    overflow-y: auto;
+    margin-top: 15px;
+    border: 1px solid #eee;
+    padding: 10px;
+    border-radius: 4px;
+}
+
+.report-controls {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.report-controls select {
+    padding: 8px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+}
+
+.report-controls button {
+    padding: 8px 15px;
+    background: #0066cc;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+@media (min-width: 768px) {
+    .dashboard-content {
+        grid-template-columns: 2fr 1fr;
+    }
+}

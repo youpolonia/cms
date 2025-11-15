@@ -1,0 +1,41 @@
+{
+    "name": "Admin Module",
+    "version": "1.0.0",
+    "description": "Administration dashboard with user management and system configuration",
+    "author": "CMS Developer",
+    "license": "MIT",
+    "dependencies": [],
+    "autoload": {
+        "files": ["module.php"],
+        "classes": {
+            "AdminModule": "src/AdminModule.php"
+        }
+    },
+    "routes": [
+        {
+            "method": "GET",
+            "path": "/admin/dashboard",
+            "handler": "AdminModule@dashboard"
+        },
+        {
+            "method": "GET",
+            "path": "/admin/users",
+            "handler": "AdminModule@listUsers"
+        },
+        {
+            "method": "GET",
+            "path": "/admin/settings",
+            "handler": "AdminModule@systemSettings"
+        }
+    ],
+    "hooks": [
+        {
+            "name": "init",
+            "callback": "AdminModule@init"
+        },
+        {
+            "name": "admin_menu",
+            "callback": "AdminModule@registerAdminMenu"
+        }
+    ]
+}

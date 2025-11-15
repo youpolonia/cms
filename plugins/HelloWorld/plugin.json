@@ -1,0 +1,11 @@
+{
+  "name": "HelloWorld",
+  "version": "1.0.0",
+  "description": "Sample plugin demonstrating Plugin SDK features",
+  "author": "CMS Developer",
+  "requires": "1.0.0",
+  "hooks": {
+    "action": ["init"],
+    "filter": ["content_before_render"]
+  }
+}

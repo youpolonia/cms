@@ -1,0 +1,180 @@
+<?php
+/**
+ * Schedule Approval API Endpoint
+ * 
+ * Handles schedule approval requests with authentication, validation, and audit logging
+ */
+
+declare(strict_types=1);
+
+require_once __DIR__ . '/../../includes/bootstrap.php';
+require_once __DIR__ . '/../../auth/middleware/workerauthenticate.php';
+require_once __DIR__ . '/../../models/shift.php';
+require_once __DIR__ . '/../../models/notification.php';
+require_once __DIR__ . '/../../includes/auditlogger.php';
+require_once __DIR__ . '/../../services/notificationservice.php';
+require_once __DIR__ . '/../../includes/Notifications/Templates/EmailTemplates.php';
+require_once __DIR__ . '/../../includes/Notifications/Templates/SmsTemplates.php';
+
+use Includes\Auth\Middleware\WorkerAuthenticate;
+use Includes\RoutingV2\Request;
+use Includes\RoutingV2\Response;
+
+// Set content type to JSON
+header('Content-Type: application/json');
+
+// Create database connection
+$db = \core\Database::connection();
+
+// Initialize authentication middleware
+$auth = new WorkerAuthenticate($_SESSION['auth'] ?? null, $db);
+
+// Create request object
+$request = new Request();
+$request->requiredPermission = 'schedule_management';
+
+// Process the request through authentication middleware
+$response = $auth->process($request, function($request) use ($db) {
+    try {
+        // Parse request body
+        $input = json_decode(file_get_contents('php://input'), true);
+        
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            return new Response(400, [
+                'success' => false,
+                'error' => 'Invalid JSON input'
+            ]);
+        }
+        
+        // Validate required fields
+        if (empty($input['shift_id'])) {
+            return new Response(400, [
+                'success' => false,
+                'error' => 'Shift ID is required'
+            ]);
+        }
+        
+        if (empty($input['status'])) {
+            return new Response(400, [
+                'success' => false,
+                'error' => 'Status is required'
+            ]);
+        }
+        
+        // Initialize models and services
+        $shift = new Shift($db);
+        $notification = new Notification($db);
+        $notificationService = new \Includes\Notifications\NotificationService($db);
+        // Use static AuditLogger method
+        
+        // Get current shift data
+        $shiftData = $shift->get((int)$input['shift_id']);
+        
+        if (!$shiftData) {
+            return new Response(404, [
+                'success' => false,
+                'error' => 'Shift not found'
+            ]);
+        }
+        
+        // Validate status transition
+        $validTransitions = [
+            'scheduled' => ['approved', 'rejected', 'cancelled'],
+            'pending' => ['approved', 'rejected', 'cancelled'],
+            'approved' => ['completed', 'cancelled'],
+            'rejected' => ['scheduled', 'pending'],
+            'cancelled' => ['scheduled', 'pending'],
+            'completed' => []
+        ];
+        
+        $currentStatus = $shiftData['status'];
+        $newStatus = $input['status'];
+        
+        if (!in_array($newStatus, $validTransitions[$currentStatus] ?? [])) {
+            return new Response(400, [
+                'success' => false,
+                'error' => "Invalid status transition from '{$currentStatus}' to '{$newStatus}'"
+            ]);
+        }
+        
+        // Update shift status
+        $updateData = [
+            'worker_id' => $shiftData['worker_id'],
+            'start_time' => $shiftData['start_time'],
+            'end_time' => $shiftData['end_time'],
+            'status' => $newStatus,
+            'location' => $shiftData['location'],
+            'notes' => $shiftData['notes']
+        ];
+        
+        // Add status change reason if provided
+        if (!empty($input['reason'])) {
+            $updateData['notes'] = ($updateData['notes'] ? $updateData['notes'] . "\n\n" : '') . 
+                                  "Status changed to {$newStatus}: " . $input['reason'];
+        }
+        
+        $success = $shift->update((int)$input['shift_id'], $updateData);
+        
+        if (!$success) {
+            return new Response(500, [
+                'success' => false,
+                'error' => 'Failed to update shift status'
+            ]);
+        }
+        
+        // Log the status change
+        AuditLogger::logAccess(
+            $_SESSION['user_id'] ?? null,
+            'shift',
+            'status_change',
+            (string)$input['shift_id']
+        );
+        
+        // Create in-app notification
+        $notificationTitle = "Shift Status Update";
+        $notificationMessage = "Your shift on " . date('F j, Y', strtotime($shiftData['start_time'])) .
+                               " has been {$newStatus}";
+        
+        if (!empty($input['reason'])) {
+            $notificationMessage .= ". Reason: " . $input['reason'];
+        }
+        
+        $notification->create($shiftData['worker_id'], $notificationTitle, $notificationMessage, 1);
+        
+        // Send email and SMS notifications
+        $notificationData = [
+            'worker_id' => $shiftData['worker_id'],
+            'status' => $newStatus,
+            'date' => date('F j, Y', strtotime($shiftData['start_time'])),
+            'start_time' => date('g:i A', strtotime($shiftData['start_time'])),
+            'end_time' => date('g:i A', strtotime($shiftData['end_time'])),
+            'location' => $shiftData['location'],
+            'reason' => $input['reason'] ?? ''
+        ];
+        
+        // Send notifications (email and SMS)
+        $notificationService->sendScheduleStatusNotification(
+            $notificationData,
+            true,  // Send email
+            true   // Send SMS
+        );
+        
+        // Return success response
+        return new Response(200, [
+            'success' => true,
+            'message' => "Shift status updated to {$newStatus}",
+            'shift_id' => $input['shift_id'],
+            'status' => $newStatus
+        ]);
+        
+    } catch (Exception $e) {
+        return new Response(500, [
+            'success' => false,
+            'error' => $e->getMessage()
+        ]);
+    }
+});
+
+// Output the response
+http_response_code($response->getStatusCode());
+echo json_encode($response->getBody());

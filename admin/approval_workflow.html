@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Approval Workflow</title>
+    <link rel="stylesheet" href="/admin/css/workflow.css">
+    <script src="/admin/approval_workflow.js" defer></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Approval Workflow</h1>
+        
+        <section class="create-request">
+            <h2>Create New Request</h2>
+            <div class="form-group">
+                <label for="content-id">Content ID:</label>
+                <input type="text" id="content-id" required>
+            </div>
+            <button id="create-request-btn" class="btn">Submit Request</button>
+        </section>
+
+        <section class="approve-request">
+            <h2>Approve Request</h2>
+            <div class="form-group">
+                <label for="request-id">Request ID:</label>
+                <input type="text" id="request-id" required>
+            </div>
+            <div class="form-group">
+                <label for="approver-id">Approver ID:</label>
+                <input type="text" id="approver-id" required>
+            </div>
+            <button id="approve-btn" class="btn">Approve</button>
+        </section>
+
+        <section class="pending-requests">
+            <h2>Pending Requests</h2>
+            <div id="requests-container" class="requests-grid"></div>
+        </section>
+    </div>
+</body>
+</html>

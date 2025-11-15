@@ -1,0 +1,12 @@
+{
+    "name": "AI Metadata Generator",
+    "type": "metadata",
+    "version": "1.0.0",
+    "description": "Generates structured metadata for content using AI models",
+    "author": "CMS Team",
+    "requires": {
+        "core": ">=2.3.0",
+        "ai": ">=1.2.0"
+    },
+    "entryPoint": "AssistantMain.php"
+}

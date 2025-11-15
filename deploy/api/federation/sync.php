@@ -1,0 +1,57 @@
+<?php
+declare(strict_types=1);
+
+require_once __DIR__ . '/../../../middleware/TenantIsolation.php';
+require_once __DIR__ . '/../../../includes/contentversionmanager.php';
+
+class ContentSyncService {
+    public static function handleSyncRequest(array $request): array {
+        $validated = TenantIsolation::handle($request);
+        if (isset($validated['error'])) {
+            return $validated;
+        }
+
+        $version = $request['query']['version'] ?? null;
+        $limit = min(50, (int)($request['query']['limit'] ?? 10));
+
+        try {
+            $versions = ContentVersionManager::getVersionsSince(
+                $validated['tenant'],
+                $version,
+                $limit
+            );
+            
+            return [
+                'status' => 200,
+                'body' => [
+                    'versions' => $versions,
+                    'latest_version' => end($versions)['id'] ?? null,
+                    'timestamp' => date('c')
+                ]
+            ];
+        } catch (Exception $e) {
+            return TenantIsolation::errorResponse(
+                'SYNC_ERROR',
+                'Failed to sync versions',
+                ['error_details' => $e->getMessage()]
+            );
+        }
+    }
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+    header('Content-Type: application/json');
+    
+    $request = [
+        'headers' => getallheaders(),
+        'query' => $_GET
+    ];
+
+    $response = ContentSyncService::handleSyncRequest($request);
+    http_response_code($response['status'] ?? 200);
+    echo json_encode($response['body'] ?? []);
+    exit;
+}
+
+http_response_code(405);
+echo json_encode(['error' => 'Method not allowed']);

@@ -1,0 +1,270 @@
+<?php
+// Moderation analytics header
+require_once __DIR__ . '/../includes/header.php';
+
+
+<div class="container-fluid">
+    <h1 class="h3 mb-4 text-gray-800">Moderation Analytics</h1>
+    
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                    <h6 class="m-0 font-weight-bold text-primary">Moderation Overview (Last 30 Days)</h6>
+                    <div class="dropdown no-arrow">
+                        <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" 
+                           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" 
+                             aria-labelledby="dropdownMenuLink">
+                            <div class="dropdown-header">Time Period:</div>
+                            <a class="dropdown-item" href="?period=7d">Last 7 Days</a>
+                            <a class="dropdown-item" href="?period=30d">Last 30 Days</a>
+                            <a class="dropdown-item" href="?period=90d">Last 90 Days</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <div class="card border-left-primary shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                                Total Content</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                                <?= number_format($stats['total_content'])  ?>
+                                            </div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-file-alt fa-2x text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <div class="card border-left-success shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                                Auto Approved</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                                <?= number_format($stats['auto_approved'])  ?>
+                                            </div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-robot fa-2x text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <div class="card border-left-info shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                                Human Reviewed</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                                <?= number_format($stats['human_reviewed'])  ?>
+                                            </div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-user-check fa-2x text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <div class="card border-left-danger shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
+                                                Rejected</div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                                <?= number_format($stats['rejected'])  ?>
+                                            </div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-ban fa-2x text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-8">
+                            <div class="card mb-4">
+                                <div class="card-header">
+                                    <h6 class="m-0 font-weight-bold text-primary">Flag Trends</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="chart-area">
+                                        <canvas id="flagTrendsChart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="card mb-4">
+                                <div class="card-header">
+                                    <h6 class="m-0 font-weight-bold text-primary">Flag Distribution</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="chart-pie pt-4 pb-2">
+                                        <canvas id="flagDistributionChart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Moderator Performance</h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered" id="moderatorPerformance" width="100%" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th>Moderator</th>
+                                    <th>Total Actions</th>
+                                    <th>Approved</th>
+                                    <th>Rejected</th>
+                                    <th>Avg. Time (min)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php foreach ($moderatorPerformance as $moderator): ?>
+                                <tr>
+                                    <td><?= htmlspecialchars($moderator['username']) ?></td>
+                                    <td><?= $moderator['actions'] ?></td>
+                                    <td><?= $moderator['approved'] ?></td>
+                                    <td><?= $moderator['rejected'] ?></td>
+                                    <td><?= round($moderator['avg_time'], 1) ?></td>
+                                </tr>
+                                <?php endforeach;  ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Flag Trends Chart
+var ctx = document.getElementById('flagTrendsChart');
+var flagTrendsChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: <?= json_encode(array_column($flagTrends, 'day')) ?>,
+        datasets: [
+            <?php foreach ($flagTypes as $type): ?>
+            {
+                label: '<?= $type ?>',
+                data: <?= json_encode(array_map(function($day) use ($flagTrends, $type) { ?>
+                    $match = array_filter($flagTrends, function($item) use ($day, $type) {
+                        return $item['day'] === $day && $item['flag_type'] === $type;
+                    });
+                    return $match ? current($match)['count'] : 0;
+                }, array_unique(array_column($flagTrends, 'day')))) ?>,
+                borderColor: getRandomColor(),
+                backgroundColor: 'rgba(0, 0, 0, 0)',
+                tension: 0.1
+            },
+            <?php endforeach;  ?>
+        ]
+    },
+    options: {
+        responsive: true,
+        plugins: {
+            legend: {
+                position: 'top',
+            },
+            tooltip: {
+                mode: 'index',
+                intersect: false,
+            }
+        },
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        }
+    }
+});
+
+// Flag Distribution Chart
+var ctx2 = document.getElementById('flagDistributionChart');
+var flagDistributionChart = new Chart(ctx2, {
+    type: 'doughnut',
+    data: {
+        labels: <?= json_encode(array_column($stats['flag_distribution'], 'flag_type')) ?>,
+        datasets: [{
+            data: <?= json_encode(array_column($stats['flag_distribution'], 'count')) ?>,
+            backgroundColor: [
+                '#4e73df',
+                '#1cc88a',
+                '#36b9cc',
+                '#f6c23e',
+                '#e74a3b',
+                '#858796',
+                '#5a5c69'
+            ],
+            hoverBackgroundColor: [
+                '#2e59d9',
+                '#17a673',
+                '#2c9faf',
+                '#dda20a',
+                '#be2617',
+                '#6b6d7d',
+                '#3a3c4a'
+            ],
+            hoverBorderColor: "rgba(234, 236, 244, 1)",
+        }],
+    },
+    options: {
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                position: 'right',
+            },
+        },
+        cutout: '70%',
+    },
+});
+
+function getRandomColor() {
+    var letters = '0123456789ABCDEF';
+    var color = '#';
+    for (var i = 0; i < 6; i++) {
+        color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+}
+</script>
+
+<?php
+// Moderation analytics footer
+require_once __DIR__ . '/../includes/footer.php';

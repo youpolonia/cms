@@ -1,0 +1,93 @@
+/* Version Comparison UI Styles */
+.version-comparison-container {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 1rem;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.version-selectors {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    align-items: center;
+}
+
+.version-selectors select {
+    flex: 1;
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.version-selectors button {
+    padding: 0.5rem 1rem;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.version-selectors button:hover {
+    background-color: #0069d9;
+}
+
+.diff-viewer {
+    border: 1px solid #eee;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.diff-header {
+    padding: 0.75rem 1rem;
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.diff-stats span {
+    margin-left: 1rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 3px;
+    font-size: 0.85rem;
+}
+
+.diff-stats .added {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.diff-stats .removed {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+.diff-stats .changed {
+    background-color: #fff3cd;
+    color: #856404;
+}
+
+.diff-content {
+    padding: 1rem;
+    min-height: 300px;
+    background-color: white;
+}
+
+.notice, .error {
+    padding: 1rem;
+    margin: 1rem 0;
+    border-radius: 4px;
+}
+
+.notice {
+    background-color: #e2f0fd;
+    color: #004085;
+}
+
+.error {
+    background-color: #f8d7da;
+    color: #721c24;
+}

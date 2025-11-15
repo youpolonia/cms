@@ -1,0 +1,125 @@
+{
+  "name": "AI Content Generation",
+  "nodes": [
+    {
+      "parameters": {},
+      "name": "Start",
+      "type": "n8n-nodes-base.start",
+      "typeVersion": 1,
+      "position": [
+        250,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "url": "={{$baseUrl}}/api/ai/generate",
+        "options": {},
+        "authentication": "none",
+        "jsonParameters": true,
+        "specifyBody": "json",
+        "bodyParameters": {
+          "content": "={{$node[\"InputData\"].json[\"content\"]}}",
+          "length": "={{$node[\"InputData\"].json[\"length\"] || 500}}",
+          "style": "={{$node[\"InputData\"].json[\"style\"] || \"neutral\"}}"
+        }
+      },
+      "name": "Generate Content",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [
+        450,
+        300
+      ],
+      "retryOnFail": true
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "name": "Error Handler",
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [
+        650,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "functionCode": "return {\n  success: true,\n  data: $input.first().json\n};"
+      },
+      "name": "Process Results",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        650,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "name": "Output",
+      "type": "n8n-nodes-base.output",
+      "typeVersion": 1,
+      "position": [
+        850,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Start": {
+      "main": [
+        [
+          {
+            "node": "Generate Content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Content": {
+      "main": [
+        [
+          {
+            "node": "Process Results",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ],
+      "error": [
+        [
+          {
+            "node": "Error Handler",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Process Results": {
+      "main": [
+        [
+          {
+            "node": "Output",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "id": "123",
+  "createdAt": "2025-06-06T14:12:00.000Z",
+  "updatedAt": "2025-06-06T14:12:00.000Z",
+  "tags": []
+}

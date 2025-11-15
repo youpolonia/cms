@@ -1,25 +1,13 @@
 <?php
-/**
- * Session Configuration - Enhanced Security
- */
+
 return [
-    // Session encryption
+    'lifetime' => 1440, // 24 minutes
+    'path' => '/',
+    'domain' => $_SERVER['HTTP_HOST'] ?? '',
+    'secure' => true,
+    'http_only' => true,
+    'same_site' => 'Strict',
+    'cookie_partitioned' => false,
     'encrypt' => true,
-    'encryption_key' => env('SESSION_ENCRYPTION_KEY', bin2hex(random_bytes(32))),
-
-    // Cookie settings
-    'cookie_name' => '__Secure-CMS-Session',
-    'cookie_secure' => true,
-    'cookie_httponly' => true,
-    'cookie_samesite' => 'Lax',
-    'cookie_partitioned' => true,
-
-    // Session regeneration
-    'regenerate_interval' => 300, // 5 minutes
-    'regenerate_on_auth' => true,
-
-    // Session storage
-    'storage' => 'database',
-    'table' => 'sessions',
-    'gc_maxlifetime' => 14400, // 4 hours
+    'cookie_name' => 'secure_session'
 ];

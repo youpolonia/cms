@@ -1,0 +1,20 @@
+# Deployment Package Contents:
+- database/migrations/0002_add_tenant_columns.php
+- database/migrations/0004_cross_site_relations.php
+- public/migration_test_0002.php
+- public/migration_test_0004.php
+- memory-bank/progress.md (updated)
+- memory-bank/decisionLog.md (updated)
+
+# Deployment Instructions:
+1. Upload all files maintaining directory structure
+2. Access test endpoints to verify functionality:
+   - /migration_test_0002.php?action=help
+   - /migration_test_0004.php?action=help
+3. Run migrations in order (0002 first, then 0004)
+4. Verify success via test endpoints
+
+# Rollback Procedure:
+1. Use test endpoints to rollback in reverse order:
+   - /migration_test_0004.php?action=rollback
+   - /migration_test_0002.php?action=rollback

@@ -1,0 +1,72 @@
+<?php
+require_once __DIR__ . '/../../includes/CoreLoader.php';
+require_once __DIR__ . '/../../core/database.php';
+require_once __DIR__ . '/../../../debug_worker_monitoring_phase5.php';
+
+header('Content-Type: application/json');
+
+try {
+    // Log API request for PHASE5-WORKFLOW-STEP4 debugging
+    DebugWorkerMonitoringPhase5::logMessage('Worker status API requested at ' . date('Y-m-d H:i:s'));
+    
+    // Check API key or admin session
+    if (!WorkerAuthController::validateApiRequest()) {
+        header('HTTP/1.0 403 Forbidden');
+        $errorResponse = ['error' => 'Access denied'];
+        echo json_encode($errorResponse);
+        
+        // Log authentication error
+        DebugWorkerMonitoringPhase5::logMessage('Authentication failed for worker status API');
+        exit;
+    }
+
+    $db = \core\Database::connection();
+    $query = "SELECT 
+                w.id, 
+                w.name, 
+                w.status, 
+                MAX(a.timestamp) as last_heartbeat,
+                a.cpu_usage,
+                a.memory_usage
+              FROM workers w
+              LEFT JOIN worker_activity_logs a ON w.id = a.worker_id
+              GROUP BY w.id
+              ORDER BY w.status DESC, last_heartbeat DESC";
+    
+    $stmt = $db->prepare($query);
+    $stmt->execute();
+    $workers = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    // Format response
+    $response = [
+        'timestamp' => date('Y-m-d H:i:s'),
+        'workers' => array_map(function($worker) {
+            return [
+                'id' => $worker['id'],
+                'name' => $worker['name'],
+                'status' => $worker['status'],
+                'last_heartbeat' => $worker['last_heartbeat'] ? 
+                    date('H:i:s', strtotime($worker['last_heartbeat'])) : 'Never',
+                'cpu_usage' => $worker['cpu_usage'] ?? 0,
+                'memory_usage' => $worker['memory_usage'] ?? 0
+            ];
+        }, $workers)
+    ];
+
+    // Log successful response for PHASE5-WORKFLOW-STEP4 debugging
+    DebugWorkerMonitoringPhase5::logMessage('Worker status API responded successfully with ' . count($response['workers']) . ' workers');
+    
+    // Add cache control headers to prevent stale data
+    header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
+    header('Pragma: no-cache');
+    header('Expires: 0');
+    
+    echo json_encode($response);
+} catch (Exception $e) {
+    header('HTTP/1.0 500 Internal Server Error');
+    $errorResponse = ['error' => $e->getMessage()];
+    echo json_encode($errorResponse);
+    
+    // Log error for PHASE5-WORKFLOW-STEP4 debugging
+    DebugWorkerMonitoringPhase5::logError('Worker status API error: ' . $e->getMessage(), $e);
+}

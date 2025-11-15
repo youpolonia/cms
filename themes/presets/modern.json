@@ -1,0 +1,11 @@
+{
+    "name": "Modern Theme",
+    "description": "Contemporary theme with vibrant colors",
+    "colors": {
+        "background": "#f8f9fa",
+        "text": "#212529",
+        "primary": "#6f42c1",
+        "secondary": "#fd7e14",
+        "accent": "#20c997"
+    }
+}

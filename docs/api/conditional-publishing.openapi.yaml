@@ -1,0 +1,119 @@
+openapi: 3.0.0
+info:
+  title: Conditional Publishing API
+  version: 1.0.0
+  description: API for managing and evaluating conditional publishing rules
+
+servers:
+  - url: /api/v1
+    description: Main API server
+
+paths:
+  /conditional-publishing/rules:
+    post:
+      tags: [Rules]
+      summary: Create a new rule
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Rule'
+      responses:
+        201:
+          description: Rule created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Rule'
+        400:
+          description: Invalid rule data
+        401:
+          description: Unauthorized
+
+  /conditional-publishing/rules/{id}/evaluate:
+    post:
+      tags: [Evaluation]
+      summary: Evaluate a rule against content
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ContentReference'
+      responses:
+        200:
+          description: Evaluation result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EvaluationResult'
+        404:
+          description: Rule not found
+
+components:
+  schemas:
+    Rule:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 3
+          maxLength: 50
+        description:
+          type: string
+        conditions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Condition'
+        actions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Action'
+      required: [name, conditions, actions]
+
+    Condition:
+      type: object
+      properties:
+        field:
+          type: string
+          enum: [status, category, tags]
+        operator:
+          type: string
+          enum: [equals, contains, greater_than]
+        value:
+          type: string
+      required: [field, operator, value]
+
+    Action:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [publish, notify, move]
+        value:
+          type: string
+      required: [type, value]
+
+    ContentReference:
+      type: object
+      properties:
+        contentId:
+          type: string
+      required: [contentId]
+
+    EvaluationResult:
+      type: object
+      properties:
+        matched:
+          type: boolean
+        actionsExecuted:
+          type: array
+          items:
+            type: string

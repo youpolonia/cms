@@ -24,9 +24,9 @@ php artisan queue:work --tries=3 --timeout=120
 ```
 
 ### Production (supervisor)
-Create /etc/supervisor/conf.d/laravel-worker.conf:
+Create /etc/supervisor/conf.d/cms-worker.conf:
 ```ini
-[program:laravel-worker]
+[program:cms-worker]
 process_name=%(program_name)s_%(process_num)02d
 command=php /var/www/html/cms/artisan queue:work --tries=3 --timeout=120
 autostart=true
@@ -34,14 +34,14 @@ autorestart=true
 user=www-data
 numprocs=8
 redirect_stderr=true
-stdout_logfile=/var/log/laravel-worker.log
+stdout_logfile=/var/log/cms-worker.log
 ```
 
 Then run:
 ```bash
 sudo supervisorctl reread
 sudo supervisorctl update
-sudo supervisorctl start laravel-worker:*
+sudo supervisorctl start cms-worker:*
 ```
 
 ## Monitoring

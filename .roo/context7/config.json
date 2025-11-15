@@ -1,0 +1,5 @@
+{
+  "historyLimit": 20,
+  "maxChunkSize": 4000,
+  "pruneOnStartup": true
+}

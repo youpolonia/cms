@@ -1,0 +1,14 @@
+# OpenAPI Configuration
+openapi_spec: ./public/docs/openapi.yaml
+templates:
+  php_handler: ./templates/openapi/handler.php.stub
+  test_stub: ./templates/openapi/test.php.stub
+  documentation: ./templates/openapi/documentation.md.stub
+output:
+  handlers: ./app/Http/Controllers/Api/Generated/
+  tests: ./tests/Feature/Api/Generated/
+  docs: ./public/docs/generated/
+integrations:
+  qa_tester: true
+  git_hook: pre-commit
+  task_system: true

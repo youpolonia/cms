@@ -1,0 +1,36 @@
+{
+    "name": "test_theme",
+    "version": "1.0.0",
+    "description": "Theme description",
+    "author": "Author Name",
+    "license": "MIT",
+    "requires": {
+        "cms": ">=1.0.0"
+    },
+    "screenshots": [
+        "screenshot1.png",
+        "screenshot2.png"
+    ],
+    "templates": {
+        "home": "templates/home.php",
+        "page": "templates/page.php",
+        "post": "templates/post.php"
+    },
+    "styles": {
+        "main": "assets/css/main.css",
+        "responsive": "assets/css/responsive.css"
+    },
+    "scripts": {
+        "main": "assets/js/main.js"
+    },
+    "settings": {
+        "colors": {
+            "primary": "#3498db",
+            "secondary": "#2ecc71"
+        },
+        "fonts": {
+            "primary": "Roboto",
+            "secondary": "Open Sans"
+        }
+    }
+}

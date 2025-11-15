@@ -1,0 +1,33 @@
+<div class="site-management">
+    <h2>Multi-Site Management</h2>
+    
+    <table class="site-list">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Site Name</th>
+                <th>Domain</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach ($sites as $site): ?>
+            <tr>
+                <td><?= htmlspecialchars($site['id']) ?></td>
+                <td><?= htmlspecialchars($site['name']) ?></td>
+                <td><?= htmlspecialchars($site['domain']) ?></td>
+                <td><?= $site['is_active'] ? 'Active' : 'Inactive' ?></td>
+                <td>
+                    <a href="/admin/sites/edit/<?= $site['id'] ?>" class="btn-edit">Edit</a>
+                    <a href="/admin/sites/content/<?= $site['id'] ?>" class="btn-content">Manage Content</a>
+                </td>
+            </tr>
+            <?php endforeach;  ?>
+        </tbody>
+    </table>
+    
+    <div class="actions">
+        <a href="/admin/sites/new" class="btn-add">Add New Site</a>
+    </div>
+</div>

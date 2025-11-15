@@ -1,0 +1,30 @@
+<?php
+require_once __DIR__.'/../../includes/CoreLoader.php';
+require_once __DIR__ . '/../reportscontroller.php';
+
+$reportType = $_GET['type'] ?? '';
+$filters = $_GET['filters'] ?? [];
+
+$controller = new ReportsController();
+$result = $controller->generate($reportType, $filters);
+
+if ($result['status'] === 'error') {
+    header('Location: /admin/reports/?error='.urlencode($result['message']));
+    exit;
+}
+
+// Prepare view data
+$reportTypes = $controller->getReportTypes();
+$viewData = [
+    'title' => $reportTypes[$reportType] ?? 'Report',
+    'reportData' => $result['data'],
+    'reportType' => $reportType
+];
+
+// Render view directly (bypass ViewRenderer for now)
+ob_start();
+require_once __DIR__.'/../views/reports/generated.php';
+$content = ob_get_clean();
+
+// Include layout
+require_once __DIR__.'/../views/layout.php';

@@ -1,0 +1,11 @@
+{
+  "title": "Test Content",
+  "body": "This is test content for JSON import",
+  "relationships": {
+    "related": [1, 2, 3]
+  },
+  "metadata": {
+    "author": "Test User",
+    "created": "2025-06-14"
+  }
+}

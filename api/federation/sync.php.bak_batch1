@@ -1,0 +1,63 @@
+<?php
+declare(strict_types=1);
+
+require_once __DIR__ . '/../../middleware/TenantIsolation.php';
+require_once __DIR__ . '/../../includes/ContentVersionManager.php';
+
+class ContentSyncService {
+    public static function handleSyncRequest(array $request): array {
+        $validated = TenantIsolation::handle($request);
+        if (isset($validated['error'])) {
+            return $validated;
+        }
+
+        if (!isset($request['query']['since'])) {
+            return TenantIsolation::errorResponse(
+                'MISSING_PARAM',
+                'Missing required parameter: since',
+                ['required_parameters' => ['since']]
+            );
+        }
+
+        $since = (int)$request['query']['since'];
+        $tenantId = $validated['tenant'];
+
+        try {
+            $versions = ContentVersionManager::getVersionsSince($tenantId, $since);
+            return [
+                'status' => 200,
+                'body' => [
+                    'tenant_id' => $tenantId,
+                    'current_version' => ContentVersionManager::getCurrentVersion($tenantId),
+                    'versions' => $versions,
+                    'timestamp' => date('c')
+                ]
+            ];
+        } catch (Exception $e) {
+            return TenantIsolation::errorResponse(
+                'SYNC_ERROR',
+                'Failed to retrieve versions',
+                ['error_details' => $e->getMessage()]
+            );
+        }
+    }
+}
+
+// Main request handler
+if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+    header('Content-Type: application/json');
+    
+    $request = [
+        'headers' => getallheaders(),
+        'query' => $_GET,
+        'tenant' => null
+    ];
+
+    $response = ContentSyncService::handleSyncRequest($request);
+    http_response_code($response['status'] ?? 200);
+    echo json_encode($response['body'] ?? []);
+    exit;
+}
+
+http_response_code(405);
+echo json_encode(['error' => 'Method not allowed']);

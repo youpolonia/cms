@@ -1,0 +1,55 @@
+<?php
+require_once __DIR__ . '/../includes/contentrepository.php';
+require_once __DIR__ . '/../includes/securelogger.php';
+require_once __DIR__ . '/../includes/permission/permissionmanager.php';
+
+header('Content-Type: application/json');
+
+if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST') {
+    http_response_code(405);
+    echo json_encode(['success' => false, 'message' => 'Method Not Allowed']);
+    exit;
+}
+
+require_once __DIR__ . '/../../core/csrf.php';
+csrf_validate_or_403();
+
+
+$permissionManager = new PermissionManager();
+$permissions = $permissionManager->getInheritedPermissions($_SESSION['user_id'] ?? 0);
+
+if (!in_array('content_version_rollback', $permissions)) {
+    http_response_code(403);
+    echo json_encode(['success' => false, 'message' => 'Forbidden: No rollback permission']);
+    exit;
+}
+
+try {
+    $input = json_decode(file_get_contents('php://input'), true);
+    if (!$input || !isset($input['content_id'], $input['version_id'])) {
+        throw new Exception('Invalid request data');
+    }
+
+    $repository = new ContentRepository();
+    $success = $repository->rollbackToVersion(
+        (int)$input['content_id'],
+        (int)$input['version_id']
+    );
+
+    if (!$success) {
+        throw new Exception('Rollback failed');
+    }
+
+    SecureLogger::logInfo(
+        "Content {$input['content_id']} rolled back to version {$input['version_id']}",
+        'Content version rollback',
+        $_SESSION['user_id'] ?? 0
+    );
+
+    echo json_encode(['success' => true]);
+} catch (\Throwable $e) {
+    SecureLogger::logError($e, 'Content version rollback');
+    http_response_code(500);
+    error_log($e->getMessage());
+    echo json_encode(['success' => false, 'message' => 'Internal error']);
+}

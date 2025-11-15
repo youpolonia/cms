@@ -1,0 +1,23 @@
+<?php
+declare(strict_types=1);
+
+require_once __DIR__ . '/../../../includes/core/apiauth.php';
+require_once __DIR__ . '/../../../includes/ar/markermanager.php';
+
+ApiAuth::authenticate();
+
+header('Content-Type: application/json');
+
+try {
+    $markers = MarkerManager::listMarkers();
+    echo json_encode([
+        'status' => 'success',
+        'markers' => $markers
+    ]);
+} catch (Exception $e) {
+    http_response_code(500);
+    echo json_encode([
+        'status' => 'error',
+        'message' => $e->getMessage()
+    ]);
+}

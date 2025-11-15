@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phase 15 Analytics Dashboard</title>
+    <link rel="stylesheet" href="/css/analytics.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="/js/analytics/phase15/analytics.js"></script>
+</head>
+<body>
+    <div class="analytics-container">
+        <header class="dashboard-header">
+            <h1>Analytics Dashboard</h1>
+            <div class="access-indicator" id="access-indicator">
+                <!-- Access status will be populated by JS -->
+            </div>
+        </header>
+
+        <section class="dashboard-content">
+            <div class="summary-section">
+                <h2>Summary Metrics</h2>
+                <div class="chart-container">
+                    <canvas class="summary-chart"></canvas>
+                </div>
+            </div>
+
+            <div class="realtime-section">
+                <h2>Real-time Events</h2>
+                <div class="event-stream" id="event-stream">
+                    <!-- Events will be populated by JS -->
+                </div>
+            </div>
+
+            <div class="report-section">
+                <h2>Generate Report</h2>
+                <div class="report-controls">
+                    <select class="report-type">
+                        <option value="csv">CSV</option>
+                        <option value="pdf">PDF</option>
+                    </select>
+                    <button class="generate-report">Generate</button>
+                </div>
+            </div>
+        </section>
+    </div>
+</body>
+</html>

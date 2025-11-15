@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Workflow Designer</title>
+    <link rel="stylesheet" href="/admin/css/workflow.css">
+    <link rel="stylesheet" href="/admin/workflow/designer.css">
+    <script src="/admin/workflow/designer.js" defer></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Workflow Designer</h1>
+        
+        <div class="workflow-canvas">
+            <div class="toolbox">
+                <h3>Triggers</h3>
+                <div class="trigger-item" draggable="true" data-type="content-published">
+                    Content Published
+                </div>
+                <div class="trigger-item" draggable="true" data-type="schedule">
+                    Scheduled Time
+                </div>
+                
+                <h3>Actions</h3>
+                <div class="action-item" draggable="true" data-type="email">
+                    Send Email
+                </div>
+                <div class="action-item" draggable="true" data-type="notification">
+                    Send Notification
+                </div>
+            </div>
+            
+            <div class="design-area" id="design-area">
+                <!-- Workflow nodes will be added here -->
+            </div>
+        </div>
+        
+        <div class="workflow-properties">
+            <h3>Properties</h3>
+            <div id="properties-form"></div>
+            <button id="save-workflow" class="btn">Save Workflow</button>
+        </div>
+    </div>
+</body>
+</html>

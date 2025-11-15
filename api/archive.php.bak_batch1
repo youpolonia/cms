@@ -1,0 +1,61 @@
+<?php
+declare(strict_types=1);
+
+require_once __DIR__.'/../services/ArchiveService.php';
+require_once __DIR__.'/../includes/Core/APIResponse.php';
+
+header('Content-Type: application/json');
+
+try {
+    $method = $_SERVER['REQUEST_METHOD'];
+    $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+    $pathParts = explode('/', trim($path, '/'));
+    
+    // Route: /archive/content/{contentId}/version/{versionId}
+    if ($method === 'POST' && count($pathParts) === 5 
+        && $pathParts[0] === 'archive' 
+        && $pathParts[1] === 'content' 
+        && $pathParts[3] === 'version') {
+        
+        $contentId = (int)$pathParts[2];
+        $versionId = (int)$pathParts[4];
+        
+        $result = ArchiveService::archiveContentVersion($contentId, $versionId);
+        APIResponse::send($result);
+    }
+    // Route: /archive/compress/{versionId}
+    elseif ($method === 'POST' && count($pathParts) === 3 
+           && $pathParts[0] === 'archive' 
+           && $pathParts[1] === 'compress') {
+        
+        $versionId = (int)$pathParts[2];
+        $result = ArchiveService::compressArchivedData($versionId);
+        APIResponse::send($result);
+    }
+    // Route: /archive/content/{contentId}/versions
+    elseif ($method === 'GET' && count($pathParts) === 4 
+           && $pathParts[0] === 'archive' 
+           && $pathParts[1] === 'content' 
+           && $pathParts[3] === 'versions') {
+        
+        $contentId = (int)$pathParts[2];
+        $db = \core\Database::connection();
+        
+        $stmt = $db->prepare("
+            SELECT id, version_number, created_at 
+            FROM content_versions 
+            WHERE content_id = ? AND status = 'archived'
+            ORDER BY created_at DESC
+        ");
+        $stmt->execute([$contentId]);
+        $versions = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+        APIResponse::send(['success' => true, 'versions' => $versions]);
+    }
+    else {
+        APIResponse::send(['success' => false, 'error' => 'Invalid endpoint'], 404);
+    }
+} catch (Exception $e) {
+    error_log("Archive API error: " . $e->getMessage());
+    APIResponse::send(['success' => false, 'error' => $e->getMessage()], 500);
+}

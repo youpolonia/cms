@@ -1,0 +1,75 @@
+{
+  "version": "1.0.0",
+  "last_updated": "2025-06-15T01:50:00Z",
+  "hooks": {
+    "seo_toolkit": {
+      "before_seo_analysis": {
+        "description": "Modify content before SEO analysis",
+        "params": ["string content"],
+        "returns": "string"
+      },
+      "after_seo_analysis": {
+        "description": "Modify SEO analysis results",
+        "params": ["array analysis"],
+        "returns": "array"
+      },
+      "seo_meta_generation": {
+        "description": "Modify generated meta tags",
+        "params": ["array meta"],
+        "returns": "array"
+      }
+    }
+  },
+  "plugins": {
+    "cms-seo-plugin": {
+      "name": "SEO Toolkit",
+      "description": "Advanced SEO features for your CMS",
+      "version": "2.1.0",
+      "author": "CMS Plugins Inc.",
+      "license": "GPL-3.0",
+      "license_type": "token",
+      "price": 49.99,
+      "download": {
+        "url": "https://plugins.cms.example.com/seo-toolkit/v2.1.0.zip",
+        "checksum": "sha256:abc123..."
+      },
+      "compatibility": {
+        "cms": "^1.5.0",
+        "php": "^8.1"
+      }
+    },
+    "cms-analytics": {
+      "name": "Analytics Dashboard",
+      "description": "Integrated analytics dashboard",
+      "version": "1.0.3",
+      "author": "CMS Core Team",
+      "license": "MIT",
+      "license_type": "free",
+      "download": {
+        "url": "https://plugins.cms.example.com/analytics/v1.0.3.zip",
+        "checksum": "sha256:def456..."
+      },
+      "compatibility": {
+        "cms": "^1.2.0",
+        "php": "^8.0"
+      }
+    },
+    "cms-ecommerce": {
+      "name": "E-Commerce Module",
+      "description": "Complete e-commerce solution",
+      "version": "3.2.1",
+      "author": "Digital Storefronts",
+      "license": "proprietary",
+      "license_type": "premium",
+      "price": 199.99,
+      "download": {
+        "url": "https://plugins.cms.example.com/ecommerce/v3.2.1.zip",
+        "checksum": "sha256:ghi789..."
+      },
+      "compatibility": {
+        "cms": "^1.8.0",
+        "php": "^8.1"
+      }
+    }
+  }
+}

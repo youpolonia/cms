@@ -1,0 +1,118 @@
+<?php
+/**
+ * Admin Controller
+ * Handles admin dashboard and management functions
+ */
+require_once __DIR__ . '/../../includes/database/database.php';
+require_once __DIR__ . '/../../includes/CoreLoader.php';
+require_once __DIR__ . '/../../includes/ViewRenderer.php';
+// session boot (admin)
+require_once __DIR__ . '/../core/session_boot.php';
+require_once __DIR__ . '/../core/csrf.php';
+
+csrf_boot('admin');
+class AdminController {
+    private $db;
+    private $config;
+    private $renderer;
+
+    public function __construct() {
+        $this->db = \core\Database::connection();
+        $this->config = CoreLoader::getInstance()->loadConfig();
+        $this->renderer = new ViewRenderer();
+    }
+
+    public function dashboard() {
+        cms_session_start('admin');
+        if (empty($_SESSION['admin_logged_in'])) {
+            header('Location: /login.php');
+            exit;
+        }
+
+        $data = [
+            'title' => 'Admin Dashboard',
+            'stats' => $this->getSystemStats(),
+            'modules' => $this->config['modules'] ?? [],
+            'activities' => $this->getRecentClientActivities(5)
+        ];
+        
+        $this->renderer->render(
+            __DIR__ . '/../views/dashboard.php',
+            $data,
+            __DIR__ . '/../views/layout.php'
+        );
+    }
+
+    private function getSystemStats() {
+        // Get basic system statistics
+        $stats = [];
+        
+        // Database stats
+        $result = $this->db->query("SHOW TABLE STATUS");
+        $stats['tables'] = $result->num_rows;
+        
+        // TODO: Add more stats as needed
+        return $stats;
+    }
+
+    private function getRecentClientActivities($limit = 5) {
+        $query = "SELECT * FROM client_activities
+                 ORDER BY created_at DESC
+                 LIMIT ?";
+        $stmt = $this->db->prepare($query);
+        $stmt->bind_param('i', $limit);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        
+        $activities = [];
+        while ($row = $result->fetch_assoc()) {
+            $activities[] = [
+                'client_id' => $row['client_id'],
+                'activity_type' => $row['activity_type'],
+                'activity_details' => $row['activity_details'],
+                'created_at' => $row['created_at']
+            ];
+        }
+        return $activities;
+    }
+
+    public function settings() {
+        return [
+            'title' => 'System Settings',
+            'config' => $this->config
+        ];
+    }
+
+    public function listUsers() {
+        cms_session_start('admin');
+        if (empty($_SESSION['admin_logged_in'])) {
+            header('Location: /login.php');
+            exit;
+        }
+
+        $query = "SELECT id, username, email, created_at, last_login 
+                 FROM users 
+                 ORDER BY created_at DESC";
+        $result = $this->db->query($query);
+        
+        $users = [];
+        while ($row = $result->fetch_assoc()) {
+            $users[] = $row;
+        }
+
+        $data = [
+            'title' => 'User Management',
+            'users' => $users
+        ];
+        
+        $this->renderer->render(
+            __DIR__ . '/../views/users.php',
+            $data,
+            __DIR__ . '/../views/layout.php'
+        );
+    }
+
+    public function systemSettings() {
+        return $this->settings();
+    }
+}

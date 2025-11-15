@@ -1,0 +1,16 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /
+
+    # short-circuit real files/dirs
+    RewriteCond %{REQUEST_FILENAME} -f [OR]
+    RewriteCond %{REQUEST_FILENAME} -d
+    RewriteRule ^ - [L]
+
+    # allow static assets directly
+    RewriteCond %{REQUEST_URI} ^/(assets|public/assets|admin/assets)/ [NC]
+    RewriteRule ^ - [L]
+
+    # front all other requests to the public front controller
+    RewriteRule ^ public/index.php [QSA,L]
+</IfModule>

@@ -59,9 +59,9 @@ gantt
 - **API**: RESTful with Sanctum authentication
 
 ### Key Packages
-- `spatie/laravel-permission` for RBAC
-- `laravel/sanctum` for API auth
-- `livewire/livewire` for reactive UI
+- Custom RBAC implementation
+- JWT-based API authentication
+- React-based UI components
 - `maatwebsite/excel` for exports
 - `openai-php/client` for AI features
 

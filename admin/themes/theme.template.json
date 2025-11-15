@@ -1,0 +1,55 @@
+{
+  "name": "Theme Name",
+  "version": "1.0.0",
+  "description": "Theme description",
+  "author": "Author Name",
+  "license": "MIT",
+  "requires": {
+    "cms": ">=1.0.0"
+  },
+  "screenshots": [
+    "screenshot1.png",
+    "screenshot2.png"
+  ],
+  "templates": {
+    "home": "templates/home.php",
+    "page": "templates/page.php",
+    "post": "templates/post.php"
+  },
+  "styles": {
+    "main": "assets/css/main.css",
+    "responsive": "assets/css/responsive.css"
+  },
+  "scripts": {
+    "main": "assets/js/main.js"
+  },
+  "settings": {
+    "colors": {
+      "primary": "#3498db",
+      "secondary": "#2ecc71"
+    },
+    "fonts": {
+      "primary": "Roboto",
+      "secondary": "Open Sans"
+    },
+    "widgets": {
+      "UserActivityWidget": {
+        "show_avatars": true,
+        "max_items": 10,
+        "time_format": "relative"
+      },
+      "StatisticsWidget": {
+        "show_charts": true,
+        "refresh_interval": 300
+      },
+      "SystemStatusWidget": {
+        "show_uptime": true,
+        "show_memory": false
+      },
+      "RecentContentWidget": {
+        "max_items": 5,
+        "show_thumbnails": true
+      }
+    }
+  }
+}

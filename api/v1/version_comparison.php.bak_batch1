@@ -1,0 +1,45 @@
+<?php
+require_once __DIR__ . '/../../includes/Core/APIResponse.php';
+require_once __DIR__ . '/../../models/contentversion.php';
+
+header('Content-Type: application/json');
+
+try {
+    $method = $_SERVER['REQUEST_METHOD'];
+    $input = json_decode(file_get_contents('php://input'), true) ?? [];
+    $contentId = $_GET['content_id'] ?? $input['content_id'] ?? null;
+    $version1 = $_GET['version1'] ?? $input['version1'] ?? null;
+    $version2 = $_GET['version2'] ?? $input['version2'] ?? null;
+
+    if (!$contentId) {
+        throw new InvalidArgumentException('Missing content_id parameter');
+    }
+
+    switch ($method) {
+        case 'GET':
+            if (!$version1 || !$version2) {
+                throw new InvalidArgumentException('Missing version parameters');
+            }
+            $diff = ContentVersion::getVersionDiff($contentId, $version1, $version2);
+            APIResponse::success($diff);
+            break;
+
+        case 'POST':
+            if (!$version1) {
+                throw new InvalidArgumentException('Missing version parameter');
+            }
+            $success = ContentVersion::restoreVersion($contentId, $version1);
+            APIResponse::success(['success' => $success]);
+            break;
+
+        case 'PUT':
+            $changes = ContentVersion::trackChanges($contentId);
+            APIResponse::success($changes);
+            break;
+
+        default:
+            APIResponse::error('Method not allowed', 405);
+    }
+} catch (Exception $e) {
+    APIResponse::error($e->getMessage(), 400);
+}

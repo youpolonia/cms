@@ -1,0 +1,83 @@
+{
+  "name": "content_approval",
+  "description": "Standard content approval workflow with editor and publisher roles",
+  "category": "content",
+  "version": "1.0.0",
+  "definition": {
+    "states": [
+      {
+        "id": "draft",
+        "name": "Draft",
+        "type": "initial",
+        "actions": ["submit"]
+      },
+      {
+        "id": "editor_review",
+        "name": "Editor Review",
+        "type": "intermediate",
+        "actions": ["approve", "request_changes"]
+      },
+      {
+        "id": "publisher_review",
+        "name": "Publisher Review",
+        "type": "intermediate",
+        "actions": ["approve", "reject"]
+      },
+      {
+        "id": "published",
+        "name": "Published",
+        "type": "final"
+      },
+      {
+        "id": "rejected",
+        "name": "Rejected",
+        "type": "final"
+      }
+    ],
+    "transitions": [
+      {
+        "from": "draft",
+        "to": "editor_review",
+        "trigger": "submit",
+        "conditions": [
+          {
+            "type": "role",
+            "value": "editor"
+          }
+        ]
+      },
+      {
+        "from": "editor_review",
+        "to": "publisher_review",
+        "trigger": "approve"
+      },
+      {
+        "from": "editor_review",
+        "to": "draft",
+        "trigger": "request_changes"
+      },
+      {
+        "from": "publisher_review",
+        "to": "published",
+        "trigger": "approve"
+      },
+      {
+        "from": "publisher_review",
+        "to": "rejected",
+        "trigger": "reject"
+      }
+    ],
+    "webhooks": [
+      {
+        "url": "https://n8n.example.com/webhook/content-published",
+        "events": ["state_entered"],
+        "state": "published"
+      }
+    ]
+  },
+  "metadata": {
+    "created_at": "2025-06-14T02:52:18Z",
+    "created_by": "system",
+    "compatible_versions": ["1.0.0"]
+  }
+}

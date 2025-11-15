@@ -1,0 +1,44 @@
+<?php
+/** @var array $messages */
+// Sort messages by creation date (oldest first)
+usort($messages, function($a, $b) {
+    return strtotime($a['created_at']) <=> strtotime($b['created_at']);
+});
+
+<div class="container">
+    <h1><?= htmlspecialchars($messages[0]['subject'] ?? 'Message Thread') ?></h1>
+    <a href="/admin/communications" class="btn btn-secondary mb-3">Back to Messages</a>
+
+    <div class="card mb-4">
+        <div class="card-body">
+            <?php foreach ($messages as $message): ?>
+                <div class="mb-4 <?= $message['sender_id'] == Auth::user()->id ? 'text-end' : '' ?>">
+                    <div class="d-flex justify-content-between mb-1">
+                        <strong><?= htmlspecialchars($message['sender_name']) ?></strong>
+                        <small class="text-muted">
+                            <?= date('D, M j, Y \a\t g:i a', strtotime($message['created_at']))  ?>
+                            <?php if (!$message['is_read'] && $message['sender_id'] != Auth::user()->id): ?>
+                                <span class="badge bg-primary ms-2">New</span>
+                            <?php endif;  ?>
+                        </small>
+                    </div>
+                    <div class="p-3 rounded <?= $message['sender_id'] == Auth::user()->id ? 'bg-primary text-white' : 'bg-light' ?>">
+                        <?= nl2br(htmlspecialchars($message['content']))  ?>
+                    </div>
+                </div>
+            <?php endforeach;  ?>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <form method="POST" action="/admin/communications/reply/<?= htmlspecialchars($messages[0]['thread_id'] ?? '') ?>">
+                <div class="mb-3">
+                    <label for="message" class="form-label">Your Reply</label>
+                    <textarea class="form-control" id="message" name="message" rows="3" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Send Reply</button>
+            </form>
+        </div>
+    </div>
+</div>

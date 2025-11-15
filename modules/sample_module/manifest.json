@@ -1,0 +1,27 @@
+{
+    "name": "Sample Module",
+    "version": "1.0.0",
+    "description": "Demonstrates module structure",
+    "author": "CMS Developer",
+    "license": "MIT",
+    "dependencies": [],
+    "autoload": {
+        "files": ["module.php"],
+        "classes": {
+            "SampleModule": "src/SampleModule.php"
+        }
+    },
+    "routes": [
+        {
+            "method": "GET",
+            "path": "/sample",
+            "handler": "SampleModule@index"
+        }
+    ],
+    "hooks": [
+        {
+            "name": "init",
+            "callback": "SampleModule@init"
+        }
+    ]
+}

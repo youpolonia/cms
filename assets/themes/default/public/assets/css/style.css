@@ -1,0 +1,25 @@
+/* Default Theme Styles */
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+    color: #333;
+}
+
+header {
+    background: #f4f4f4;
+    padding: 1rem;
+    border-bottom: 1px solid #ddd;
+}
+
+main {
+    padding: 2rem;
+}
+
+footer {
+    background: #f4f4f4;
+    padding: 1rem;
+    border-top: 1px solid #ddd;
+    text-align: center;
+}

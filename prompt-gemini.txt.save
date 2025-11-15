@@ -1,0 +1,56 @@
+You are editing files in /var/www/html/cms.
+
+Absolute guardrails:
+- Pure PHP, FTP-only, require_once only.
+- No frameworks/Composer/CLI/autoloaders/system/exec.
+- Never read/modify root/config.php credentials.
+- Unified diff ONLY; minimal, surgical changes; no refactors.
+- UTF-8 no BOM; no closing ?>; exactly one trailing newline.
+- Create/Edit ONLY the files listed below.
+
+Goal (next step after User Manager):  
+Scaffold the next toolkit: **Theme Manager**.
+
+Tasks (batch of 5):
+1) Create /var/www/html/cms/core/tasks/ThemeManagerTask.php
+   - Class ThemeManagerTask with static run() method.
+   - Placeholder: returns false.
+   - Log to logs/migrations.log:
+     [YYYY-mm-dd HH:MM:SS] ThemeManagerTask called (not implemented)
+
+2) Create /var/www/html/cms/admin/test-theme/run_theme_manager.php
+   - DEV_MODE guard.
+   - Require ThemeManagerTask.
+   - Call run(); return JSON { "task":"ThemeManagerTask","ok":true/false }
+   - Header: application/json; charset=UTF-8.
+
+3) Create /var/www/html/cms/admin/test-theme/theme_manager_logs.php
+   - DEV_MODE guard.
+   - Read logs/migrations.log; filter lines with "ThemeManagerTask".
+   - GET param limit (default 50, max 200); reverse chronological plain text.
+   - Header: text/plain; charset=UTF-8.
+
+4) Create /var/www/html/cms/admin/test-theme/theme_manager_status.php
+   - DEV_MODE guard.
+   - Return JSON {"implemented":false,"note":"Placeholder only"}.
+   - Header: application/json; charset=UTF-8.
+
+5) Update /var/www/html/cms/admin/includes/navigation.php
+   - Add new section “Theme Manager” below “User Manager”.
+   - Add links in order:
+     - Run Theme Manager    → /admin/test-theme/run_theme_manager.php
+     - Theme Manager Logs   → /admin/test-theme/theme_manager_logs.php
+     - Theme Manager Status → /admin/test-theme/theme_manager_status.php
+   - DEV_MODE only, same style as other toolkits.
+
+Output:
+Provide a single unified diff that includes ONLY:
+- /var/www/html/cms/core/tasks/ThemeManagerTask.php
+- /var/www/html/cms/admin/test-theme/run_theme_manager.php
+- /var/www/html/cms/admin/test-theme/theme_manager_logs.php
+- /var/www/html/cms/admin/test-theme/theme_manager_status.php
+- /var/www/html/cms/admin/includes/navigation.php
+
+APPLY & SAVE + FINAL SUMMARY
+
+

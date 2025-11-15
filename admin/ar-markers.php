@@ -1,0 +1,41 @@
+<?php
+declare(strict_types=1);
+
+require_once __DIR__ . '/../includes/core/adminauth.php';
+AdminAuth::requireAdmin();
+
+$pageTitle = 'AR Marker Management';
+require_once __DIR__ . '/../includes/core/adminheader.php';
+?>
+<div class="admin-container">
+    <h1><?= htmlspecialchars($pageTitle) ?></h1>
+    <div class="admin-toolbar">
+        <button id="refresh-markers" class="btn">Refresh List</button>
+        <button id="generate-markers" class="btn btn-primary">Generate New Markers</button>
+        <button id="bulk-actions" class="btn btn-secondary">Bulk Actions</button>
+    </div>
+
+    <div class="admin-table-container">
+        <table id="markers-table" class="admin-table">
+            <thead>
+                <tr>
+                    <th><input type="checkbox" class="select-all"></th>
+                    <th>ID</th>
+                    <th>Marker Code</th>
+                    <th>Created</th>
+                    <th>Expires</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Will be populated via AJAX -->
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script src="/assets/js/ar-markers-admin.js"></script>
+
+<?php
+require_once __DIR__ . '/../includes/core/adminfooter.php';

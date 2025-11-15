@@ -1,0 +1,181 @@
+<?php
+
+namespace Includes\Services;
+
+require_once CMS_ROOT . '/includes/FileCache.php';
+
+use Includes\Database\DatabaseConnection;
+use Includes\Config\ConfigLoader;
+
+/**
+ * AI-powered notification analysis and enhancement service
+ */
+class AINotificationService {
+    const CACHE_TTL = 1800; // 30 minutes
+    const RATE_LIMIT = 15; // Requests per minute
+    
+    /**
+     * Analyze notification content for sentiment, entities, and key phrases
+     */
+    public static function analyzeContent(string $message): array {
+        $cacheKey = self::getCacheKey('analysis', md5($message));
+        
+        if ($cached = FileCache::get($cacheKey)) {
+            return $cached;
+        }
+
+        if (self::isRateLimited()) {
+            return self::getFallbackAnalysis($message);
+        }
+
+        $config = ConfigLoader::get('ai');
+        $apiResponse = self::callAIApi($config['analysis_endpoint'], [
+            'action' => 'analyze',
+            'text' => $message
+        ]);
+
+        FileCache::set($cacheKey, $apiResponse, self::CACHE_TTL);
+        self::trackUsage('content_analyzed', ['characters' => strlen($message)]);
+
+        return $apiResponse;
+    }
+
+    /**
+     * Generate suggested responses for a notification
+     */
+    public static function generateResponseSuggestions(string $message): array {
+        $cacheKey = self::getCacheKey('suggestions', md5($message));
+        
+        if ($cached = FileCache::get($cacheKey)) {
+            return $cached;
+        }
+
+        if (self::isRateLimited()) {
+            return self::getFallbackSuggestions($message);
+        }
+
+        $config = ConfigLoader::get('ai');
+        $apiResponse = self::callAIApi($config['suggestions_endpoint'], [
+            'action' => 'suggest',
+            'text' => $message
+        ]);
+
+        FileCache::set($cacheKey, $apiResponse['suggestions'], self::CACHE_TTL);
+        self::trackUsage('suggestions_generated', ['characters' => strlen($message)]);
+
+        return $apiResponse['suggestions'];
+    }
+
+    /**
+     * Categorize notification into predefined types
+     */
+    public static function categorizeNotification(string $message): string {
+        $cacheKey = self::getCacheKey('category', md5($message));
+        
+        if ($cached = FileCache::get($cacheKey)) {
+            return $cached;
+        }
+
+        if (self::isRateLimited()) {
+            return 'general';
+        }
+
+        $config = ConfigLoader::get('ai');
+        $apiResponse = self::callAIApi($config['categorization_endpoint'], [
+            'action' => 'categorize',
+            'text' => $message
+        ]);
+
+        $category = $apiResponse['category'] ?? 'general';
+        FileCache::set($cacheKey, $category, self::CACHE_TTL);
+
+        return $category;
+    }
+
+    /**
+     * Adjust notification priority based on AI analysis
+     */
+    public static function adjustPriority(int $originalPriority, array $analysis): int {
+        // Apply priority adjustment rules
+        $adjustment = 0;
+        
+        if ($analysis['sentiment']['score'] < -0.5) {
+            $adjustment += 2; // Increase priority for negative sentiment
+        }
+        
+        if (in_array('urgent', $analysis['key_phrases'])) {
+            $adjustment += 3;
+        }
+
+        return min(10, max(1, $originalPriority + $adjustment));
+    }
+
+    /**
+     * Call AI API endpoint (shared with AIContentService)
+     */
+    private static function callAIApi(string $endpoint, array $data): array {
+        $headers = [
+            'Content-Type: application/json',
+            'Authorization: Bearer ' . ConfigLoader::get('ai.api_key')
+        ];
+
+        $context = stream_context_create([
+            'http' => [
+                'method' => 'POST',
+                'header' => implode("\r\n", $headers),
+                'content' => json_encode($data),
+                'timeout' => 30
+            ]
+        ]);
+
+        $response = file_get_contents($endpoint, false, $context);
+        return json_decode($response, true);
+    }
+
+    /**
+     * Check rate limiting (shared with AIContentService)
+     */
+    private static function isRateLimited(): bool {
+        $lastMinute = date('Y-m-d H:i:00', strtotime('-1 minute'));
+        
+        $query = "SELECT COUNT(*) as count FROM ai_api_usage WHERE created_at >= ?";
+        $result = DatabaseConnection::fetchOne($query, [$lastMinute]);
+        return $result['count'] >= self::RATE_LIMIT;
+    }
+
+    /**
+     * Track API usage (shared with AIContentService)
+     */
+    private static function trackUsage(string $action, array $data = []): bool {
+        $query = "INSERT INTO ai_api_usage (action, data, created_at) VALUES (?, ?, NOW())";
+        return DatabaseConnection::execute($query, [$action, json_encode($data)]);
+    }
+
+    /**
+     * Fallback analysis when API unavailable
+     */
+    private static function getFallbackAnalysis(string $message): array {
+        return [
+            'sentiment' => ['score' => 0, 'label' => 'neutral'],
+            'key_phrases' => [],
+            'entities' => []
+        ];
+    }
+
+    /**
+     * Fallback suggestions when API unavailable
+     */
+    private static function getFallbackSuggestions(string $message): array {
+        return [
+            'Please review this notification',
+            'Consider following up on: ' . substr($message, 0, 50) . '...'
+        ];
+    }
+
+    /**
+     * Generate consistent cache key
+     */
+    private static function getCacheKey(string $type, string $identifier): string {
+        return 'ainotify_' . $type . '_' . $identifier;
+    }
+}

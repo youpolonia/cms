@@ -1,0 +1,36 @@
+<?php
+
+namespace App\Http\Controllers\Api\Generated;
+
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+
+class {{className}} extends Controller
+{
+    /**
+     * @OA\{{httpMethod}}(
+     *     path="{{routePath}}",
+     *     tags={{{tags}}},
+     *     summary="{{summary}}",
+     *     description="{{description}}",
+     *     operationId="{{operationId}}",
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful operation"
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Invalid request"
+     *     )
+     * )
+     */
+    public function handle(Request $request)
+    {
+        // Auto-generated handler for {{operationId}}
+        // Implement your business logic here
+        
+        return response()->json([
+            'message' => 'Auto-generated response for {{operationId}}'
+        ]);
+    }
+}

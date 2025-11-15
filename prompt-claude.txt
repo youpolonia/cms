@@ -1,0 +1,70 @@
+AUDIT ONLY — READ-ONLY
+Workspace confined to /var/www/html/cms. external_tmp_usage:false
+DO NOT CREATE/MODIFY/DELETE FILES. DO NOT run or create any PHP tests. Text-only static scanning. Exclude: /logs/, /uploads/, /node_modules/, /vendor/, /.git/, /memory-bank/, /build/, /dist/, /resources/.
+
+GOAL:
+Authoritative, deterministic repo-wide audit to produce a SINGLE source-of-truth list for: UPPERCASE paths, Laravel/Illuminate remnants, test files, include discipline, forbidden calls, trailing "?>", and missing DEV gates under /admin. This output will directly drive a single “Batch-Fix” patch.
+
+TASKS:
+1) UPPERCASE PATHS:
+   Recursively list every file/dir path containing A–Z anywhere under the repo. Sorted. One per line.
+   Output section: == UPPERCASE PATHS ==
+2) LARAVEL REMNANTS:
+   Grep (case-insensitive) over *.php for:
+     Illuminate\, Illuminate\Support\Facades\, Route::, Artisan::, Schedule::, Middleware\, App\Http\, Blade\, Eloquent\, ServiceProvider, bootstrap/app.php
+   CSV sorted by file,line. Limit 10 per file.
+   Output: == LARAVEL (CSV) == with columns: file,line,match
+3) TEST FILES:
+   List paths matching: /tests/, /test/, *._test.php, test_*.php, */diagnostic/*.php, */debug/*.php, public/api/test/*, admin/test/*.
+   Sorted. One per line.
+   Output: == TEST FILES ==
+4) INCLUDE DISCIPLINE:
+   Repo-wide scan of *.php for include, include_once, require, require_once.
+   4a) List all lines using include/include_once (CSV: file,line,excerpt). Limit 10 per kind.
+   4b) Dynamic includes: any include/require whose argument is NOT a single quoted literal (CSV: file,line,excerpt). Unlimited.
+   Output sections: == INCLUDE (CSV) == and == DYNAMIC INCLUDES (CSV) ==
+5) FORBIDDEN CALLS:
+   Grep case-insensitive for: system(, exec(, shell_exec(, passthru(, popen(, proc_open(, "php://stdin"
+   CSV: file,line,match (max 5 per file).
+   Output: == FORBIDDEN (CSV) ==
+6) TRAILING TAGS:
+   List all *.php files ending with "?>". Sorted.
+   Output: == TRAILING TAGS ==
+7) ADMIN DEV GATES:
+   For every /admin/*.php (exclude /admin/includes/* and /admin/css/*), check first 40 lines for DEV_MODE check.
+   Output lines: <file>: DEV_GATE missing|found line:<n or (none)>
+   Output: == ADMIN DEV GATES ==
+8) SUMMARY:
+   Provide counts for each section: uppercase_paths, laravel_refs, test_files, include_uses, dynamic_includes, forbidden_calls, trailing_tags, admin_missing_dev_gates.
+
+OUTPUT FORMAT (deterministic; print sections in this exact order):
+== UPPERCASE PATHS ==
+...
+== LARAVEL (CSV) ==
+file,line,match
+...
+== TEST FILES ==
+...
+== INCLUDE (CSV) ==
+file,line,excerpt
+...
+== DYNAMIC INCLUDES (CSV) ==
+file,line,excerpt
+...
+== FORBIDDEN (CSV) ==
+file,line,match
+...
+== TRAILING TAGS ==
+...
+== ADMIN DEV GATES ==
+<file>: DEV_GATE <found|missing> line:<n or (none)>
+== SUMMARY ==
+uppercase_paths:<n>
+laravel_refs:<n>
+test_files:<n>
+include_uses:<n>
+dynamic_includes:<n>
+forbidden_calls:<n>
+trailing_tags:<n>
+admin_missing_dev_gates:<n>
+SUMMARY required

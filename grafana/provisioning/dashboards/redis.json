@@ -1,0 +1,31 @@
+{
+  "annotations": {
+    "list": [{
+      "datasource": "Prometheus",
+      "enable": true,
+      "expr": "redis_memory_used_bytes > 0.9 * redis_memory_max_bytes",
+      "name": "Redis Memory Alert",
+      "showIn": 0
+    }]
+  },
+  "editable": true,
+  "gnetId": 11835,
+  "id": 3,
+  "links": [],
+  "panels": [],
+  "schemaVersion": 27,
+  "style": "dark",
+  "tags": ["redis", "observability"],
+  "templating": {
+    "list": []
+  },
+  "time": {
+    "from": "now-6h",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "",
+  "title": "Redis Monitoring",
+  "uid": "redis-stats",
+  "version": 1
+}

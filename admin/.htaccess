@@ -1,0 +1,40 @@
+# CMS-AI: Admin deny block for test/dev/debug endpoints and sensitive files
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  # Block /admin/test-*, /admin/dev-*, /admin/debug-* (folders or files)
+  RewriteRule ^test-[^/]+/? - [F,L]
+  RewriteRule ^dev-[^/]+/? - [F,L]
+  RewriteRule ^debug-[^/]+/? - [F,L]
+</IfModule>
+
+# Block sensitive file types in /admin (logs, docs)
+<IfModule mod_authz_core.c>
+  <FilesMatch "\.(?:log|md|txt)$">
+    Require all denied
+  </FilesMatch>
+</IfModule>
+<IfModule !mod_authz_core.c>
+  <FilesMatch "\.(?:log|md|txt)$">
+    Deny from all
+  </FilesMatch>
+</IfModule>
+
+# Disallow direct access to dotfiles
+<FilesMatch "^\.(?!well-known/).*$">
+  <IfModule mod_authz_core.c>
+    Require all denied
+  </IfModule>
+  <IfModule !mod_authz_core.c>
+    Deny from all
+  </IfModule>
+</FilesMatch>
+
+# Security: prevent serving .ht* files
+<Files ~ "^\.ht">
+  <IfModule mod_authz_core.c>
+    Require all denied
+  </IfModule>
+  <IfModule !mod_authz_core.c>
+    Deny from all
+  </IfModule>
+</Files>

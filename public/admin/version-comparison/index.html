@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Version Comparison UI</title>
+    <link rel="stylesheet" href="/admin/css/version-comparison.css">
+</head>
+<body>
+    <div class="version-comparison-container">
+        <h1>Version Comparison Tool</h1>
+        
+        <div class="version-selectors">
+            <select id="version1">
+                <option value="">Select Version 1</option>
+            </select>
+            <select id="version2">
+                <option value="">Select Version 2</option>
+            </select>
+            <button id="compare-btn">Compare Versions</button>
+        </div>
+
+        <div class="diff-viewer">
+            <div class="diff-header">
+                <h3>Changes</h3>
+                <div class="diff-stats">
+                    <span class="added">0 added</span>
+                    <span class="removed">0 removed</span>
+                    <span class="changed">0 changed</span>
+                </div>
+            </div>
+            <div class="diff-content" id="diff-content">
+                <!-- Diff content will be rendered here -->
+            </div>
+        </div>
+    </div>
+
+    <script src="/admin/js/version-comparison.js"></script>
+</body>
+</html>

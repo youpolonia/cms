@@ -1,29 +1,24 @@
-<IfModule mod_rewrite.c>
-    RewriteEngine On
-    RewriteBase /
-    
-    # Redirect to public if accessing root
-    RewriteCond %{REQUEST_URI} !^/public/
-    RewriteRule ^(.*)$ public/$1 [L]
-    
-    # Handle front controller
-    RewriteCond %{REQUEST_FILENAME} !-d
-    RewriteCond %{REQUEST_FILENAME} !-f
-    RewriteRule ^ index.php [L]
-</IfModule>
+# Apache 2.4+ configuration for public directory
+DirectoryIndex index.php
 
-# Security headers
-<IfModule mod_headers.c>
-    Header set X-Content-Type-Options "nosniff"
-    Header set X-Frame-Options "SAMEORIGIN"
-    Header set X-XSS-Protection "1; mode=block"
-</IfModule>
+# Enable clean URLs
+RewriteEngine On
+RewriteBase /
 
-# PHP settings
-<IfModule mod_php.c>
-    php_value upload_max_filesize 20M
-    php_value post_max_size 20M
-    php_value memory_limit 256M
-    php_value max_execution_time 300
-    php_value max_input_time 300
-</IfModule>
+# short-circuit real files/dirs
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# bypass static assets
+RewriteCond %{REQUEST_URI} ^/assets/ [NC]
+RewriteRule ^ - [L]
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^ index.php [QSA,L]
+
+# Security - deny access to hidden files
+<FilesMatch "^\.">
+    Require all denied
+</FilesMatch>

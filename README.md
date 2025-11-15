@@ -1,89 +1,68 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# FTP Installation Guide
 
-<p align="center">
-<a href="https://github.com/your-org/cms/actions/workflows/ci.yml"><img src="https://github.com/your-org/cms/actions/workflows/ci.yml/badge.svg" alt="Build Status"></a>
-<a href="https://codecov.io/gh/your-org/cms"><img src="https://codecov.io/gh/your-org/cms/branch/main/graph/badge.svg" alt="Code Coverage"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## 1. FTP Upload Process
+1. Connect to your server using SFTP/FTPS (recommended port 22 for SFTP or 990 for FTPS)
+2. Upload all files to your web root directory (typically `/var/www/html/`)
+3. Recommended upload order:
+   - Core CMS files first
+   - Configuration files second
+   - Plugins and themes last
 
-## About Laravel
+## 2. Required Folder Permissions
+The following directories must be writable:
+- `/cache/` - 777 permissions (must be writable by web server)
+- `/uploads/` - 775 permissions
+- `/admin/assets/` - 775 permissions
+- `/includes/config/` - 775 permissions (for .env file)
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
-
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
-
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
-
-## Learning Laravel
-
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
-
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
-
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
-
-## Laravel Sponsors
-
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
-
-### Premium Partners
-
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
-
-## Testing
-
-The CMS includes a comprehensive test suite with:
-- Feature tests for all major components
-- Unit tests for services and models
-- Integration tests for API endpoints
-- JavaScript tests for frontend components (must use .ts extension for Vitest compatibility)
-
-To run tests:
+Set permissions using your FTP client or run:
 ```bash
-composer test
+chmod 777 cache/
+chmod 775 uploads/ admin/assets/ includes/config/
 ```
 
-View coverage reports in `tests/coverage/index.html`
+## 3. Database Setup
+1. Create a new MySQL database via your hosting control panel
+2. Create a database user with full privileges to this database
+3. Note these credentials for .env configuration:
+   - Database name
+   - Database username
+   - Database password
+   - Database host (usually 'localhost')
 
-## Version Retention Policy
-The CMS platform automatically prunes non-autosave content versions older than 90 days (default). To configure:
-1. Set `VERSION_RETENTION_DAYS` in .env
-2. Ensure the pruning job runs via the scheduler
+## 4. SQL Migration Execution
+1. Locate the latest migration file in `/database/migrations/`
+2. Import it using phpMyAdmin or similar tool:
+   - Select your database
+   - Go to "Import" tab
+   - Choose the migration SQL file
+   - Click "Execute"
 
-View current retention days in `config/versions.php`
+## 5. .env Configuration
+1. Rename `/includes/config/.env.example` to `.env`
+2. Edit with your database credentials:
+```ini
+DB_HOST=localhost
+DB_NAME=your_database
+DB_USER=your_username
+DB_PASS=your_password
+```
+3. Set your application URL:
+```ini
+APP_URL=https://yourdomain.com
+```
+4. Save the file
 
-## Contributing
+## Post-Installation Checks
+1. Verify all required PHP extensions are enabled:
+   - PDO
+   - JSON
+   - cURL
+   - OpenSSL
+2. Visit your site URL to complete installation
+3. Login to admin panel at `/admin/`
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## Troubleshooting
+- **500 Errors**: Check folder permissions and .env configuration
+- **Database Errors**: Verify credentials and that migrations ran successfully
+- **File Upload Issues**: Ensure uploads directory is writable

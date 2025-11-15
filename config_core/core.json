@@ -1,0 +1,23 @@
+{
+    "debug": true,
+    "timezone": "UTC",
+    "database": {
+        "default": {
+            "host": "localhost",
+            "username": "cms_user",
+            "password": "jaskolki123",
+            "database": "cms_db",
+            "port": 3306
+        }
+    },
+    "modules": [],
+    "autoload": {
+        "psr4": {
+            "App\\": "app/"
+        }
+    },
+    "logging": {
+        "enabled": true,
+        "path": "logs/"
+    }
+}

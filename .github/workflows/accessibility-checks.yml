@@ -1,0 +1,38 @@
+name: Accessibility Checks
+
+on:
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  accessibility:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm install
+      
+      - name: Run accessibility tests
+        run: npm test -- tests/js/accessibility --coverage --reporters=default --reporters=jest-junit
+      
+      - name: Upload test results
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: accessibility-test-results
+          path: |
+            coverage/
+            test-results.xml
+      
+      - name: Fail on critical violations
+        if: failure()
+        run: |
+          echo "Critical accessibility violations found. Please fix them before merging."
+          exit 1

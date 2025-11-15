@@ -1,0 +1,118 @@
+<?php
+declare(strict_types=1);
+
+namespace CMS\Services;
+
+require_once CMS_ROOT . '/includes/filecache.php';
+
+use FileCache;
+use CMS\Includes\Database\DatabaseConnection;
+
+class CacheManager {
+    private FileCache $fileCache;
+    private DatabaseConnection $db;
+    private array $config;
+
+    public function __construct(
+        FileCache $fileCache,
+        DatabaseConnection $db,
+        array $config = []
+    ) {
+        $this->fileCache = $fileCache;
+        $this->db = $db;
+        $this->config = $config;
+    }
+
+    /**
+     * Cache content with automatic invalidation
+     */
+    public function cacheContent(string $key, $content, ?int $ttl = null): bool {
+        $ttl = $ttl ?? $this->config['default_ttl'] ?? 3600;
+        $success = $this->fileCache->set($key, $content, $ttl);
+
+        if ($success) {
+            $this->db->insert('cache_metadata', [
+                'cache_key' => $key,
+                'created_at' => date('Y-m-d H:i:s'),
+                'expires_at' => date('Y-m-d H:i:s', time() + $ttl)
+            ]);
+        }
+
+        return $success;
+    }
+
+    /**
+     * Get cached content if valid
+     */
+    public function getCachedContent(string $key) {
+        if (!$this->isCacheValid($key)) {
+            $this->invalidateCache($key);
+            return null;
+        }
+        return $this->fileCache->get($key);
+    }
+
+    /**
+     * Check if cache is still valid
+     */
+    public function isCacheValid(string $key): bool {
+        $metadata = $this->db->fetchOne(
+            "SELECT expires_at FROM cache_metadata WHERE cache_key = ?",
+            [$key]
+        );
+
+        if (empty($metadata)) {
+            return false;
+        }
+
+        return strtotime($metadata['expires_at']) > time();
+    }
+
+    /**
+     * Invalidate cache entry
+     */
+    public function invalidateCache(string $key): bool {
+        $this->fileCache->delete($key);
+        return $this->db->delete('cache_metadata', ['cache_key' => $key]);
+    }
+
+    /**
+     * Clear all expired caches
+     */
+    public function clearExpired(): int {
+        $expired = $this->db->fetchAll(
+            "SELECT cache_key FROM cache_metadata 
+             WHERE expires_at < NOW()"
+        );
+
+        $count = 0;
+        foreach ($expired as $item) {
+            if ($this->invalidateCache($item['cache_key'])) {
+                $count++;
+            }
+        }
+
+        return $count;
+    }
+
+    /**
+     * Clear all caches (use with caution)
+     */
+    public function clearAll(): bool {
+        $this->fileCache->clear();
+        return $this->db->truncate('cache_metadata');
+    }
+
+    /**
+     * Preload frequently accessed content
+     */
+    public function preloadContent(array $keys): int {
+        $count = 0;
+        foreach ($keys as $key) {
+            if ($this->fileCache->has($key)) {
+                $count++;
+            }
+        }
+        return $count;
+    }
+}

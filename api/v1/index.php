@@ -1,0 +1,37 @@
+<?php
+/**
+ * REST API Entry Point
+ * Version: v1
+ */
+
+declare(strict_types=1);
+
+require_once __DIR__ . '/../../includes/api/router.php';
+require_once __DIR__ . '/../../includes/api/authentication.php';
+require_once __DIR__ . '/../../includes/api/ratelimiter.php';
+require_once __DIR__ . '/../../includes/api/response.php';
+
+// Initialize API components
+$router = new \CMS\API\Router();
+$auth = new \CMS\API\Authentication();
+$rateLimiter = new \CMS\API\RateLimiter();
+$response = new \CMS\API\Response();
+
+// Process request
+try {
+    // Authenticate request
+    $auth->authenticate();
+    
+    // Apply rate limiting
+    $rateLimiter->checkLimit();
+    
+    // Route request
+    $router->route();
+    
+} catch (\Exception $e) {
+    $response->error(
+        $e->getMessage(),
+        $e->getCode() ?: 500,
+        ['trace' => DEBUG_MODE ? $e->getTrace() : null]
+    );
+}

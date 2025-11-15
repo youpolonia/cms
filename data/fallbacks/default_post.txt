@@ -1,0 +1,9 @@
+# Default Fallback Post Content
+This content is shown when the system cannot retrieve the requested post.
+
+Possible reasons:
+- Post was deleted
+- Database connection issue
+- Permission restrictions
+
+System will automatically retry in [RETRY_INTERVAL] minutes.

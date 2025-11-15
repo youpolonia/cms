@@ -1,0 +1,11 @@
+version: '3'
+services:
+  soketi:
+    image: quay.io/soketi/soketi:latest
+    environment:
+      - SOKETI_DEFAULT_APP_ID=app-id
+      - SOKETI_DEFAULT_APP_KEY=app-key
+      - SOKETI_DEFAULT_APP_SECRET=app-secret
+    ports:
+      - "6001:6001"
+    restart: unless-stopped

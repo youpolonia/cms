@@ -1,0 +1,7 @@
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} -d [OR]
+RewriteCond %{REQUEST_FILENAME} -f
+RewriteRule ^ - [L]
+RewriteRule ^status$ status.php [L]
+RewriteRule ^run$ run.php [L]
+RewriteRule ^logs$ logs.php [L]

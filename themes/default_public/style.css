@@ -1,0 +1,46 @@
+/* Base styles for public theme */
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+    color: #333;
+}
+
+.container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 15px;
+}
+
+.site-header {
+    background: #f8f9fa;
+    padding: 20px 0;
+    border-bottom: 1px solid #ddd;
+}
+
+.main-nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    gap: 20px;
+}
+
+.main-nav a {
+    text-decoration: none;
+    color: #007bff;
+}
+
+main {
+    padding: 40px 0;
+    min-height: 60vh;
+}
+
+.site-footer {
+    background: #f8f9fa;
+    padding: 20px 0;
+    border-top: 1px solid #ddd;
+    margin-top: 40px;
+}

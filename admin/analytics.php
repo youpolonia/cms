@@ -1,0 +1,65 @@
+<?php
+require_once __DIR__ . '/../config.php';
+if (!defined('DEV_MODE') || DEV_MODE !== true) { http_response_code(403); exit; }
+require_once __DIR__ . '/../includes/analytics/collector.php';
+require_once __DIR__ . '/../includes/analytics/visualizer.php';
+require_once __DIR__ . '/../includes/core/auth.php';
+
+// Verify admin access
+if (!Auth::isAdmin()) {
+    header('Location: /admin/login.php');
+    exit;
+}
+
+$tenantId = $_GET['tenant'] ?? Auth::getCurrentTenant();
+$date = $_GET['date'] ?? date('Y-m-d');
+
+// Get chart data
+$chart = AnalyticsVisualizer::generateDailyChart($tenantId, $date);
+
+?><!DOCTYPE html>
+<html>
+<head>
+    <title>Analytics Dashboard</title>
+    <style>
+        .chart-container { 
+            width: 800px; 
+            margin: 20px auto;
+            border: 1px solid #ddd;
+            padding: 20px;
+        }
+        .date-selector {
+            margin: 20px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <?php
+    // Render analytics header require_once
+    require_once __DIR__ . '/../includes/header.php'; ?>
+    <div class="date-selector">
+        <form method="get">
+            <label>Date: <input type="date" name="date" value="<?= htmlspecialchars($date) ?>"></label>
+            <label>Tenant: 
+                <select name="tenant">
+                    <option value="">Current Tenant</option>
+                    <?php foreach (Auth::getAllTenants() as $t): ?>                        <option value="<?= htmlspecialchars($t) ?>" <?= $t === $tenantId ? 'selected' : '' ?>>
+                            <?= htmlspecialchars($t) ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+            </label>
+<button type="submit">Update</button>
+        </form>
+    </div>
+
+    <div class="chart-container">
+        <?= $chart ?>
+    </div>
+
+    <?php
+    // Render analytics footer require_once
+    require_once __DIR__ . '/../includes/footer.php';
+</body>
+</html>

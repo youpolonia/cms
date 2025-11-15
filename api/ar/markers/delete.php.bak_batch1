@@ -1,0 +1,31 @@
+<?php
+declare(strict_types=1);
+
+require_once __DIR__ . '/../../../includes/Core/ApiAuth.php';
+require_once __DIR__ . '/../../../includes/ar/markermanager.php';
+
+ApiAuth::authenticate();
+
+header('Content-Type: application/json');
+
+try {
+    $input = json_decode(file_get_contents('php://input'), true);
+    $id = (int)($input['id'] ?? 0);
+    
+    if ($id <= 0) {
+        throw new InvalidArgumentException('Invalid marker ID');
+    }
+
+    $success = MarkerManager::deleteMarker($id);
+    
+    echo json_encode([
+        'status' => $success ? 'success' : 'error',
+        'message' => $success ? 'Marker deleted' : 'Failed to delete marker'
+    ]);
+} catch (Exception $e) {
+    http_response_code(400);
+    echo json_encode([
+        'status' => 'error',
+        'message' => $e->getMessage()
+    ]);
+}

@@ -1,0 +1,4 @@
+{
+  "maxContextSize": 4000,
+  "pruneStrategy": "recent-first"
+}

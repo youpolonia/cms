@@ -1,0 +1,61 @@
+<div class="modal fade" id="rollbackModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Confirm Version Rollback</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            
+            <div class="modal-body">
+                <div class="rollback-warning alert alert-warning">
+                    <strong>Warning:</strong> This will replace the current content with the selected version.
+                </div>
+
+                <div class="rollback-details">
+                    <h6>Version Details</h6>
+                    <table class="table table-sm">
+                        <tr>
+                            <th>Version ID:</th>
+                            <td id="rollback-version-id-display"></td>
+                        </tr>
+                        <tr>
+                            <th>Created:</th>
+                            <td id="rollback-version-date"></td>
+                        </tr>
+                        <tr>
+                            <th>Author:</th>
+                            <td id="rollback-version-author"></td>
+                        </tr>
+                        <tr>
+                            <th>Notes:</th>
+                            <td id="rollback-version-notes"></td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="rollback-preview">
+                    <h6>Content Preview</h6>
+                    <div class="preview-container" id="rollback-preview-content">
+                        <!-- Content preview will be loaded here -->
+                    </div>
+                </div>
+
+                <div class="rollback-options mt-3">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="create-new-version">
+                        <label class="form-check-label" for="create-new-version">
+                            Create new version before rollback
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <input type="hidden" id="rollback-content-id">
+                <input type="hidden" id="rollback-version-id">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" id="rollback-confirm-btn" class="btn btn-danger">Confirm Rollback</button>
+            </div>
+        </div>
+    </div>
+</div>

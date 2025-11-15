@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trigger Configuration</title>
+    <link rel="stylesheet" href="/admin/css/workflow.css">
+    <link rel="stylesheet" href="/admin/workflow/triggers.css">
+    <script src="/admin/workflow/triggers.js" defer></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Trigger Configuration</h1>
+        
+        <div class="trigger-types">
+            <h2>Available Triggers</h2>
+            <div class="trigger-list">
+                <div class="trigger-card" data-type="content-published">
+                    <h3>Content Published</h3>
+                    <p>Trigger when new content is published</p>
+                </div>
+                
+                <div class="trigger-card" data-type="schedule">
+                    <h3>Scheduled Time</h3>
+                    <p>Trigger at specific date/time</p>
+                </div>
+                
+                <div class="trigger-card" data-type="user-action">
+                    <h3>User Action</h3>
+                    <p>Trigger when user performs specific action</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="trigger-configuration">
+            <h2>Configuration</h2>
+            <div id="trigger-form">
+                <p>Select a trigger type to configure</p>
+            </div>
+            <button id="save-trigger" class="btn" disabled>Save Trigger</button>
+        </div>
+    </div>
+</body>
+</html>

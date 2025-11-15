@@ -1,0 +1,72 @@
+<?php
+require_once __DIR__ . '/../includes/service/serviceintegrationhandler.php';
+require_once __DIR__ . '/../includes/logging/logger.php';
+require_once __DIR__ . '/../includes/middleware/authmiddleware.php';
+
+header('Content-Type: application/json');
+
+$logger = new Logger();
+$auth = new AuthMiddleware();
+$handler = new serviceintegrationhandler($logger);
+
+// Verify JWT token
+if (!$auth->verifyToken()) {
+    http_response_code(401);
+    echo json_encode(['error' => 'Unauthorized']);
+    exit;
+}
+
+$method = $_SERVER['REQUEST_METHOD'];
+$path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+
+try {
+    switch ($path) {
+        case '/api/service-discovery':
+            if ($method === 'GET') {
+                $services = $handler->discoverServices();
+                echo json_encode($services);
+            } else {
+                http_response_code(405);
+                echo json_encode(['error' => 'Method not allowed']);
+            }
+            break;
+
+        case '/api/service-register':
+            if ($method === 'POST') {
+                $data = json_decode(file_get_contents('php://input'), true);
+                $result = $handler->registerEndpoint(
+                    $data['serviceName'],
+                    $data['endpoint'],
+                    $data['metadata'] ?? []
+                );
+                echo json_encode(['success' => $result]);
+            } else {
+                http_response_code(405);
+                echo json_encode(['error' => 'Method not allowed']);
+            }
+            break;
+
+        case '/api/service-health':
+            if ($method === 'GET') {
+                $service = $_GET['service'] ?? '';
+                if (empty($service)) {
+                    http_response_code(400);
+                    echo json_encode(['error' => 'Service name required']);
+                    break;
+                }
+                $health = $handler->verifyServiceHealth($service);
+                echo json_encode($health);
+            } else {
+                http_response_code(405);
+                echo json_encode(['error' => 'Method not allowed']);
+            }
+            break;
+
+        default:
+            http_response_code(404);
+            echo json_encode(['error' => 'Not found']);
+    }
+} catch (Exception $e) {
+    http_response_code(500);
+    echo json_encode(['error' => $e->getMessage()]);
+}

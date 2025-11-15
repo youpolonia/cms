@@ -1,0 +1,104 @@
+<?php
+
+/**
+ * API Routes for personalization, recommendations, and A/B testing
+ */
+
+require_once __DIR__ . '/../../includes/Session/SessionManager.php'; // Added for Includes\Session\SessionManager
+
+use Includes\Controllers\Api\RecommendationController;
+use Includes\Controllers\Api\ABTestController;
+use Includes\Routing\Router;
+use Includes\Routing\Request;
+use Includes\Routing\Response;
+use Includes\Middleware\ApiAuthMiddleware;
+
+// Create router instance
+$router = new Router();
+
+// Add authentication middleware
+$authMiddleware = new ApiAuthMiddleware();
+$router->addGlobalMiddleware($authMiddleware);
+
+// Recommendation routes
+$router->addRoute('GET', '/api/recommendations', function(Request $request) {
+    $controller = new RecommendationController();
+    return $controller->getRecommendations($request);
+});
+
+$router->addRoute('POST', '/api/recommendations/feedback', function(Request $request) {
+    $controller = new RecommendationController();
+    return $controller->recordFeedback($request);
+});
+
+$router->addRoute('POST', '/api/recommendations/contextual', function(Request $request) {
+    $controller = new RecommendationController();
+    return $controller->getContextualRecommendations($request);
+});
+
+// A/B Testing routes
+$router->addRoute('GET', '/api/ab-test/variant', function(Request $request) {
+    $controller = new ABTestController();
+    return $controller->getVariant($request);
+});
+
+$router->addRoute('POST', '/api/ab-test/conversion', function(Request $request) {
+    $controller = new ABTestController();
+    return $controller->trackConversion($request);
+});
+
+$router->addRoute('GET', '/api/ab-test/results', function(Request $request) {
+    $controller = new ABTestController();
+    return $controller->getResults($request);
+});
+
+// Admin routes (require admin privileges)
+$router->addRoute('GET', '/api/ab-test/list', function(Request $request) {
+    // Check admin privileges
+    if (!isAdmin()) {
+        return new Response(403, ['Content-Type' => 'application/json'], json_encode([
+            'success' => false,
+            'message' => 'Unauthorized'
+        ]));
+    }
+    
+    $controller = new ABTestController();
+    return $controller->listTests($request);
+});
+
+$router->addRoute('POST', '/api/ab-test/create', function(Request $request) {
+    // Check admin privileges
+    if (!isAdmin()) {
+        return new Response(403, ['Content-Type' => 'application/json'], json_encode([
+            'success' => false,
+            'message' => 'Unauthorized'
+        ]));
+    }
+    
+    $controller = new ABTestController();
+    return $controller->createTest($request);
+});
+
+$router->addRoute('PUT', '/api/ab-test/update', function(Request $request) {
+    // Check admin privileges
+    if (!isAdmin()) {
+        return new Response(403, ['Content-Type' => 'application/json'], json_encode([
+            'success' => false,
+            'message' => 'Unauthorized'
+        ]));
+    }
+    
+    $controller = new ABTestController();
+    return $controller->updateTest($request);
+});
+
+// Helper function to check admin privileges
+function isAdmin(): bool {
+    $session = \Includes\Session\SessionManager::getInstance();
+    $userId = $session->get('user_id') ?? 0;
+    $userRole = $session->get('user_role') ?? '';
+    
+    return $userRole === 'admin';
+}
+
+return $router;

@@ -1,0 +1,31 @@
+<?php
+
+namespace Tests\Feature\Api\Generated;
+
+use Tests\TestCase;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+
+class {{className}}Test extends TestCase
+{
+    use RefreshDatabase;
+
+    /**
+     * @test
+     */
+    public function it_{{testName}}()
+    {
+        $response = $this->{{httpMethod}}('{{routePath}}');
+
+        $response->assertStatus(200);
+        
+        // Add your specific test assertions here
+        // Example:
+        // $response->assertJsonStructure([
+        //     'data' => [
+        //         'id',
+        //         'name',
+        //         'created_at'
+        //     ]
+        // ]);
+    }
+}

@@ -1,0 +1,3 @@
+# Block direct access to cache files
+Order deny,allow
+Deny from all

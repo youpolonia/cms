@@ -1,0 +1,14 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    
+    # Allow direct access to specific API endpoints
+    RewriteCond %{REQUEST_URI} ^/api/(generate-image\.php|other-endpoint\.php|mcp/status\.php|webhooks/n8n\.php)$ [NC]
+    RewriteRule ^ - [L]
+
+    # Block access to all other PHP files in this directory
+    RewriteCond %{REQUEST_URI} ^/api/.*\.php$ [NC]
+    RewriteRule ^ - [F]
+
+    # Block directory listing
+    Options -Indexes
+</IfModule>

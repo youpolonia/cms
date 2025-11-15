@@ -1,0 +1,62 @@
+<?php
+require_once __DIR__ . '/../core/csrf.php';
+require_once __DIR__ . '/../includes/Auth.php';
+require_once __DIR__ . '/../includes/ai/users/UserAISearch.php';
+
+// Check admin permissions
+if (!Auth::check() || !Auth::user()->hasPermissionTo('manage_users')) {
+    header('HTTP/1.0 403 Forbidden');
+    exit('Access denied');
+}
+session_regenerate_id(true);
+
+$results = [];
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    csrf_validate_or_403();
+    if (empty($_POST['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
+        header('HTTP/1.0 403 Forbidden');
+        exit('Invalid CSRF token');
+    }
+    
+    if (!empty($_POST['query'])) {
+        $query = substr(trim($_POST['query']), 0, 100);
+        if (!preg_match('/^[\w\s\-@\.]+$/', $query)) {
+            $query = '';
+        }
+        $results = UserAISearch::semanticSearch($query);
+    }
+}
+
+?><!DOCTYPE html>
+<html>
+<head>
+    <title>User Admin - Semantic Search</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .search-form { margin-bottom: 20px; }
+        .user-card { border: 1px solid #ddd; padding: 15px; margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+    <h1>User Admin - Semantic Search</h1>
+    
+    <div class="search-form">
+        <form method="post">
+            <input type="hidden" name="csrf_token" value="<?= bin2hex(random_bytes(32)) ?>">
+            <input type="text" name="query" placeholder="Search users by role, permission, or description"
+                   value="<?= htmlspecialchars($_POST['query'] ?? '', ENT_QUOTES) ?>" size="50" maxlength="100">
+            <button type="submit">Search</button>
+        </form>
+    </div>
+
+    <?php if (!empty($results)): ?>
+        <h2>Search Results (<?= count($results) ?>)</h2>
+        <?php foreach ($results as $user): ?>
+            <div class="user-card">
+                <h3><?= htmlspecialchars($user['name']) ?> (<?= htmlspecialchars($user['email']) ?>)</h3>
+                <p><strong>Roles:</strong> <?= implode(', ', array_map('htmlspecialchars', $user['roles'])) ?></p>
+                <p><strong>Permissions:</strong> <?= implode(', ', array_map('htmlspecialchars', $user['permissions'])) ?></p>
+            </div>
+        <?php endforeach; ?>    <?php endif; ?>
+</body>
+</html>
