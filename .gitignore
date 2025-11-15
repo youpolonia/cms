@@ -11,3 +11,4 @@ vendor/
 *.log
 *.tmp
 php_server.log
+.github/
