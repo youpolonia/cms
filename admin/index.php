@@ -41,7 +41,7 @@ require_once __DIR__ . '/includes/navigation.php';
         <a class="btn primary" href="/admin/scheduler.php">Scheduler</a>
         <a class="btn" href="/admin/maintenance.php">Maintenance</a>
         <a class="btn" href="/admin/backup.php">Backup</a>
-        <a class="btn" href="/admin/logs.php">Logs</a>
+        <a class="btn" href="/admin/logs/">Logs</a>
       </div>
     </div>
     <div class="card">

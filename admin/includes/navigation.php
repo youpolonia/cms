@@ -20,7 +20,7 @@ if (!function_exists('renderAdminNavigation')) {
             ['Menus','/admin/menus.php'],
             ['Widgets','/admin/widgets.php'],
             ['URLs','/admin/urls.php'],
-            ['Logs','/admin/logs.php'],
+            ['Logs','/admin/logs/'],
             ['Maintenance','/admin/maintenance.php'],
             ['Backup','/admin/backup.php']
         ];
