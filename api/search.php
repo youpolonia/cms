@@ -1,45 +1,96 @@
 <?php
-require_once dirname(__DIR__) . '/config.php';
-require_once __DIR__ . '/../core/indexbuilder.php';
-require_once __DIR__ . '/../core/searchengine.php';
+/**
+ * Search API for Command Palette
+ * GET /api/search.php?type={pages|articles|all}&q={query}&limit={20}
+ */
 
 header('Content-Type: application/json');
 
-try {
-    $pdo = \core\Database::connection();
+require_once __DIR__ . '/../config.php';
+require_once __DIR__ . '/../core/session_boot.php';
+require_once __DIR__ . '/../core/database.php';
 
-    $searchEngine = new SearchEngine($pdo);
-    $tenantId = $_GET['tenant_id'] ?? $_POST['tenant_id'] ?? '';
-    $query = $_GET['q'] ?? $_POST['q'] ?? '';
-    $operator = strtoupper($_GET['operator'] ?? $_POST['operator'] ?? 'AND');
-    
-    if (empty($tenantId) || empty($query)) {
-        http_response_code(400);
-        echo json_encode(['error' => 'Missing required parameters']);
-        exit;
+// Check if admin is logged in
+cms_session_start('admin');
+if (empty($_SESSION['admin_id'])) {
+    http_response_code(401);
+    exit(json_encode(['success' => false, 'error' => 'Unauthorized']));
+}
+
+$type = $_GET['type'] ?? 'all';
+$query = trim($_GET['q'] ?? '');
+$limit = min((int)($_GET['limit'] ?? 20), 50);
+
+$pdo = \core\Database::connection();
+$results = [];
+
+try {
+    // Search pages
+    if ($type === 'all' || $type === 'pages') {
+        $sql = "SELECT id, title, slug, status FROM pages";
+        $params = [];
+
+        if ($query) {
+            $sql .= " WHERE title LIKE ? OR slug LIKE ?";
+            $params = ["%$query%", "%$query%"];
+        }
+
+        $sql .= " ORDER BY updated_at DESC LIMIT " . (int)$limit;
+
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute($params);
+
+        foreach ($stmt->fetchAll(\PDO::FETCH_ASSOC) as $row) {
+            $results[] = [
+                'type' => 'page',
+                'id' => $row['id'],
+                'title' => $row['title'],
+                'slug' => $row['slug'],
+                'status' => $row['status'],
+                'url' => "/admin/pages/edit/{$row['id']}"
+            ];
+        }
     }
 
-    $options = [
-        'limit' => (int)($_GET['limit'] ?? $_POST['limit'] ?? 20),
-        'offset' => (int)($_GET['offset'] ?? $_POST['offset'] ?? 0),
-        'version' => $_GET['version'] ?? $_POST['version'] ?? null,
-        'min_score' => (float)($_GET['min_score'] ?? $_POST['min_score'] ?? 1.0),
-        'operator' => in_array($operator, ['AND', 'OR', 'NOT']) ? $operator : 'AND'
-    ];
+    // Search articles
+    if ($type === 'all' || $type === 'articles') {
+        $sql = "SELECT id, title, slug, status FROM articles";
+        $params = [];
 
-    $searchResults = $searchEngine->search($query, $tenantId, $options);
+        if ($query) {
+            $sql .= " WHERE title LIKE ? OR slug LIKE ?";
+            $params = ["%$query%", "%$query%"];
+        }
+
+        $sql .= " ORDER BY updated_at DESC LIMIT " . (int)$limit;
+
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute($params);
+
+        foreach ($stmt->fetchAll(\PDO::FETCH_ASSOC) as $row) {
+            $results[] = [
+                'type' => 'article',
+                'id' => $row['id'],
+                'title' => $row['title'],
+                'slug' => $row['slug'],
+                'status' => $row['status'],
+                'url' => "/admin/articles/edit/{$row['id']}"
+            ];
+        }
+    }
+
     echo json_encode([
         'success' => true,
-        'results' => $searchResults['items'],
-        'count' => count($searchResults['items']),
-        'pagination' => $searchResults['pagination']
-    ], JSON_UNESCAPED_SLASHES);
+        'data' => $results,
+        'count' => count($results)
+    ]);
+
 } catch (\PDOException $e) {
     http_response_code(500);
-    error_log($e->getMessage());
-    echo json_encode(['success' => false, 'error' => 'Database error']);
-} catch (\Exception $e) {
-    http_response_code(500);
-    error_log($e->getMessage());
-    echo json_encode(['success' => false, 'error' => 'Database error']);
+    echo json_encode([
+        'success' => false,
+        'error' => 'Database error',
+        'data' => [],
+        'count' => 0
+    ]);
 }
