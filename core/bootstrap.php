@@ -45,6 +45,7 @@ require_once __DIR__ . '/pluginsdk.php';
 require_once __DIR__ . '/pluginsandbox.php';
 require_once __DIR__ . '/controllerregistry.php';
 require_once __DIR__ . '/router.php';
+require_once __DIR__ . '/moduleregistry.php';
 
 // Load routes (optional - admin panel doesn't require routing)
 // Route loading disabled to prevent conflicts with standalone admin entry point
