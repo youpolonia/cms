@@ -349,3 +349,7 @@ html,body{max-width:100vw!important;overflow-x:hidden!important}
     }
 })();
 </script>
+
+<!-- Command Palette -->
+<link rel="stylesheet" href="/assets/css/command-palette.css">
+<script src="/assets/js/command-palette.js" defer></script>

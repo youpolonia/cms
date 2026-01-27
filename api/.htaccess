@@ -6,7 +6,7 @@
     RewriteRule ^(.*)$ /index.php [QSA,L]
     
     # Allow direct access to specific API endpoints
-    RewriteCond %{REQUEST_URI} ^/api/(generate-image\.php|other-endpoint\.php|mcp/status\.php|webhooks/n8n\.php|ai/generate-content\.php|stock-videos\.php|stock-images\.php|download-stock-media\.php|media-library\.php|ai-generate-image\.php|ai-save-to-media\.php)$ [NC]
+    RewriteCond %{REQUEST_URI} ^/api/(generate-image\.php|other-endpoint\.php|mcp/status\.php|webhooks/n8n\.php|ai/generate-content\.php|stock-videos\.php|stock-images\.php|download-stock-media\.php|media-library\.php|ai-generate-image\.php|ai-save-to-media\.php|search\.php)$ [NC]
     RewriteRule ^ - [L]
 
     # Block access to all other PHP files in this directory
