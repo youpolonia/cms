@@ -16,45 +16,13 @@ if (file_exists($configPath)) {
     $aiProviders = $aiConfig['providers'] ?? [];
 }
 
-// Get available models from ai_settings.json
-$availableModels = [];
-$aiSettingsPath = CMS_ROOT . '/config/ai_settings.json';
-if (file_exists($aiSettingsPath)) {
-    $aiSettings = json_decode(file_get_contents($aiSettingsPath), true);
-    // Add OpenAI models
-    if (!empty($aiSettings['providers']['openai']['models'])) {
-        foreach ($aiSettings['providers']['openai']['models'] as $id => $model) {
-            $name = is_array($model) ? ($model['name'] ?? $id) : $model;
-            if (!empty($model['recommended'])) $name .= ' ⭐';
-            if (!empty($model['reasoning'])) $name .= ' 🧠';
-            $availableModels[$id] = $name;
-        }
-    }
-    // Add Anthropic models
-    if (!empty($aiSettings['providers']['anthropic']['models'])) {
-        foreach ($aiSettings['providers']['anthropic']['models'] as $id => $model) {
-            $name = is_array($model) ? ($model['name'] ?? $id) : $model;
-            if (!empty($model['recommended'])) $name .= ' ⭐';
-            if (!empty($model['extended_thinking'])) $name .= ' 🧠';
-            $availableModels[$id] = $name;
-        }
-    }
-    // Add Gemini models
-    if (!empty($aiSettings['providers']['google']['models'])) {
-        foreach ($aiSettings['providers']['google']['models'] as $id => $model) {
-            $name = is_array($model) ? ($model['name'] ?? $id) : $model;
-            if (!empty($model['free_tier'])) $name .= ' 🆓';
-            $availableModels[$id] = $name;
-        }
-    }
-}
-// Fallback if no models loaded
-if (empty($availableModels)) {
-    $availableModels = [
-        'gpt-4.1-mini' => 'GPT-4.1 Mini',
-        'claude-opus-4-5-20251101' => 'Claude Opus 4.5',
-    ];
-}
+// Get available models
+$availableModels = [
+    'gpt-4o' => 'GPT-4o (Recommended)',
+    'gpt-4o-mini' => 'GPT-4o Mini (Faster)',
+    'claude-3-5-sonnet-20241022' => 'Claude 3.5 Sonnet',
+    'claude-3-opus-20240229' => 'Claude 3 Opus'
+];
 
 // Website types / Industries (mapped to ai-design-prompts.php)
 $websiteTypes = [

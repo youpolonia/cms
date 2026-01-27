@@ -10,7 +10,7 @@
  */
 
 $models = $data['models'] ?? [];
-$defaultModel = $data['defaultModel'] ?? 'gpt-5.2';
+$defaultModel = $data['defaultModel'] ?? 'gpt-4o-mini';
 $csrfToken = $data['csrfToken'] ?? '';
 
 // Set title for topbar layout

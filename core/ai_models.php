@@ -2,44 +2,134 @@
 /**
  * AI Models Configuration
  * Central configuration for all AI model selections across the CMS
- * 
+ * NOW READS FROM ai_settings.json for dynamic model updates
+ *
  * @package CMS\Core
  */
 
 /**
- * Get all available AI models grouped by series
- * 
+ * Load AI settings from JSON file (cached per request)
+ *
+ * @return array Settings array
+ */
+function _ai_load_settings_json(): array {
+    static $settings = null;
+
+    if ($settings === null) {
+        $settingsFile = (defined('CMS_ROOT') ? CMS_ROOT : dirname(__DIR__)) . '/config/ai_settings.json';
+
+        if (file_exists($settingsFile)) {
+            $content = file_get_contents($settingsFile);
+            $settings = json_decode($content, true) ?: [];
+        } else {
+            $settings = [];
+        }
+    }
+
+    return $settings;
+}
+
+/**
+ * Convert models from ai_settings.json format to grouped format
+ *
+ * @param array $models Models from JSON (model_id => config)
+ * @return array Grouped models for UI display
+ */
+function _ai_group_models(array $models, string $provider = 'openai'): array {
+    $groups = [];
+
+    // Define group names based on model patterns
+    foreach ($models as $modelId => $config) {
+        $groupName = 'Other Models';
+
+        if ($provider === 'openai') {
+            if (preg_match('/^gpt-5\.2/', $modelId)) {
+                $groupName = 'GPT-5.2 Series (Latest)';
+            } elseif (preg_match('/^gpt-5/', $modelId)) {
+                $groupName = 'GPT-5 Series';
+            } elseif (preg_match('/^gpt-4\.1/', $modelId)) {
+                $groupName = 'GPT-4.1 Series';
+            } elseif (preg_match('/^o[34]/', $modelId)) {
+                $groupName = 'O-Series (Reasoning)';
+            } elseif (preg_match('/^gpt-4o/', $modelId)) {
+                $groupName = 'GPT-4o (Legacy)';
+            }
+        } elseif ($provider === 'anthropic') {
+            if (preg_match('/claude-(opus|sonnet|haiku)-4-5/', $modelId)) {
+                $groupName = 'Claude 4.5 (Latest)';
+            } elseif (preg_match('/claude-(sonnet|opus)-4-/', $modelId)) {
+                $groupName = 'Claude 4';
+            } elseif (preg_match('/claude-3-5/', $modelId)) {
+                $groupName = 'Claude 3.5';
+            } elseif (preg_match('/claude-3/', $modelId)) {
+                $groupName = 'Claude 3';
+            }
+        } elseif ($provider === 'google') {
+            if (preg_match('/gemini-3/', $modelId)) {
+                $groupName = 'Gemini 3 (Preview)';
+            } elseif (preg_match('/gemini-2\.5/', $modelId)) {
+                $groupName = 'Gemini 2.5 (Latest)';
+            } elseif (preg_match('/gemini-2\.0/', $modelId)) {
+                $groupName = 'Gemini 2.0';
+            } elseif (preg_match('/gemini-1\.5/', $modelId)) {
+                $groupName = 'Gemini 1.5 (Legacy)';
+            }
+        } elseif ($provider === 'deepseek') {
+            $groupName = 'DeepSeek Models';
+        } elseif ($provider === 'huggingface') {
+            $groupName = 'Popular Models';
+        }
+
+        // Mark legacy models
+        if (!empty($config['legacy'])) {
+            if (strpos($groupName, 'Legacy') === false) {
+                $groupName = str_replace(' (Latest)', '', $groupName);
+                $groupName .= ' (Legacy)';
+            }
+        }
+
+        if (!isset($groups[$groupName])) {
+            $groups[$groupName] = [];
+        }
+
+        $groups[$groupName][$modelId] = [
+            'name' => $config['name'] ?? $modelId,
+            'reasoning' => !empty($config['reasoning']) || !empty($config['extended_thinking']),
+            'default' => !empty($config['recommended']),
+            'legacy' => !empty($config['legacy']),
+            'preview' => !empty($config['preview']),
+        ];
+    }
+
+    return $groups;
+}
+
+/**
+ * Get all available AI models grouped by series (for OpenAI - backward compatibility)
+ * NOW READS FROM ai_settings.json
+ *
  * @return array Model groups with model definitions
  */
 function ai_get_model_groups(): array {
-    return [
-        'GPT-5 Series (Latest)' => [
-            'gpt-5.2' => ['name' => 'GPT-5.2 (Flagship Thinking)', 'reasoning' => true, 'default' => true],
-            'gpt-5.1' => ['name' => 'GPT-5.1 (Best Quality)', 'reasoning' => true],
-            'gpt-5' => ['name' => 'GPT-5 (General/Agentic)', 'reasoning' => true],
-            'gpt-5-mini' => ['name' => 'GPT-5 Mini (Fast)', 'reasoning' => true],
-        ],
-        'GPT-4.1 Series' => [
-            'gpt-4.1' => ['name' => 'GPT-4.1 (Coding Specialist)', 'reasoning' => true],
-            'gpt-4.1-mini' => ['name' => 'GPT-4.1 Mini (Balanced)', 'reasoning' => true],
-            'gpt-4.1-nano' => ['name' => 'GPT-4.1 Nano (Budget)', 'reasoning' => true],
-        ],
-        'O-Series (Reasoning)' => [
-            'o3' => ['name' => 'O3 (Deep Reasoning)', 'reasoning' => true],
-            'o3-mini' => ['name' => 'O3 Mini (Fast Reasoning)', 'reasoning' => true],
-            'o3-pro' => ['name' => 'O3 Pro (Max Reasoning)', 'reasoning' => true],
-            'o4-mini' => ['name' => 'O4 Mini (Quick Reasoning)', 'reasoning' => true],
-        ],
-        'GPT-4o (Legacy)' => [
-            'gpt-4o' => ['name' => 'GPT-4o', 'reasoning' => false],
-            'gpt-4o-mini' => ['name' => 'GPT-4o Mini', 'reasoning' => false],
-        ],
-    ];
+    $settings = _ai_load_settings_json();
+    $models = $settings['providers']['openai']['models'] ?? [];
+
+    if (empty($models)) {
+        // Fallback to hardcoded if JSON is empty
+        return [
+            'GPT-4o (Legacy)' => [
+                'gpt-4o' => ['name' => 'GPT-4o', 'reasoning' => false],
+                'gpt-4o-mini' => ['name' => 'GPT-4o Mini', 'reasoning' => false],
+            ],
+        ];
+    }
+
+    return _ai_group_models($models, 'openai');
 }
 
 /**
  * Get flat list of allowed model IDs for validation
- * 
+ *
  * @return array List of valid model identifiers
  */
 function ai_get_allowed_models(): array {
@@ -52,7 +142,7 @@ function ai_get_allowed_models(): array {
 
 /**
  * Check if a model ID is valid
- * 
+ *
  * @param string $model Model identifier to check
  * @return bool True if model is valid
  */
@@ -61,22 +151,40 @@ function ai_is_valid_model(string $model): bool {
 }
 
 /**
- * Check if model is a reasoning model (GPT-5, GPT-4.1, O-series)
+ * Check if model is a reasoning model (GPT-5, GPT-4.1, O-series, Claude extended_thinking)
  * These models use max_completion_tokens and don't support temperature/penalties
- * 
+ *
  * @param string $model Model identifier
  * @return bool True if reasoning model
  */
 function ai_is_reasoning_model(string $model): bool {
+    // Check in JSON settings first
+    $settings = _ai_load_settings_json();
+    foreach ($settings['providers'] ?? [] as $provider => $providerConfig) {
+        $models = $providerConfig['models'] ?? [];
+        if (isset($models[$model])) {
+            return !empty($models[$model]['reasoning']) || !empty($models[$model]['extended_thinking']);
+        }
+    }
+
+    // Fallback to pattern matching
     return (bool) preg_match('/^(o[1-4]|gpt-[45]\.|gpt-5$)/', $model);
 }
 
 /**
  * Get the default model ID
- * 
+ *
  * @return string Default model identifier
  */
 function ai_get_default_model(): string {
+    $settings = _ai_load_settings_json();
+    $defaultModel = $settings['providers']['openai']['default_model'] ?? null;
+
+    if ($defaultModel) {
+        return $defaultModel;
+    }
+
+    // Find model marked as recommended
     foreach (ai_get_model_groups() as $group) {
         foreach ($group as $id => $config) {
             if (!empty($config['default'])) {
@@ -84,12 +192,13 @@ function ai_get_default_model(): string {
             }
         }
     }
-    return 'gpt-5.2';
+
+    return 'gpt-4o-mini';
 }
 
 /**
  * Render HTML select element for model selection
- * 
+ *
  * @param string $name Input name attribute
  * @param string $id Input id attribute
  * @param string|null $selected Currently selected model (null = use default)
@@ -99,33 +208,49 @@ function ai_get_default_model(): string {
 function ai_render_model_selector(string $name = 'model', string $id = 'modelSelect', ?string $selected = null, array $attrs = []): string {
     $selected = $selected ?? ai_get_default_model();
     $groups = ai_get_model_groups();
-    
+
     $attrsStr = '';
     foreach ($attrs as $key => $value) {
         $attrsStr .= ' ' . htmlspecialchars($key) . '="' . htmlspecialchars($value) . '"';
     }
-    
+
     $html = '<select name="' . htmlspecialchars($name) . '" id="' . htmlspecialchars($id) . '"' . $attrsStr . '>';
-    
+
     foreach ($groups as $groupName => $models) {
         $html .= '<optgroup label="' . htmlspecialchars($groupName) . '">';
         foreach ($models as $modelId => $config) {
             $isSelected = ($modelId === $selected) ? ' selected' : '';
+            $displayName = $config['name'];
+
+            // Add badges
+            if (!empty($config['default'])) {
+                $displayName .= ' ⭐';
+            }
+            if (!empty($config['reasoning'])) {
+                $displayName .= ' 🧠';
+            }
+            if (!empty($config['legacy'])) {
+                $displayName .= ' [Legacy]';
+            }
+            if (!empty($config['preview'])) {
+                $displayName .= ' [Preview]';
+            }
+
             $html .= '<option value="' . htmlspecialchars($modelId) . '"' . $isSelected . '>';
-            $html .= htmlspecialchars($config['name']);
+            $html .= htmlspecialchars($displayName);
             $html .= '</option>';
         }
         $html .= '</optgroup>';
     }
-    
+
     $html .= '</select>';
-    
+
     return $html;
 }
 
 /**
  * Build API payload with correct parameters for model type
- * 
+ *
  * @param string $model Model identifier
  * @param array $messages Messages array for API
  * @param int $maxTokens Maximum tokens
@@ -143,12 +268,12 @@ function ai_build_payload(
     float $presencePenalty = 0.1
 ): array {
     $isReasoning = ai_is_reasoning_model($model);
-    
+
     $payload = [
         'model' => $model,
         'messages' => $messages
     ];
-    
+
     if ($isReasoning) {
         // Reasoning models (GPT-5, GPT-4.1, O-series) use max_completion_tokens
         // They don't support temperature, frequency_penalty, presence_penalty
@@ -162,13 +287,13 @@ function ai_build_payload(
         $payload['frequency_penalty'] = $frequencyPenalty;
         $payload['presence_penalty'] = $presencePenalty;
     }
-    
+
     return $payload;
 }
 
 /**
  * Parse API response from various model formats
- * 
+ *
  * @param array|null $data Decoded JSON response
  * @param string $rawResponse Raw response string for debugging
  * @return array ['ok' => bool, 'content' => string|null, 'error' => string|null, 'usage' => array|null]
@@ -177,9 +302,9 @@ function ai_parse_response(?array $data, string $rawResponse = ''): array {
     if (!$data) {
         return ['ok' => false, 'content' => null, 'error' => 'Invalid JSON response', 'usage' => null];
     }
-    
+
     $content = null;
-    
+
     // Try Chat Completions format (GPT-4o, GPT-4.1, some GPT-5)
     if (isset($data['choices'][0]['message']['content'])) {
         $content = $data['choices'][0]['message']['content'];
@@ -213,7 +338,7 @@ function ai_parse_response(?array $data, string $rawResponse = ''): array {
     elseif (isset($data['content']) && is_string($data['content'])) {
         $content = $data['content'];
     }
-    
+
     if (!$content) {
         return [
             'ok' => false,
@@ -222,7 +347,7 @@ function ai_parse_response(?array $data, string $rawResponse = ''): array {
             'usage' => $data['usage'] ?? null
         ];
     }
-    
+
     return [
         'ok' => true,
         'content' => trim($content),
@@ -232,103 +357,58 @@ function ai_parse_response(?array $data, string $rawResponse = ''): array {
 }
 
 // ============================================================================
-// MULTI-PROVIDER SUPPORT
+// MULTI-PROVIDER SUPPORT - NOW READS FROM ai_settings.json
 // ============================================================================
 
 /**
  * Get all AI providers with their models
+ * NOW READS FROM ai_settings.json
  *
  * @return array Providers with model configurations
  */
 function ai_get_all_providers(): array {
-    return [
-        'openai' => [
-            'name' => 'OpenAI',
-            'groups' => [
-                'GPT-5 Series (Latest)' => [
-                    'gpt-5.2' => ['name' => 'GPT-5.2 (Flagship Thinking)', 'reasoning' => true, 'default' => true],
-                    'gpt-5.1' => ['name' => 'GPT-5.1 (Best Quality)', 'reasoning' => true],
-                    'gpt-5' => ['name' => 'GPT-5 (General/Agentic)', 'reasoning' => true],
-                    'gpt-5-mini' => ['name' => 'GPT-5 Mini (Fast)', 'reasoning' => true],
-                ],
-                'GPT-4.1 Series' => [
-                    'gpt-4.1' => ['name' => 'GPT-4.1 (Coding Specialist)', 'reasoning' => true],
-                    'gpt-4.1-mini' => ['name' => 'GPT-4.1 Mini (Balanced)', 'reasoning' => true],
-                    'gpt-4.1-nano' => ['name' => 'GPT-4.1 Nano (Budget)', 'reasoning' => true],
-                ],
-                'O-Series (Reasoning)' => [
-                    'o3' => ['name' => 'O3 (Deep Reasoning)', 'reasoning' => true],
-                    'o3-mini' => ['name' => 'O3 Mini (Fast)', 'reasoning' => true],
-                    'o4-mini' => ['name' => 'O4 Mini (Quick)', 'reasoning' => true],
-                ],
-                'GPT-4o (Legacy)' => [
-                    'gpt-4o' => ['name' => 'GPT-4o', 'reasoning' => false],
-                    'gpt-4o-mini' => ['name' => 'GPT-4o Mini', 'reasoning' => false],
-                ],
-            ]
-        ],
-        'anthropic' => [
-            'name' => 'Anthropic (Claude)',
-            'groups' => [
-                'Claude 4.5 (Latest)' => [
-                    'claude-opus-4-5-20251101' => ['name' => 'Claude Opus 4.5 (Best)', 'reasoning' => true, 'default' => true],
-                    'claude-sonnet-4-5-20250929' => ['name' => 'Claude Sonnet 4.5 (Balanced)', 'reasoning' => true],
-                    'claude-haiku-4-5-20251001' => ['name' => 'Claude Haiku 4.5 (Fast)', 'reasoning' => true],
-                ],
-                'Claude 4' => [
-                    'claude-opus-4-1-20250805' => ['name' => 'Claude Opus 4.1'],
-                    'claude-sonnet-4-20250514' => ['name' => 'Claude Sonnet 4'],
-                    'claude-opus-4-20250514' => ['name' => 'Claude Opus 4'],
-                ],
-                'Claude 3.5 (Legacy)' => [
-                    'claude-3-5-sonnet-20241022' => ['name' => 'Claude 3.5 Sonnet'],
-                    'claude-3-5-haiku-20241022' => ['name' => 'Claude 3.5 Haiku'],
-                ],
-            ]
-        ],
-        'google' => [
-            'name' => 'Google (Gemini)',
-            'groups' => [
-                'Gemini 3 (Preview)' => [
-                    'gemini-3-pro' => ['name' => 'Gemini 3 Pro (Most Intelligent)', 'reasoning' => true],
-                    'gemini-3-flash' => ['name' => 'Gemini 3 Flash (Reasoning)', 'reasoning' => true],
-                ],
-                'Gemini 2.5' => [
-                    'gemini-2.5-pro' => ['name' => 'Gemini 2.5 Pro (Best Quality)'],
-                    'gemini-2.5-flash' => ['name' => 'Gemini 2.5 Flash (Latest)'],
-                    'gemini-2.5-flash-lite' => ['name' => 'Gemini 2.5 Flash-Lite (Budget)'],
-                ],
-                'Gemini 2.0 (Free Tier)' => [
-                    'gemini-2.0-flash' => ['name' => 'Gemini 2.0 Flash (Free)', 'default' => true],
-                    'gemini-2.0-flash-lite' => ['name' => 'Gemini 2.0 Flash-Lite (Free)'],
-                ],
-            ]
-        ],
-        'deepseek' => [
-            'name' => 'DeepSeek',
-            'groups' => [
-                'DeepSeek V3 (Latest)' => [
-                    'deepseek-v3' => ['name' => 'DeepSeek V3 (Best)', 'default' => true],
-                    'deepseek-r1' => ['name' => 'DeepSeek R1 (Reasoning)', 'reasoning' => true],
-                ],
-                'DeepSeek Legacy' => [
-                    'deepseek-chat' => ['name' => 'DeepSeek Chat'],
-                    'deepseek-coder' => ['name' => 'DeepSeek Coder'],
-                ],
-            ]
-        ],
-        'huggingface' => [
-            'name' => 'HuggingFace',
-            'groups' => [
-                'Popular Models' => [
-                    'mistralai/Mistral-7B-Instruct-v0.3' => ['name' => 'Mistral 7B Instruct', 'default' => true],
-                    'mistralai/Mixtral-8x7B-Instruct-v0.1' => ['name' => 'Mixtral 8x7B'],
-                    'meta-llama/Llama-3.1-70B-Instruct' => ['name' => 'Llama 3.1 70B'],
-                    'Qwen/Qwen2.5-72B-Instruct' => ['name' => 'Qwen 2.5 72B'],
-                ],
-            ]
-        ],
+    $settings = _ai_load_settings_json();
+    $providers = [];
+
+    // Provider display names
+    $providerNames = [
+        'openai' => 'OpenAI',
+        'anthropic' => 'Anthropic (Claude)',
+        'google' => 'Google (Gemini)',
+        'deepseek' => 'DeepSeek',
+        'huggingface' => 'HuggingFace',
+        'ollama' => 'Ollama (Local)',
     ];
+
+    foreach ($settings['providers'] ?? [] as $providerId => $providerConfig) {
+        $models = $providerConfig['models'] ?? [];
+
+        if (empty($models)) {
+            continue;
+        }
+
+        $providers[$providerId] = [
+            'name' => $providerNames[$providerId] ?? ucfirst($providerId),
+            'groups' => _ai_group_models($models, $providerId),
+        ];
+    }
+
+    // Fallback if no providers in JSON
+    if (empty($providers)) {
+        return [
+            'openai' => [
+                'name' => 'OpenAI',
+                'groups' => [
+                    'GPT-4o (Legacy)' => [
+                        'gpt-4o' => ['name' => 'GPT-4o', 'reasoning' => false],
+                        'gpt-4o-mini' => ['name' => 'GPT-4o Mini', 'reasoning' => false],
+                    ],
+                ]
+            ],
+        ];
+    }
+
+    return $providers;
 }
 
 /**
@@ -373,6 +453,15 @@ function ai_get_models_for_provider(string $provider): array {
  * @return string Default model ID or first model if no default
  */
 function ai_get_provider_default_model(string $provider): string {
+    // Check JSON settings first
+    $settings = _ai_load_settings_json();
+    $defaultModel = $settings['providers'][$provider]['default_model'] ?? null;
+
+    if ($defaultModel) {
+        return $defaultModel;
+    }
+
+    // Find model marked as default/recommended
     $models = ai_get_models_for_provider($provider);
     foreach ($models as $id => $config) {
         if (!empty($config['default'])) {
@@ -492,8 +581,24 @@ function ai_render_provider_model_selector(
         $html .= '<optgroup label="' . htmlspecialchars($groupName) . '">';
         foreach ($models as $modelId => $modelConfig) {
             $isSelected = ($modelId === $selected) ? ' selected' : '';
+            $displayName = $modelConfig['name'];
+
+            // Add badges
+            if (!empty($modelConfig['default'])) {
+                $displayName .= ' ⭐';
+            }
+            if (!empty($modelConfig['reasoning'])) {
+                $displayName .= ' 🧠';
+            }
+            if (!empty($modelConfig['legacy'])) {
+                $displayName .= ' [Legacy]';
+            }
+            if (!empty($modelConfig['preview'])) {
+                $displayName .= ' [Preview]';
+            }
+
             $html .= '<option value="' . htmlspecialchars($modelId) . '"' . $isSelected . '>';
-            $html .= htmlspecialchars($modelConfig['name']);
+            $html .= htmlspecialchars($displayName);
             $html .= '</option>';
         }
         $html .= '</optgroup>';
@@ -521,6 +626,8 @@ function ai_get_models_json(): string {
                     'group' => $groupName,
                     'default' => !empty($modelConfig['default']),
                     'reasoning' => !empty($modelConfig['reasoning']),
+                    'legacy' => !empty($modelConfig['legacy']),
+                    'preview' => !empty($modelConfig['preview']),
                 ];
             }
         }
@@ -600,7 +707,12 @@ function ai_render_dual_selector(
             for (const model of groupModels) {
                 const option = document.createElement("option");
                 option.value = model.id;
-                option.textContent = model.name;
+                let displayName = model.name;
+                if (model.default) displayName += " ⭐";
+                if (model.reasoning) displayName += " 🧠";
+                if (model.legacy) displayName += " [Legacy]";
+                if (model.preview) displayName += " [Preview]";
+                option.textContent = displayName;
                 if (model.default && !initialModel) option.selected = true;
                 if (model.id === initialModel) option.selected = true;
                 optgroup.appendChild(option);

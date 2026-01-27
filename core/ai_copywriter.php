@@ -992,7 +992,7 @@ class AICopywriter
      */
     private function callAnthropic(string $prompt, int $maxTokens, array $config): array
     {
-        $model = $config['model'] ?? 'claude-sonnet-4-5-20250929';
+        $model = $config['model'] ?? 'claude-3-sonnet-20240229';
         $apiKey = $config['api_key'];
 
         $data = [

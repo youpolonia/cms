@@ -222,12 +222,12 @@ function ai_n8n_build_user_prompt(string $description, string $name, string $tri
 function ai_n8n_call_openai(array $config, string $systemPrompt, string $userPrompt): array
 {
     $apiKey = $config['api_key'] ?? '';
-    $model = $config['model'] ?? 'gpt-5.2';
+    $model = $config['model'] ?? 'gpt-4o-mini';
     $baseUrl = $config['base_url'] ?? 'https://api.openai.com/v1';
 
-    // Use gpt-5.2 for better JSON generation
+    // Use gpt-4o-mini for better JSON generation
     if (strpos($model, 'gpt') === false) {
-        $model = 'gpt-5.2';
+        $model = 'gpt-4o-mini';
     }
 
     $endpoint = rtrim($baseUrl, '/') . '/chat/completions';

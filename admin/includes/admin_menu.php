@@ -95,6 +95,7 @@ return [
             ['label' => '📑 TB Templates', 'url' => '/admin/theme-builder/templates'],
             ['label' => '🎨 AI Designer 4.0', 'url' => '/admin/ai-designer'],
             ['label' => '✨ AI Theme Builder', 'url' => '/admin/ai-theme-builder'],
+            ['label' => '🚀 AI Theme Builder v5', 'url' => '/admin/ai-theme-builder-v5'],
             ['label' => '🧩 AI Components', 'url' => '/admin/ai-components'],
             ['label' => '📚 Layout Library', 'url' => '/admin/layout-library'],
         ]
