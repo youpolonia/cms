@@ -14,14 +14,14 @@
 function ai_get_model_groups(): array {
     return [
         'GPT-5 Series (Latest)' => [
+            'gpt-5.2' => ['name' => 'GPT-5.2 (Flagship Thinking)', 'reasoning' => true, 'default' => true],
             'gpt-5.1' => ['name' => 'GPT-5.1 (Best Quality)', 'reasoning' => true],
-            'gpt-5' => ['name' => 'GPT-5 (Flagship)', 'reasoning' => true],
+            'gpt-5' => ['name' => 'GPT-5 (General/Agentic)', 'reasoning' => true],
             'gpt-5-mini' => ['name' => 'GPT-5 Mini (Fast)', 'reasoning' => true],
-            'gpt-5-nano' => ['name' => 'GPT-5 Nano (Cheapest)', 'reasoning' => true],
         ],
         'GPT-4.1 Series' => [
-            'gpt-4.1' => ['name' => 'GPT-4.1 (High Quality)', 'reasoning' => true],
-            'gpt-4.1-mini' => ['name' => 'GPT-4.1 Mini (Balanced)', 'reasoning' => true, 'default' => true],
+            'gpt-4.1' => ['name' => 'GPT-4.1 (Coding Specialist)', 'reasoning' => true],
+            'gpt-4.1-mini' => ['name' => 'GPT-4.1 Mini (Balanced)', 'reasoning' => true],
             'gpt-4.1-nano' => ['name' => 'GPT-4.1 Nano (Budget)', 'reasoning' => true],
         ],
         'O-Series (Reasoning)' => [
@@ -84,7 +84,7 @@ function ai_get_default_model(): string {
             }
         }
     }
-    return 'gpt-4.1-mini';
+    return 'gpt-5.2';
 }
 
 /**
@@ -246,13 +246,14 @@ function ai_get_all_providers(): array {
             'name' => 'OpenAI',
             'groups' => [
                 'GPT-5 Series (Latest)' => [
+                    'gpt-5.2' => ['name' => 'GPT-5.2 (Flagship Thinking)', 'reasoning' => true, 'default' => true],
                     'gpt-5.1' => ['name' => 'GPT-5.1 (Best Quality)', 'reasoning' => true],
-                    'gpt-5' => ['name' => 'GPT-5 (Flagship)', 'reasoning' => true],
+                    'gpt-5' => ['name' => 'GPT-5 (General/Agentic)', 'reasoning' => true],
                     'gpt-5-mini' => ['name' => 'GPT-5 Mini (Fast)', 'reasoning' => true],
                 ],
                 'GPT-4.1 Series' => [
-                    'gpt-4.1' => ['name' => 'GPT-4.1 (High Quality)', 'reasoning' => true],
-                    'gpt-4.1-mini' => ['name' => 'GPT-4.1 Mini (Balanced)', 'reasoning' => true, 'default' => true],
+                    'gpt-4.1' => ['name' => 'GPT-4.1 (Coding Specialist)', 'reasoning' => true],
+                    'gpt-4.1-mini' => ['name' => 'GPT-4.1 Mini (Balanced)', 'reasoning' => true],
                     'gpt-4.1-nano' => ['name' => 'GPT-4.1 Nano (Budget)', 'reasoning' => true],
                 ],
                 'O-Series (Reasoning)' => [

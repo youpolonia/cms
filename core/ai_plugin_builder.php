@@ -263,11 +263,11 @@ Make the code production-ready, secure, and well-documented.";
     private static function callOpenAI(string $apiKey, string $prompt, array $settings, ?string $modelOverride = null): array
     {
         // Model priority: override > settings > default
-        $model = $modelOverride ?? $settings['openai_model'] ?? $settings['model'] ?? 'gpt-4.1-mini';
+        $model = $modelOverride ?? $settings['openai_model'] ?? $settings['model'] ?? 'gpt-5.2';
 
         // Validate model if ai_models.php functions are available
         if (function_exists('ai_is_valid_model') && !ai_is_valid_model($model)) {
-            $model = function_exists('ai_get_default_model') ? ai_get_default_model() : 'gpt-4.1-mini';
+            $model = function_exists('ai_get_default_model') ? ai_get_default_model() : 'gpt-5.2';
         }
         
         $data = [

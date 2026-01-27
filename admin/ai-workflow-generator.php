@@ -49,7 +49,7 @@ function generate_workflow_with_ai(array $spec, array $aiSettings): array {
         $provider = 'openai';
     }
     if (!function_exists('ai_is_valid_provider_model') || !ai_is_valid_provider_model($provider, $selectedModel)) {
-        $selectedModel = function_exists('ai_get_provider_default_model') ? ai_get_provider_default_model($provider) : 'gpt-4.1-mini';
+        $selectedModel = function_exists('ai_get_provider_default_model') ? ai_get_provider_default_model($provider) : 'gpt-5.2';
     }
 
     $platform = $spec['platform'] ?? 'n8n';
@@ -272,7 +272,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'steps' => trim($_POST['steps'] ?? ''),
         'integrations' => trim($_POST['integrations'] ?? ''),
         'ai_provider' => $_POST['ai_provider'] ?? 'openai',
-        'ai_model' => $_POST['ai_model'] ?? 'gpt-4.1-mini',
+        'ai_model' => $_POST['ai_model'] ?? 'gpt-5.2',
     ];
     
     if (empty($formData['name']) || empty($formData['description'])) {
@@ -440,7 +440,7 @@ require_once CMS_ROOT . '/admin/includes/header.php';
                 
                 <div class="field-row">
                     <label>AI Provider & Model</label>
-                    <?= ai_render_dual_selector('ai_provider', 'ai_model', 'openai', 'gpt-4.1-mini') ?>
+                    <?= ai_render_dual_selector('ai_provider', 'ai_model', 'openai', 'gpt-5.2') ?>
                 </div>
 
                 <button type="submit" class="generate-btn" id="generate-btn">

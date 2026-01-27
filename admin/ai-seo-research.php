@@ -101,14 +101,14 @@ Now write 7 headings for \"{$keyword}\":";
             
             // Get provider and model from POST
             $provider = $_POST['ai_provider'] ?? 'openai';
-            $selectedModel = $_POST['ai_model'] ?? 'gpt-4.1-mini';
+            $selectedModel = $_POST['ai_model'] ?? 'gpt-5.2';
 
             // Validate provider and model
             if (!function_exists('ai_is_valid_provider') || !ai_is_valid_provider($provider)) {
                 $provider = 'openai';
             }
             if (!function_exists('ai_is_valid_provider_model') || !ai_is_valid_provider_model($provider, $selectedModel)) {
-                $selectedModel = function_exists('ai_get_provider_default_model') ? ai_get_provider_default_model($provider) : 'gpt-4.1-mini';
+                $selectedModel = function_exists('ai_get_provider_default_model') ? ai_get_provider_default_model($provider) : 'gpt-5.2';
             }
 
             // Use universal generate for multi-provider support
@@ -339,7 +339,7 @@ require_once CMS_ROOT . '/admin/includes/page_header.php';
                 </div>
                 <div class="form-group">
                     <label>AI Provider & Model</label>
-                    <?= ai_render_dual_selector('ai_provider', 'ai_model', 'openai', 'gpt-4.1-mini') ?>
+                    <?= ai_render_dual_selector('ai_provider', 'ai_model', 'openai', 'gpt-5.2') ?>
                 </div>
                 <p style="font-size:12px;color:var(--muted);margin-bottom:16px">🔍 We'll search top 15 results, analyze each page, and extract keywords & phrases.</p>
                 <button type="submit" class="btn btn-primary btn-lg btn-block" id="startBtn">🚀 Start Research</button>
