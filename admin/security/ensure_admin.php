@@ -1,52 +1,23 @@
 <?php
 /**
- * Admin User Verification and Creation Script
- * Ensures admin user exists with password 'admin123'
+ * Ensure admin authentication
+ * Simple wrapper for admin permission check
  */
 
-// Use root config for database configuration
-require_once dirname(__DIR__, 2) . '/config.php';
+// Start session if not started
+if (session_status() === PHP_SESSION_NONE) {
+    require_once dirname(__DIR__, 2) . '/core/session_boot.php';
+    cms_session_start('admin');
+}
 
-try {
-    $db = \core\Database::connection();
-    
-    // Verify admin user exists with password 'admin123'
-    $stmt = $db->prepare("SELECT * FROM users WHERE username = :username AND password = SHA2(CONCAT(:password, salt), 256) AND is_admin = 1");
-    $stmt->execute([':username' => 'admin', ':password' => 'admin123']);
-    $admin = $stmt->fetch();
-    
-    if (!$admin) {
-        // Create admin user if not found
-        $salt = bin2hex(random_bytes(16));
-        $hashedPassword = "SHA2(CONCAT('admin123', '$salt'), 256)";
-        
-        $db->beginTransaction();
-        
-        // First delete any existing admin user without correct password
-        $stmt = $db->prepare("DELETE FROM users WHERE username = 'admin'");
-        $stmt->execute();
-        
-        // Insert new admin user
-        $stmt = $db->prepare("
-            INSERT INTO users 
-            (username, password, salt, is_admin, created_at, updated_at) 
-            VALUES 
-            (:username, $hashedPassword, :salt, 1, NOW(), NOW())
-        ");
-        $stmt->execute([':username' => 'admin', ':salt' => $salt]);
-        
-        $db->commit();
-        
-        echo "Admin user created successfully\n";
+// Check if admin is logged in
+if (empty($_SESSION['admin_id']) && empty($_SESSION['admin_authenticated'])) {
+    http_response_code(401);
+    if (isset($_SERVER['HTTP_ACCEPT']) && strpos($_SERVER['HTTP_ACCEPT'], 'application/json') !== false) {
+        header('Content-Type: application/json');
+        echo json_encode(['ok' => false, 'error' => 'Unauthorized']);
     } else {
-        echo "Admin user already exists with correct credentials\n";
+        header('Location: /admin/login');
     }
-    
-} catch (PDOException $e) {
-    if (isset($db) && $db->inTransaction()) {
-        $db->rollBack();
-    }
-    http_response_code(500);
-    error_log($e->getMessage());
     exit;
 }

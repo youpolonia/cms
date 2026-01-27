@@ -7,6 +7,10 @@ require_once __DIR__ . '/../core/csrf.php';
 
 cms_session_start('admin');
 
+
+// RBAC: Require admin access
+require_once __DIR__ . '/includes/permissions.php';
+cms_require_admin_role();
 if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') { csrf_validate_or_403(); }
 
 // Sanitize input

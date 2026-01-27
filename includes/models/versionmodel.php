@@ -127,7 +127,9 @@ class VersionModel {
                  ORDER BY restored_at DESC
                  $limit $offset";
                  
-        return $this->db->query($query, $params);
+        $stmt = $this->db->prepare($query);
+        $stmt->execute($params);
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
     /**
@@ -150,9 +152,11 @@ class VersionModel {
         $whereClause = $where ? 'WHERE ' . implode(' AND ', $where) : '';
         
         $query = "SELECT COUNT(*) as count FROM restoration_log $whereClause";
-        $result = $this->db->query($query, $params);
+        $stmt = $this->db->prepare($query);
+        $stmt->execute($params);
+        $result = $stmt->fetch(\PDO::FETCH_ASSOC);
         
-        return $result[0]['count'] ?? 0;
+        return $result['count'] ?? 0;
     }
     /**
      * Get filtered versions with pagination
@@ -204,7 +208,9 @@ class VersionModel {
                  ORDER BY $sort $order
                  $limit $offset";
         
-        return $this->db->query($query, $params);
+        $stmt = $this->db->prepare($query);
+        $stmt->execute($params);
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
     
     /**
@@ -243,8 +249,10 @@ class VersionModel {
                  FROM content_versions
                  $whereClause";
         
-        $result = $this->db->query($query, $params);
-        return $result[0]['count'] ?? 0;
+        $stmt = $this->db->prepare($query);
+        $stmt->execute($params);
+        $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+        return $result['count'] ?? 0;
     }
     
     /**

@@ -1,12 +1,18 @@
 <?php
 declare(strict_types=1);
-require_once __DIR__ . '/../../config.php';
-require_once __DIR__ . '/../../core/session_boot.php';
-require_once __DIR__ . '/../../core/csrf.php';
-if (!defined('DEV_MODE') || DEV_MODE !== true) { http_response_code(403); echo 'Forbidden'; exit; }
-header('Content-Type: text/html; charset=UTF-8');
+
+define('CMS_ROOT', dirname(__DIR__, 2));
+require_once CMS_ROOT . '/config.php';
+if (!defined('DEV_MODE') || DEV_MODE !== true) { http_response_code(403); exit; }
+
+require_once CMS_ROOT . '/core/session_boot.php';
 cms_session_start('admin');
-csrf_boot('admin');
+require_once CMS_ROOT . '/core/csrf.php';
+csrf_boot();
+require_once CMS_ROOT . '/core/auth.php';
+authenticateAdmin();
+
+header('Content-Type: text/html; charset=UTF-8');
 ?>
 <!doctype html>
 <html lang="en">

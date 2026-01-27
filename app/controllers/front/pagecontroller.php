@@ -1,0 +1,150 @@
+<?php
+declare(strict_types=1);
+
+namespace App\Controllers\Front;
+
+use Core\Request;
+use Core\Response;
+
+class PageController
+{
+    public function show(Request $request): void
+    {
+        $slug = $request->param('slug');
+        $pdo = db();
+        
+        $isPreview = isset($_GET['preview']) && $_GET['preview'] === '1';
+        $isAdmin = $this->isAdminLoggedIn();
+        
+        // 1. Check for Theme Builder preview mode (from admin editor)
+        $tbPreviewId = isset($_GET['tb_preview']) ? (int)$_GET['tb_preview'] : 0;
+        if ($tbPreviewId > 0 && $isAdmin && $isPreview) {
+            $this->renderTbPreview($pdo, $tbPreviewId);
+            return;
+        }
+        
+        // 2. FIRST check Theme Builder pages (tb_pages) - these take priority
+        $tbStatusCondition = ($isPreview && $isAdmin) ? '' : "AND status = 'published'";
+        $tbStmt = $pdo->prepare("SELECT id, title, slug, content_json, status FROM tb_pages WHERE slug = ? $tbStatusCondition ORDER BY id DESC LIMIT 1");
+        $tbStmt->execute([$slug]);
+        $tbPage = $tbStmt->fetch(\PDO::FETCH_ASSOC);
+        
+        if ($tbPage && !empty($tbPage['content_json'])) {
+            $tbData = json_decode($tbPage['content_json'], true);
+            if ($tbData && is_array($tbData)) {
+                require_once CMS_ROOT . '/core/theme-builder/renderer.php';
+                $renderedContent = tb_render_page($tbData, ['preview_mode' => $isPreview]);
+                
+                // Create page array - mark as TB page to avoid article wrapper
+                $page = [
+                    'id' => $tbPage['id'],
+                    'title' => $tbPage['title'],
+                    'slug' => $tbPage['slug'],
+                    'content' => $renderedContent,
+                    'status' => $tbPage['status'],
+                    'is_tb_page' => true
+                ];
+                
+                render('front/page', ['page' => $page, 'isPreview' => $isPreview]);
+                return;
+            }
+        }
+        
+        // 3. Fallback to regular pages table
+        $pagesStatusCondition = ($isPreview && $isAdmin) ? '' : "AND status = 'published'";
+        $stmt = $pdo->prepare("SELECT * FROM pages WHERE slug = ? $pagesStatusCondition LIMIT 1");
+        $stmt->execute([$slug]);
+        $page = $stmt->fetch(\PDO::FETCH_ASSOC);
+        
+        if (!$page) {
+            render('front/404', []);
+            return;
+        }
+        
+        // Get template from page
+        $template = $page['template'] ?? 'default';
+        
+        // Check if template exists in active theme (for custom theme pages)
+        $themeTemplates = ['services', 'projects', 'about', 'contact', 'home'];
+        if (in_array($template, $themeTemplates)) {
+            require_once CMS_ROOT . '/includes/thememanager.php';
+            $output = \ThemeManager::render_theme_view_public($template, [
+                'page' => $page,
+                'title' => $page['title'] ?? '',
+                'description' => $page['meta_description'] ?? ''
+            ]);
+            echo $output;
+            return;
+        }
+        
+        $templateViews = [
+            'default' => 'front/page',
+            'full-width' => 'front/page-full-width',
+            'sidebar-left' => 'front/page-sidebar-left',
+            'sidebar-right' => 'front/page-sidebar-right',
+            'landing' => 'front/page-landing',
+            'contact' => 'front/page-contact',
+            'blank' => 'front/page-blank'
+        ];
+        
+        $viewFile = $templateViews[$template] ?? 'front/page';
+        $viewPath = CMS_APP . '/views/' . $viewFile . '.php';
+        if (!file_exists($viewPath)) {
+            $viewFile = 'front/page';
+        }
+
+        render($viewFile, ['page' => $page, 'template' => $template, 'isPreview' => $isPreview]);
+    }
+    
+    private function renderTbPreview(\PDO $pdo, int $tbPreviewId): void
+    {
+        $sessionKey = 'tb_preview_' . $tbPreviewId;
+        $content = null;
+        $pageTitle = 'Preview';
+        
+        if (isset($_SESSION[$sessionKey]) && is_array($_SESSION[$sessionKey])) {
+            $previewData = $_SESSION[$sessionKey];
+            $content = $previewData['content'] ?? null;
+        }
+        
+        if (!$content) {
+            $stmt = $pdo->prepare("SELECT title, content_json FROM tb_pages WHERE id = ?");
+            $stmt->execute([$tbPreviewId]);
+            $tbPage = $stmt->fetch(\PDO::FETCH_ASSOC);
+            if ($tbPage) {
+                $content = json_decode($tbPage['content_json'], true);
+                $pageTitle = $tbPage['title'] ?? 'Preview';
+            }
+        } else {
+            $stmt = $pdo->prepare("SELECT title FROM tb_pages WHERE id = ?");
+            $stmt->execute([$tbPreviewId]);
+            $tbPage = $stmt->fetch(\PDO::FETCH_ASSOC);
+            $pageTitle = $tbPage['title'] ?? 'Preview';
+        }
+        
+        if ($content) {
+            require_once CMS_ROOT . '/core/theme-builder/renderer.php';
+            $html = tb_render_page($content, ['preview_mode' => true]);
+            
+            render('front/tb-preview', [
+                'pageTitle' => $pageTitle,
+                'pageContent' => $html,
+                'isPreview' => true
+            ]);
+            return;
+        }
+        
+        render('front/404', []);
+    }
+    
+    private function isAdminLoggedIn(): bool
+    {
+        if (session_status() === PHP_SESSION_NONE) {
+            if (isset($_COOKIE['CMSSESSID_ADMIN'])) {
+                session_name('CMSSESSID_ADMIN');
+            }
+            session_start();
+        }
+        return !empty($_SESSION['admin_id']) && !empty($_SESSION['admin_role']);
+    }
+}

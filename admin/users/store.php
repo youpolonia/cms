@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/../../core/csrf.php';
+require_once CMS_ROOT . '/core/automation_rules.php';
 require_once __DIR__ . '/../../core/security/inputvalidator.php';
 require_once __DIR__ . '/../../core/security/csrftoken.php';
 require_once __DIR__ . '/../../includes/user/usermanager.php';
@@ -53,6 +54,16 @@ try {
     ]);
 
     if ($success) {
+        require_once __DIR__ . '/../../includes/loggers/user_activity_logger.php';
+        UserActivityLogger::log('user.create', ['username' => $username, 'email' => $email]);
+
+        automation_rules_handle_event('user.registered', [
+            'user_id'    => null,
+            'email'      => $email,
+            'role'       => 'user',
+            'source'     => 'admin_panel'
+        ]);
+
         $_SESSION['success'] = 'User created successfully';
         header('Location: index.php');
     } else {

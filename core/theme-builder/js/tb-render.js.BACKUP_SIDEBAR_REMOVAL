@@ -1,0 +1,447 @@
+/**
+ * Theme Builder 3.0 - Rendering Module
+ * Contains canvas rendering, modules panel, settings panel
+ * Part of TB 3.0 modularization - ETAP 9
+ */
+
+// ═══════════════════════════════════════════════════════════
+// MODULE ICON HELPER
+// ═══════════════════════════════════════════════════════════
+TB.getModuleIcon = function(type) {
+    return MODULE_ICONS[type] || this.modules[type]?.icon || '📦';
+};
+
+// ═══════════════════════════════════════════════════════════
+// MODULES PANEL RENDERING
+// ═══════════════════════════════════════════════════════════
+TB.renderModulesPanel = function() {
+    const panel = document.getElementById('modules-panel');
+    if (!panel) return;
+    
+    let html = '';
+    const modulesByCategory = {};
+    
+    for (const [slug, mod] of Object.entries(this.modules)) {
+        const cat = mod.category || 'basic';
+        if (!modulesByCategory[cat]) modulesByCategory[cat] = [];
+        modulesByCategory[cat].push({ slug, ...mod });
+    }
+    
+    for (const [category, mods] of Object.entries(modulesByCategory)) {
+        const catLabel = this.categories[category] || category;
+        html += '<div class="tb-module-category" data-category="' + category + '">';
+        html += '<div class="tb-category-title">' + this.escapeHtml(catLabel) + '</div>';
+        html += '<div class="tb-modules-grid">';
+        for (const mod of mods) {
+            const icon = this.getModuleIcon(mod.slug);
+            html += '<div class="tb-module-item" draggable="true" data-module="' + mod.slug + '" title="' + this.escapeHtml(mod.description || mod.name || mod.slug) + '">';
+            html += '<div class="tb-module-icon">' + icon + '</div>';
+            html += '<div class="tb-module-name">' + this.escapeHtml(mod.name || mod.slug) + '</div>';
+            html += '</div>';
+        }
+        html += '</div></div>';
+    }
+    
+    panel.innerHTML = html;
+    this.bindModulePanelDrag();
+};
+
+// ═══════════════════════════════════════════════════════════
+// CANVAS RENDERING
+// ═══════════════════════════════════════════════════════════
+TB.renderCanvas = function() {
+    console.log('renderCanvas called, sections:', this.content.sections?.length);
+    const canvas = document.getElementById('canvas-inner');
+    if (!canvas) { console.log('canvas-inner not found!'); return; }
+    
+    const sections = this.content.sections || [];
+    
+    if (sections.length === 0) {
+        console.log('No sections, showing empty state');
+        canvas.innerHTML = '<div class="tb-drop-zone tb-main-drop-zone" id="main-drop-zone" ondragover="TB.handleMainDropZoneDragOver(event)" ondragleave="TB.handleMainDropZoneDragLeave(event)" ondrop="TB.handleMainDropZoneDrop(event)"><div class="tb-drop-zone-text"><div class="tb-drop-zone-icon">📦</div><div>Drag modules here or click "Add Section" to start building</div></div></div>';
+        this.updateHoverStylesheet();
+        return;
+    }
+    
+    let html = '';
+    sections.forEach((section, sIdx) => {
+        console.log('Rendering section', sIdx);
+        html += this.renderSection(section, sIdx);
+    });
+    
+    html += '<div class="tb-drop-zone tb-add-section-zone" style="margin: 16px; min-height: 60px;" onclick="TB.addSection()" ondragover="TB.handleMainDropZoneDragOver(event)" ondragleave="TB.handleMainDropZoneDragLeave(event)" ondrop="TB.handleMainDropZoneDrop(event)"><span>+ Add Section</span></div>';
+    
+    console.log('Setting canvas HTML, length:', html.length);
+    canvas.innerHTML = html;
+    this.bindCanvasDragEvents();
+    this.updateHoverStylesheet();
+};
+
+// ═══════════════════════════════════════════════════════════
+// SECTION RENDERING
+// ═══════════════════════════════════════════════════════════
+TB.renderSection = function(section, sIdx) {
+    const rows = section.rows || [];
+    let rowsHtml = '';
+    rows.forEach((row, rIdx) => {
+        rowsHtml += this.renderRow(row, sIdx, rIdx);
+    });
+    
+    const design = section.design || {};
+    const settings = section.settings || {};
+    
+    let style = '';
+    if (design.background_color) style += 'background-color:' + design.background_color + ';';
+    if (design.background_image) style += 'background-image:url(' + design.background_image + ');background-size:cover;background-position:center;';
+    if (design.padding) style += 'padding:' + design.padding + ';';
+    if (settings.backgroundColor) style += 'background-color:' + settings.backgroundColor + ';';
+    if (settings.padding) style += 'padding:' + settings.padding + ';';
+    
+    let overlayHtml = '';
+    if (design.background_overlay) {
+        overlayHtml = '<div style="position:absolute;inset:0;background:' + design.background_overlay + ';pointer-events:none;z-index:0"></div>';
+    }
+    
+    return '<div class="tb-section" data-section-idx="' + sIdx + '" style="position:relative;' + style + '">' +
+        overlayHtml +
+        '<div class="tb-element-controls" style="position:relative;z-index:1">' +
+        '<button type="button" class="tb-control-btn" onclick="TB.moveSection(' + sIdx + ', -1)" title="Move Up">↑</button>' +
+        '<button type="button" class="tb-control-btn" onclick="TB.moveSection(' + sIdx + ', 1)" title="Move Down">↓</button>' +
+        '<button type="button" class="tb-control-btn" onclick="TB.editSection(' + sIdx + ')" title="Settings">⚙</button>' +
+        '<button type="button" class="tb-control-btn" onclick="TB.addRow(' + sIdx + ')" title="Add Row">+</button>' +
+        '<button type="button" class="tb-control-btn" onclick="TB.duplicateSection(' + sIdx + ')" title="Duplicate">⧉</button>' +
+        '<button type="button" class="tb-control-btn danger" onclick="TB.deleteSection(' + sIdx + ')" title="Delete">×</button>' +
+        '</div>' +
+        '<div style="position:relative;z-index:1">' + rowsHtml + '</div>' +
+        '</div>';
+};
+
+// ═══════════════════════════════════════════════════════════
+// ROW RENDERING
+// ═══════════════════════════════════════════════════════════
+TB.renderRow = function(row, sIdx, rIdx) {
+    const columns = row.columns || [{ modules: [] }];
+    let colsHtml = '';
+    columns.forEach((col, cIdx) => {
+        colsHtml += this.renderColumn(col, sIdx, rIdx, cIdx);
+    });
+    
+    const colCount = columns.length;
+    
+    const layoutOptions = '<div class="tb-layout-selector">' +
+        '<button type="button" class="tb-layout-btn ' + (colCount === 1 ? 'active' : '') + '" onclick="TB.setColumnLayout(' + sIdx + ', ' + rIdx + ', \'1\')" title="1 Column"><svg viewBox="0 0 48 24"><rect x="2" y="4" width="44" height="16" rx="2" fill="currentColor"/></svg></button>' +
+        '<button type="button" class="tb-layout-btn ' + (colCount === 2 ? 'active' : '') + '" onclick="TB.setColumnLayout(' + sIdx + ', ' + rIdx + ', \'1-1\')" title="2 Columns 50/50"><svg viewBox="0 0 48 24"><rect x="2" y="4" width="20" height="16" rx="2" fill="currentColor"/><rect x="26" y="4" width="20" height="16" rx="2" fill="currentColor"/></svg></button>' +
+        '<button type="button" class="tb-layout-btn ' + (colCount === 3 ? 'active' : '') + '" onclick="TB.setColumnLayout(' + sIdx + ', ' + rIdx + ', \'1-1-1\')" title="3 Columns"><svg viewBox="0 0 48 24"><rect x="2" y="4" width="12" height="16" rx="2" fill="currentColor"/><rect x="18" y="4" width="12" height="16" rx="2" fill="currentColor"/><rect x="34" y="4" width="12" height="16" rx="2" fill="currentColor"/></svg></button>' +
+        '<button type="button" class="tb-layout-btn ' + (colCount === 4 ? 'active' : '') + '" onclick="TB.setColumnLayout(' + sIdx + ', ' + rIdx + ', \'1-1-1-1\')" title="4 Columns"><svg viewBox="0 0 48 24"><rect x="2" y="4" width="8" height="16" rx="2" fill="currentColor"/><rect x="14" y="4" width="8" height="16" rx="2" fill="currentColor"/><rect x="26" y="4" width="8" height="16" rx="2" fill="currentColor"/><rect x="38" y="4" width="8" height="16" rx="2" fill="currentColor"/></svg></button>' +
+        '<span class="tb-layout-divider"></span>' +
+        '<button type="button" class="tb-layout-btn" onclick="TB.setColumnLayout(' + sIdx + ', ' + rIdx + ', \'2-1\')" title="66/33"><svg viewBox="0 0 48 24"><rect x="2" y="4" width="28" height="16" rx="2" fill="currentColor"/><rect x="34" y="4" width="12" height="16" rx="2" fill="currentColor"/></svg></button>' +
+        '<button type="button" class="tb-layout-btn" onclick="TB.setColumnLayout(' + sIdx + ', ' + rIdx + ', \'1-2\')" title="33/66"><svg viewBox="0 0 48 24"><rect x="2" y="4" width="12" height="16" rx="2" fill="currentColor"/><rect x="18" y="4" width="28" height="16" rx="2" fill="currentColor"/></svg></button>' +
+        '<button type="button" class="tb-layout-btn" onclick="TB.setColumnLayout(' + sIdx + ', ' + rIdx + ', \'3-1\')" title="75/25"><svg viewBox="0 0 48 24"><rect x="2" y="4" width="32" height="16" rx="2" fill="currentColor"/><rect x="38" y="4" width="8" height="16" rx="2" fill="currentColor"/></svg></button>' +
+        '<button type="button" class="tb-layout-btn" onclick="TB.setColumnLayout(' + sIdx + ', ' + rIdx + ', \'1-3\')" title="25/75"><svg viewBox="0 0 48 24"><rect x="2" y="4" width="8" height="16" rx="2" fill="currentColor"/><rect x="14" y="4" width="32" height="16" rx="2" fill="currentColor"/></svg></button>' +
+        '<button type="button" class="tb-layout-btn" onclick="TB.setColumnLayout(' + sIdx + ', ' + rIdx + ', \'1-2-1\')" title="25/50/25"><svg viewBox="0 0 48 24"><rect x="2" y="4" width="8" height="16" rx="2" fill="currentColor"/><rect x="14" y="4" width="20" height="16" rx="2" fill="currentColor"/><rect x="38" y="4" width="8" height="16" rx="2" fill="currentColor"/></svg></button>' +
+        '</div>';
+    
+    return '<div class="tb-row" data-row-idx="' + rIdx + '" data-section-idx="' + sIdx + '">' +
+        '<div class="tb-row-header">' + layoutOptions +
+        '<div class="tb-row-actions">' +
+        '<button type="button" class="tb-row-action-btn" onclick="TB.duplicateRow(' + sIdx + ', ' + rIdx + ')" title="Duplicate Row">⧉</button>' +
+        '<button type="button" class="tb-row-action-btn" onclick="TB.moveRow(' + sIdx + ', ' + rIdx + ', -1)" title="Move Up">↑</button>' +
+        '<button type="button" class="tb-row-action-btn" onclick="TB.moveRow(' + sIdx + ', ' + rIdx + ', 1)" title="Move Down">↓</button>' +
+        '<button type="button" class="tb-row-action-btn" onclick="TB.deleteRow(' + sIdx + ', ' + rIdx + ')" title="Delete Row">×</button>' +
+        '</div></div>' +
+        '<div class="tb-row-columns">' + colsHtml + '</div></div>';
+};
+
+// ═══════════════════════════════════════════════════════════
+// COLUMN RENDERING
+// ═══════════════════════════════════════════════════════════
+TB.renderColumn = function(col, sIdx, rIdx, cIdx) {
+    const modules = col.modules || [];
+    let modsHtml = '<div class="tb-insertion-line tb-insertion-top" data-insert-idx="0" style="display:none;"></div>';
+    
+    modules.forEach((mod, mIdx) => {
+        modsHtml += this.renderModule(mod, sIdx, rIdx, cIdx, mIdx);
+        modsHtml += '<div class="tb-insertion-line" data-insert-idx="' + (mIdx + 1) + '" style="display:none;"></div>';
+    });
+    
+    if (modules.length === 0) {
+        modsHtml += '<div class="tb-column-empty"><span class="tb-column-empty-icon">📥</span><span>Drop module here</span></div>';
+    }
+    
+    const widthStyle = col.width ? 'flex:0 0 ' + col.width + ';' : '';
+    
+    return '<div class="tb-column" data-col-idx="' + cIdx + '" data-row-idx="' + rIdx + '" data-section-idx="' + sIdx + '" data-path="' + sIdx + '-' + rIdx + '-' + cIdx + '" style="' + widthStyle + '" ondragover="TB.handleColumnDragOver(event, ' + sIdx + ', ' + rIdx + ', ' + cIdx + ')" ondragleave="TB.handleColumnDragLeave(event)" ondrop="TB.handleColumnDrop(event, ' + sIdx + ', ' + rIdx + ', ' + cIdx + ')">' + modsHtml + '</div>';
+};
+
+// ═══════════════════════════════════════════════════════════
+// MODULE RENDERING (wrapper that calls preview)
+// ═══════════════════════════════════════════════════════════
+TB.renderModule = function(mod, sIdx, rIdx, cIdx, mIdx) {
+    const type = mod.type || 'text';
+    const design = mod.design || {};
+    const icon = this.getModuleIcon(type);
+    const moduleName = this.modules[type]?.name || type;
+    
+    // Get preview HTML from tb-modules-preview.js
+    const preview = this.renderModulePreview(mod);
+    
+    // Get module styles from design (margin, padding, background, border, etc.)
+    const moduleStyles = this.getModuleStyles ? this.getModuleStyles(design) : '';
+    
+    // Build module wrapper
+    const isSelected = this.selectedElement && 
+        this.selectedElement.type === 'module' &&
+        this.selectedElement.sIdx === sIdx &&
+        this.selectedElement.rIdx === rIdx &&
+        this.selectedElement.cIdx === cIdx &&
+        this.selectedElement.mIdx === mIdx;
+    
+    // Generate unique module ID for CSS hover targeting
+    const moduleId = 'tb-mod-' + sIdx + '-' + rIdx + '-' + cIdx + '-' + mIdx;
+    
+    // Check for special features
+    const hasHover = design.hover_enabled ? ' tb-has-hover' : '';
+    const hasFilters = this.hasActiveFilters ? this.hasActiveFilters(design) : false;
+    const hasPosition = design.position && design.position !== 'static';
+    const positionClasses = hasPosition ? ' tb-positioned tb-position-' + design.position : '';
+    const hasAnimation = design.animation_type && design.animation_type !== 'none';
+    const animationClasses = hasAnimation ? ' tb-has-animation' : '';
+    
+    // Build badges HTML
+    let badgesHtml = '';
+    if (design.hover_enabled) badgesHtml += '<span class="tb-hover-badge" title="Has hover effects">👆</span>';
+    if (hasFilters) badgesHtml += '<span class="tb-filter-badge" title="Has CSS filters">🎨</span>';
+    if (hasPosition) badgesHtml += '<span class="tb-position-badge" title="Position: ' + design.position + '">📍</span>';
+    if (hasAnimation) badgesHtml += '<span class="tb-animation-badge" title="Animation: ' + design.animation_type + '">✨</span>';
+    
+    // Z-index badge
+    let zIndexBadge = '';
+    if (design.z_index && design.z_index !== 'auto') {
+        zIndexBadge = '<span class="tb-zindex-badge" title="Z-Index: ' + design.z_index + '">' + design.z_index + '</span>';
+    }
+    
+    return '<div class="tb-module ' + moduleId + (isSelected ? ' selected' : '') + hasHover + positionClasses + animationClasses + '" ' +
+        'data-module-id="' + moduleId + '" ' +
+        'data-module-path="' + sIdx + '-' + rIdx + '-' + cIdx + '-' + mIdx + '" ' +
+        'data-path="' + sIdx + ',' + rIdx + ',' + cIdx + ',' + mIdx + '" ' +
+        'data-type="' + type + '" ' +
+        'draggable="true" ' +
+        'onclick="TB.selectModule(' + sIdx + ',' + rIdx + ',' + cIdx + ',' + mIdx + ', event)" ' +
+        'ondblclick="TB.openModuleModal(' + sIdx + ',' + rIdx + ',' + cIdx + ',' + mIdx + ', event)" ' +
+        'ondragstart="TB.handleModuleDragStart(event,' + sIdx + ',' + rIdx + ',' + cIdx + ',' + mIdx + ')" ' +
+        'ondragend="TB.handleModuleDragEnd(event)">' +
+        zIndexBadge +
+        '<div class="tb-module-header">' +
+        '<span class="tb-module-type">' + icon + ' ' + this.escapeHtml(moduleName) + '</span>' +
+        badgesHtml +
+        '<div class="tb-module-actions">' +
+        '<button type="button" class="tb-module-action-btn tb-edit-btn" onclick="event.stopPropagation();TB.openModuleModal(' + sIdx + ',' + rIdx + ',' + cIdx + ',' + mIdx + ', event)" title="Edit module settings">✏️ Edit</button>' +
+        '<button type="button" class="tb-module-action-btn" onclick="event.stopPropagation();TB.duplicateModule(' + sIdx + ',' + rIdx + ',' + cIdx + ',' + mIdx + ')" title="Duplicate">⧉</button>' +
+        '<button type="button" class="tb-module-action-btn tb-delete-btn" onclick="event.stopPropagation();TB.removeModule(' + sIdx + ',' + rIdx + ',' + cIdx + ',' + mIdx + ')" title="Delete">×</button>' +
+        '</div></div>' +
+        '<div class="tb-module-preview" style="' + moduleStyles + '">' + preview + '</div>' +
+        '</div>';
+};
+
+// ═══════════════════════════════════════════════════════════
+// SETTINGS PANEL RENDERING
+// ═══════════════════════════════════════════════════════════
+TB.renderSettings = function(tab = null) {
+    if (tab === null) tab = this.currentTab || 'content';
+
+    // Debug: Log selectedElement properties individually
+    console.log('TB.renderSettings called with tab:', tab);
+    console.log('TB.renderSettings selectedElement:', JSON.stringify(this.selectedElement));
+    if (this.selectedElement) {
+        console.log('TB.renderSettings selectedElement.type:', this.selectedElement.type);
+        console.log('TB.renderSettings indices:', this.selectedElement.sIdx, this.selectedElement.rIdx, this.selectedElement.cIdx, this.selectedElement.mIdx);
+    }
+
+    const panel = document.getElementById('settings-panel');
+    if (!panel) {
+        console.error('TB.renderSettings: settings-panel element not found');
+        return;
+    }
+
+    if (!this.selectedElement || this.selectedElement.type !== 'module') {
+        console.log('TB.renderSettings: No module selected, showing placeholder');
+        panel.innerHTML = '<div class="tb-no-selection"><div class="tb-no-selection-icon">👆</div><div>Select an element to edit its settings</div></div>';
+        return;
+    }
+
+    const { sIdx, rIdx, cIdx, mIdx } = this.selectedElement;
+    console.log('TB.renderSettings: Looking for module at', sIdx, rIdx, cIdx, mIdx);
+    const mod = this.content.sections[sIdx]?.rows[rIdx]?.columns[cIdx]?.modules[mIdx];
+    if (!mod) {
+        console.warn('TB.renderSettings: Module not found at', sIdx, rIdx, cIdx, mIdx);
+        panel.innerHTML = '<div class="tb-no-selection"><div class="tb-no-selection-icon">⚠️</div><div>Module not found. Please select a different element.</div></div>';
+        return;
+    }
+    
+    const icon = this.getModuleIcon(mod.type);
+    const moduleName = this.modules[mod.type]?.name || mod.type;
+    
+    let html = '<div class="tb-setting-group"><div class="tb-setting-label" style="font-size:13px;font-weight:600;color:var(--tb-accent)">' + icon + ' ' + moduleName.toUpperCase() + ' MODULE</div></div>';
+    
+    // Render tab content with error handling
+    try {
+        if (tab === 'content') {
+            html += this.renderContentSettings(mod);
+        } else if (tab === 'design') {
+            if (typeof this.renderDesignSettings === 'function') {
+                console.log('TB: Rendering design settings for', mod.type, 'module');
+                const designHtml = this.renderDesignSettings(mod, sIdx, rIdx, cIdx, mIdx);
+                if (!designHtml || designHtml.trim() === '') {
+                    console.warn('TB.renderDesignSettings returned empty content');
+                    html += '<div class="tb-setting-group" style="color:var(--tb-warning)">No design settings available for this module.</div>';
+                } else {
+                    html += designHtml;
+                }
+            } else {
+                console.error('TB.renderDesignSettings is not defined');
+                html += '<div class="tb-setting-group" style="color:var(--tb-danger)">Design settings not available. Check console for errors.</div>';
+            }
+        } else if (tab === 'advanced') {
+            html += this.renderAdvancedSettings(mod, sIdx, rIdx, cIdx, mIdx);
+        }
+    } catch (error) {
+        console.error('Error rendering ' + tab + ' settings:', error);
+        html += '<div class="tb-setting-group" style="color:var(--tb-danger)">Error loading ' + tab + ' settings. Check console for details.</div>';
+    }
+    
+    // Action buttons
+    html += '<div class="tb-setting-group" style="margin-top:24px;display:flex;gap:8px;">' +
+        '<button class="tb-btn" style="flex:1;justify-content:center" onclick="TB.duplicateModule(' + sIdx + ',' + rIdx + ',' + cIdx + ',' + mIdx + ')">⧉ Duplicate</button>' +
+        '<button class="tb-btn" style="flex:1;justify-content:center;background:var(--tb-danger);color:#fff" onclick="TB.removeModule(' + sIdx + ',' + rIdx + ',' + cIdx + ',' + mIdx + ')">× Delete</button>' +
+        '</div>';
+    
+    panel.innerHTML = html;
+};
+
+// ═══════════════════════════════════════════════════════════
+// SECTION SETTINGS RENDERING
+// ═══════════════════════════════════════════════════════════
+TB.renderSectionSettings = function(idx) {
+    this.selectedElement = { type: 'section', idx };
+    
+    document.querySelectorAll('.tb-section').forEach(s => s.classList.remove('selected'));
+    document.querySelectorAll('.tb-module').forEach(m => m.classList.remove('selected'));
+    
+    const sec = document.querySelector('[data-section-idx="' + idx + '"]');
+    if (sec) sec.classList.add('selected');
+    
+    const section = this.content.sections[idx];
+    if (!section) return;
+    
+    const design = section.design || {};
+    const panel = document.getElementById('settings-panel');
+    
+    let html = '<div class="tb-setting-group"><div class="tb-setting-label" style="font-size:13px;font-weight:600;color:var(--tb-accent)">📐 SECTION SETTINGS</div></div>';
+    
+    // Background Image
+    html += '<div class="tb-setting-group"><div class="tb-setting-label">Background Image</div>';
+    if (design.background_image) {
+        html += '<div style="margin-bottom:8px;border-radius:8px;overflow:hidden;border:1px solid var(--tb-border)">' +
+            '<img src="' + this.escapeHtml(design.background_image) + '" style="width:100%;height:80px;object-fit:cover;display:block">' +
+            '<div style="display:flex;background:var(--tb-surface)">' +
+            '<button class="tb-btn" style="flex:1;border-radius:0;font-size:11px" onclick="TB.openMediaGallery(url => TB.updateSectionDesign(' + idx + ',\'background_image\',url))">🔄 Change</button>' +
+            '<button class="tb-btn" style="flex:1;border-radius:0;font-size:11px;color:var(--tb-danger)" onclick="TB.updateSectionDesign(' + idx + ',\'background_image\',\'\')">× Remove</button>' +
+            '</div></div>';
+    } else {
+        html += '<div onclick="TB.openMediaGallery(url => TB.updateSectionDesign(' + idx + ',\'background_image\',url))" style="border:2px dashed var(--tb-border);border-radius:8px;padding:20px;text-align:center;cursor:pointer">' +
+            '<div style="font-size:24px;margin-bottom:4px">🖼️</div>' +
+            '<div style="font-size:12px;color:var(--tb-text-muted)">Click to add background image</div></div>';
+    }
+    html += '</div>';
+    
+    // Background Color
+    html += this.renderColorPicker('Background Color', design.background_color, 'TB.updateSectionDesign(' + idx + ',\'background_color\',VALUE)', '#1e1e2e');
+    
+    // Background Overlay
+    const overlayVal = design.background_overlay || '';
+    const overlayMatch = overlayVal.match(/rgba?\((\d+),\s*(\d+),\s*(\d+),?\s*([\d.]*)\)/);
+    let overlayColor = '#000000';
+    let overlayOpacity = 50;
+    if (overlayMatch) {
+        const r = parseInt(overlayMatch[1]).toString(16).padStart(2, '0');
+        const g = parseInt(overlayMatch[2]).toString(16).padStart(2, '0');
+        const b = parseInt(overlayMatch[3]).toString(16).padStart(2, '0');
+        overlayColor = '#' + r + g + b;
+        overlayOpacity = overlayMatch[4] ? Math.round(parseFloat(overlayMatch[4]) * 100) : 100;
+    }
+    
+    html += '<div class="tb-setting-group"><div class="tb-setting-label">Background Overlay</div>' +
+        '<div style="display:flex;gap:8px;align-items:center;margin-bottom:8px">' +
+        '<div style="position:relative;width:40px;height:40px;border-radius:8px;border:2px solid var(--tb-border);overflow:hidden;cursor:pointer" onclick="this.querySelector(\'input\').click()">' +
+        '<div style="width:100%;height:100%;background:' + overlayColor + '"></div>' +
+        '<input type="color" id="overlay-color-' + idx + '" value="' + overlayColor + '" style="position:absolute;top:0;left:0;width:100%;height:100%;opacity:0;cursor:pointer" onchange="TB.updateOverlay(' + idx + ')"></div>' +
+        '<div style="flex:1"><div style="display:flex;justify-content:space-between;font-size:11px;color:var(--tb-text-muted);margin-bottom:2px"><span>Opacity</span><span id="opacity-val-' + idx + '">' + overlayOpacity + '%</span></div>' +
+        '<input type="range" id="overlay-opacity-' + idx + '" min="0" max="100" value="' + overlayOpacity + '" style="width:100%" onchange="TB.updateOverlay(' + idx + ')" oninput="document.getElementById(\'opacity-val-' + idx + '\').textContent=this.value+\'%\'"></div></div>' +
+        '<div style="display:flex;gap:4px">' +
+        '<button class="tb-btn tb-btn-sm" onclick="TB.setOverlayPreset(' + idx + ',\'light\')" style="flex:1;font-size:10px">Light</button>' +
+        '<button class="tb-btn tb-btn-sm" onclick="TB.setOverlayPreset(' + idx + ',\'medium\')" style="flex:1;font-size:10px">Medium</button>' +
+        '<button class="tb-btn tb-btn-sm" onclick="TB.setOverlayPreset(' + idx + ',\'dark\')" style="flex:1;font-size:10px">Dark</button>' +
+        '<button class="tb-btn tb-btn-sm" onclick="TB.setOverlayPreset(' + idx + ',\'none\')" style="flex:1;font-size:10px">None</button>' +
+        '</div></div>';
+    
+    // Padding
+    const pad = this.parsePadding(design.padding || '60px 20px');
+    html += '<div class="tb-setting-group"><div class="tb-setting-label">Padding</div>' +
+        '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">' +
+        '<div><div style="font-size:10px;color:var(--tb-text-muted);margin-bottom:2px">Top</div><input type="text" class="tb-setting-input" value="' + pad.top + '" onchange="TB.updatePadding(' + idx + ',\'top\',this.value)"></div>' +
+        '<div><div style="font-size:10px;color:var(--tb-text-muted);margin-bottom:2px">Right</div><input type="text" class="tb-setting-input" value="' + pad.right + '" onchange="TB.updatePadding(' + idx + ',\'right\',this.value)"></div>' +
+        '<div><div style="font-size:10px;color:var(--tb-text-muted);margin-bottom:2px">Bottom</div><input type="text" class="tb-setting-input" value="' + pad.bottom + '" onchange="TB.updatePadding(' + idx + ',\'bottom\',this.value)"></div>' +
+        '<div><div style="font-size:10px;color:var(--tb-text-muted);margin-bottom:2px">Left</div><input type="text" class="tb-setting-input" value="' + pad.left + '" onchange="TB.updatePadding(' + idx + ',\'left\',this.value)"></div>' +
+        '</div>' +
+        '<div style="display:flex;gap:4px;margin-top:8px">' +
+        '<button class="tb-btn tb-btn-sm" onclick="TB.setPaddingPreset(' + idx + ',\'none\')" style="flex:1;font-size:10px">None</button>' +
+        '<button class="tb-btn tb-btn-sm" onclick="TB.setPaddingPreset(' + idx + ',\'small\')" style="flex:1;font-size:10px">S</button>' +
+        '<button class="tb-btn tb-btn-sm" onclick="TB.setPaddingPreset(' + idx + ',\'medium\')" style="flex:1;font-size:10px">M</button>' +
+        '<button class="tb-btn tb-btn-sm" onclick="TB.setPaddingPreset(' + idx + ',\'large\')" style="flex:1;font-size:10px">L</button>' +
+        '<button class="tb-btn tb-btn-sm" onclick="TB.setPaddingPreset(' + idx + ',\'xlarge\')" style="flex:1;font-size:10px">XL</button>' +
+        '</div></div>';
+    
+    // Action buttons
+    html += '<div class="tb-setting-group" style="margin-top:24px;display:flex;gap:8px;">' +
+        '<button class="tb-btn" style="flex:1;justify-content:center" onclick="TB.duplicateSection(' + idx + ')">⧉ Duplicate</button>' +
+        '<button class="tb-btn" style="flex:1;justify-content:center;background:var(--tb-danger);color:#fff" onclick="TB.deleteSection(' + idx + ')">× Delete</button>' +
+        '</div>';
+    
+    panel.innerHTML = html;
+};
+
+// ═══════════════════════════════════════════════════════════
+// PADDING HELPERS
+// ═══════════════════════════════════════════════════════════
+TB.parsePadding = function(padding) {
+    const parts = padding.split(' ').filter(p => p);
+    if (parts.length === 1) return { top: parts[0], right: parts[0], bottom: parts[0], left: parts[0] };
+    if (parts.length === 2) return { top: parts[0], right: parts[1], bottom: parts[0], left: parts[1] };
+    if (parts.length === 3) return { top: parts[0], right: parts[1], bottom: parts[2], left: parts[1] };
+    if (parts.length === 4) return { top: parts[0], right: parts[1], bottom: parts[2], left: parts[3] };
+    return { top: '60px', right: '20px', bottom: '60px', left: '20px' };
+};
+
+TB.updatePadding = function(idx, side, value) {
+    const design = this.content.sections[idx]?.design || {};
+    const pad = this.parsePadding(design.padding || '60px 20px');
+    pad[side] = value;
+    const newPadding = pad.top + ' ' + pad.right + ' ' + pad.bottom + ' ' + pad.left;
+    this.updateSectionDesign(idx, 'padding', newPadding);
+};
+
+TB.setPaddingPreset = function(idx, preset) {
+    const presets = {
+        'none': '0',
+        'small': '20px 15px',
+        'medium': '60px 20px',
+        'large': '100px 40px',
+        'xlarge': '140px 60px'
+    };
+    this.updateSectionDesign(idx, 'padding', presets[preset] || '60px 20px');
+};
+
+// ═══════════════════════════════════════════════════════════
+// END OF TB-RENDER.JS
+// ═══════════════════════════════════════════════════════════
+console.log('TB 3.0: tb-render.js loaded');

@@ -193,7 +193,7 @@ class WorkflowStepProcessor {
                  $inputs['content'];
         $response = $this->aiClient->execute(
             $inputs['provider'] ?? 'openai',
-            $inputs['model'] ?? 'gpt-3.5-turbo',
+            $inputs['model'] ?? 'gpt-4.1-mini',
             $prompt,
             $inputs['temperature'] ?? 0.7
         );
@@ -206,7 +206,7 @@ class WorkflowStepProcessor {
                  "Character limit: {$inputs['character_limit']}";
         $response = $this->aiClient->execute(
             $inputs['provider'] ?? 'openai',
-            $inputs['model'] ?? 'gpt-3.5-turbo',
+            $inputs['model'] ?? 'gpt-4.1-mini',
             $prompt,
             $inputs['temperature'] ?? 0.7
         );
@@ -219,7 +219,7 @@ class WorkflowStepProcessor {
                  $inputs['content'];
         $response = $this->aiClient->execute(
             $inputs['provider'] ?? 'openai',
-            $inputs['model'] ?? 'gpt-3.5-turbo',
+            $inputs['model'] ?? 'gpt-4.1-mini',
             $prompt,
             $inputs['temperature'] ?? 0.7
         );
@@ -232,7 +232,7 @@ class WorkflowStepProcessor {
                  $inputs['requirements'];
         $response = $this->aiClient->execute(
             $inputs['provider'] ?? 'openai',
-            $inputs['model'] ?? 'gpt-3.5-turbo',
+            $inputs['model'] ?? 'gpt-4.1-mini',
             $prompt,
             $inputs['temperature'] ?? 0.7
         );

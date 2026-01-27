@@ -1,0 +1,56 @@
+[
+    {
+        "id": "backup-task",
+        "name": "Backup Task",
+        "description": "Creates backup archives of config and memory-bank directories",
+        "task_class": "BackupTask",
+        "enabled": true,
+        "interval": "Daily",
+        "last_run": null
+    },
+    {
+        "id": "email-queue-task",
+        "name": "Email Queue Task",
+        "description": "Processes queued emails for delivery",
+        "task_class": "EmailQueueTask",
+        "enabled": false,
+        "interval": "Every 15 minutes",
+        "last_run": "2025-11-27 12:27:26"
+    },
+    {
+        "id": "cache-refresher-task",
+        "name": "Cache Refresher Task",
+        "description": "Refreshes application cache",
+        "task_class": "CacheRefresherTask",
+        "enabled": true,
+        "interval": "Hourly",
+        "last_run": null
+    },
+    {
+        "id": "session-cleaner-task",
+        "name": "Session Cleaner Task",
+        "description": "Cleans up expired user sessions",
+        "task_class": "SessionCleanerTask",
+        "enabled": false,
+        "interval": "Daily",
+        "last_run": null
+    },
+    {
+        "id": "temp-cleaner-task",
+        "name": "Temp File Cleaner Task",
+        "description": "Removes old temporary files",
+        "task_class": "TempCleanerTask",
+        "enabled": false,
+        "interval": "Daily",
+        "last_run": null
+    },
+    {
+        "id": "log-rotation-task",
+        "name": "Log Rotation Task",
+        "description": "Rotates and archives old log files",
+        "task_class": "LogRotationTask",
+        "enabled": false,
+        "interval": "Weekly",
+        "last_run": null
+    }
+]

@@ -10,6 +10,13 @@ require_once __DIR__.'/../core/csrf.php';
 
 csrf_boot();
 
+
+require_once __DIR__ . '/../core/session_boot.php';
+cms_session_start('admin');
+
+// RBAC: Require admin access
+require_once __DIR__ . '/includes/permissions.php';
+cms_require_admin_role();
 // Verify super admin access
 if (!\core\Security\Auth::isSuperAdmin()) {
     header('HTTP/1.0 403 Forbidden');

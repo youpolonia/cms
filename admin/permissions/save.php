@@ -1,9 +1,8 @@
 <?php
+declare(strict_types=1);
 require_once __DIR__ . '/../core/csrf.php';
 
 csrf_boot('admin');
-
-declare(strict_types=1);
 
 require_once __DIR__ . '/../../includes/session.php';
 require_once __DIR__ . '/../../includes/permissions.php';

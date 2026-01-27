@@ -15,7 +15,7 @@ class TenantIsolation {
     }
 
     private static function validateTenant($tenantId) {
-        require_once __DIR__.'/../../utilities/TenantValidator.php';
+        require_once __DIR__.'/../../utilities/tenantvalidator.php';
         return TenantValidator::validate($tenantId);
     }
 

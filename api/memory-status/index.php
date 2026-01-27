@@ -1,6 +1,6 @@
 <?php
-require_once __DIR__.'/../../services/MemoryProfiler.php';
-require_once __DIR__.'/../../services/HeartbeatMonitor.php';
+require_once __DIR__.'/../../services/memoryprofiler.php';
+require_once __DIR__.'/../../services/heartbeatmonitor.php';
 
 header('Content-Type: application/json');
 

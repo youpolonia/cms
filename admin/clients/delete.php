@@ -9,7 +9,7 @@ if (!$auth->isAdmin()) {
 
 require_once __DIR__ . '/../../models/client.php';
 require_once __DIR__ . '/../../includes/database/connection.php';
-require_once __DIR__ . '/../../services/TranslationService.php';
+require_once __DIR__ . '/../../services/translationservice.php';
 require_once __DIR__ . '/../core/csrf.php';
 $translation = new TranslationService();
 

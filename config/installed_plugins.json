@@ -1,0 +1,24 @@
+{
+    "ai-copywriter": {
+        "active": true,
+        "installed_at": "2025-12-05 14:49:07"
+    },
+    "ai-metadata": {
+        "name": "AI Metadata Generator",
+        "version": "1.0.0",
+        "enabled": true,
+        "installed_at": "2025-12-11 01:37:42"
+    },
+    "ai-translator": {
+        "name": "AI Translator Assistant",
+        "version": "1.0.0",
+        "enabled": true,
+        "installed_at": "2025-12-28 00:38:29"
+    },
+    "jessie-theme-builder": {
+        "name": "JessieThemeBuilder",
+        "version": "1.0.0",
+        "enabled": true,
+        "installed_at": "2026-01-21 13:16:20"
+    }
+}

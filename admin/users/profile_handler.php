@@ -9,6 +9,10 @@ header('Content-Type: application/json');
 function checkProfilePermission($userId) {
     // TODO: Replace with actual RBAC check
     cms_session_start('admin');
+
+// RBAC: Require admin access
+require_once __DIR__ . '/../includes/permissions.php';
+cms_require_admin_role();
     return isset($_SESSION['user_id']) && $_SESSION['user_id'] == $userId;
 }
 

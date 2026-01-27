@@ -9,7 +9,7 @@ class OpenAIService
 {
     protected $apiKey;
     protected $apiUrl = 'https://api.openai.com/v1/chat/completions';
-    protected $model = 'gpt-3.5-turbo';
+    protected $model = 'gpt-4.1-mini';
     protected $temperature = 0.7;
     protected $timeout = 30;
     protected $logger;

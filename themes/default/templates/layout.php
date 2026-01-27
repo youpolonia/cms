@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= $title ?? 'CMS' ?></title>
-    <?= $this->assetManager->renderCss() ?>
+    <?= $headCss ?? '' ?>
 </head>
 <body>
     <header>
@@ -15,13 +15,13 @@
     </header>
 
 <main>
-        <?= $this->yield('content') ?>
+        <?= $content ?? '' ?>
     </main>
 
 <footer>
         <p>&copy; <?= date('Y') ?> My CMS</p>
     </footer>
 
-    <?= $this->assetManager->renderJs() ?>
+    <?= $footerJs ?? '' ?>
 </body>
 </html>

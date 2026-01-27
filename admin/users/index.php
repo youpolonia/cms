@@ -1,17 +1,16 @@
 <?php
-// Verify admin access and permissions
-require_once __DIR__ . '/../security/admin-check.php';
-require_once __DIR__ . '/../security/role-check.php';
-
-// Generate CSRF token if not exists
-if (empty($_SESSION['csrf_token'])) {
-    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+// Standard admin bootstrap
+if (!defined('CMS_ROOT')) {
+    define('CMS_ROOT', dirname(__DIR__, 2));
 }
 
-// Security headers
-header("X-Frame-Options: DENY");
-header("X-Content-Type-Options: nosniff");
-header("X-XSS-Protection: 1; mode=block");
+require_once CMS_ROOT . '/config.php';
+require_once CMS_ROOT . '/core/session_boot.php';
+cms_session_start('admin');
+require_once CMS_ROOT . '/core/csrf.php';
+csrf_boot('admin');
+require_once CMS_ROOT . '/core/auth.php';
+authenticateAdmin();
 
 // Check if current user has permission to manage users
 if (!has_permission('manage_users')) {
@@ -62,9 +61,8 @@ if (!isset($users) || !is_array($users)) {
                 <?php if (has_permission('edit_users')): ?>
                     <a href="<?php echo APP_URL; ?>/admin/users/edit/<?php echo $user['id']; ?>" class="btn btn-sm btn-info">Edit</a>
                 <?php endif; ?>
-                <form action="<?php echo APP_URL; ?>/admin/users/delete/<?php echo $user['id']; ?>" method="POST" style="display:inline;" onsubmit="
-return confirm('Are you sure you want to delete this user?');">
-                    <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
+                <form action="<?php echo APP_URL; ?>/admin/users/delete/<?php echo $user['id']; ?>" method="POST" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this user?');">
+                    <?php csrf_field('admin'); ?>
                     <button type="submit" class="btn btn-sm btn-danger">Delete</button>
                 </form>
             </td>

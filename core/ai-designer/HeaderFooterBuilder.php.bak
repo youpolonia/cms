@@ -1,0 +1,686 @@
+<?php
+declare(strict_types=1);
+/**
+ * AI Designer - Header & Footer Builder
+ * 
+ * STEP 4: Builds header and footer components based on design system and pages.
+ * Creates navigation, branding, and footer sections.
+ *
+ * @package AiDesigner
+ * @version 4.0
+ */
+
+namespace Core\AiDesigner;
+
+class HeaderFooterBuilder
+{
+    private array $aiSettings;
+    
+    // Header styles per design style
+    private array $headerStyles = [
+        'modern' => [
+            'layout' => 'logo left, nav center or right, CTA button',
+            'background' => 'white or transparent, subtle shadow on scroll',
+            'nav_style' => 'clean links, hover underline or color change',
+            'mobile' => 'hamburger menu, slide-in panel'
+        ],
+        'corporate' => [
+            'layout' => 'logo left, nav right, possibly top bar',
+            'background' => 'white, defined border bottom',
+            'nav_style' => 'structured nav, dropdowns for sub-pages',
+            'mobile' => 'hamburger menu, dropdown'
+        ],
+        'creative' => [
+            'layout' => 'unique placement, possibly centered or asymmetric',
+            'background' => 'transparent or colored, creative shapes',
+            'nav_style' => 'artistic hover effects, unique typography',
+            'mobile' => 'full-screen overlay menu'
+        ],
+        'minimal' => [
+            'layout' => 'simple logo, minimal nav items',
+            'background' => 'white, no shadow, thin border or none',
+            'nav_style' => 'ultra-simple, just text links',
+            'mobile' => 'simple hamburger, minimal animation'
+        ],
+        'elegant' => [
+            'layout' => 'centered or classic left-right, refined spacing',
+            'background' => 'cream/white, subtle elegance',
+            'nav_style' => 'serif or elegant sans, subtle hover',
+            'mobile' => 'elegant slide menu'
+        ],
+        'vintage' => [
+            'layout' => 'classic layout, possibly with decorative elements',
+            'background' => 'warm tones, textured or patterned',
+            'nav_style' => 'vintage typography, ornamental touches',
+            'mobile' => 'classic hamburger menu'
+        ],
+        'luxury' => [
+            'layout' => 'spacious, logo prominent, minimal nav',
+            'background' => 'dark or transparent, premium feel',
+            'nav_style' => 'uppercase, letter-spaced, gold accents',
+            'mobile' => 'premium full-screen menu'
+        ],
+        'bold' => [
+            'layout' => 'strong logo presence, bold nav',
+            'background' => 'dark, high contrast',
+            'nav_style' => 'bold typography, strong hover states',
+            'mobile' => 'dramatic slide menu'
+        ],
+        'organic' => [
+            'layout' => 'friendly, approachable arrangement',
+            'background' => 'light natural tones, soft edges',
+            'nav_style' => 'rounded, friendly typography',
+            'mobile' => 'soft slide menu'
+        ],
+        'industrial' => [
+            'layout' => 'structured, grid-based',
+            'background' => 'gray tones, utilitarian',
+            'nav_style' => 'condensed fonts, uppercase',
+            'mobile' => 'functional hamburger menu'
+        ]
+    ];
+
+    // Footer styles per design style
+    private array $footerStyles = [
+        'modern' => 'multi-column, newsletter, social icons, clean layout',
+        'corporate' => 'structured columns, contact info, certifications, legal links',
+        'creative' => 'unique layout, artistic elements, bold social presence',
+        'minimal' => 'simple single row or minimal columns, essential links only',
+        'elegant' => 'refined layout, subtle decorations, elegant typography',
+        'vintage' => 'classic layout, decorative borders, warm tones',
+        'luxury' => 'spacious, gold accents, exclusive feel, minimal text',
+        'bold' => 'high contrast, strong typography, impactful CTAs',
+        'organic' => 'soft colors, nature imagery, friendly layout',
+        'industrial' => 'structured grid, raw aesthetic, utilitarian'
+    ];
+
+    public function __construct(array $aiSettings)
+    {
+        $this->aiSettings = $aiSettings;
+    }
+
+    /**
+     * Build header HTML/PHP
+     */
+    public function buildHeader(
+        array $analysis,
+        array $designSystem,
+        array $pages,
+        array $input
+    ): string {
+        $style = $designSystem['style'] ?? 'modern';
+        $businessName = $input['business_name'] ?? 'Business';
+        
+        // Try AI-generated header first
+        $headerHtml = $this->callAIForHeader($analysis, $designSystem, $pages, $input, $style);
+        
+        if (!empty($headerHtml) && strlen($headerHtml) > 100) {
+            return $this->wrapHeader($headerHtml, $businessName);
+        }
+        
+        // Fallback to template
+        return $this->buildHeaderTemplate($businessName, $pages, $style, $designSystem);
+    }
+
+    /**
+     * Build footer HTML/PHP
+     */
+    public function buildFooter(
+        array $analysis,
+        array $designSystem,
+        array $pages,
+        array $input
+    ): string {
+        $style = $designSystem['style'] ?? 'modern';
+        $businessName = $input['business_name'] ?? 'Business';
+        
+        // Try AI-generated footer first
+        $footerHtml = $this->callAIForFooter($analysis, $designSystem, $pages, $input, $style);
+        
+        if (!empty($footerHtml) && strlen($footerHtml) > 100) {
+            return $this->wrapFooter($footerHtml, $businessName);
+        }
+        
+        // Fallback to template
+        return $this->buildFooterTemplate($businessName, $pages, $style, $designSystem);
+    }
+
+    /**
+     * Call AI to generate header
+     */
+    private function callAIForHeader(
+        array $analysis,
+        array $designSystem,
+        array $pages,
+        array $input,
+        string $style
+    ): string {
+        $businessName = $input['business_name'] ?? 'Business';
+        $headerStyle = $this->headerStyles[$style] ?? $this->headerStyles['modern'];
+        $colors = $designSystem['colors'] ?? [];
+        $typography = $designSystem['typography'] ?? [];
+        
+        $navItems = $this->buildNavItemsList($pages);
+        
+        $prompt = <<<PROMPT
+Create a professional website header for "{$businessName}".
+
+DESIGN STYLE: {$style}
+Header Layout: {$headerStyle['layout']}
+Background: {$headerStyle['background']}
+Navigation Style: {$headerStyle['nav_style']}
+Mobile: {$headerStyle['mobile']}
+
+COLORS:
+- Primary: {$colors['primary']}
+- Text: {$colors['text']}
+- Background: {$colors['background']}
+
+TYPOGRAPHY:
+- Heading Font: {$typography['heading_font']}
+- Body Font: {$typography['body_font']}
+
+NAVIGATION ITEMS:
+{$navItems}
+
+REQUIREMENTS:
+1. Create a <header> element with proper structure
+2. Include logo area (text logo using business name)
+3. Desktop navigation with all pages
+4. Mobile hamburger menu button
+5. Use CSS variables: var(--color-primary), etc.
+6. Add proper accessibility attributes
+7. Include sticky/fixed positioning styles
+8. Make it responsive
+
+OUTPUT: Return ONLY the HTML code for the header. No explanations.
+PROMPT;
+
+        try {
+            $response = $this->callAI($prompt);
+            return $this->extractHtmlFromResponse($response, 'header');
+        } catch (\Exception $e) {
+            error_log("[AI-Designer] Header generation failed: " . $e->getMessage());
+            return '';
+        }
+    }
+
+    /**
+     * Call AI to generate footer
+     */
+    private function callAIForFooter(
+        array $analysis,
+        array $designSystem,
+        array $pages,
+        array $input,
+        string $style
+    ): string {
+        $businessName = $input['business_name'] ?? 'Business';
+        $footerStyle = $this->footerStyles[$style] ?? $this->footerStyles['modern'];
+        $colors = $designSystem['colors'] ?? [];
+        $typography = $designSystem['typography'] ?? [];
+        
+        $navItems = $this->buildNavItemsList($pages);
+        
+        $prompt = <<<PROMPT
+Create a professional website footer for "{$businessName}".
+
+DESIGN STYLE: {$style}
+Footer Style: {$footerStyle}
+
+COLORS:
+- Primary: {$colors['primary']}
+- Text: {$colors['text']}
+- Background: {$colors['surface']}
+
+TYPOGRAPHY:
+- Heading Font: {$typography['heading_font']}
+- Body Font: {$typography['body_font']}
+
+PAGES TO LINK:
+{$navItems}
+
+REQUIREMENTS:
+1. Create a <footer> element with proper structure
+2. Include columns for: Navigation, Contact Info, Social Links
+3. Add copyright notice with current year
+4. Include social media icon links (placeholder hrefs)
+5. Use CSS variables: var(--color-primary), etc.
+6. Make it responsive with grid/flexbox
+7. Match the {$style} design style
+
+OUTPUT: Return ONLY the HTML code for the footer. No explanations.
+PROMPT;
+
+        try {
+            $response = $this->callAI($prompt);
+            return $this->extractHtmlFromResponse($response, 'footer');
+        } catch (\Exception $e) {
+            error_log("[AI-Designer] Footer generation failed: " . $e->getMessage());
+            return '';
+        }
+    }
+
+    /**
+     * Build navigation items list for prompt
+     */
+    private function buildNavItemsList(array $pages): string
+    {
+        $items = [];
+        foreach ($pages as $page) {
+            $label = ucfirst(str_replace(['-', '_'], ' ', $page));
+            $href = $page === 'homepage' ? '/' : '/' . strtolower($page);
+            $items[] = "- {$label} ({$href})";
+        }
+        return implode("\n", $items);
+    }
+
+    /**
+     * Extract HTML from AI response
+     */
+    private function extractHtmlFromResponse(string $response, string $tag): string
+    {
+        $response = preg_replace('/```html?\s*/i', '', $response);
+        $response = preg_replace('/```\s*$/m', '', $response);
+        $response = trim($response);
+        
+        // Try to extract specific tag
+        if (preg_match("/<{$tag}[^>]*>.*<\/{$tag}>/is", $response, $matches)) {
+            return $matches[0];
+        }
+        
+        return $response;
+    }
+
+    /**
+     * Wrap header with PHP template
+     */
+    private function wrapHeader(string $headerHtml, string $businessName): string
+    {
+        return <<<PHP
+<?php
+/**
+ * Header Template
+ * Generated by AI Designer for {$businessName}
+ */
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><?php echo \$page_title ?? '{$businessName}'; ?></title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Theme Stylesheet -->
+    <link rel="stylesheet" href="<?php echo \$theme_url ?? ''; ?>/assets/css/style.css">
+</head>
+<body>
+
+{$headerHtml}
+PHP;
+    }
+
+    /**
+     * Wrap footer with PHP template
+     */
+    private function wrapFooter(string $footerHtml, string $businessName): string
+    {
+        $year = date('Y');
+        return <<<PHP
+
+{$footerHtml}
+
+<!-- Theme Scripts -->
+<script>
+// Mobile menu toggle
+document.addEventListener('DOMContentLoaded', function() {
+    const menuToggle = document.querySelector('.menu-toggle, .hamburger, [data-menu-toggle]');
+    const mobileMenu = document.querySelector('.mobile-menu, .nav-mobile, [data-mobile-menu]');
+    
+    if (menuToggle && mobileMenu) {
+        menuToggle.addEventListener('click', function() {
+            mobileMenu.classList.toggle('active');
+            this.classList.toggle('active');
+        });
+    }
+    
+    // Sticky header
+    const header = document.querySelector('header');
+    if (header) {
+        window.addEventListener('scroll', function() {
+            if (window.scrollY > 100) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+    }
+});
+</script>
+</body>
+</html>
+PHP;
+    }
+
+    /**
+     * Build header template (fallback)
+     */
+    private function buildHeaderTemplate(
+        string $businessName,
+        array $pages,
+        string $style,
+        array $designSystem
+    ): string {
+        $colors = $designSystem['colors'] ?? [];
+        $navHtml = $this->buildNavigationHtml($pages);
+        
+        // Style-specific adjustments
+        $headerBg = $colors['background'] ?? '#ffffff';
+        $textColor = $colors['text'] ?? '#1a1a1a';
+        $primaryColor = $colors['primary'] ?? '#2563eb';
+        
+        $isLuxuryOrBold = in_array($style, ['luxury', 'bold']);
+        if ($isLuxuryOrBold) {
+            $headerBg = $colors['background'] ?? '#0a0a0a';
+            $textColor = '#ffffff';
+        }
+        
+        $headerHtml = <<<HTML
+<header class="site-header" style="position: fixed; top: 0; left: 0; right: 0; z-index: 1000; background: {$headerBg}; transition: all 0.3s ease;">
+    <div class="container" style="max-width: 1200px; margin: 0 auto; padding: 0 2rem;">
+        <div class="header-inner" style="display: flex; align-items: center; justify-content: space-between; height: 80px;">
+            
+            <!-- Logo -->
+            <a href="/" class="logo" style="font-size: 1.5rem; font-weight: 700; color: {$primaryColor}; text-decoration: none;">
+                {$businessName}
+            </a>
+            
+            <!-- Desktop Navigation -->
+            <nav class="nav-desktop" style="display: flex; align-items: center; gap: 2rem;">
+                {$navHtml}
+                <a href="/contact" class="btn btn-primary" style="background: {$primaryColor}; color: #fff; padding: 10px 24px; border-radius: 6px; text-decoration: none; font-weight: 600;">
+                    Contact Us
+                </a>
+            </nav>
+            
+            <!-- Mobile Menu Toggle -->
+            <button class="menu-toggle" style="display: none; background: none; border: none; font-size: 1.5rem; color: {$textColor}; cursor: pointer;" aria-label="Toggle Menu">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </div>
+    
+    <!-- Mobile Navigation -->
+    <nav class="nav-mobile" style="display: none; position: absolute; top: 100%; left: 0; right: 0; background: {$headerBg}; padding: 1rem 2rem; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+        {$navHtml}
+        <a href="/contact" class="btn btn-primary" style="display: block; text-align: center; margin-top: 1rem; background: {$primaryColor}; color: #fff; padding: 12px 24px; border-radius: 6px; text-decoration: none;">
+            Contact Us
+        </a>
+    </nav>
+</header>
+
+<!-- Header Spacer -->
+<div style="height: 80px;"></div>
+
+<style>
+@media (max-width: 768px) {
+    .nav-desktop { display: none !important; }
+    .menu-toggle { display: block !important; }
+    .nav-mobile.active { display: block !important; }
+    .nav-mobile a { display: block; padding: 12px 0; border-bottom: 1px solid rgba(0,0,0,0.1); }
+}
+.site-header.scrolled {
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+</style>
+HTML;
+
+        return $this->wrapHeader($headerHtml, $businessName);
+    }
+
+    /**
+     * Build footer template (fallback)
+     */
+    private function buildFooterTemplate(
+        string $businessName,
+        array $pages,
+        string $style,
+        array $designSystem
+    ): string {
+        $colors = $designSystem['colors'] ?? [];
+        $navHtml = $this->buildFooterNavHtml($pages);
+        $year = date('Y');
+        
+        $footerBg = $colors['surface'] ?? '#f8fafc';
+        $textColor = $colors['text'] ?? '#1a1a1a';
+        $mutedColor = $colors['text_muted'] ?? '#64748b';
+        $primaryColor = $colors['primary'] ?? '#2563eb';
+        
+        // Dark footer for certain styles
+        if (in_array($style, ['luxury', 'bold'])) {
+            $footerBg = '#0a0a0a';
+            $textColor = '#ffffff';
+            $mutedColor = '#a0a0a0';
+        }
+        
+        $footerHtml = <<<HTML
+<footer class="site-footer" style="background: {$footerBg}; padding: 80px 0 40px; margin-top: 80px;">
+    <div class="container" style="max-width: 1200px; margin: 0 auto; padding: 0 2rem;">
+        
+        <!-- Footer Main -->
+        <div class="footer-grid" style="display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px; margin-bottom: 60px;">
+            
+            <!-- About Column -->
+            <div class="footer-about">
+                <h3 style="font-size: 1.5rem; margin-bottom: 1rem; color: {$textColor};">{$businessName}</h3>
+                <p style="color: {$mutedColor}; line-height: 1.8; margin-bottom: 1.5rem;">
+                    We are dedicated to providing exceptional service and building lasting relationships with our clients.
+                </p>
+                <div class="social-links" style="display: flex; gap: 12px;">
+                    <a href="#" style="width: 40px; height: 40px; background: {$primaryColor}; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; text-decoration: none;">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+                    <a href="#" style="width: 40px; height: 40px; background: {$primaryColor}; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; text-decoration: none;">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                    <a href="#" style="width: 40px; height: 40px; background: {$primaryColor}; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; text-decoration: none;">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="#" style="width: 40px; height: 40px; background: {$primaryColor}; color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; text-decoration: none;">
+                        <i class="fab fa-linkedin-in"></i>
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Quick Links -->
+            <div class="footer-links">
+                <h4 style="font-size: 1.125rem; margin-bottom: 1.5rem; color: {$textColor};">Quick Links</h4>
+                <ul style="list-style: none; padding: 0; margin: 0;">
+                    {$navHtml}
+                </ul>
+            </div>
+            
+            <!-- Contact Info -->
+            <div class="footer-contact">
+                <h4 style="font-size: 1.125rem; margin-bottom: 1.5rem; color: {$textColor};">Contact</h4>
+                <ul style="list-style: none; padding: 0; margin: 0; color: {$mutedColor};">
+                    <li style="margin-bottom: 12px; display: flex; align-items: center; gap: 10px;">
+                        <i class="fas fa-map-marker-alt" style="color: {$primaryColor};"></i>
+                        123 Business St, City
+                    </li>
+                    <li style="margin-bottom: 12px; display: flex; align-items: center; gap: 10px;">
+                        <i class="fas fa-phone" style="color: {$primaryColor};"></i>
+                        +1 (555) 123-4567
+                    </li>
+                    <li style="margin-bottom: 12px; display: flex; align-items: center; gap: 10px;">
+                        <i class="fas fa-envelope" style="color: {$primaryColor};"></i>
+                        info@example.com
+                    </li>
+                </ul>
+            </div>
+            
+            <!-- Newsletter -->
+            <div class="footer-newsletter">
+                <h4 style="font-size: 1.125rem; margin-bottom: 1.5rem; color: {$textColor};">Newsletter</h4>
+                <p style="color: {$mutedColor}; margin-bottom: 1rem;">Subscribe for updates</p>
+                <form style="display: flex; flex-direction: column; gap: 10px;">
+                    <input type="email" placeholder="Your email" style="padding: 12px 16px; border: 1px solid #e5e5e5; border-radius: 6px;">
+                    <button type="submit" style="padding: 12px 16px; background: {$primaryColor}; color: #fff; border: none; border-radius: 6px; cursor: pointer; font-weight: 600;">
+                        Subscribe
+                    </button>
+                </form>
+            </div>
+        </div>
+        
+        <!-- Footer Bottom -->
+        <div class="footer-bottom" style="border-top: 1px solid rgba(0,0,0,0.1); padding-top: 30px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px;">
+            <p style="color: {$mutedColor}; margin: 0;">
+                © {$year} {$businessName}. All rights reserved.
+            </p>
+            <div class="legal-links" style="display: flex; gap: 20px;">
+                <a href="/privacy" style="color: {$mutedColor}; text-decoration: none;">Privacy Policy</a>
+                <a href="/terms" style="color: {$mutedColor}; text-decoration: none;">Terms of Service</a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<style>
+@media (max-width: 768px) {
+    .footer-grid { grid-template-columns: 1fr !important; }
+    .footer-bottom { flex-direction: column; text-align: center; }
+}
+</style>
+HTML;
+
+        return $this->wrapFooter($footerHtml, $businessName);
+    }
+
+    /**
+     * Build navigation HTML for header
+     */
+    private function buildNavigationHtml(array $pages): string
+    {
+        $html = '';
+        foreach ($pages as $page) {
+            $label = ucfirst(str_replace(['-', '_'], ' ', $page));
+            $href = $page === 'homepage' ? '/' : '/' . strtolower($page);
+            $html .= "<a href=\"{$href}\" style=\"color: inherit; text-decoration: none; font-weight: 500; transition: color 0.3s;\">{$label}</a>\n";
+        }
+        return $html;
+    }
+
+    /**
+     * Build navigation HTML for footer
+     */
+    private function buildFooterNavHtml(array $pages): string
+    {
+        $html = '';
+        foreach ($pages as $page) {
+            $label = ucfirst(str_replace(['-', '_'], ' ', $page));
+            $href = $page === 'homepage' ? '/' : '/' . strtolower($page);
+            $html .= "<li style=\"margin-bottom: 12px;\"><a href=\"{$href}\" style=\"color: inherit; text-decoration: none; transition: color 0.3s;\">{$label}</a></li>\n";
+        }
+        return $html;
+    }
+
+    /**
+     * Call AI API
+     */
+    private function callAI(string $prompt): string
+    {
+        $provider = $this->aiSettings['default_provider'] ?? 'openai';
+        $config = $this->aiSettings['providers'][$provider] ?? [];
+        
+        if (empty($config['api_key'])) {
+            throw new \Exception("AI provider not configured");
+        }
+        
+        $model = $config['model'] ?? 'gpt-4o-mini';
+        
+        if ($provider === 'openai') {
+            return $this->callOpenAI($config['api_key'], $model, $prompt);
+        } elseif ($provider === 'anthropic') {
+            return $this->callAnthropic($config['api_key'], $model, $prompt);
+        }
+        
+        throw new \Exception("Unknown AI provider: {$provider}");
+    }
+
+    private function callOpenAI(string $apiKey, string $model, string $prompt): string
+    {
+        $ch = curl_init('https://api.openai.com/v1/chat/completions');
+        
+        curl_setopt_array($ch, [
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_POST => true,
+            CURLOPT_TIMEOUT => 60,
+            CURLOPT_HTTPHEADER => [
+                'Content-Type: application/json',
+                'Authorization: Bearer ' . $apiKey
+            ],
+            CURLOPT_POSTFIELDS => json_encode([
+                'model' => $model,
+                'messages' => [
+                    ['role' => 'system', 'content' => 'You are an expert web designer. Generate clean HTML. Output only code.'],
+                    ['role' => 'user', 'content' => $prompt]
+                ],
+                'max_tokens' => 4000,
+                'temperature' => 0.7
+            ])
+        ]);
+        
+        $response = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+        
+        if ($httpCode !== 200) {
+            throw new \Exception("OpenAI API error: HTTP {$httpCode}");
+        }
+        
+        $data = json_decode($response, true);
+        return $data['choices'][0]['message']['content'] ?? '';
+    }
+
+    private function callAnthropic(string $apiKey, string $model, string $prompt): string
+    {
+        $ch = curl_init('https://api.anthropic.com/v1/messages');
+        
+        curl_setopt_array($ch, [
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_POST => true,
+            CURLOPT_TIMEOUT => 60,
+            CURLOPT_HTTPHEADER => [
+                'Content-Type: application/json',
+                'x-api-key: ' . $apiKey,
+                'anthropic-version: 2023-06-01'
+            ],
+            CURLOPT_POSTFIELDS => json_encode([
+                'model' => $model,
+                'max_tokens' => 4000,
+                'messages' => [
+                    ['role' => 'user', 'content' => $prompt]
+                ]
+            ])
+        ]);
+        
+        $response = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+        
+        if ($httpCode !== 200) {
+            throw new \Exception("Anthropic API error: HTTP {$httpCode}");
+        }
+        
+        $data = json_decode($response, true);
+        return $data['content'][0]['text'] ?? '';
+    }
+}

@@ -1,8 +1,7 @@
 <?php
+declare(strict_types=1);
 require_once __DIR__ . '/../../config.php';
 if (!defined('DEV_MODE') || DEV_MODE !== true) { http_response_code(403); exit; }
-
-declare(strict_types=1);
 error_reporting(E_ALL);
 
 /**

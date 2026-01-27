@@ -1,7 +1,7 @@
 <?php
 header('Content-Type: application/json');
 require_once __DIR__ . '/../../models/notification.php';
-require_once __DIR__.'/../../services/NotificationHandler.php';
+require_once __DIR__.'/../../services/notificationhandler.php';
 require_once __DIR__.'/../../services/notificationservice.php';
 
 $notification = new Notification($db);

@@ -18,8 +18,9 @@ if (function_exists('get')) {
             require_once __DIR__ . '/controllers/page_controller.php';
             \controllers\page_controller::show((string)$slug);
         });
-        get('/about', function(){ require_once __DIR__ . '/controllers/page_controller.php'; \controllers\page_controller::show('about'); });
-        get('/contact', function(){ require_once __DIR__ . '/controllers/page_controller.php'; \controllers\page_controller::show('contact'); });
+        // Legacy routes - disabled, using MVC PageController instead
+        // get('/about', function(){ require_once __DIR__ . '/controllers/page_controller.php'; \controllers\page_controller::show('about'); });
+        // get('/contact', function(){ require_once __DIR__ . '/controllers/page_controller.php'; \controllers\page_controller::show('contact'); });
     }
 }
 if (function_exists('router_get') && !defined('__DB_PAGES_ROUTES_RTR__')) {
@@ -28,8 +29,9 @@ if (function_exists('router_get') && !defined('__DB_PAGES_ROUTES_RTR__')) {
         require_once __DIR__ . '/controllers/page_controller.php';
         \controllers\page_controller::show((string)$slug);
     });
-    router_get('/about', function(){ require_once __DIR__ . '/controllers/page_controller.php'; \controllers\page_controller::show('about'); });
-    router_get('/contact', function(){ require_once __DIR__ . '/controllers/page_controller.php'; \controllers\page_controller::show('contact'); });
+    // Legacy routes - disabled, using MVC PageController instead
+    // router_get('/about', function(){ require_once __DIR__ . '/controllers/page_controller.php'; \controllers\page_controller::show('about'); });
+    // router_get('/contact', function(){ require_once __DIR__ . '/controllers/page_controller.php'; \controllers\page_controller::show('contact'); });
 }
 
 // Middleware functions
@@ -68,15 +70,15 @@ return [
         $controller->index();
     },
 
-    // Blog routes
+    // Blog routes - using new Article system
     '/blog' => function() {
-        require_once __DIR__ . '/controllers/blogcontroller.php';
-        $controller = new BlogController();
+        require_once __DIR__ . '/controllers/articlefrontcontroller.php';
+        $controller = new ArticleFrontController();
         $controller->index();
     },
-    '/blog/([a-z0-9-]+)' => function($slug) {
-        require_once __DIR__ . '/controllers/blogcontroller.php';
-        $controller = new BlogController();
+    '/blog/{slug}' => function($slug) {
+        require_once __DIR__ . '/controllers/articlefrontcontroller.php';
+        $controller = new ArticleFrontController();
         $controller->show($slug);
     },
 

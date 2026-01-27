@@ -1,14 +1,11 @@
 <?php
 /**
  * Core navigation partial template
- * This template is included in the base template
+ * Variables available: $navItems, $currentSiteId, $isMultisite, $sites
  */
 
-// Get current site ID if multisite is enabled
-$currentSiteId = $this->isMultisiteEnabled() ? $this->getCurrentSiteId() : null;
-
-// Define navigation items
-$navItems = [
+// Default navigation items if not provided
+$navItems = $navItems ?? [
     ['url' => '/', 'label' => 'Home'],
     ['url' => '/page/about', 'label' => 'About'],
     ['url' => '/page/services', 'label' => 'Services'],
@@ -16,46 +13,42 @@ $navItems = [
     ['url' => '/page/contact', 'label' => 'Contact']
 ];
 
-// Add site-specific navigation items if available
-if ($this->isMultisiteEnabled()) {
-    $siteNavItems = $this->siteData('navigation', []);
-    if (!empty($siteNavItems)) {
-        $navItems = array_merge($navItems, $siteNavItems);
-    }
-}
+// Check if multisite is enabled
+$isMultisite = $isMultisite ?? false;
+$currentSiteId = $currentSiteId ?? null;
 
 ?><ul class="main-nav">
     <?php foreach ($navItems as $item): ?>
         <li class="nav-item">
-            <a href="<?php echo $item['url']; ?>" class="nav-link">
-                <?php echo $item['label'];  ?>
+            <a href="<?= htmlspecialchars($item['url'], ENT_QUOTES, 'UTF-8') ?>" class="nav-link">
+                <?= htmlspecialchars($item['label'], ENT_QUOTES, 'UTF-8') ?>
             </a>
         </li>
-    <?php endforeach;  ?>    
-    <?php if ($this->isMultisiteEnabled()): ?>
+    <?php endforeach; ?>
+    <?php if ($isMultisite): ?>
         <li class="nav-item dropdown">
             <a href="#" class="nav-link dropdown-toggle">
                 Sites
             </a>
             <ul class="dropdown-menu">
-                <?php 
-                // In a real implementation, this would fetch all sites from the SiteManager
-                $sites = [
+                <?php
+                // Sites should be passed as a variable
+                $sites = $sites ?? [
                     ['id' => 'primary', 'name' => 'Primary Site'],
                     ['id' => 'site1', 'name' => 'Site 1'],
                     ['id' => 'site2', 'name' => 'Site 2']
                 ];
-                
-                foreach ($sites as $site): ?>                
+
+                foreach ($sites as $site): ?>
                     <li>
-                        <a href="/switch-site/<?php echo $site['id']; ?>" class="dropdown-item <?php echo ($currentSiteId === $site['id']) ? 'active' : ''; ?>">
-                            <?php echo $site['name'];  ?>
+                        <a href="/switch-site/<?= htmlspecialchars($site['id'], ENT_QUOTES, 'UTF-8') ?>" class="dropdown-item <?= ($currentSiteId === $site['id']) ? 'active' : '' ?>">
+                            <?= htmlspecialchars($site['name'], ENT_QUOTES, 'UTF-8') ?>
                         </a>
                     </li>
-                <?php endforeach;  ?>
+                <?php endforeach; ?>
             </ul>
         </li>
-        <?php endif;  ?>
+    <?php endif; ?>
     <li class="nav-item">
         <a href="/admin" class="nav-link admin-link">
             Admin

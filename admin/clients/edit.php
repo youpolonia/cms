@@ -1,7 +1,7 @@
 <?php
 // Check admin access
 require_once __DIR__ . '/../../auth/authcontroller.php';
-require_once __DIR__ . '/../../services/TranslationService.php';
+require_once __DIR__ . '/../../services/translationservice.php';
 $auth = new AuthController();
 if (!$auth->isAdmin()) {
     header('Location: /admin/login');

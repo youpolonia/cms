@@ -3,6 +3,10 @@ declare(strict_types=1);
 require_once __DIR__ . '/../../core/session_boot.php';
 cms_session_start('admin');
 
+
+// RBAC: Require admin access
+require_once __DIR__ . '/../includes/permissions.php';
+cms_require_admin_role();
 if (!defined('CMS_ROOT')) { define('CMS_ROOT', dirname(__DIR__, 2)); }
 require_once CMS_ROOT . '/core/helpers.php';
 

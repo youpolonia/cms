@@ -1,0 +1,26 @@
+{
+  "rules": [
+    {
+      "id": "example_blog_to_n8n",
+      "name": "Send n8n trigger when a blog post is published",
+      "event_key": "blog.post_published",
+      "action_type": "n8n_webhook",
+      "action_config": {
+        "event": "cms_blog_post_published"
+      },
+      "active": true,
+      "notes": "Example: when a new blog post is published, send a trigger to n8n."
+    },
+    {
+      "id": "example_media_to_n8n",
+      "name": "Send n8n trigger when an image is uploaded",
+      "event_key": "media.image_uploaded",
+      "action_type": "n8n_webhook",
+      "action_config": {
+        "event": "cms_media_image_uploaded"
+      },
+      "active": false,
+      "notes": "Example: when an image is uploaded, notify n8n (can be used for AI ALT tags, etc.)."
+    }
+  ]
+}

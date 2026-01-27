@@ -54,9 +54,14 @@ class Database {
             }
             
             try {
-                $dsn = sprintf('mysql:%s=%s;dbname=%s;charset=%s',
-                    'host',
-                    self::$config['host'],
+                // Fix socket issue: use 127.0.0.1 instead of localhost for TCP connection
+                $host = self::$config['host'];
+                if ($host === 'localhost') {
+                    $host = '127.0.0.1';
+                }
+                
+                $dsn = sprintf('mysql:host=%s;dbname=%s;charset=%s',
+                    $host,
                     self::$config['dbname'],
                     self::$config['charset']
                 );

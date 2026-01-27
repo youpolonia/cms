@@ -1,75 +1,40 @@
 <?php
-
-require_once __DIR__ . '/../../config.php';
+declare(strict_types=1);
 
 /**
- * Tenant Isolation Migration
- * Creates core tables with tenant_id foreign keys
+ * Migration: Tenant Isolation
+ * Creates core tables with tenant support
  */
-class Migration_0001_TenantIsolation {
-    public static function up() {
-        $db = \core\Database::connection();
 
-        // Core Tenant Tables
-        $db->exec("CREATE TABLE tenants (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT NOT NULL,
-            domain TEXT UNIQUE NOT NULL,
-            status TEXT DEFAULT 'active',
-            created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-        )");
-
-        $db->exec("CREATE TABLE tenant_metrics (
-            tenant_id INTEGER NOT NULL,
-            storage_used INTEGER DEFAULT 0,
-            api_calls INTEGER DEFAULT 0,
-            FOREIGN KEY (tenant_id) REFERENCES tenants(id)
-        )");
-
-        // Content Management Tables
-        $db->exec("CREATE TABLE content_pages (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            tenant_id INTEGER NOT NULL,
-            title TEXT NOT NULL,
-            slug TEXT NOT NULL,
-            FOREIGN KEY (tenant_id) REFERENCES tenants(id)
-        )");
-
-        // User Management Tables
-        $db->exec("CREATE TABLE users (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            tenant_id INTEGER NOT NULL,
-            username TEXT UNIQUE NOT NULL,
-            FOREIGN KEY (tenant_id) REFERENCES tenants(id)
-        )");
-
-        // Security Tables
-        $db->exec("CREATE TABLE audit_log (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            tenant_id INTEGER NOT NULL,
-            user_id INTEGER,
-            action TEXT NOT NULL,
-            FOREIGN KEY (tenant_id) REFERENCES tenants(id),
-            FOREIGN KEY (user_id) REFERENCES users(id)
-        )");
-
-        // System Tables
-        $db->exec("CREATE TABLE migrations (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT UNIQUE NOT NULL,
-            executed_at DATETIME DEFAULT CURRENT_TIMESTAMP
-        )");
-    }
-
-    public static function down() {
-        $db = \core\Database::connection();
-        $tables = [
-            'audit_log', 'users', 'content_pages',
-            'tenant_metrics', 'tenants', 'migrations'
-        ];
-
-        foreach ($tables as $table) {
-            $db->exec("DROP TABLE IF EXISTS $table");
+return new class {
+    public function up(\PDO $pdo): void
+    {
+        // Skip if tables already exist (for safety)
+        $stmt = $pdo->query("SHOW TABLES LIKE 'tenants'");
+        if ($stmt->fetch()) {
+            return; // Already migrated
         }
+
+        $pdo->exec("CREATE TABLE IF NOT EXISTS tenants (
+            id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+            name VARCHAR(255) NOT NULL,
+            domain VARCHAR(255) UNIQUE NOT NULL,
+            status VARCHAR(50) DEFAULT 'active',
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
+
+        $pdo->exec("CREATE TABLE IF NOT EXISTS tenant_metrics (
+            id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+            tenant_id INT UNSIGNED NOT NULL,
+            storage_used BIGINT DEFAULT 0,
+            api_calls INT DEFAULT 0,
+            FOREIGN KEY (tenant_id) REFERENCES tenants(id) ON DELETE CASCADE
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
     }
-}
+
+    public function down(\PDO $pdo): void
+    {
+        $pdo->exec("DROP TABLE IF EXISTS tenant_metrics");
+        $pdo->exec("DROP TABLE IF EXISTS tenants");
+    }
+};

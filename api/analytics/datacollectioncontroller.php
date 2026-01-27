@@ -4,7 +4,7 @@ require_once __DIR__ . '/../../services/analyticsservice.php';
 require_once __DIR__ . '/../../Repositories/PageViewRepository.php';
 require_once __DIR__ . '/../../Repositories/ClickEventRepository.php';
 require_once __DIR__ . '/../../Repositories/CustomEventRepository.php';
-require_once __DIR__ . '/../../middleware/SecurityHeadersMiddleware.php';
+require_once __DIR__ . '/../../middleware/securityheadersmiddleware.php';
 require_once __DIR__ . '/../../middleware/validationmiddleware.php';
 
 class DataCollectionController {

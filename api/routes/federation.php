@@ -1,8 +1,8 @@
 <?php
 require_once __DIR__.'/../../includes/database/middleware/tenantisolation.php';
-require_once __DIR__.'/../../utilities/TenantValidator.php';
-require_once __DIR__.'/../../services/ContentSharer.php';
-require_once __DIR__.'/../../services/VersionSynchronizer.php';
+require_once __DIR__.'/../../utilities/tenantvalidator.php';
+require_once __DIR__.'/../../services/contentsharer.php';
+require_once __DIR__.'/../../services/versionsynchronizer.php';
 
 function handleFederationRequest($request) {
     TenantIsolation::handle($request);

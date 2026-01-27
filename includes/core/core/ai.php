@@ -23,7 +23,7 @@ class AIHandler {
     /**
      * Generate text content using AI
      */
-    public function generateText($prompt, $model = 'gpt-3.5-turbo') {
+    public function generateText($prompt, $model = 'gpt-4.1-mini') {
         $cacheKey = md5($prompt . $model);
         if ($cached = $this->getFromCache($cacheKey)) {
             return $cached;

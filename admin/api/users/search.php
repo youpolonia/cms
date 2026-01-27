@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/../../../includes/security.php';
 require_once __DIR__ . '/../../../includes/rate_limit.php';
+require_once __DIR__ . '/../../../core/database.php';
 
 // Verify RBAC permissions
 if (!verifyAdminAccess('users.view')) {
@@ -15,7 +16,7 @@ applyRateLimit('user_search', 10, 60);
 header('Content-Type: application/json');
 
 try {
-    $db = getDatabaseConnection();
+    $db = \core\Database::connection();
     
     // Get and validate parameters
     $searchTerm = trim($_GET['q'] ?? '');

@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__.'/../utilities/TokenMonitor.php';
+require_once __DIR__.'/../utilities/tokenmonitor.php';
 // Read fallback models configuration from markdown file if needed
 $fallbackModelsPath = __DIR__.'/../cms_storage/fallback_models.md';
 // We don't use require_once for markdown files as they're not PHP code

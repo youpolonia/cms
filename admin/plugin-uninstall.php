@@ -6,6 +6,13 @@ require_once __DIR__ . '/../core/csrf.php';
 
 csrf_boot();
 
+
+require_once __DIR__ . '/../core/session_boot.php';
+cms_session_start('admin');
+
+// RBAC: Require admin access
+require_once __DIR__ . '/includes/permissions.php';
+cms_require_admin_role();
 // Check admin permissions
 if (!AccessChecker::hasPermission('plugins.manage')) {
     die('Access denied');

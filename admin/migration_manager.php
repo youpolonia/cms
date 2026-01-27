@@ -5,10 +5,15 @@ if (!defined('MIGRATION_MANAGER_INCLUDED')) {
 }
 
 require_once dirname(__DIR__) . '/config.php';
+require_once __DIR__ . '/../includes/init.php'; // Must be before permissions check - starts session
 require_once __DIR__ . '/../core/session_boot.php';
 require_once __DIR__ . '/../core/csrf.php';
 
 cms_session_start('admin');
+
+// RBAC: Require admin access
+require_once __DIR__ . '/includes/permissions.php';
+cms_require_admin_role();
 csrf_boot('admin');
 
 define('ADMIN_PROTECTED', true);

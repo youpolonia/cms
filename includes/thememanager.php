@@ -132,10 +132,20 @@ class ThemeManager {
         $themeName = $themeName ?? self::getActiveTheme(self::getCurrentTenantId(), self::CONTEXT_PUBLIC);
         if (!$themeName) { $themeName = 'default_public'; }
         $baseDir = dirname(__DIR__) . '/themes/' . $themeName;
+        
+        // Try views/ first, then templates/ for compatibility with AI-generated themes
         $viewFile = $baseDir . '/views/' . $viewName . '.php';
         if (!file_exists($viewFile)) {
+            $viewFile = $baseDir . '/templates/' . $viewName . '.php';
+        }
+        
+        if (!file_exists($viewFile)) {
+            // Fallback to default_public theme
             $fallbackBase = dirname(__DIR__) . '/themes/default_public';
             $fallbackView = $fallbackBase . '/views/' . $viewName . '.php';
+            if (!file_exists($fallbackView)) {
+                $fallbackView = $fallbackBase . '/templates/' . $viewName . '.php';
+            }
             if (!file_exists($fallbackView)) {
                 http_response_code(500);
                 return 'View file not found: ' . str_replace(dirname(__DIR__) . '/', '', $viewFile);
@@ -280,18 +290,28 @@ class ThemeManager {
         if (!$db) return null;
 
         try {
-            $settingKey = $context === self::CONTEXT_ADMIN ? 'admin_theme' : 'active_theme';
+            // Use system_settings table for public themes
+            if ($context === self::CONTEXT_PUBLIC) {
+                $stmt = $db->prepare("
+                    SELECT active_theme FROM system_settings
+                    WHERE tenant_id = :tenant_id OR tenant_id IS NULL
+                    ORDER BY tenant_id DESC
+                    LIMIT 1
+                ");
+                $stmt->execute([':tenant_id' => $tenantId]);
+                $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+                return $result['active_theme'] ?? null;
+            }
+            
+            // Admin theme from settings table
             $stmt = $db->prepare("
-                SELECT setting_value FROM settings
-                WHERE tenant_id = :tenant_id AND setting_key = :setting_key
+                SELECT value FROM settings
+                WHERE `key` = 'admin_theme'
                 LIMIT 1
             ");
-            $stmt->execute([
-                ':tenant_id' => $tenantId,
-                ':setting_key' => $settingKey
-            ]);
+            $stmt->execute();
             $result = $stmt->fetch(\PDO::FETCH_ASSOC);
-            return $result['setting_value'] ?? null;
+            return $result['value'] ?? null;
         } catch (\PDOException $e) {
             error_log("ThemeManager: Failed to get theme - " . $e->getMessage());
             return null;
@@ -310,16 +330,38 @@ class ThemeManager {
         if (!$db) return false;
 
         try {
-            $settingKey = $context === self::CONTEXT_ADMIN ? 'admin_theme' : 'active_theme';
+            // Use system_settings for public themes
+            if ($context === self::CONTEXT_PUBLIC) {
+                $stmt = $db->prepare("
+                    UPDATE system_settings SET active_theme = :theme_name
+                    WHERE tenant_id = :tenant_id OR tenant_id IS NULL
+                ");
+                $result = $stmt->execute([
+                    ':tenant_id' => $tenantId,
+                    ':theme_name' => $themeName
+                ]);
+                if ($stmt->rowCount() === 0) {
+                    $stmt = $db->prepare("
+                        INSERT INTO system_settings (site_title, active_theme, tenant_id)
+                        VALUES ('My CMS Site', :theme_name, :tenant_id)
+                    ");
+                    return $stmt->execute([
+                        ':tenant_id' => $tenantId,
+                        ':theme_name' => $themeName
+                    ]);
+                }
+                return $result;
+            }
+            
+            // Admin theme in settings table
             $stmt = $db->prepare("
-                INSERT INTO settings (tenant_id, setting_key, setting_value, setting_type, is_public)
-                VALUES (:tenant_id, :setting_key, :theme_name, 'theme', 1)
-                ON DUPLICATE KEY UPDATE setting_value = :theme_name
+                INSERT INTO settings (`key`, value, group_name)
+                VALUES ('admin_theme', :theme_name, 'theme')
+                ON DUPLICATE KEY UPDATE value = :theme_name2
             ");
             return $stmt->execute([
-                ':tenant_id' => $tenantId,
-                ':setting_key' => $settingKey,
-                ':theme_name' => $themeName
+                ':theme_name' => $themeName,
+                ':theme_name2' => $themeName
             ]);
         } catch (\PDOException $e) {
             error_log("ThemeManager: Failed to store theme - " . $e->getMessage());
@@ -334,6 +376,14 @@ class ThemeManager {
      * @return string|null Theme name or null if not found
      */
     public static function getActiveTheme(int $tenantId, string $context = self::CONTEXT_PUBLIC): ?string {
+        // Support theme preview via ?theme= parameter (public context only)
+        if ($context === self::CONTEXT_PUBLIC && isset($_GET['theme'])) {
+            $previewTheme = preg_replace('/[^a-z0-9_-]/', '', strtolower($_GET['theme']));
+            if ($previewTheme && self::validateTheme($previewTheme, $context)) {
+                return $previewTheme;
+            }
+        }
+        
         $theme = self::getThemeFromDb($tenantId, $context);
         if ($theme && self::validateTheme($theme, $context)) {
             return $theme;

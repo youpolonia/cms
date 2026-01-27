@@ -1,8 +1,9 @@
 <?php
-require_once __DIR__ . '/../../config.php';
+declare(strict_types=1);
 if (!defined('DEV_MODE') || DEV_MODE !== true) { http_response_code(403); exit; }
 
 namespace Admin\Controllers;
+require_once __DIR__ . '/../../config.php';
 
 use Core\EventBus;
 use Core\Auth;

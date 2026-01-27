@@ -1,6 +1,6 @@
 <?php
-require_once __DIR__.'/../../services/WorkflowApiController.php';
-require_once __DIR__.'/../../services/PromptChainEngine.php';
+require_once __DIR__.'/../../services/workflowapicontroller.php';
+require_once __DIR__.'/../../services/promptchainengine.php';
 require_once __DIR__ . '/../../includes/core/auth.php';
 
 // Initialize services

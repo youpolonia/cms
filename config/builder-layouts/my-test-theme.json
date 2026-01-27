@@ -1,0 +1,132 @@
+{
+    "name": "my test theme",
+    "slug": "my-test-theme",
+    "blocks": [
+        {
+            "id": "block_1765198871851_7jebu",
+            "type": "heroCentered",
+            "content": {
+                "heading": "Build Something Amazing",
+                "subheading": "Create beautiful websites with our drag & drop builder",
+                "buttonText": "Get Started",
+                "buttonLink": "#",
+                "secondaryButtonText": "Learn More",
+                "secondaryButtonLink": "#"
+            },
+            "styles": [],
+            "advanced": []
+        },
+        {
+            "id": "block_1765198878070_jffgf",
+            "type": "pricing3",
+            "content": {
+                "heading": "Simple Pricing",
+                "subheading": "No hidden fees",
+                "plans": [
+                    {
+                        "name": "Starter",
+                        "price": "$9",
+                        "period": "\/month",
+                        "features": [
+                            "5 Projects",
+                            "10GB Storage",
+                            "Email Support"
+                        ],
+                        "cta": "Get Started"
+                    },
+                    {
+                        "name": "Pro",
+                        "price": "$29",
+                        "period": "\/month",
+                        "features": [
+                            "Unlimited Projects",
+                            "100GB Storage",
+                            "Priority Support",
+                            "Custom Domain"
+                        ],
+                        "cta": "Get Started",
+                        "featured": true
+                    },
+                    {
+                        "name": "Enterprise",
+                        "price": "$99",
+                        "period": "\/month",
+                        "features": [
+                            "Everything in Pro",
+                            "Dedicated Account",
+                            "SLA",
+                            "Custom Integration"
+                        ],
+                        "cta": "Contact Us"
+                    }
+                ]
+            },
+            "styles": [],
+            "advanced": []
+        },
+        {
+            "id": "block_1765198882661_joan8",
+            "type": "testimonialCards",
+            "content": [],
+            "styles": [],
+            "advanced": []
+        },
+        {
+            "id": "block_1765198935302_rsal4",
+            "type": "footer",
+            "content": {
+                "logo": "Logo",
+                "columns": [
+                    {
+                        "title": "Product",
+                        "links": [
+                            "Features",
+                            "Pricing",
+                            "FAQ"
+                        ]
+                    },
+                    {
+                        "title": "Company",
+                        "links": [
+                            "About",
+                            "Team",
+                            "Careers"
+                        ]
+                    },
+                    {
+                        "title": "Legal",
+                        "links": [
+                            "Privacy",
+                            "Terms",
+                            "Cookies"
+                        ]
+                    }
+                ],
+                "copyright": "© 2024 Company. All rights reserved."
+            },
+            "styles": [],
+            "advanced": []
+        }
+    ],
+    "settings": [],
+    "globalStyles": {
+        "colors": {
+            "primary": "#7c3aed",
+            "secondary": "#6366f1",
+            "accent": "#ec4899"
+        },
+        "typography": {
+            "fontFamily": "Inter",
+            "baseFontSize": 16
+        },
+        "spacing": {
+            "containerWidth": 1200,
+            "sectionPadding": 80
+        }
+    },
+    "metadata": {
+        "created_at": "2025-12-08T13:02:51.931Z",
+        "updated_at": "2025-12-08 13:02:51",
+        "version": 1
+    }
+}

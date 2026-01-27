@@ -1,0 +1,3389 @@
+{
+    "theme": {
+        "name": "Jessie AI CMS",
+        "slug": "jessie-ai-cms-20260125-211903",
+        "version": "1.0.0",
+        "exported_at": "2026-01-25 21:23:52",
+        "design_system": {
+            "colors": {
+                "primary": "#1D4ED8",
+                "primary_dark": "#1E40AF",
+                "primary_light": "#3B82F6",
+                "secondary": "#059669",
+                "accent": "#FBBF24",
+                "background": "#FFFFFF",
+                "surface": "#F9FAFB",
+                "text": "#111827",
+                "text_muted": "#6B7280",
+                "border": "#E2E8F0",
+                "success": "#10B981",
+                "warning": "#F59E0B",
+                "error": "#EF4444",
+                "info": "#3B82F6"
+            },
+            "typography": {
+                "heading_font": "Inter",
+                "body_font": "Inter",
+                "style": "clean geometric sans-serif",
+                "sizes": {
+                    "h1": "56px",
+                    "h2": "42px",
+                    "h3": "32px",
+                    "h4": "24px",
+                    "h5": "20px",
+                    "body": "16px",
+                    "small": "14px",
+                    "xs": "12px"
+                },
+                "weights": {
+                    "light": 300,
+                    "normal": 400,
+                    "medium": 500,
+                    "semibold": 600,
+                    "bold": 700,
+                    "extrabold": 800
+                },
+                "line_heights": {
+                    "tight": 1.2,
+                    "snug": 1.375,
+                    "normal": 1.6,
+                    "relaxed": 1.75
+                }
+            },
+            "spacing": {
+                "xs": "4px",
+                "sm": "8px",
+                "md": "16px",
+                "lg": "32px",
+                "xl": "64px",
+                "2xl": "96px",
+                "3xl": "128px"
+            },
+            "borders": {
+                "sm": "6px",
+                "md": "12px",
+                "lg": "16px",
+                "xl": "24px",
+                "full": "9999px"
+            },
+            "shadows": {
+                "sm": "0 1px 3px rgba(0,0,0,0.08)",
+                "md": "0 4px 6px rgba(0,0,0,0.1)",
+                "lg": "0 10px 20px rgba(0,0,0,0.12)",
+                "xl": "0 20px 40px rgba(0,0,0,0.15)"
+            },
+            "components": {
+                "button_primary": {
+                    "background": "#6366F1",
+                    "color": "#FFFFFF",
+                    "padding": "14px 28px",
+                    "border_radius": "12px",
+                    "font_weight": 600,
+                    "text_transform": "none",
+                    "letter_spacing": "0",
+                    "shadow": "0 1px 3px rgba(0,0,0,0.08)",
+                    "hover_background": "#5456cc"
+                },
+                "button_secondary": {
+                    "background": "transparent",
+                    "color": "#6366F1",
+                    "border": "2px solid #6366F1",
+                    "padding": "12px 26px",
+                    "border_radius": "12px",
+                    "font_weight": 600,
+                    "text_transform": "none",
+                    "hover_background": "#6366F1",
+                    "hover_color": "#FFFFFF"
+                },
+                "button_ghost": {
+                    "background": "transparent",
+                    "color": "#1E293B",
+                    "padding": "12px 24px",
+                    "border_radius": "12px",
+                    "hover_background": "#F8FAFC"
+                },
+                "card": {
+                    "background": "#F8FAFC",
+                    "border_radius": "16px",
+                    "shadow": "0 4px 6px rgba(0,0,0,0.1)",
+                    "padding": "32px",
+                    "border": "1px solid #E2E8F0"
+                },
+                "input": {
+                    "background": "#FFFFFF",
+                    "border": "1px solid #E2E8F0",
+                    "border_radius": "6px",
+                    "padding": "12px 16px",
+                    "focus_border_color": "#6366F1",
+                    "focus_shadow": "0 0 0 3px rgba(99,102,241,0.15)"
+                },
+                "badge": {
+                    "background": "#9193f5",
+                    "color": "#5456cc",
+                    "padding": "4px 12px",
+                    "border_radius": "9999px",
+                    "font_size": "12px",
+                    "font_weight": 600
+                }
+            },
+            "effects": {
+                "transition_fast": "0.15s ease",
+                "transition_normal": "0.3s ease",
+                "transition_slow": "0.5s ease",
+                "hover_lift": "translateY(-4px)",
+                "hover_scale": "scale(1.02)"
+            }
+        }
+    },
+    "header": {
+        "type": "header",
+        "name": "Site Header",
+        "sections": [
+            {
+                "id": "section_10_df4c",
+                "name": "Header",
+                "design": {
+                    "background_color": "var(--color-background)",
+                    "box_shadow": "0 2px 5px rgba(0, 0, 0, 0.1)"
+                },
+                "rows": [
+                    {
+                        "id": "row_9_df42",
+                        "columns": [
+                            {
+                                "id": "col_2_db50",
+                                "width": "25%",
+                                "modules": [
+                                    {
+                                        "type": "logo",
+                                        "content": {
+                                            "image": "",
+                                            "text": "Jessie AI CMS",
+                                            "url": "/",
+                                            "alt": ""
+                                        },
+                                        "design": {
+                                            "max_height": "60px",
+                                            "max_width": "200px",
+                                            "font_family": "'Inter', sans-serif",
+                                            "font_size": "1.5rem",
+                                            "font_weight": "bold",
+                                            "text_color": "var(--color-text)"
+                                        },
+                                        "advanced": {
+                                            "css_class": "logo",
+                                            "css_id": ""
+                                        },
+                                        "id": "mod_1_db49"
+                                    }
+                                ]
+                            },
+                            {
+                                "id": "col_4_dc1a",
+                                "width": "25%",
+                                "modules": [
+                                    {
+                                        "type": "menu",
+                                        "content": {
+                                            "items": [
+                                                {
+                                                    "text": "Homepage",
+                                                    "url": "/",
+                                                    "target": "_self",
+                                                    "children": []
+                                                },
+                                                {
+                                                    "text": "About",
+                                                    "url": "/about",
+                                                    "target": "_self",
+                                                    "children": []
+                                                },
+                                                {
+                                                    "text": "Services",
+                                                    "url": "/services",
+                                                    "target": "_self",
+                                                    "children": []
+                                                },
+                                                {
+                                                    "text": "Contact",
+                                                    "url": "/contact",
+                                                    "target": "_self",
+                                                    "children": []
+                                                },
+                                                {
+                                                    "text": "Blog",
+                                                    "url": "/blog",
+                                                    "target": "_self",
+                                                    "children": []
+                                                },
+                                                {
+                                                    "text": "Portfolio",
+                                                    "url": "/portfolio",
+                                                    "target": "_self",
+                                                    "children": []
+                                                },
+                                                {
+                                                    "text": "Pricing",
+                                                    "url": "/pricing",
+                                                    "target": "_self",
+                                                    "children": []
+                                                },
+                                                {
+                                                    "text": "Team",
+                                                    "url": "/team",
+                                                    "target": "_self",
+                                                    "children": []
+                                                },
+                                                {
+                                                    "text": "Faq",
+                                                    "url": "/faq",
+                                                    "target": "_self",
+                                                    "children": []
+                                                },
+                                                {
+                                                    "text": "Testimonials",
+                                                    "url": "/testimonials",
+                                                    "target": "_self",
+                                                    "children": []
+                                                }
+                                            ],
+                                            "title": ""
+                                        },
+                                        "design": {
+                                            "orientation": "horizontal",
+                                            "alignment": "left",
+                                            "item_spacing": "20px",
+                                            "link_color": "#333333",
+                                            "link_hover_color": "#0073e6",
+                                            "font_size": "16px",
+                                            "font_weight": "500",
+                                            "dropdown_background": "#ffffff",
+                                            "dropdown_shadow": "0 4px 12px rgba(0,0,0,0.1)"
+                                        },
+                                        "advanced": {
+                                            "css_class": "nav-desktop",
+                                            "css_id": ""
+                                        },
+                                        "id": "mod_3_dc16"
+                                    }
+                                ]
+                            },
+                            {
+                                "id": "col_6_ddd4",
+                                "width": "25%",
+                                "modules": [
+                                    {
+                                        "type": "button",
+                                        "content": {
+                                            "text": "Get Started",
+                                            "url": "#",
+                                            "target": "_self",
+                                            "icon": ""
+                                        },
+                                        "design": {
+                                            "background_color": "var(--color-primary)",
+                                            "text_color": "white",
+                                            "border_radius": "5px",
+                                            "padding": "0.5rem 1rem",
+                                            "font_size": "16px",
+                                            "font_weight": "600",
+                                            "border": "none",
+                                            "hover_background": "#005bb5",
+                                            "hover_text_color": "#ffffff",
+                                            "border_style": "none",
+                                            "padding_top": "0.5rem",
+                                            "padding_bottom": "0.5rem",
+                                            "padding_right": "1rem",
+                                            "padding_left": "1rem"
+                                        },
+                                        "advanced": {
+                                            "css_class": "cta-button",
+                                            "css_id": ""
+                                        },
+                                        "id": "mod_5_ddd2"
+                                    }
+                                ]
+                            },
+                            {
+                                "id": "col_8_df39",
+                                "width": "25%",
+                                "modules": [
+                                    {
+                                        "type": "button",
+                                        "content": {
+                                            "text": "",
+                                            "url": "#",
+                                            "target": "_self",
+                                            "icon": ""
+                                        },
+                                        "design": {
+                                            "background_color": "none",
+                                            "text_color": "#ffffff",
+                                            "border_radius": "4px",
+                                            "padding": "12px 24px",
+                                            "font_size": "16px",
+                                            "font_weight": "600",
+                                            "border": "none",
+                                            "hover_background": "#005bb5",
+                                            "hover_text_color": "#ffffff",
+                                            "border_style": "none"
+                                        },
+                                        "advanced": {
+                                            "css_class": "hamburger",
+                                            "css_id": ""
+                                        },
+                                        "id": "mod_7_df2d"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "settings": {
+            "sticky": true,
+            "transparent": false,
+            "height": 80
+        }
+    },
+    "footer": {
+        "type": "footer",
+        "name": "Site Footer",
+        "sections": [
+            {
+                "id": "section_12_f317",
+                "name": "Footer",
+                "design": {
+                    "background_color": "#F9FAFB",
+                    "padding": "40px 20px",
+                    "padding_top": "40px",
+                    "padding_bottom": "40px",
+                    "padding_right": "20px",
+                    "padding_left": "20px",
+                    "font_family": "'Inter', sans-serif"
+                },
+                "rows": [
+                    {
+                        "id": "row_11_f313",
+                        "columns": [
+                            {
+                                "id": "col_3_f2b1",
+                                "width": "200px",
+                                "modules": [
+                                    {
+                                        "type": "heading",
+                                        "content": {
+                                            "text": "Navigation",
+                                            "level": "h3"
+                                        },
+                                        "design": {
+                                            "font_size": "32px",
+                                            "font_weight": "700",
+                                            "text_color": "#1D4ED8",
+                                            "text_align": "left",
+                                            "line_height": "1.3",
+                                            "letter_spacing": "0",
+                                            "text_transform": "none",
+                                            "margin_bottom": "20px"
+                                        },
+                                        "advanced": {
+                                            "css_class": "",
+                                            "css_id": ""
+                                        },
+                                        "id": "mod_1_f286"
+                                    },
+                                    {
+                                        "type": "list",
+                                        "content": {
+                                            "items": [
+                                                "Homepage",
+                                                "About",
+                                                "Services",
+                                                "Contact",
+                                                "Blog",
+                                                "Portfolio",
+                                                "Pricing",
+                                                "Team",
+                                                "FAQ",
+                                                "Testimonials"
+                                            ],
+                                            "ordered": false
+                                        },
+                                        "design": {
+                                            "icon": "",
+                                            "icon_color": "#0073e6",
+                                            "item_spacing": "10px",
+                                            "padding": "0",
+                                            "padding_top": "0",
+                                            "padding_right": "0",
+                                            "padding_bottom": "0",
+                                            "padding_left": "0",
+                                            "text_color": "#111827"
+                                        },
+                                        "advanced": {
+                                            "css_class": "",
+                                            "css_id": ""
+                                        },
+                                        "id": "mod_2_f2b0"
+                                    }
+                                ]
+                            },
+                            {
+                                "id": "col_8_f2e1",
+                                "width": "200px",
+                                "modules": [
+                                    {
+                                        "type": "heading",
+                                        "content": {
+                                            "text": "Contact Info",
+                                            "level": "h3"
+                                        },
+                                        "design": {
+                                            "font_size": "32px",
+                                            "font_weight": "700",
+                                            "text_color": "#1D4ED8",
+                                            "text_align": "left",
+                                            "line_height": "1.3",
+                                            "letter_spacing": "0",
+                                            "text_transform": "none",
+                                            "margin_bottom": "20px"
+                                        },
+                                        "advanced": {
+                                            "css_class": "",
+                                            "css_id": ""
+                                        },
+                                        "id": "mod_4_f2cb"
+                                    },
+                                    {
+                                        "type": "text",
+                                        "content": {
+                                            "text": "Email: info@jessieai.com"
+                                        },
+                                        "design": {
+                                            "font_size": "16px",
+                                            "line_height": "1.6",
+                                            "text_color": "#111827",
+                                            "text_align": "left",
+                                            "font_weight": "400",
+                                            "font_family": "inherit"
+                                        },
+                                        "advanced": {
+                                            "css_class": "",
+                                            "css_id": ""
+                                        },
+                                        "id": "mod_5_f2d6"
+                                    },
+                                    {
+                                        "type": "text",
+                                        "content": {
+                                            "text": "Phone: (123) 456-7890"
+                                        },
+                                        "design": {
+                                            "font_size": "16px",
+                                            "line_height": "1.6",
+                                            "text_color": "#111827",
+                                            "text_align": "left",
+                                            "font_weight": "400",
+                                            "font_family": "inherit"
+                                        },
+                                        "advanced": {
+                                            "css_class": "",
+                                            "css_id": ""
+                                        },
+                                        "id": "mod_6_f2db"
+                                    },
+                                    {
+                                        "type": "text",
+                                        "content": {
+                                            "text": "Address: 123 AI Lane, Tech City, TX 12345"
+                                        },
+                                        "design": {
+                                            "font_size": "16px",
+                                            "line_height": "1.6",
+                                            "text_color": "#111827",
+                                            "text_align": "left",
+                                            "font_weight": "400",
+                                            "font_family": "inherit"
+                                        },
+                                        "advanced": {
+                                            "css_class": "",
+                                            "css_id": ""
+                                        },
+                                        "id": "mod_7_f2e0"
+                                    }
+                                ]
+                            },
+                            {
+                                "id": "col_10_f312",
+                                "width": "200px",
+                                "modules": [
+                                    {
+                                        "type": "gallery",
+                                        "content": {
+                                            "images": [
+                                                {
+                                                    "src": "facebook-icon.png",
+                                                    "alt": "Facebook",
+                                                    "title": "Facebook",
+                                                    "link": "#"
+                                                },
+                                                {
+                                                    "src": "twitter-icon.png",
+                                                    "alt": "Twitter",
+                                                    "title": "Twitter",
+                                                    "link": "#"
+                                                },
+                                                {
+                                                    "src": "linkedin-icon.png",
+                                                    "alt": "LinkedIn",
+                                                    "title": "LinkedIn",
+                                                    "link": "#"
+                                                },
+                                                {
+                                                    "src": "instagram-icon.png",
+                                                    "alt": "Instagram",
+                                                    "title": "Instagram",
+                                                    "link": "#"
+                                                }
+                                            ],
+                                            "lightbox": false
+                                        },
+                                        "design": {
+                                            "columns": 4,
+                                            "columns_tablet": 2,
+                                            "columns_mobile": 1,
+                                            "gap": "15px",
+                                            "border_radius": "4px",
+                                            "hover_effect": "zoom",
+                                            "min_width": "200px"
+                                        },
+                                        "advanced": {
+                                            "css_class": "",
+                                            "css_id": ""
+                                        },
+                                        "id": "mod_9_f311"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "settings": {
+            "columns": 4,
+            "showNewsletter": true,
+            "showSocial": true
+        }
+    },
+    "pages": {
+        "homepage": {
+            "type": "page",
+            "name": "Homepage",
+            "slug": "homepage",
+            "sections": [
+                {
+                    "id": "section_10_0eab",
+                    "name": "Section",
+                    "design": [],
+                    "rows": [
+                        {
+                            "id": "row_8_0ea9",
+                            "columns": [
+                                {
+                                    "id": "col_9_0eaa",
+                                    "width": "100%",
+                                    "modules": [
+                                        {
+                                            "type": "hero",
+                                            "content": {
+                                                "heading": "Unlock Your Content's Potential with Jessie AI CMS",
+                                                "subheading": "",
+                                                "text": "Boost your productivity with AI workflows tailored for digital marketers.",
+                                                "button_text": "Get Started",
+                                                "button_url": "#services",
+                                                "secondary_button_text": "",
+                                                "secondary_button_url": "",
+                                                "background_image": "",
+                                                "video_url": ""
+                                            },
+                                            "design": {
+                                                "height": "600px",
+                                                "min_height": "400px",
+                                                "background_color": "linear",
+                                                "overlay_color": "rgba(0,0,0,0.5)",
+                                                "text_color": "#ffffff",
+                                                "text_align": "center",
+                                                "vertical_align": "center",
+                                                "content_width": "800px",
+                                                "parallax": false,
+                                                "background_position": "right"
+                                            },
+                                            "advanced": {
+                                                "css_class": "section section-hero",
+                                                "css_id": ""
+                                            },
+                                            "id": "mod_1_0c53"
+                                        },
+                                        {
+                                            "type": "testimonial",
+                                            "content": {
+                                                "quote": "Our CMS leverages AI technology to enhance your content strategy and streamline your workflows.",
+                                                "name": "",
+                                                "role": "",
+                                                "company": "",
+                                                "image": "PLACEHOLDER:about-image",
+                                                "rating": 5
+                                            },
+                                            "design": {
+                                                "style": "default",
+                                                "quote_icon": true,
+                                                "quote_color": "#0073e6",
+                                                "text_align": "center",
+                                                "image_size": "80px",
+                                                "image_border_radius": "50%"
+                                            },
+                                            "advanced": {
+                                                "css_class": "section section-about-preview",
+                                                "css_id": ""
+                                            },
+                                            "id": "mod_2_0ca2"
+                                        },
+                                        {
+                                            "type": "blurb",
+                                            "content": {
+                                                "icon": "robot",
+                                                "image": "",
+                                                "heading": "AI-Driven Workflows",
+                                                "text": "Automate your content creation process and focus on what matters most.",
+                                                "link": "",
+                                                "link_text": ""
+                                            },
+                                            "design": {
+                                                "icon_color": "#0073e6",
+                                                "icon_size": "48px",
+                                                "icon_background": "transparent",
+                                                "icon_placement": "top",
+                                                "text_align": "center",
+                                                "heading_size": "20px",
+                                                "content_padding": "20px"
+                                            },
+                                            "advanced": {
+                                                "css_class": "section section-features",
+                                                "css_id": ""
+                                            },
+                                            "id": "mod_3_0ce4"
+                                        },
+                                        {
+                                            "type": "testimonial",
+                                            "content": {
+                                                "quote": "Create stunning themes without any coding knowledge.",
+                                                "name": "",
+                                                "role": "",
+                                                "company": "",
+                                                "image": "",
+                                                "rating": 5
+                                            },
+                                            "design": {
+                                                "style": "default",
+                                                "quote_icon": true,
+                                                "quote_color": "#0073e6",
+                                                "text_align": "center",
+                                                "image_size": "80px",
+                                                "image_border_radius": "50%"
+                                            },
+                                            "advanced": {
+                                                "css_class": "section section-services-preview",
+                                                "css_id": ""
+                                            },
+                                            "id": "mod_4_0d46"
+                                        },
+                                        {
+                                            "type": "testimonial",
+                                            "content": {
+                                                "quote": "\"Jessie AI CMS has transformed our workflow and boosted our productivity!\"",
+                                                "name": "",
+                                                "role": "",
+                                                "company": "",
+                                                "image": "PLACEHOLDER:testimonial-1",
+                                                "rating": 5
+                                            },
+                                            "design": {
+                                                "style": "default",
+                                                "quote_icon": true,
+                                                "quote_color": "#0073e6",
+                                                "text_align": "center",
+                                                "image_size": "80px",
+                                                "image_border_radius": "50%"
+                                            },
+                                            "advanced": {
+                                                "css_class": "section section-testimonials",
+                                                "css_id": ""
+                                            },
+                                            "id": "mod_5_0d8f"
+                                        },
+                                        {
+                                            "type": "cta",
+                                            "content": {
+                                                "heading": "Ready to Transform Your Content Strategy?",
+                                                "subheading": "",
+                                                "text": "Join thousands of satisfied users and take your content to the next level with Jessie AI CMS.",
+                                                "button_text": "Start Your Journey",
+                                                "button_url": "#services",
+                                                "secondary_button_text": "",
+                                                "secondary_button_url": ""
+                                            },
+                                            "design": {
+                                                "style": "default",
+                                                "background_color": "#0073e6",
+                                                "text_color": "#ffffff",
+                                                "text_align": "center",
+                                                "padding": "60px 40px",
+                                                "border_radius": "0"
+                                            },
+                                            "advanced": {
+                                                "css_class": "section section-cta",
+                                                "css_id": ""
+                                            },
+                                            "id": "mod_6_0db9"
+                                        },
+                                        {
+                                            "type": "counter",
+                                            "content": {
+                                                "number": "5",
+                                                "prefix": "",
+                                                "suffix": "",
+                                                "label": "",
+                                                "start_value": 0
+                                            },
+                                            "design": {
+                                                "number_size": "48px",
+                                                "number_color": "#0073e6",
+                                                "number_weight": "700",
+                                                "label_size": "16px",
+                                                "label_color": "#666666",
+                                                "animation_duration": 2000,
+                                                "text_align": "center"
+                                            },
+                                            "advanced": {
+                                                "css_class": "section section-stats",
+                                                "css_id": ""
+                                            },
+                                            "id": "mod_7_0e94"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ],
+            "meta": {
+                "title": "Homepage",
+                "description": "",
+                "keywords": ""
+            },
+            "design_system": "modern"
+        },
+        "about": {
+            "type": "page",
+            "name": "About",
+            "slug": "about",
+            "sections": [
+                {
+                    "id": "section_29_31d8",
+                    "name": "Section",
+                    "design": [],
+                    "rows": [
+                        {
+                            "id": "row_4_2e9a",
+                            "columns": [
+                                {
+                                    "id": "col_5_2e9b",
+                                    "width": "100%",
+                                    "modules": [
+                                        {
+                                            "type": "hero",
+                                            "content": {
+                                                "heading": "Empower Your Content with Jessie AI CMS",
+                                                "subheading": "",
+                                                "text": "Boost your productivity with AI workflows designed for digital marketers and content creators.",
+                                                "button_text": "Get Started",
+                                                "button_url": "#cta",
+                                                "secondary_button_text": "",
+                                                "secondary_button_url": "",
+                                                "background_image": "",
+                                                "video_url": ""
+                                            },
+                                            "design": {
+                                                "height": "600px",
+                                                "min_height": "400px",
+                                                "background_color": "linear",
+                                                "overlay_color": "rgba(0,0,0,0.5)",
+                                                "text_color": "#ffffff",
+                                                "text_align": "center",
+                                                "vertical_align": "center",
+                                                "content_width": "800px",
+                                                "parallax": false,
+                                                "background_image": "PLACEHOLDER:background-image",
+                                                "background_repeat": "no-repeat",
+                                                "background_position": "right",
+                                                "background_size": "cover"
+                                            },
+                                            "advanced": {
+                                                "css_class": "section section-hero",
+                                                "css_id": ""
+                                            },
+                                            "id": "mod_1_2dd3"
+                                        },
+                                        {
+                                            "type": "heading",
+                                            "content": {
+                                                "text": "Our Story",
+                                                "level": "h2"
+                                            },
+                                            "design": {
+                                                "font_size": "32px",
+                                                "font_weight": "700",
+                                                "text_color": "var(--color-text)",
+                                                "text_align": "left",
+                                                "line_height": "1.3",
+                                                "letter_spacing": "0",
+                                                "text_transform": "none",
+                                                "margin_bottom": "20px",
+                                                "font_family": "'Inter', sans-serif"
+                                            },
+                                            "advanced": {
+                                                "css_class": "",
+                                                "css_id": ""
+                                            },
+                                            "id": "mod_2_2e40"
+                                        },
+                                        {
+                                            "type": "text",
+                                            "content": {
+                                                "text": "Founded in 2023, Jessie AI CMS was created to revolutionize the way content is produced and managed. Our journey began with a vision to streamline workflows through AI-driven technology, enabling marketers and content creators to focus on what truly matters."
+                                            },
+                                            "design": {
+                                                "font_size": "16px",
+                                                "line_height": "1.6",
+                                                "text_color": "var(--color-text)",
+                                                "text_align": "left",
+                                                "font_weight": "400",
+                                                "font_family": "'Inter', sans-serif"
+                                            },
+                                            "advanced": {
+                                                "css_class": "",
+                                                "css_id": ""
+                                            },
+                                            "id": "mod_3_2e52"
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "id": "row_12_2ee6",
+                            "columns": [
+                                {
+                                    "id": "col_8_2ec1",
+                                    "width": "50%",
+                                    "modules": [
+                                        {
+                                            "type": "heading",
+                                            "content": {
+                                                "text": "2023",
+                                                "level": "h3"
+                                            },
+                                            "design": {
+                                                "font_size": "32px",
+                                                "font_weight": "700",
+                                                "text_color": "var(--color-text)",
+                                                "text_align": "left",
+                                                "line_height": "1.3",
+                                                "letter_spacing": "0",
+                                                "text_transform": "none",
+                                                "margin_bottom": "20px",
+                                                "font_family": "'Inter', sans-serif"
+                                            },
+                                            "advanced": {
+                                                "css_class": "",
+                                                "css_id": ""
+                                            },
+                                            "id": "mod_6_2eb7"
+                                        },
+                                        {
+                                            "type": "text",
+                                            "content": {
+                                                "text": "Launch of Jessie AI CMS, introducing smart workflows."
+                                            },
+                                            "design": {
+                                                "font_size": "16px",
+                                                "line_height": "1.6",
+                                                "text_color": "var(--color-text)",
+                                                "text_align": "left",
+                                                "font_weight": "400",
+                                                "font_family": "'Inter', sans-serif"
+                                            },
+                                            "advanced": {
+                                                "css_class": "",
+                                                "css_id": ""
+                                            },
+                                            "id": "mod_7_2ec0"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "id": "col_11_2ee5",
+                                    "width": "50%",
+                                    "modules": [
+                                        {
+                                            "type": "heading",
+                                            "content": {
+                                                "text": "2024",
+                                                "level": "h3"
+                                            },
+                                            "design": {
+                                                "font_size": "32px",
+                                                "font_weight": "700",
+                                                "text_color": "var(--color-text)",
+                                                "text_align": "left",
+                                                "line_height": "1.3",
+                                                "letter_spacing": "0",
+                                                "text_transform": "none",
+                                                "margin_bottom": "20px",
+                                                "font_family": "'Inter', sans-serif"
+                                            },
+                                            "advanced": {
+                                                "css_class": "",
+                                                "css_id": ""
+                                            },
+                                            "id": "mod_9_2edd"
+                                        },
+                                        {
+                                            "type": "text",
+                                            "content": {
+                                                "text": "Integration with N8N for seamless automation."
+                                            },
+                                            "design": {
+                                                "font_size": "16px",
+                                                "line_height": "1.6",
+                                                "text_color": "var(--color-text)",
+                                                "text_align": "left",
+                                                "font_weight": "400",
+                                                "font_family": "'Inter', sans-serif"
+                                            },
+                                            "advanced": {
+                                                "css_class": "",
+                                                "css_id": ""
+                                            },
+                                            "id": "mod_10_2ee4"
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "id": "row_14_2f90",
+                            "columns": [
+                                {
+                                    "id": "col_15_2fa4",
+                                    "width": "100%",
+                                    "modules": [
+                                        {
+                                            "type": "heading",
+                                            "content": {
+                                                "text": "Core Values",
+                                                "level": "h2"
+                                            },
+                                            "design": {
+                                                "font_size": "32px",
+                                                "font_weight": "700",
+                                                "text_color": "var(--color-text)",
+                                                "text_align": "left",
+                                                "line_height": "1.3",
+                                                "letter_spacing": "0",
+                                                "text_transform": "none",
+                                                "margin_bottom": "20px",
+                                                "font_family": "'Inter', sans-serif"
+                                            },
+                                            "advanced": {
+                                                "css_class": "",
+                                                "css_id": ""
+                                            },
+                                            "id": "mod_13_2f76"
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "id": "row_24_3076",
+                            "columns": [
+                                {
+                                    "id": "col_17_3011",
+                                    "width": "25%",
+                                    "modules": [
+                                        {
+                                            "type": "blurb",
+                                            "content": {
+                                                "icon": "lightbulb",
+                                                "image": "",
+                                                "heading": "Innovation",
+                                                "text": "We embrace new ideas and technologies to stay ahead.",
+                                                "link": "",
+                                                "link_text": ""
+                                            },
+                                            "design": {
+                                                "icon_color": "#0073e6",
+                                                "icon_size": "48px",
+                                                "icon_background": "transparent",
+                                                "icon_placement": "top",
+                                                "text_align": "center",
+                                                "heading_size": "20px",
+                                                "content_padding": "20px"
+                                            },
+                                            "advanced": {
+                                                "css_class": "card",
+                                                "css_id": ""
+                                            },
+                                            "id": "mod_16_300f"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "id": "col_19_3057",
+                                    "width": "25%",
+                                    "modules": [
+                                        {
+                                            "type": "blurb",
+                                            "content": {
+                                                "icon": "users",
+                                                "image": "",
+                                                "heading": "Community",
+                                                "text": "We support our users by building a strong community.",
+                                                "link": "",
+                                                "link_text": ""
+                                            },
+                                            "design": {
+                                                "icon_color": "#0073e6",
+                                                "icon_size": "48px",
+                                                "icon_background": "transparent",
+                                                "icon_placement": "top",
+                                                "text_align": "center",
+                                                "heading_size": "20px",
+                                                "content_padding": "20px"
+                                            },
+                                            "advanced": {
+                                                "css_class": "card",
+                                                "css_id": ""
+                                            },
+                                            "id": "mod_18_3056"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "id": "col_21_3067",
+                                    "width": "25%",
+                                    "modules": [
+                                        {
+                                            "type": "blurb",
+                                            "content": {
+                                                "icon": "check-circle",
+                                                "image": "",
+                                                "heading": "Quality",
+                                                "text": "We deliver high-quality tools that enhance your content strategy.",
+                                                "link": "",
+                                                "link_text": ""
+                                            },
+                                            "design": {
+                                                "icon_color": "#0073e6",
+                                                "icon_size": "48px",
+                                                "icon_background": "transparent",
+                                                "icon_placement": "top",
+                                                "text_align": "center",
+                                                "heading_size": "20px",
+                                                "content_padding": "20px"
+                                            },
+                                            "advanced": {
+                                                "css_class": "card",
+                                                "css_id": ""
+                                            },
+                                            "id": "mod_20_3066"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "id": "col_23_3075",
+                                    "width": "25%",
+                                    "modules": [
+                                        {
+                                            "type": "blurb",
+                                            "content": {
+                                                "icon": "cogs",
+                                                "image": "",
+                                                "heading": "Efficiency",
+                                                "text": "Our solutions streamline your workflows for maximum productivity.",
+                                                "link": "",
+                                                "link_text": ""
+                                            },
+                                            "design": {
+                                                "icon_color": "#0073e6",
+                                                "icon_size": "48px",
+                                                "icon_background": "transparent",
+                                                "icon_placement": "top",
+                                                "text_align": "center",
+                                                "heading_size": "20px",
+                                                "content_padding": "20px"
+                                            },
+                                            "advanced": {
+                                                "css_class": "card",
+                                                "css_id": ""
+                                            },
+                                            "id": "mod_22_3074"
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "id": "row_27_31d6",
+                            "columns": [
+                                {
+                                    "id": "col_28_31d7",
+                                    "width": "100%",
+                                    "modules": [
+                                        {
+                                            "type": "gallery",
+                                            "content": {
+                                                "images": [
+                                                    {
+                                                        "src": "PLACEHOLDER:team-member-1",
+                                                        "alt": "Team Member 1",
+                                                        "title": "Team Member 1",
+                                                        "link": ""
+                                                    },
+                                                    {
+                                                        "src": "PLACEHOLDER:team-member-2",
+                                                        "alt": "Team Member 2",
+                                                        "title": "Team Member 2",
+                                                        "link": ""
+                                                    },
+                                                    {
+                                                        "src": "PLACEHOLDER:team-member-3",
+                                                        "alt": "Team Member 3",
+                                                        "title": "Team Member 3",
+                                                        "link": ""
+                                                    }
+                                                ],
+                                                "lightbox": false
+                                            },
+                                            "design": {
+                                                "columns": 3,
+                                                "columns_tablet": 2,
+                                                "columns_mobile": 1,
+                                                "gap": "15px",
+                                                "border_radius": "4px",
+                                                "hover_effect": "zoom"
+                                            },
+                                            "advanced": {
+                                                "css_class": "section section-team-preview",
+                                                "css_id": ""
+                                            },
+                                            "id": "mod_25_30c8"
+                                        },
+                                        {
+                                            "type": "cta",
+                                            "content": {
+                                                "heading": "Ready to Transform Your Content Strategy?",
+                                                "subheading": "",
+                                                "text": "Join us at Jessie AI CMS and elevate your SEO game with our advanced tools.",
+                                                "button_text": "Sign Up Now",
+                                                "button_url": "#signup",
+                                                "secondary_button_text": "",
+                                                "secondary_button_url": ""
+                                            },
+                                            "design": {
+                                                "style": "default",
+                                                "background_color": "#0073e6",
+                                                "text_color": "#ffffff",
+                                                "text_align": "center",
+                                                "padding": "60px 40px",
+                                                "border_radius": "0"
+                                            },
+                                            "advanced": {
+                                                "css_class": "section section-cta",
+                                                "css_id": ""
+                                            },
+                                            "id": "mod_26_31d5"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ],
+            "meta": {
+                "title": "About",
+                "description": "",
+                "keywords": ""
+            },
+            "design_system": "modern"
+        },
+        "services": {
+            "type": "page",
+            "name": "Services",
+            "slug": "services",
+            "sections": [
+                {
+                    "id": "section_24_4f46",
+                    "name": "Section",
+                    "design": [],
+                    "rows": [
+                        {
+                            "id": "row_4_4d93",
+                            "columns": [
+                                {
+                                    "id": "col_5_4d94",
+                                    "width": "100%",
+                                    "modules": [
+                                        {
+                                            "type": "hero",
+                                            "content": {
+                                                "heading": "Boost Your Productivity with Jessie AI CMS",
+                                                "subheading": "",
+                                                "text": "Transform your content strategy and elevate your SEO game with our advanced AI-driven workflows.",
+                                                "button_text": "Get Started",
+                                                "button_url": "#services",
+                                                "secondary_button_text": "",
+                                                "secondary_button_url": "",
+                                                "background_image": "",
+                                                "video_url": ""
+                                            },
+                                            "design": {
+                                                "height": "600px",
+                                                "min_height": "400px",
+                                                "background_color": "#1a1a2e",
+                                                "overlay_color": "rgba(0,0,0,0.5)",
+                                                "text_color": "#ffffff",
+                                                "text_align": "center",
+                                                "vertical_align": "center",
+                                                "content_width": "800px",
+                                                "parallax": false
+                                            },
+                                            "advanced": {
+                                                "css_class": "section section-hero",
+                                                "css_id": ""
+                                            },
+                                            "id": "mod_1_4ccf"
+                                        },
+                                        {
+                                            "type": "gallery",
+                                            "content": {
+                                                "images": [
+                                                    {
+                                                        "src": "PLACEHOLDER:AI%20Workflows",
+                                                        "alt": "AI Workflows",
+                                                        "title": "AI Workflows",
+                                                        "link": ""
+                                                    },
+                                                    {
+                                                        "src": "PLACEHOLDER:Theme%20Builder",
+                                                        "alt": "Theme Builder",
+                                                        "title": "Theme Builder",
+                                                        "link": ""
+                                                    },
+                                                    {
+                                                        "src": "PLACEHOLDER:SEO%20Tools",
+                                                        "alt": "SEO Tools",
+                                                        "title": "SEO Tools",
+                                                        "link": ""
+                                                    }
+                                                ],
+                                                "lightbox": false
+                                            },
+                                            "design": {
+                                                "columns": 3,
+                                                "columns_tablet": 2,
+                                                "columns_mobile": 1,
+                                                "gap": "15px",
+                                                "border_radius": "4px",
+                                                "hover_effect": "zoom"
+                                            },
+                                            "advanced": {
+                                                "css_class": "section section-services",
+                                                "css_id": ""
+                                            },
+                                            "id": "mod_2_4d00"
+                                        },
+                                        {
+                                            "type": "heading",
+                                            "content": {
+                                                "text": "How It Works",
+                                                "level": "h2"
+                                            },
+                                            "design": {
+                                                "font_size": "32px",
+                                                "font_weight": "700",
+                                                "text_color": "#222222",
+                                                "text_align": "left",
+                                                "line_height": "1.3",
+                                                "letter_spacing": "0",
+                                                "text_transform": "none",
+                                                "margin_bottom": "20px",
+                                                "font_family": "'Inter', sans-serif"
+                                            },
+                                            "advanced": {
+                                                "css_class": "",
+                                                "css_id": ""
+                                            },
+                                            "id": "mod_3_4d83"
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "id": "row_18_4e25",
+                            "columns": [
+                                {
+                                    "id": "col_9_4de3",
+                                    "width": "33.33%",
+                                    "modules": [
+                                        {
+                                            "type": "icon",
+                                            "content": {
+                                                "icon": "cog",
+                                                "link": "",
+                                                "library": "fontawesome"
+                                            },
+                                            "design": {
+                                                "size": "48px",
+                                                "color": "#0073e6",
+                                                "background": "transparent",
+                                                "border_radius": "0",
+                                                "padding": "0"
+                                            },
+                                            "advanced": {
+                                                "css_class": "fas fa-cog",
+                                                "css_id": ""
+                                            },
+                                            "id": "mod_6_4dd2"
+                                        },
+                                        {
+                                            "type": "heading",
+                                            "content": {
+                                                "text": "Set Up Your Account",
+                                                "level": "h3"
+                                            },
+                                            "design": {
+                                                "font_size": "32px",
+                                                "font_weight": "700",
+                                                "text_color": "#222222",
+                                                "text_align": "left",
+                                                "line_height": "1.3",
+                                                "letter_spacing": "0",
+                                                "text_transform": "none",
+                                                "margin_bottom": "20px",
+                                                "font_family": "'Inter', sans-serif"
+                                            },
+                                            "advanced": {
+                                                "css_class": "",
+                                                "css_id": ""
+                                            },
+                                            "id": "mod_7_4dd9"
+                                        },
+                                        {
+                                            "type": "text",
+                                            "content": {
+                                                "text": "Get started by creating your account in just a few easy steps."
+                                            },
+                                            "design": {
+                                                "font_size": "16px",
+                                                "line_height": "1.6",
+                                                "text_color": "#333333",
+                                                "text_align": "left",
+                                                "font_weight": "400",
+                                                "font_family": "'Inter', sans-serif"
+                                            },
+                                            "advanced": {
+                                                "css_class": "",
+                                                "css_id": ""
+                                            },
+                                            "id": "mod_8_4de2"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "id": "col_13_4e05",
+                                    "width": "33.33%",
+                                    "modules": [
+                                        {
+                                            "type": "icon",
+                                            "content": {
+                                                "icon": "rocket",
+                                                "link": "",
+                                                "library": "fontawesome"
+                                            },
+                                            "design": {
+                                                "size": "48px",
+                                                "color": "#0073e6",
+                                                "background": "transparent",
+                                                "border_radius": "0",
+                                                "padding": "0"
+                                            },
+                                            "advanced": {
+                                                "css_class": "fas fa-rocket",
+                                                "css_id": ""
+                                            },
+                                            "id": "mod_10_4df9"
+                                        },
+                                        {
+                                            "type": "heading",
+                                            "content": {
+                                                "text": "Integrate with N8N",
+                                                "level": "h3"
+                                            },
+                                            "design": {
+                                                "font_size": "32px",
+                                                "font_weight": "700",
+                                                "text_color": "#222222",
+                                                "text_align": "left",
+                                                "line_height": "1.3",
+                                                "letter_spacing": "0",
+                                                "text_transform": "none",
+                                                "margin_bottom": "20px",
+                                                "font_family": "'Inter', sans-serif"
+                                            },
+                                            "advanced": {
+                                                "css_class": "",
+                                                "css_id": ""
+                                            },
+                                            "id": "mod_11_4dff"
+                                        },
+                                        {
+                                            "type": "text",
+                                            "content": {
+                                                "text": "Connect your workflows with N8N for seamless automation."
+                                            },
+                                            "design": {
+                                                "font_size": "16px",
+                                                "line_height": "1.6",
+                                                "text_color": "#333333",
+                                                "text_align": "left",
+                                                "font_weight": "400",
+                                                "font_family": "'Inter', sans-serif"
+                                            },
+                                            "advanced": {
+                                                "css_class": "",
+                                                "css_id": ""
+                                            },
+                                            "id": "mod_12_4e04"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "id": "col_17_4e24",
+                                    "width": "33.33%",
+                                    "modules": [
+                                        {
+                                            "type": "icon",
+                                            "content": {
+                                                "icon": "edit",
+                                                "link": "",
+                                                "library": "fontawesome"
+                                            },
+                                            "design": {
+                                                "size": "48px",
+                                                "color": "#0073e6",
+                                                "background": "transparent",
+                                                "border_radius": "0",
+                                                "padding": "0"
+                                            },
+                                            "advanced": {
+                                                "css_class": "fas fa-edit",
+                                                "css_id": ""
+                                            },
+                                            "id": "mod_14_4e19"
+                                        },
+                                        {
+                                            "type": "heading",
+                                            "content": {
+                                                "text": "Create and Publish",
+                                                "level": "h3"
+                                            },
+                                            "design": {
+                                                "font_size": "32px",
+                                                "font_weight": "700",
+                                                "text_color": "#222222",
+                                                "text_align": "left",
+                                                "line_height": "1.3",
+                                                "letter_spacing": "0",
+                                                "text_transform": "none",
+                                                "margin_bottom": "20px",
+                                                "font_family": "'Inter', sans-serif"
+                                            },
+                                            "advanced": {
+                                                "css_class": "",
+                                                "css_id": ""
+                                            },
+                                            "id": "mod_15_4e1e"
+                                        },
+                                        {
+                                            "type": "text",
+                                            "content": {
+                                                "text": "Easily create, edit, and publish content that resonates with your audience."
+                                            },
+                                            "design": {
+                                                "font_size": "16px",
+                                                "line_height": "1.6",
+                                                "text_color": "#333333",
+                                                "text_align": "left",
+                                                "font_weight": "400",
+                                                "font_family": "'Inter', sans-serif"
+                                            },
+                                            "advanced": {
+                                                "css_class": "",
+                                                "css_id": ""
+                                            },
+                                            "id": "mod_16_4e23"
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "id": "row_22_4f44",
+                            "columns": [
+                                {
+                                    "id": "col_23_4f45",
+                                    "width": "100%",
+                                    "modules": [
+                                        {
+                                            "type": "pricing",
+                                            "content": {
+                                                "title": "Basic Plan",
+                                                "subtitle": "",
+                                                "price": "",
+                                                "currency": "$",
+                                                "period": "/month",
+                                                "features": [],
+                                                "button_text": "",
+                                                "button_url": "",
+                                                "featured": false,
+                                                "badge": ""
+                                            },
+                                            "design": {
+                                                "style": "default",
+                                                "background_color": "#ffffff",
+                                                "featured_background": "#f0f4ff",
+                                                "border_color": "#e0e0e0",
+                                                "border_radius": "8px",
+                                                "price_color": "#0073e6",
+                                                "price_size": "48px",
+                                                "header_background": "#f8f9fa"
+                                            },
+                                            "advanced": {
+                                                "css_class": "section section-pricing",
+                                                "css_id": ""
+                                            },
+                                            "id": "mod_19_4efb"
+                                        },
+                                        {
+                                            "type": "accordion",
+                                            "content": {
+                                                "items": [],
+                                                "multiple_open": false
+                                            },
+                                            "design": {
+                                                "style": "default",
+                                                "icon_position": "right",
+                                                "border_color": "#e0e0e0",
+                                                "active_color": "#0073e6",
+                                                "header_background": "#f8f9fa",
+                                                "content_background": "#ffffff"
+                                            },
+                                            "advanced": {
+                                                "css_class": "section section-faq",
+                                                "css_id": ""
+                                            },
+                                            "id": "mod_20_4f16"
+                                        },
+                                        {
+                                            "type": "cta",
+                                            "content": {
+                                                "heading": "Ready to Transform Your Content Strategy?",
+                                                "subheading": "",
+                                                "text": "Join Jessie AI CMS today and elevate your digital marketing efforts.",
+                                                "button_text": "Get Started Now",
+                                                "button_url": "#get-started",
+                                                "secondary_button_text": "",
+                                                "secondary_button_url": ""
+                                            },
+                                            "design": {
+                                                "style": "default",
+                                                "background_color": "#0073e6",
+                                                "text_color": "#ffffff",
+                                                "text_align": "center",
+                                                "padding": "60px 40px",
+                                                "border_radius": "0"
+                                            },
+                                            "advanced": {
+                                                "css_class": "section section-cta",
+                                                "css_id": ""
+                                            },
+                                            "id": "mod_21_4f43"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ],
+            "meta": {
+                "title": "Services",
+                "description": "",
+                "keywords": ""
+            },
+            "design_system": "modern"
+        },
+        "contact": {
+            "type": "page",
+            "name": "Contact",
+            "slug": "contact",
+            "sections": [
+                {
+                    "id": "section_14_6889",
+                    "name": "Section",
+                    "design": [],
+                    "rows": [
+                        {
+                            "id": "row_2_6799",
+                            "columns": [
+                                {
+                                    "id": "col_3_679a",
+                                    "width": "100%",
+                                    "modules": [
+                                        {
+                                            "type": "hero",
+                                            "content": {
+                                                "heading": "Get in Touch with Jessie AI CMS",
+                                                "subheading": "",
+                                                "text": "Boost your productivity and elevate your content strategy today!",
+                                                "button_text": "Contact Us",
+                                                "button_url": "#contact-form",
+                                                "secondary_button_text": "",
+                                                "secondary_button_url": "",
+                                                "background_image": "",
+                                                "video_url": ""
+                                            },
+                                            "design": {
+                                                "height": "600px",
+                                                "min_height": "400px",
+                                                "background_color": "linear",
+                                                "overlay_color": "rgba(0,0,0,0.5)",
+                                                "text_color": "#ffffff",
+                                                "text_align": "center",
+                                                "vertical_align": "center",
+                                                "content_width": "800px",
+                                                "parallax": false,
+                                                "background_position": "bottom right",
+                                                "padding": "50px 0",
+                                                "padding_top": "50px",
+                                                "padding_bottom": "50px",
+                                                "padding_right": "0",
+                                                "padding_left": "0"
+                                            },
+                                            "advanced": {
+                                                "css_class": "section section-hero",
+                                                "css_id": ""
+                                            },
+                                            "id": "mod_1_6758"
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "id": "row_9_6803",
+                            "columns": [
+                                {
+                                    "id": "col_5_67cd",
+                                    "width": "50%",
+                                    "modules": [
+                                        {
+                                            "type": "blurb",
+                                            "content": {
+                                                "icon": "map-marker-alt",
+                                                "image": "",
+                                                "heading": "Contact Information",
+                                                "text": "123 AI Lane, Tech City, CA 90210",
+                                                "link": "",
+                                                "link_text": ""
+                                            },
+                                            "design": {
+                                                "icon_color": "#0073e6",
+                                                "icon_size": "48px",
+                                                "icon_background": "transparent",
+                                                "icon_placement": "top",
+                                                "text_align": "center",
+                                                "heading_size": "20px",
+                                                "content_padding": "20px",
+                                                "padding": "20px",
+                                                "padding_top": "20px",
+                                                "padding_right": "20px",
+                                                "padding_bottom": "20px",
+                                                "padding_left": "20px",
+                                                "border_radius": "12px",
+                                                "box_shadow": "0 2px 10px rgba(0, 0, 0, 0.1)"
+                                            },
+                                            "advanced": {
+                                                "css_class": "card",
+                                                "css_id": ""
+                                            },
+                                            "id": "mod_4_67cc"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "id": "col_8_6802",
+                                    "width": "50%",
+                                    "modules": [
+                                        {
+                                            "type": "heading",
+                                            "content": {
+                                                "text": "Business Hours",
+                                                "level": "h3"
+                                            },
+                                            "design": {
+                                                "font_size": "32px",
+                                                "font_weight": "700",
+                                                "text_color": "#111827",
+                                                "text_align": "left",
+                                                "line_height": "1.3",
+                                                "letter_spacing": "0",
+                                                "text_transform": "none",
+                                                "margin_bottom": "20px",
+                                                "font_family": "'Inter', sans-serif"
+                                            },
+                                            "advanced": {
+                                                "css_class": "",
+                                                "css_id": ""
+                                            },
+                                            "id": "mod_6_67f1"
+                                        },
+                                        {
+                                            "type": "table",
+                                            "content": {
+                                                "headers": [],
+                                                "rows": [
+                                                    [
+                                                        "Monday - Friday",
+                                                        "9 AM - 5 PM"
+                                                    ],
+                                                    [
+                                                        "Saturday",
+                                                        "10 AM - 4 PM"
+                                                    ],
+                                                    [
+                                                        "Sunday",
+                                                        "Closed"
+                                                    ]
+                                                ]
+                                            },
+                                            "design": {
+                                                "width": "100%"
+                                            },
+                                            "id": "mod_7_6801"
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "id": "row_12_6887",
+                            "columns": [
+                                {
+                                    "id": "col_13_6888",
+                                    "width": "100%",
+                                    "modules": [
+                                        {
+                                            "type": "form",
+                                            "content": {
+                                                "title": "Send Us a Message",
+                                                "fields": [
+                                                    {
+                                                        "type": "text",
+                                                        "name": "name",
+                                                        "label": "",
+                                                        "placeholder": "Your Name",
+                                                        "required": true,
+                                                        "options": []
+                                                    },
+                                                    {
+                                                        "type": "email",
+                                                        "name": "email",
+                                                        "label": "",
+                                                        "placeholder": "Your Email",
+                                                        "required": true,
+                                                        "options": []
+                                                    },
+                                                    {
+                                                        "type": "tel",
+                                                        "name": "phone",
+                                                        "label": "",
+                                                        "placeholder": "Your Phone",
+                                                        "required": true,
+                                                        "options": []
+                                                    },
+                                                    {
+                                                        "type": "textarea",
+                                                        "name": "message",
+                                                        "label": "",
+                                                        "placeholder": "Your Message",
+                                                        "required": true,
+                                                        "options": []
+                                                    }
+                                                ],
+                                                "submit_text": "Submit",
+                                                "action": "",
+                                                "method": "POST",
+                                                "success_message": "Thank you for your submission!",
+                                                "error_message": "Please check your input and try again."
+                                            },
+                                            "design": {
+                                                "style": "default",
+                                                "label_position": "top",
+                                                "field_background": "#ffffff",
+                                                "field_border": "1px solid #ddd",
+                                                "field_border_radius": "4px",
+                                                "button_style": "filled"
+                                            },
+                                            "advanced": {
+                                                "css_class": "section section-contact-form",
+                                                "css_id": "contact-form"
+                                            },
+                                            "id": "mod_10_6828"
+                                        },
+                                        {
+                                            "type": "map",
+                                            "content": {
+                                                "address": "",
+                                                "lat": "",
+                                                "lng": "",
+                                                "zoom": 14,
+                                                "embed_url": "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3151.8354345094963!2d144.9537353153187!3d-37.81720997975197!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6ad642af0f017d05%3A0x5045675218ceed30!2sMelbourne%20CBD%2C%20Melbourne%20VIC%2C%20Australia!5e0!3m2!1sen!2sus!4v1616586198623!5m2!1sen!2sus",
+                                                "marker_title": ""
+                                            },
+                                            "design": {
+                                                "height": "400px",
+                                                "border_radius": "0",
+                                                "grayscale": false,
+                                                "margin_top": "40px"
+                                            },
+                                            "advanced": {
+                                                "css_class": "section section-map",
+                                                "css_id": ""
+                                            },
+                                            "id": "mod_11_6885"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ],
+            "meta": {
+                "title": "Contact",
+                "description": "",
+                "keywords": ""
+            },
+            "design_system": "modern"
+        },
+        "blog": {
+            "type": "page",
+            "name": "Blog",
+            "slug": "blog",
+            "sections": [
+                {
+                    "id": "section_22_84a3",
+                    "name": "Section",
+                    "design": [],
+                    "rows": [
+                        {
+                            "id": "row_8_83cc",
+                            "columns": [
+                                {
+                                    "id": "col_9_83cd",
+                                    "width": "100%",
+                                    "modules": [
+                                        {
+                                            "type": "hero",
+                                            "content": {
+                                                "heading": "Boost Your Productivity with AI Workflows",
+                                                "subheading": "",
+                                                "text": "Transform your content strategy with our theme builder and elevate your SEO game with cutting-edge AI technology.",
+                                                "button_text": "Get Started",
+                                                "button_url": "#newsletter",
+                                                "secondary_button_text": "",
+                                                "secondary_button_url": "",
+                                                "background_image": "",
+                                                "video_url": ""
+                                            },
+                                            "design": {
+                                                "height": "600px",
+                                                "min_height": "400px",
+                                                "background_color": "#1a1a2e",
+                                                "overlay_color": "rgba(0,0,0,0.5)",
+                                                "text_color": "#ffffff",
+                                                "text_align": "center",
+                                                "vertical_align": "center",
+                                                "content_width": "800px",
+                                                "parallax": false
+                                            },
+                                            "advanced": {
+                                                "css_class": "section section-hero",
+                                                "css_id": ""
+                                            },
+                                            "id": "mod_1_81ee"
+                                        },
+                                        {
+                                            "type": "image",
+                                            "content": {
+                                                "src": "PLACEHOLDER:featured-post",
+                                                "alt": "Featured Blog Post",
+                                                "title": "",
+                                                "link": ""
+                                            },
+                                            "design": {
+                                                "width": "100%",
+                                                "height": "auto",
+                                                "max_width": "100%",
+                                                "border_radius": "12px",
+                                                "object_fit": "cover",
+                                                "box_shadow": "none"
+                                            },
+                                            "advanced": {
+                                                "css_class": "",
+                                                "css_id": "",
+                                                "lazy_load": false
+                                            },
+                                            "id": "mod_2_8292"
+                                        },
+                                        {
+                                            "type": "heading",
+                                            "content": {
+                                                "text": "Unleash the Power of AI in Your Marketing Strategy",
+                                                "level": "h2"
+                                            },
+                                            "design": {
+                                                "font_size": "32px",
+                                                "font_weight": "700",
+                                                "text_color": "var(--color-text)",
+                                                "text_align": "left",
+                                                "line_height": "1.3",
+                                                "letter_spacing": "0",
+                                                "text_transform": "none",
+                                                "margin_bottom": "20px",
+                                                "font_family": "'Inter', sans-serif",
+                                                "margin_top": "15px"
+                                            },
+                                            "advanced": {
+                                                "css_class": "",
+                                                "css_id": ""
+                                            },
+                                            "id": "mod_3_82ad"
+                                        },
+                                        {
+                                            "type": "text",
+                                            "content": {
+                                                "text": "Discover how Jessie AI CMS can streamline your content creation process and enhance your SEO performance."
+                                            },
+                                            "design": {
+                                                "font_size": "18px",
+                                                "line_height": "1.6",
+                                                "text_color": "var(--color-text)",
+                                                "text_align": "left",
+                                                "font_weight": "400",
+                                                "font_family": "'Inter', sans-serif"
+                                            },
+                                            "advanced": {
+                                                "css_class": "",
+                                                "css_id": ""
+                                            },
+                                            "id": "mod_4_82c8"
+                                        },
+                                        {
+                                            "type": "button",
+                                            "content": {
+                                                "text": "Read More",
+                                                "url": "#featured-post",
+                                                "target": "_self",
+                                                "icon": ""
+                                            },
+                                            "design": {
+                                                "background_color": "#0073e6",
+                                                "text_color": "#ffffff",
+                                                "border_radius": "8px",
+                                                "padding": "12px 24px",
+                                                "font_size": "16px",
+                                                "font_weight": "600",
+                                                "border": "none",
+                                                "hover_background": "#005bb5",
+                                                "hover_text_color": "#ffffff"
+                                            },
+                                            "advanced": {
+                                                "css_class": "btn btn-secondary",
+                                                "css_id": ""
+                                            },
+                                            "id": "mod_5_8302"
+                                        },
+                                        {
+                                            "type": "gallery",
+                                            "content": {
+                                                "images": [
+                                                    {
+                                                        "src": "PLACEHOLDER:post-1",
+                                                        "alt": "Blog Post 1",
+                                                        "title": "Blog Post 1",
+                                                        "link": ""
+                                                    },
+                                                    {
+                                                        "src": "PLACEHOLDER:post-2",
+                                                        "alt": "Blog Post 2",
+                                                        "title": "Blog Post 2",
+                                                        "link": ""
+                                                    },
+                                                    {
+                                                        "src": "PLACEHOLDER:post-3",
+                                                        "alt": "Blog Post 3",
+                                                        "title": "Blog Post 3",
+                                                        "link": ""
+                                                    }
+                                                ],
+                                                "lightbox": false
+                                            },
+                                            "design": {
+                                                "columns": 3,
+                                                "columns_tablet": 2,
+                                                "columns_mobile": 1,
+                                                "gap": "15px",
+                                                "border_radius": "4px",
+                                                "hover_effect": "zoom"
+                                            },
+                                            "advanced": {
+                                                "css_class": "section section-posts-grid",
+                                                "css_id": ""
+                                            },
+                                            "id": "mod_6_832c"
+                                        },
+                                        {
+                                            "type": "heading",
+                                            "content": {
+                                                "text": "Explore Categories",
+                                                "level": "h3"
+                                            },
+                                            "design": {
+                                                "font_size": "28px",
+                                                "font_weight": "700",
+                                                "text_color": "var(--color-text)",
+                                                "text_align": "left",
+                                                "line_height": "1.3",
+                                                "letter_spacing": "0",
+                                                "text_transform": "none",
+                                                "margin_bottom": "20px",
+                                                "font_family": "'Inter', sans-serif"
+                                            },
+                                            "advanced": {
+                                                "css_class": "",
+                                                "css_id": ""
+                                            },
+                                            "id": "mod_7_83ba"
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "id": "row_18_8476",
+                            "columns": [
+                                {
+                                    "id": "col_11_8408",
+                                    "width": "25%",
+                                    "modules": [
+                                        {
+                                            "type": "heading",
+                                            "content": {
+                                                "text": "AI Workflows",
+                                                "level": "h4"
+                                            },
+                                            "design": {
+                                                "font_size": "22px",
+                                                "font_weight": "700",
+                                                "text_color": "var(--color-text)",
+                                                "text_align": "left",
+                                                "line_height": "1.3",
+                                                "letter_spacing": "0",
+                                                "text_transform": "none",
+                                                "margin_bottom": "20px",
+                                                "font_family": "'Inter', sans-serif"
+                                            },
+                                            "advanced": {
+                                                "css_class": "",
+                                                "css_id": ""
+                                            },
+                                            "id": "mod_10_8405"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "id": "col_13_8433",
+                                    "width": "25%",
+                                    "modules": [
+                                        {
+                                            "type": "heading",
+                                            "content": {
+                                                "text": "Content Strategy",
+                                                "level": "h4"
+                                            },
+                                            "design": {
+                                                "font_size": "22px",
+                                                "font_weight": "700",
+                                                "text_color": "var(--color-text)",
+                                                "text_align": "left",
+                                                "line_height": "1.3",
+                                                "letter_spacing": "0",
+                                                "text_transform": "none",
+                                                "margin_bottom": "20px",
+                                                "font_family": "'Inter', sans-serif"
+                                            },
+                                            "advanced": {
+                                                "css_class": "",
+                                                "css_id": ""
+                                            },
+                                            "id": "mod_12_8432"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "id": "col_15_8455",
+                                    "width": "25%",
+                                    "modules": [
+                                        {
+                                            "type": "heading",
+                                            "content": {
+                                                "text": "SEO Tips",
+                                                "level": "h4"
+                                            },
+                                            "design": {
+                                                "font_size": "22px",
+                                                "font_weight": "700",
+                                                "text_color": "var(--color-text)",
+                                                "text_align": "left",
+                                                "line_height": "1.3",
+                                                "letter_spacing": "0",
+                                                "text_transform": "none",
+                                                "margin_bottom": "20px",
+                                                "font_family": "'Inter', sans-serif"
+                                            },
+                                            "advanced": {
+                                                "css_class": "",
+                                                "css_id": ""
+                                            },
+                                            "id": "mod_14_8454"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "id": "col_17_8475",
+                                    "width": "25%",
+                                    "modules": [
+                                        {
+                                            "type": "heading",
+                                            "content": {
+                                                "text": "N8N Automation",
+                                                "level": "h4"
+                                            },
+                                            "design": {
+                                                "font_size": "22px",
+                                                "font_weight": "700",
+                                                "text_color": "var(--color-text)",
+                                                "text_align": "left",
+                                                "line_height": "1.3",
+                                                "letter_spacing": "0",
+                                                "text_transform": "none",
+                                                "margin_bottom": "20px",
+                                                "font_family": "'Inter', sans-serif"
+                                            },
+                                            "advanced": {
+                                                "css_class": "",
+                                                "css_id": ""
+                                            },
+                                            "id": "mod_16_8474"
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "id": "row_20_84a1",
+                            "columns": [
+                                {
+                                    "id": "col_21_84a2",
+                                    "width": "100%",
+                                    "modules": [
+                                        {
+                                            "type": "form",
+                                            "content": {
+                                                "title": "Subscribe to Our Newsletter",
+                                                "fields": [
+                                                    {
+                                                        "type": "email",
+                                                        "name": "",
+                                                        "label": "",
+                                                        "placeholder": "Enter your email",
+                                                        "required": true,
+                                                        "options": []
+                                                    }
+                                                ],
+                                                "submit_text": "Subscribe",
+                                                "action": "#",
+                                                "method": "POST",
+                                                "success_message": "Thank you for your submission!",
+                                                "error_message": "Please check your input and try again."
+                                            },
+                                            "design": {
+                                                "style": "default",
+                                                "label_position": "top",
+                                                "field_background": "#ffffff",
+                                                "field_border": "1px solid #ddd",
+                                                "field_border_radius": "4px",
+                                                "button_style": "filled"
+                                            },
+                                            "advanced": {
+                                                "css_class": "section section-newsletter",
+                                                "css_id": "newsletter"
+                                            },
+                                            "id": "mod_19_849f"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ],
+            "meta": {
+                "title": "Blog",
+                "description": "",
+                "keywords": ""
+            },
+            "design_system": "modern"
+        },
+        "portfolio": {
+            "type": "page",
+            "name": "Portfolio",
+            "slug": "portfolio",
+            "sections": [
+                {
+                    "id": "section_18_ad6c",
+                    "name": "Section",
+                    "design": [],
+                    "rows": [
+                        {
+                            "id": "row_4_acb2",
+                            "columns": [
+                                {
+                                    "id": "col_5_acb3",
+                                    "width": "100%",
+                                    "modules": [
+                                        {
+                                            "type": "hero",
+                                            "content": {
+                                                "heading": "Transform Your Content Strategy",
+                                                "subheading": "",
+                                                "text": "Boost your productivity with AI workflows and elevate your SEO game.",
+                                                "button_text": "Explore Our Solutions",
+                                                "button_url": "#portfolio",
+                                                "secondary_button_text": "",
+                                                "secondary_button_url": "",
+                                                "background_image": "",
+                                                "video_url": ""
+                                            },
+                                            "design": {
+                                                "height": "600px",
+                                                "min_height": "400px",
+                                                "background_color": "linear",
+                                                "overlay_color": "rgba(0,0,0,0.5)",
+                                                "text_color": "#ffffff",
+                                                "text_align": "center",
+                                                "vertical_align": "center",
+                                                "content_width": "800px",
+                                                "parallax": false,
+                                                "background_position": "bottom right"
+                                            },
+                                            "advanced": {
+                                                "css_class": "section section-hero",
+                                                "css_id": ""
+                                            },
+                                            "id": "mod_1_abaa"
+                                        },
+                                        {
+                                            "type": "gallery",
+                                            "content": {
+                                                "images": [
+                                                    {
+                                                        "src": "PLACEHOLDER:AI%20Workflows",
+                                                        "alt": "AI Workflows",
+                                                        "title": "AI Workflows",
+                                                        "link": ""
+                                                    },
+                                                    {
+                                                        "src": "PLACEHOLDER:N8N%20Integration",
+                                                        "alt": "N8N Integration",
+                                                        "title": "N8N Integration",
+                                                        "link": ""
+                                                    },
+                                                    {
+                                                        "src": "PLACEHOLDER:SEO%20Tools",
+                                                        "alt": "SEO Tools",
+                                                        "title": "SEO Tools",
+                                                        "link": ""
+                                                    }
+                                                ],
+                                                "lightbox": false
+                                            },
+                                            "design": {
+                                                "columns": 3,
+                                                "columns_tablet": 2,
+                                                "columns_mobile": 1,
+                                                "gap": "15px",
+                                                "border_radius": "4px",
+                                                "hover_effect": "zoom"
+                                            },
+                                            "advanced": {
+                                                "css_class": "section section-portfolio",
+                                                "css_id": ""
+                                            },
+                                            "id": "mod_2_abf4"
+                                        },
+                                        {
+                                            "type": "heading",
+                                            "content": {
+                                                "text": "How It Works",
+                                                "level": "h2"
+                                            },
+                                            "design": {
+                                                "font_size": "32px",
+                                                "font_weight": "700",
+                                                "text_color": "var(--color-text)",
+                                                "text_align": "left",
+                                                "line_height": "1.3",
+                                                "letter_spacing": "0",
+                                                "text_transform": "none",
+                                                "margin_bottom": "20px",
+                                                "font_family": "'Inter', sans-serif"
+                                            },
+                                            "advanced": {
+                                                "css_class": "",
+                                                "css_id": ""
+                                            },
+                                            "id": "mod_3_ac9a"
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "id": "row_14_ad15",
+                            "columns": [
+                                {
+                                    "id": "col_7_acd3",
+                                    "width": "25%",
+                                    "modules": [
+                                        {
+                                            "type": "blurb",
+                                            "content": {
+                                                "icon": "brain",
+                                                "image": "",
+                                                "heading": "1. AI-Powered Ideas",
+                                                "text": "Generate content ideas using AI technology.",
+                                                "link": "",
+                                                "link_text": ""
+                                            },
+                                            "design": {
+                                                "icon_color": "#0073e6",
+                                                "icon_size": "48px",
+                                                "icon_background": "transparent",
+                                                "icon_placement": "top",
+                                                "text_align": "center",
+                                                "heading_size": "20px",
+                                                "content_padding": "20px"
+                                            },
+                                            "advanced": {
+                                                "css_class": "card",
+                                                "css_id": ""
+                                            },
+                                            "id": "mod_6_acd2"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "id": "col_9_aceb",
+                                    "width": "25%",
+                                    "modules": [
+                                        {
+                                            "type": "blurb",
+                                            "content": {
+                                                "icon": "cogs",
+                                                "image": "",
+                                                "heading": "2. Seamless Integration",
+                                                "text": "Integrate with N8N for automation.",
+                                                "link": "",
+                                                "link_text": ""
+                                            },
+                                            "design": {
+                                                "icon_color": "#0073e6",
+                                                "icon_size": "48px",
+                                                "icon_background": "transparent",
+                                                "icon_placement": "top",
+                                                "text_align": "center",
+                                                "heading_size": "20px",
+                                                "content_padding": "20px"
+                                            },
+                                            "advanced": {
+                                                "css_class": "card",
+                                                "css_id": ""
+                                            },
+                                            "id": "mod_8_acea"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "id": "col_11_ad00",
+                                    "width": "25%",
+                                    "modules": [
+                                        {
+                                            "type": "blurb",
+                                            "content": {
+                                                "icon": "chart-line",
+                                                "image": "",
+                                                "heading": "3. Optimize Content",
+                                                "text": "Use advanced SEO tools to optimize your content.",
+                                                "link": "",
+                                                "link_text": ""
+                                            },
+                                            "design": {
+                                                "icon_color": "#0073e6",
+                                                "icon_size": "48px",
+                                                "icon_background": "transparent",
+                                                "icon_placement": "top",
+                                                "text_align": "center",
+                                                "heading_size": "20px",
+                                                "content_padding": "20px"
+                                            },
+                                            "advanced": {
+                                                "css_class": "card",
+                                                "css_id": ""
+                                            },
+                                            "id": "mod_10_acff"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "id": "col_13_ad14",
+                                    "width": "25%",
+                                    "modules": [
+                                        {
+                                            "type": "blurb",
+                                            "content": {
+                                                "icon": "paper-plane",
+                                                "image": "",
+                                                "heading": "4. Launch & Analyze",
+                                                "text": "Launch your campaigns and analyze the results.",
+                                                "link": "",
+                                                "link_text": ""
+                                            },
+                                            "design": {
+                                                "icon_color": "#0073e6",
+                                                "icon_size": "48px",
+                                                "icon_background": "transparent",
+                                                "icon_placement": "top",
+                                                "text_align": "center",
+                                                "heading_size": "20px",
+                                                "content_padding": "20px"
+                                            },
+                                            "advanced": {
+                                                "css_class": "card",
+                                                "css_id": ""
+                                            },
+                                            "id": "mod_12_ad13"
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "id": "row_16_ad6a",
+                            "columns": [
+                                {
+                                    "id": "col_17_ad6b",
+                                    "width": "100%",
+                                    "modules": [
+                                        {
+                                            "type": "cta",
+                                            "content": {
+                                                "heading": "Ready to Elevate Your Content?",
+                                                "subheading": "",
+                                                "text": "Join us at Jessie AI CMS and transform your digital marketing strategy today.",
+                                                "button_text": "Get Started",
+                                                "button_url": "#contact",
+                                                "secondary_button_text": "",
+                                                "secondary_button_url": ""
+                                            },
+                                            "design": {
+                                                "style": "default",
+                                                "background_color": "var(--color-primary)",
+                                                "text_color": "#ffffff",
+                                                "text_align": "center",
+                                                "padding": "60px 40px",
+                                                "border_radius": "0"
+                                            },
+                                            "advanced": {
+                                                "css_class": "section section-cta",
+                                                "css_id": ""
+                                            },
+                                            "id": "mod_15_ad68"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ],
+            "meta": {
+                "title": "Portfolio",
+                "description": "",
+                "keywords": ""
+            },
+            "design_system": "modern"
+        },
+        "pricing": {
+            "type": "page",
+            "name": "Pricing",
+            "slug": "pricing",
+            "sections": [
+                {
+                    "id": "section_9_e18f",
+                    "name": "Section",
+                    "design": [],
+                    "rows": [
+                        {
+                            "id": "row_7_e189",
+                            "columns": [
+                                {
+                                    "id": "col_8_e18b",
+                                    "width": "100%",
+                                    "modules": [
+                                        {
+                                            "type": "hero",
+                                            "content": {
+                                                "heading": "Unlock Your Content's Potential with Jessie AI CMS",
+                                                "subheading": "",
+                                                "text": "Boost your productivity with AI workflows and transform your content strategy.",
+                                                "button_text": "Get Started",
+                                                "button_url": "#pricing",
+                                                "secondary_button_text": "",
+                                                "secondary_button_url": "",
+                                                "background_image": "",
+                                                "video_url": ""
+                                            },
+                                            "design": {
+                                                "height": "600px",
+                                                "min_height": "400px",
+                                                "background_color": "linear",
+                                                "overlay_color": "rgba(0,0,0,0.5)",
+                                                "text_color": "#ffffff",
+                                                "text_align": "center",
+                                                "vertical_align": "center",
+                                                "content_width": "800px",
+                                                "parallax": false,
+                                                "background_position": "right"
+                                            },
+                                            "advanced": {
+                                                "css_class": "section section-hero",
+                                                "css_id": ""
+                                            },
+                                            "id": "mod_1_dd25"
+                                        },
+                                        {
+                                            "type": "pricing",
+                                            "content": {
+                                                "title": "Basic",
+                                                "subtitle": "",
+                                                "price": "19",
+                                                "currency": "$",
+                                                "period": "/month",
+                                                "features": [
+                                                    {
+                                                        "text": "AI-driven workflows",
+                                                        "included": true
+                                                    },
+                                                    {
+                                                        "text": "Basic SEO tools",
+                                                        "included": true
+                                                    },
+                                                    {
+                                                        "text": "Theme builder access",
+                                                        "included": true
+                                                    }
+                                                ],
+                                                "button_text": "Choose Plan",
+                                                "button_url": "#",
+                                                "featured": false,
+                                                "badge": ""
+                                            },
+                                            "design": {
+                                                "style": "default",
+                                                "background_color": "#ffffff",
+                                                "featured_background": "#f0f4ff",
+                                                "border_color": "#e0e0e0",
+                                                "border_radius": "8px",
+                                                "price_color": "#0073e6",
+                                                "price_size": "48px",
+                                                "header_background": "#f8f9fa"
+                                            },
+                                            "advanced": {
+                                                "css_class": "section section-pricing",
+                                                "css_id": ""
+                                            },
+                                            "id": "mod_2_dec6"
+                                        },
+                                        {
+                                            "type": "heading",
+                                            "content": {
+                                                "text": "Feature Comparison",
+                                                "level": "h2"
+                                            },
+                                            "design": {
+                                                "font_size": "32px",
+                                                "font_weight": "700",
+                                                "text_color": "#222222",
+                                                "text_align": "left",
+                                                "line_height": "1.3",
+                                                "letter_spacing": "0",
+                                                "text_transform": "none",
+                                                "margin_bottom": "20px"
+                                            },
+                                            "advanced": {
+                                                "css_class": "text-3xl font-bold text-center",
+                                                "css_id": ""
+                                            },
+                                            "id": "mod_3_df2e"
+                                        },
+                                        {
+                                            "type": "table",
+                                            "content": {
+                                                "headers": [
+                                                    "Feature",
+                                                    "Basic",
+                                                    "Pro",
+                                                    "Enterprise"
+                                                ],
+                                                "rows": [
+                                                    [
+                                                        "AI Workflows",
+                                                        "✔️",
+                                                        "✔️",
+                                                        "✔️"
+                                                    ],
+                                                    [
+                                                        "N8N Integration",
+                                                        "❌",
+                                                        "✔️",
+                                                        "✔️"
+                                                    ],
+                                                    [
+                                                        "Advanced SEO Tools",
+                                                        "❌",
+                                                        "✔️",
+                                                        "✔️"
+                                                    ]
+                                                ]
+                                            },
+                                            "design": [],
+                                            "id": "mod_4_df5c"
+                                        },
+                                        {
+                                            "type": "accordion",
+                                            "content": {
+                                                "items": [
+                                                    {
+                                                        "title": "What is Jessie AI CMS?",
+                                                        "content": "Jessie AI CMS is a content management system designed to enhance your digital marketing efforts with AI-driven workflows and advanced SEO tools.",
+                                                        "open": false
+                                                    },
+                                                    {
+                                                        "title": "How does the AI work?",
+                                                        "content": "Our AI analyzes your content and provides suggestions to optimize your strategy for better engagement and search rankings.",
+                                                        "open": false
+                                                    },
+                                                    {
+                                                        "title": "Can I integrate with existing tools?",
+                                                        "content": "Yes! Jessie AI CMS integrates seamlessly with N8N and other popular automation tools to streamline your workflow.",
+                                                        "open": false
+                                                    },
+                                                    {
+                                                        "title": "What support do you offer?",
+                                                        "content": "We provide dedicated support for all our plans, ensuring you have the help you need whenever you need it.",
+                                                        "open": false
+                                                    }
+                                                ],
+                                                "multiple_open": false
+                                            },
+                                            "design": {
+                                                "style": "default",
+                                                "icon_position": "right",
+                                                "border_color": "#e0e0e0",
+                                                "active_color": "#0073e6",
+                                                "header_background": "#f8f9fa",
+                                                "content_background": "#ffffff"
+                                            },
+                                            "advanced": {
+                                                "css_class": "section section-faq",
+                                                "css_id": ""
+                                            },
+                                            "id": "mod_5_dff7"
+                                        },
+                                        {
+                                            "type": "cta",
+                                            "content": {
+                                                "heading": "Ready to Elevate Your Content Strategy?",
+                                                "subheading": "",
+                                                "text": "Join thousands of satisfied users and take your digital marketing to the next level with Jessie AI CMS.",
+                                                "button_text": "Sign Up Now",
+                                                "button_url": "#pricing",
+                                                "secondary_button_text": "",
+                                                "secondary_button_url": ""
+                                            },
+                                            "design": {
+                                                "style": "default",
+                                                "background_color": "#0073e6",
+                                                "text_color": "#ffffff",
+                                                "text_align": "center",
+                                                "padding": "60px 40px",
+                                                "border_radius": "0"
+                                            },
+                                            "advanced": {
+                                                "css_class": "section section-cta",
+                                                "css_id": ""
+                                            },
+                                            "id": "mod_6_e17e"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ],
+            "meta": {
+                "title": "Pricing",
+                "description": "",
+                "keywords": ""
+            },
+            "design_system": "modern"
+        },
+        "team": {
+            "type": "page",
+            "name": "Team",
+            "slug": "team",
+            "sections": [
+                {
+                    "id": "section_16_01ea",
+                    "name": "Section",
+                    "design": [],
+                    "rows": [
+                        {
+                            "id": "row_4_0154",
+                            "columns": [
+                                {
+                                    "id": "col_5_0155",
+                                    "width": "100%",
+                                    "modules": [
+                                        {
+                                            "type": "hero",
+                                            "content": {
+                                                "heading": "Meet Our Team",
+                                                "subheading": "",
+                                                "text": "Innovators in AI-driven content solutions",
+                                                "button_text": "Join Us",
+                                                "button_url": "#team-grid",
+                                                "secondary_button_text": "",
+                                                "secondary_button_url": "",
+                                                "background_image": "",
+                                                "video_url": ""
+                                            },
+                                            "design": {
+                                                "height": "600px",
+                                                "min_height": "400px",
+                                                "background_color": "linear",
+                                                "overlay_color": "rgba(0,0,0,0.5)",
+                                                "text_color": "#ffffff",
+                                                "text_align": "center",
+                                                "vertical_align": "center",
+                                                "content_width": "800px",
+                                                "parallax": false,
+                                                "background_position": "bottom right"
+                                            },
+                                            "advanced": {
+                                                "css_class": "section section-hero",
+                                                "css_id": ""
+                                            },
+                                            "id": "mod_1_00b4"
+                                        },
+                                        {
+                                            "type": "gallery",
+                                            "content": {
+                                                "images": [
+                                                    {
+                                                        "src": "PLACEHOLDER:Jessie%20Smith%20profile",
+                                                        "alt": "Jessie Smith",
+                                                        "title": "Jessie Smith",
+                                                        "link": ""
+                                                    },
+                                                    {
+                                                        "src": "PLACEHOLDER:Alex%20Johnson%20profile",
+                                                        "alt": "Alex Johnson",
+                                                        "title": "Alex Johnson",
+                                                        "link": ""
+                                                    },
+                                                    {
+                                                        "src": "PLACEHOLDER:Maria%20Garcia%20profile",
+                                                        "alt": "Maria Garcia",
+                                                        "title": "Maria Garcia",
+                                                        "link": ""
+                                                    },
+                                                    {
+                                                        "src": "PLACEHOLDER:David%20Lee%20profile",
+                                                        "alt": "David Lee",
+                                                        "title": "David Lee",
+                                                        "link": ""
+                                                    }
+                                                ],
+                                                "lightbox": false
+                                            },
+                                            "design": {
+                                                "columns": 4,
+                                                "columns_tablet": 2,
+                                                "columns_mobile": 1,
+                                                "gap": "15px",
+                                                "border_radius": "4px",
+                                                "hover_effect": "zoom"
+                                            },
+                                            "advanced": {
+                                                "css_class": "section section-team-grid",
+                                                "css_id": ""
+                                            },
+                                            "id": "mod_2_00e7"
+                                        },
+                                        {
+                                            "type": "heading",
+                                            "content": {
+                                                "text": "Our Culture",
+                                                "level": "h2"
+                                            },
+                                            "design": {
+                                                "font_size": "32px",
+                                                "font_weight": "700",
+                                                "text_color": "var(--color-text)",
+                                                "text_align": "left",
+                                                "line_height": "1.3",
+                                                "letter_spacing": "0",
+                                                "text_transform": "none",
+                                                "margin_bottom": "20px",
+                                                "font_family": "'Inter', sans-serif"
+                                            },
+                                            "advanced": {
+                                                "css_class": "",
+                                                "css_id": ""
+                                            },
+                                            "id": "mod_3_014b"
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "id": "row_12_0195",
+                            "columns": [
+                                {
+                                    "id": "col_8_0179",
+                                    "width": "50%",
+                                    "modules": [
+                                        {
+                                            "type": "image",
+                                            "content": {
+                                                "src": "PLACEHOLDER:team%20collaboration",
+                                                "alt": "Team Collaboration",
+                                                "title": "",
+                                                "link": ""
+                                            },
+                                            "design": {
+                                                "width": "100%",
+                                                "height": "auto",
+                                                "max_width": "100%",
+                                                "border_radius": "0",
+                                                "object_fit": "cover",
+                                                "box_shadow": "none"
+                                            },
+                                            "advanced": {
+                                                "css_class": "",
+                                                "css_id": "",
+                                                "lazy_load": false
+                                            },
+                                            "id": "mod_6_016a"
+                                        },
+                                        {
+                                            "type": "text",
+                                            "content": {
+                                                "text": "We foster collaboration and creativity, empowering our team to innovate."
+                                            },
+                                            "design": {
+                                                "font_size": "16px",
+                                                "line_height": "1.6",
+                                                "text_color": "var(--color-text)",
+                                                "text_align": "left",
+                                                "font_weight": "400",
+                                                "font_family": "'Inter', sans-serif"
+                                            },
+                                            "advanced": {
+                                                "css_class": "",
+                                                "css_id": ""
+                                            },
+                                            "id": "mod_7_0178"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "id": "col_11_0194",
+                                    "width": "50%",
+                                    "modules": [
+                                        {
+                                            "type": "image",
+                                            "content": {
+                                                "src": "PLACEHOLDER:team%20meeting",
+                                                "alt": "Team Meeting",
+                                                "title": "",
+                                                "link": ""
+                                            },
+                                            "design": {
+                                                "width": "100%",
+                                                "height": "auto",
+                                                "max_width": "100%",
+                                                "border_radius": "0",
+                                                "object_fit": "cover",
+                                                "box_shadow": "none"
+                                            },
+                                            "advanced": {
+                                                "css_class": "",
+                                                "css_id": "",
+                                                "lazy_load": false
+                                            },
+                                            "id": "mod_9_018b"
+                                        },
+                                        {
+                                            "type": "text",
+                                            "content": {
+                                                "text": "Regular team meetings ensure everyone stays aligned and inspired."
+                                            },
+                                            "design": {
+                                                "font_size": "16px",
+                                                "line_height": "1.6",
+                                                "text_color": "var(--color-text)",
+                                                "text_align": "left",
+                                                "font_weight": "400",
+                                                "font_family": "'Inter', sans-serif"
+                                            },
+                                            "advanced": {
+                                                "css_class": "",
+                                                "css_id": ""
+                                            },
+                                            "id": "mod_10_0193"
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "id": "row_14_01e8",
+                            "columns": [
+                                {
+                                    "id": "col_15_01e9",
+                                    "width": "100%",
+                                    "modules": [
+                                        {
+                                            "type": "cta",
+                                            "content": {
+                                                "heading": "Ready to Transform Your Content Strategy?",
+                                                "subheading": "",
+                                                "text": "Join us at Jessie AI CMS and boost your productivity with our AI-driven workflows.",
+                                                "button_text": "Get Started",
+                                                "button_url": "#contact",
+                                                "secondary_button_text": "",
+                                                "secondary_button_url": ""
+                                            },
+                                            "design": {
+                                                "style": "default",
+                                                "background_color": "#0073e6",
+                                                "text_color": "#ffffff",
+                                                "text_align": "center",
+                                                "padding": "60px 40px",
+                                                "border_radius": "0"
+                                            },
+                                            "advanced": {
+                                                "css_class": "section section-cta",
+                                                "css_id": ""
+                                            },
+                                            "id": "mod_13_01e7"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ],
+            "meta": {
+                "title": "Team",
+                "description": "",
+                "keywords": ""
+            },
+            "design_system": "modern"
+        },
+        "faq": {
+            "type": "page",
+            "name": "Faq",
+            "slug": "faq",
+            "sections": [
+                {
+                    "id": "section_6_118b",
+                    "name": "Section",
+                    "design": [],
+                    "rows": [
+                        {
+                            "id": "row_4_1189",
+                            "columns": [
+                                {
+                                    "id": "col_5_118a",
+                                    "width": "100%",
+                                    "modules": [
+                                        {
+                                            "type": "hero",
+                                            "content": {
+                                                "heading": "Frequently Asked Questions",
+                                                "subheading": "",
+                                                "text": "Everything you need to know about Jessie AI CMS to boost your productivity and transform your content strategy.",
+                                                "button_text": "Get Started",
+                                                "button_url": "#contact",
+                                                "secondary_button_text": "",
+                                                "secondary_button_url": "",
+                                                "background_image": "",
+                                                "video_url": ""
+                                            },
+                                            "design": {
+                                                "height": "600px",
+                                                "min_height": "400px",
+                                                "background_color": "linear",
+                                                "overlay_color": "rgba(0,0,0,0.5)",
+                                                "text_color": "#ffffff",
+                                                "text_align": "center",
+                                                "vertical_align": "center",
+                                                "content_width": "800px",
+                                                "parallax": false,
+                                                "background_position": "right"
+                                            },
+                                            "advanced": {
+                                                "css_class": "section section-hero",
+                                                "css_id": ""
+                                            },
+                                            "id": "mod_1_111a"
+                                        },
+                                        {
+                                            "type": "accordion",
+                                            "content": {
+                                                "items": [],
+                                                "multiple_open": false
+                                            },
+                                            "design": {
+                                                "style": "default",
+                                                "icon_position": "right",
+                                                "border_color": "#e0e0e0",
+                                                "active_color": "#0073e6",
+                                                "header_background": "#f8f9fa",
+                                                "content_background": "#ffffff"
+                                            },
+                                            "advanced": {
+                                                "css_class": "section section-faq-list",
+                                                "css_id": ""
+                                            },
+                                            "id": "mod_2_1140"
+                                        },
+                                        {
+                                            "type": "cta",
+                                            "content": {
+                                                "heading": "Need More Help?",
+                                                "subheading": "",
+                                                "text": "Contact us for personalized assistance and support.",
+                                                "button_text": "Contact Us",
+                                                "button_url": "mailto:support@jessieai.com",
+                                                "secondary_button_text": "",
+                                                "secondary_button_url": ""
+                                            },
+                                            "design": {
+                                                "style": "default",
+                                                "background_color": "#0073e6",
+                                                "text_color": "#ffffff",
+                                                "text_align": "center",
+                                                "padding": "60px 40px",
+                                                "border_radius": "0"
+                                            },
+                                            "advanced": {
+                                                "css_class": "section section-contact-cta",
+                                                "css_id": "contact"
+                                            },
+                                            "id": "mod_3_1188"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ],
+            "meta": {
+                "title": "Faq",
+                "description": "",
+                "keywords": ""
+            },
+            "design_system": "modern"
+        },
+        "testimonials": {
+            "type": "page",
+            "name": "Testimonials",
+            "slug": "testimonials",
+            "sections": [
+                {
+                    "id": "section_8_3573",
+                    "name": "Section",
+                    "design": [],
+                    "rows": [
+                        {
+                            "id": "row_6_3570",
+                            "columns": [
+                                {
+                                    "id": "col_7_3571",
+                                    "width": "100%",
+                                    "modules": [
+                                        {
+                                            "type": "hero",
+                                            "content": {
+                                                "heading": "Transform Your Content Strategy with Jessie AI CMS",
+                                                "subheading": "",
+                                                "text": "Boost your productivity and elevate your SEO game with our cutting-edge AI technology.",
+                                                "button_text": "See Testimonials",
+                                                "button_url": "#testimonials",
+                                                "secondary_button_text": "",
+                                                "secondary_button_url": "",
+                                                "background_image": "",
+                                                "video_url": ""
+                                            },
+                                            "design": {
+                                                "height": "600px",
+                                                "min_height": "400px",
+                                                "background_color": "linear",
+                                                "overlay_color": "rgba(0,0,0,0.5)",
+                                                "text_color": "#ffffff",
+                                                "text_align": "center",
+                                                "vertical_align": "center",
+                                                "content_width": "800px",
+                                                "parallax": false
+                                            },
+                                            "advanced": {
+                                                "css_class": "section section-hero",
+                                                "css_id": ""
+                                            },
+                                            "id": "mod_1_33f0"
+                                        },
+                                        {
+                                            "type": "gallery",
+                                            "content": {
+                                                "images": [
+                                                    {
+                                                        "src": "PLACEHOLDER:client-photo-1",
+                                                        "alt": "Client 1",
+                                                        "title": "Client 1",
+                                                        "link": ""
+                                                    },
+                                                    {
+                                                        "src": "PLACEHOLDER:client-photo-2",
+                                                        "alt": "Client 2",
+                                                        "title": "Client 2",
+                                                        "link": ""
+                                                    },
+                                                    {
+                                                        "src": "PLACEHOLDER:client-photo-3",
+                                                        "alt": "Client 3",
+                                                        "title": "Client 3",
+                                                        "link": ""
+                                                    },
+                                                    {
+                                                        "src": "PLACEHOLDER:client-photo-4",
+                                                        "alt": "Client 4",
+                                                        "title": "Client 4",
+                                                        "link": ""
+                                                    },
+                                                    {
+                                                        "src": "PLACEHOLDER:client-photo-5",
+                                                        "alt": "Client 5",
+                                                        "title": "Client 5",
+                                                        "link": ""
+                                                    },
+                                                    {
+                                                        "src": "PLACEHOLDER:client-photo-6",
+                                                        "alt": "Client 6",
+                                                        "title": "Client 6",
+                                                        "link": ""
+                                                    }
+                                                ],
+                                                "lightbox": false
+                                            },
+                                            "design": {
+                                                "columns": 4,
+                                                "columns_tablet": 2,
+                                                "columns_mobile": 1,
+                                                "gap": "15px",
+                                                "border_radius": "4px",
+                                                "hover_effect": "zoom"
+                                            },
+                                            "advanced": {
+                                                "css_class": "section section-testimonials",
+                                                "css_id": ""
+                                            },
+                                            "id": "mod_2_346d"
+                                        },
+                                        {
+                                            "type": "counter",
+                                            "content": {
+                                                "number": "5",
+                                                "prefix": "",
+                                                "suffix": "+",
+                                                "label": "Our Impact\n            \n                \n                    5+\n                    Years of Experience\n                \n                \n                    300+\n                    Happy Clients\n                \n                \n                    1000+\n                    Projects Completed",
+                                                "start_value": 0
+                                            },
+                                            "design": {
+                                                "number_size": "48px",
+                                                "number_color": "#0073e6",
+                                                "number_weight": "700",
+                                                "label_size": "16px",
+                                                "label_color": "#666666",
+                                                "animation_duration": 2000,
+                                                "text_align": "center"
+                                            },
+                                            "advanced": {
+                                                "css_class": "section section-stats",
+                                                "css_id": ""
+                                            },
+                                            "id": "mod_3_34fd"
+                                        },
+                                        {
+                                            "type": "gallery",
+                                            "content": {
+                                                "images": [
+                                                    {
+                                                        "src": "PLACEHOLDER:client-logo-1",
+                                                        "alt": "Client Logo 1",
+                                                        "title": "Client Logo 1",
+                                                        "link": ""
+                                                    },
+                                                    {
+                                                        "src": "PLACEHOLDER:client-logo-2",
+                                                        "alt": "Client Logo 2",
+                                                        "title": "Client Logo 2",
+                                                        "link": ""
+                                                    },
+                                                    {
+                                                        "src": "PLACEHOLDER:client-logo-3",
+                                                        "alt": "Client Logo 3",
+                                                        "title": "Client Logo 3",
+                                                        "link": ""
+                                                    },
+                                                    {
+                                                        "src": "PLACEHOLDER:client-logo-4",
+                                                        "alt": "Client Logo 4",
+                                                        "title": "Client Logo 4",
+                                                        "link": ""
+                                                    }
+                                                ],
+                                                "lightbox": false
+                                            },
+                                            "design": {
+                                                "columns": 4,
+                                                "columns_tablet": 2,
+                                                "columns_mobile": 1,
+                                                "gap": "15px",
+                                                "border_radius": "4px",
+                                                "hover_effect": "zoom"
+                                            },
+                                            "advanced": {
+                                                "css_class": "section section-clients",
+                                                "css_id": ""
+                                            },
+                                            "id": "mod_4_352a"
+                                        },
+                                        {
+                                            "type": "cta",
+                                            "content": {
+                                                "heading": "Ready to Elevate Your Content Strategy?",
+                                                "subheading": "",
+                                                "text": "Join the revolution of AI-driven content creation today!",
+                                                "button_text": "Get Started Now",
+                                                "button_url": "#signup",
+                                                "secondary_button_text": "",
+                                                "secondary_button_url": ""
+                                            },
+                                            "design": {
+                                                "style": "default",
+                                                "background_color": "#0073e6",
+                                                "text_color": "#ffffff",
+                                                "text_align": "center",
+                                                "padding": "60px 40px",
+                                                "border_radius": "0"
+                                            },
+                                            "advanced": {
+                                                "css_class": "section section-cta",
+                                                "css_id": ""
+                                            },
+                                            "id": "mod_5_356e"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ],
+            "meta": {
+                "title": "Testimonials",
+                "description": "",
+                "keywords": ""
+            },
+            "design_system": "modern"
+        }
+    }
+}

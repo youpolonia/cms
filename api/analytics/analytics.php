@@ -35,7 +35,7 @@ add_route('GET', '/analytics/export', function() {
     }
 
     try {
-        require_once __DIR__.'/../../services/analytics/Aggregator.php';
+        require_once __DIR__.'/../../services/analytics/aggregator.php';
         $processor = new EventProcessor();
         $data = $processor->getRangeData($range);
         

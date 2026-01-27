@@ -1,0 +1,119 @@
+<?php
+/**
+ * AI Content Generation API for Theme Builder
+ * Generates text content using OpenAI API
+ * DO NOT add closing ?> tag
+ */
+
+header('Content-Type: application/json');
+header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Methods: POST, OPTIONS');
+header('Access-Control-Allow-Headers: Content-Type');
+
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    exit(0);
+}
+
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    http_response_code(405);
+    echo json_encode(['success' => false, 'error' => 'Method not allowed']);
+    exit;
+}
+
+require_once dirname(__DIR__, 3) . '/config.php';
+require_once dirname(__DIR__, 3) . '/core/Database.php';
+
+// Load AI settings
+$aiSettingsFile = dirname(__DIR__, 3) . '/config/ai_settings.json';
+$aiSettings = [];
+if (file_exists($aiSettingsFile)) {
+    $aiSettings = json_decode(file_get_contents($aiSettingsFile), true) ?: [];
+}
+
+// Get API key (support both formats)
+$apiKey = $aiSettings['providers']['openai']['api_key'] ?? $aiSettings['api_key'] ?? '';
+
+if (empty($apiKey)) {
+    echo json_encode(['success' => false, 'error' => 'AI not configured. Set up OpenAI API key in AI Settings.']);
+    exit;
+}
+
+// Parse request
+$input = json_decode(file_get_contents('php://input'), true);
+$type = $input['type'] ?? 'paragraph';
+$prompt = trim($input['prompt'] ?? '');
+
+if (empty($prompt)) {
+    echo json_encode(['success' => false, 'error' => 'Prompt is required']);
+    exit;
+}
+
+// Build system prompt based on type
+$systemPrompts = [
+    'heading' => 'You are a professional copywriter. Generate a single compelling, attention-grabbing headline. Keep it under 10 words. Be creative and impactful. Return only the headline, no quotes or explanation.',
+    'paragraph' => 'You are a professional copywriter. Write a short, engaging paragraph (2-3 sentences max). Be clear and persuasive. Return only the paragraph, no quotes or explanation.',
+    'cta' => 'You are a marketing expert. Write a short, compelling call-to-action text (1-2 sentences). Create urgency and encourage action. Return only the CTA text, no quotes.',
+    'features' => 'You are a product marketer. Write 3 brief feature descriptions. Each should be 1 sentence. Format as bullet points with emoji icons. Return only the features list.',
+    'testimonial' => 'You are a creative writer. Write a realistic, positive customer testimonial quote (2-3 sentences). Make it sound authentic and specific. Return only the quote text, no attribution.'
+];
+
+$systemPrompt = $systemPrompts[$type] ?? $systemPrompts['paragraph'];
+$userPrompt = "Generate content for: " . $prompt;
+
+// Call OpenAI API
+$data = [
+    'model' => $aiSettings['providers']['openai']['model'] ?? 'gpt-5.2',
+    'messages' => [
+        ['role' => 'system', 'content' => $systemPrompt],
+        ['role' => 'user', 'content' => $userPrompt]
+    ],
+    'max_tokens' => 200,
+    'temperature' => 0.7
+];
+
+$ch = curl_init('https://api.openai.com/v1/chat/completions');
+curl_setopt_array($ch, [
+    CURLOPT_RETURNTRANSFER => true,
+    CURLOPT_POST => true,
+    CURLOPT_POSTFIELDS => json_encode($data),
+    CURLOPT_HTTPHEADER => [
+        'Content-Type: application/json',
+        'Authorization: Bearer ' . $apiKey
+    ],
+    CURLOPT_TIMEOUT => 30
+]);
+
+$response = curl_exec($ch);
+$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+$error = curl_error($ch);
+curl_close($ch);
+
+if ($error) {
+    echo json_encode(['success' => false, 'error' => 'Connection error: ' . $error]);
+    exit;
+}
+
+if ($httpCode !== 200) {
+    $errorData = json_decode($response, true);
+    $errorMsg = $errorData['error']['message'] ?? 'API error (HTTP ' . $httpCode . ')';
+    echo json_encode(['success' => false, 'error' => $errorMsg]);
+    exit;
+}
+
+$result = json_decode($response, true);
+$content = $result['choices'][0]['message']['content'] ?? '';
+
+if (empty($content)) {
+    echo json_encode(['success' => false, 'error' => 'Empty response from AI']);
+    exit;
+}
+
+// Clean up content
+$content = trim($content);
+$content = trim($content, '"\'');
+
+echo json_encode([
+    'success' => true,
+    'content' => $content,
+    'type' => $type
+]);

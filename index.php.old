@@ -1,0 +1,48 @@
+<?php
+use Core\Router as router;
+
+if (file_exists(__DIR__ . '/core/bootstrap.php')) {
+    require_once __DIR__ . '/core/bootstrap.php';
+} else {
+    error_log("Missing core/bootstrap.php — file not found");
+}
+
+require_once __DIR__ . '/core/error_handler.php';
+cms_register_error_handlers();
+
+// Required includes
+require_once __DIR__ . '/version.php';
+require_once __DIR__ . '/models/settingsmodel.php';
+require_once __DIR__ . '/includes/thememanager.php';
+require_once __DIR__ . '/core/controllerregistry.php';
+require_once __DIR__ . '/core/router.php';
+require_once __DIR__ . '/includes/middleware/validationmiddleware.php';
+
+// Load main routes
+if (class_exists(\Core\Router::class)) {
+    \Core\Router::load([__DIR__ . '/routes.php']);
+}
+
+// Guarded optional load of custom web routes (DEV only)
+if (defined('DEV_MODE') && DEV_MODE === true) {
+    $p = __DIR__ . '/routes_custom/web.php';
+    if (is_file($p)) { require_once $p; }
+}
+
+$validator = new ValidationMiddleware(null);
+$method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
+$uri = $_SERVER['REQUEST_URI'] ?? '/';
+$qpos = strpos($uri, '?');
+if ($qpos !== false) { $uri = substr($uri, 0, $qpos); }
+if ($uri === '' || $uri === '/index.php') { $uri = '/'; }
+$validation_ok = $validator->validate($method, $uri);
+if (!$validation_ok) { http_response_code(400); }
+if (class_exists(router::class) && method_exists(router::class, 'dispatch')) {
+    try {
+        router::dispatch();
+    } catch (\Throwable $e) {
+        http_response_code(500);
+    }
+} else {
+    http_response_code(404);
+}

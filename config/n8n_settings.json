@@ -1,0 +1,11 @@
+{
+  "enabled": false,
+  "base_url": "",
+  "auth_type": "none",
+  "api_key": "",
+  "webhook_secret": "",
+  "username": "",
+  "password": "",
+  "timeout": 10,
+  "verify_ssl": true
+}

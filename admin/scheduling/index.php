@@ -1,5 +1,9 @@
 <?php
 require_once __DIR__ . '/../../config.php';
+
+// RBAC: Require admin access
+require_once __DIR__ . '/../includes/permissions.php';
+cms_require_admin_role();
 require_once __DIR__ . '/../../includes/security.php';
 verifyAdminAccess();
 

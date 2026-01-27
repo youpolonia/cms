@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/../services/DashboardVisualizer.php';
+require_once __DIR__ . '/../services/dashboardvisualizer.php';
 
 header('Content-Type: application/json');
 

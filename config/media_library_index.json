@@ -1,0 +1,20 @@
+{
+    "media/20251204_150536_81694775.png": {
+        "id": "media/20251204_150536_81694775.png",
+        "path": "/uploads/media/20251204_150536_81694775.png",
+        "basename": "20251204_150536_81694775.png",
+        "size": 70,
+        "mime": "image/png",
+        "alt": "",
+        "updated": null
+    },
+    "media/20251204_150412_ee3e5d35.jpg": {
+        "id": "media/20251204_150412_ee3e5d35.jpg",
+        "path": "/uploads/media/20251204_150412_ee3e5d35.jpg",
+        "basename": "20251204_150412_ee3e5d35.jpg",
+        "size": 59754,
+        "mime": "image/jpeg",
+        "alt": "",
+        "updated": null
+    }
+}

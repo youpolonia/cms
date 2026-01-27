@@ -1,11 +1,16 @@
 <?php
-require_once __DIR__ . '/../../config.php';
-if (!defined('DEV_MODE') || DEV_MODE !== true) {
-    http_response_code(403);
-    exit;
-}
+define('CMS_ROOT', dirname(__DIR__, 2));
+require_once CMS_ROOT . '/config.php';
+if (!defined('DEV_MODE') || DEV_MODE !== true) { http_response_code(403); exit; }
 
-require_once __DIR__ . '/../../includes/security/staticsecurityscanner.php';
+require_once CMS_ROOT . '/core/session_boot.php';
+cms_session_start('admin');
+require_once CMS_ROOT . '/core/csrf.php';
+csrf_boot();
+require_once CMS_ROOT . '/core/auth.php';
+authenticateAdmin();
+
+require_once CMS_ROOT . '/includes/security/staticsecurityscanner.php';
 
 $scanner = new StaticSecurityScanner(dirname(__DIR__, 2));
 $results = $scanner->scan();

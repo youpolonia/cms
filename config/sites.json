@@ -1,0 +1,11 @@
+{
+  "sites": [
+    {
+      "id": "default",
+      "name": "Primary Site",
+      "domain": "*",
+      "locale": "en_GB",
+      "active": true
+    }
+  ]
+}

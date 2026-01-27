@@ -1,0 +1,79 @@
+<?php
+/**
+ * Jessie AI-CMS - Footer Component
+ * Supports Theme Builder custom footers
+ */
+
+// Load Theme Builder functions for dynamic footer
+if (!function_exists('tb_render_site_template')) {
+    $tbDatabasePath = dirname(__DIR__, 4) . '/core/theme-builder/database.php';
+    if (file_exists($tbDatabasePath)) {
+        require_once $tbDatabasePath;
+    }
+}
+
+// Try to get TB Footer
+$tbFooter = null;
+if (function_exists('tb_render_site_template')) {
+    $tbFooter = tb_render_site_template('footer');
+}
+?>
+    </main>
+    <?php if ($tbFooter): ?>
+        <!-- Theme Builder Footer -->
+        <?= $tbFooter ?>
+    <?php else: ?>
+        <!-- Static Fallback Footer -->
+        <footer class="site-footer">
+            <div class="container">
+                <div class="footer-grid">
+                    <div class="footer-brand">
+                        <a href="/" class="logo">
+                            <span class="logo-icon">🤖</span>
+                            <span class="logo-text">Jessie</span>
+                        </a>
+                        <p>The intelligent content management system powered by AI.</p>
+                    </div>
+                    <div class="footer-links">
+                        <h4>Product</h4>
+                        <ul>
+                            <li><a href="/features">Features</a></li>
+                            <li><a href="/articles">Blog</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-links">
+                        <h4>Company</h4>
+                        <ul>
+                            <li><a href="/about">About</a></li>
+                            <li><a href="/contact">Contact</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="footer-bottom">
+                    <p>&copy; <?= date('Y') ?> Jessie AI-CMS. Built with pure PHP.</p>
+                </div>
+            </div>
+        </footer>
+    <?php endif; ?>
+    <style>
+        .site-footer { background: var(--bg-secondary); border-top: 1px solid var(--border); padding: 60px 0 30px; margin-top: 80px; }
+        .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 48px; }
+        @media (max-width: 768px) { .footer-grid { grid-template-columns: 1fr; gap: 32px; } }
+        .footer-brand .logo { margin-bottom: 16px; }
+        .footer-brand p { font-size: 0.9rem; color: var(--text-muted); }
+        .footer-links h4 { font-size: 0.85rem; font-weight: 600; color: var(--text-primary); margin-bottom: 16px; text-transform: uppercase; }
+        .footer-links ul { list-style: none; }
+        .footer-links li { margin-bottom: 10px; }
+        .footer-links a { color: var(--text-muted); font-size: 0.9rem; transition: color 0.2s; }
+        .footer-links a:hover { color: var(--text-primary); }
+        .footer-bottom { margin-top: 40px; padding-top: 20px; border-top: 1px solid var(--border); text-align: center; }
+        .footer-bottom p { color: var(--text-muted); font-size: 0.85rem; }
+    </style>
+    <script>
+        const header = document.getElementById('site-header');
+        window.addEventListener('scroll', () => {
+            header.classList.toggle('scrolled', window.scrollY > 50);
+        });
+    </script>
+</body>
+</html>

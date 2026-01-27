@@ -1,6 +1,6 @@
 <?php
 require_once __DIR__ . '/../core/analyticscollector.php';
-require_once __DIR__.'/../core/TenantMiddleware.php';
+require_once __DIR__.'/../core/tenantmiddleware.php';
 
 header('Content-Type: application/json');
 

@@ -1,10 +1,26 @@
 <?php
-require_once __DIR__ . '/../../config.php';
-if (!defined('DEV_MODE') || !DEV_MODE) { http_response_code(403); exit; }
-require_once __DIR__ . '/../../core/csrf.php';
-require_once __DIR__ . '/../../core/session_boot.php';
-require_once __DIR__ . '/../../core/database.php';
+define('CMS_ROOT', dirname(__DIR__, 2));
+require_once CMS_ROOT . '/config.php';
+if (!defined('DEV_MODE') || DEV_MODE !== true) { http_response_code(403); exit; }
+
+require_once CMS_ROOT . '/core/session_boot.php';
+cms_session_start('admin');
+require_once CMS_ROOT . '/core/csrf.php';
 csrf_boot();
+require_once CMS_ROOT . '/core/database.php';
+
+// Check if any admin users exist (bootstrap condition)
+$pdo = \core\Database::connection();
+$stmt = $pdo->query('SELECT COUNT(*) AS cnt FROM `admins`');
+$row = $stmt ? $stmt->fetch(\PDO::FETCH_ASSOC) : null;
+$hasAdmins = ((int)($row['cnt'] ?? 0) > 0);
+
+// Only require authentication if admins already exist
+if ($hasAdmins) {
+    require_once CMS_ROOT . '/core/auth.php';
+    authenticateAdmin();
+}
+
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header('Allow: POST', true, 405);
     exit;

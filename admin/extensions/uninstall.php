@@ -3,6 +3,10 @@ declare(strict_types=1);
 require_once __DIR__ . '/../../config.php';
 require_once __DIR__ . '/../../core/session_boot.php';
 cms_session_start('admin');
+
+// RBAC: Require admin access
+require_once __DIR__ . '/../includes/permissions.php';
+cms_require_admin_role();
 require_once __DIR__ . '/../../core/csrf.php';
 if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') { csrf_validate_or_403(); }
 require_once __DIR__ . '/../../core/extensions_state.php';

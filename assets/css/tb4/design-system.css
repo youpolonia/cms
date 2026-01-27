@@ -1,0 +1,135 @@
+/**
+ * TB 4.0 Design System
+ * Professional page builder design tokens
+ * 
+ * Created: 2026-01-05
+ * Version: 1.0.0
+ */
+
+/* ============================================
+   COLOR PALETTE
+   ============================================ */
+
+:root {
+  /* PRIMARY COLORS (Blue) - Main actions, CTAs */
+  --tb4-primary-50:  #eff6ff;
+  --tb4-primary-100: #dbeafe;
+  --tb4-primary-200: #bfdbfe;
+  --tb4-primary-300: #93c5fd;
+  --tb4-primary-400: #60a5fa;
+  --tb4-primary-500: #3b82f6;
+  --tb4-primary-600: #2563eb;  /* Main primary color */
+  --tb4-primary-700: #1d4ed8;
+  --tb4-primary-800: #1e40af;
+  --tb4-primary-900: #1e3a8a;
+  
+  /* SECONDARY COLORS (Green) - Success states */
+  --tb4-secondary-50:  #ecfdf5;
+  --tb4-secondary-100: #d1fae5;
+  --tb4-secondary-200: #a7f3d0;
+  --tb4-secondary-300: #6ee7b7;
+  --tb4-secondary-400: #34d399;
+  --tb4-secondary-500: #10b981;  /* Main secondary color */
+  --tb4-secondary-600: #059669;
+  --tb4-secondary-700: #047857;
+  --tb4-secondary-800: #065f46;
+  --tb4-secondary-900: #064e3b;
+  
+  /* ACCENT COLORS (Amber) - Highlights, warnings */
+  --tb4-accent-50:  #fffbeb;
+  --tb4-accent-100: #fef3c7;
+  --tb4-accent-200: #fde68a;
+  --tb4-accent-300: #fcd34d;
+  --tb4-accent-400: #fbbf24;
+  --tb4-accent-500: #f59e0b;  /* Main accent color */
+  --tb4-accent-600: #d97706;
+  --tb4-accent-700: #b45309;
+  --tb4-accent-800: #92400e;
+  --tb4-accent-900: #78350f;
+  
+  /* NEUTRAL COLORS (Gray) - Text, borders, backgrounds */
+  --tb4-neutral-50:  #f9fafb;
+  --tb4-neutral-100: #f3f4f6;
+  --tb4-neutral-200: #e5e7eb;
+  --tb4-neutral-300: #d1d5db;
+  --tb4-neutral-400: #9ca3af;
+  --tb4-neutral-500: #6b7280;  /* Main neutral color */
+  --tb4-neutral-600: #4b5563;
+  --tb4-neutral-700: #374151;
+  --tb4-neutral-800: #1f2937;
+  --tb4-neutral-900: #111827;
+  
+  /* DANGER COLORS (Red) - Errors, delete actions */
+  --tb4-danger-50:  #fef2f2;
+  --tb4-danger-100: #fee2e2;
+  --tb4-danger-200: #fecaca;
+  --tb4-danger-300: #fca5a5;
+  --tb4-danger-400: #f87171;
+  --tb4-danger-500: #ef4444;  /* Main danger color */
+  --tb4-danger-600: #dc2626;
+  --tb4-danger-700: #b91c1c;
+  --tb4-danger-800: #991b1b;
+  --tb4-danger-900: #7f1d1d;
+  
+  /* SEMANTIC COLORS - Common UI patterns */
+  --tb4-success: var(--tb4-secondary-500);
+  --tb4-success-bg: var(--tb4-secondary-50);
+  --tb4-success-border: var(--tb4-secondary-200);
+  --tb4-success-text: var(--tb4-secondary-700);
+  
+  --tb4-warning: var(--tb4-accent-500);
+  --tb4-warning-bg: var(--tb4-accent-50);
+  --tb4-warning-border: var(--tb4-accent-200);
+  --tb4-warning-text: var(--tb4-accent-700);
+  
+  --tb4-error: var(--tb4-danger-500);
+  --tb4-error-bg: var(--tb4-danger-50);
+  --tb4-error-border: var(--tb4-danger-200);
+  --tb4-error-text: var(--tb4-danger-700);
+  
+  --tb4-info: var(--tb4-primary-500);
+  --tb4-info-bg: var(--tb4-primary-50);
+  --tb4-info-border: var(--tb4-primary-200);
+  --tb4-info-text: var(--tb4-primary-700);
+  
+  /* BACKGROUND COLORS */
+  --tb4-bg-primary: #ffffff;
+  --tb4-bg-secondary: var(--tb4-neutral-50);
+  --tb4-bg-tertiary: var(--tb4-neutral-100);
+  --tb4-bg-elevated: #ffffff;
+  --tb4-bg-overlay: rgba(0, 0, 0, 0.5);
+  
+  /* TEXT COLORS */
+  --tb4-text-primary: var(--tb4-neutral-900);
+  --tb4-text-secondary: var(--tb4-neutral-700);
+  --tb4-text-tertiary: var(--tb4-neutral-500);
+  --tb4-text-muted: var(--tb4-neutral-400);
+  --tb4-text-inverted: #ffffff;
+  
+  /* BORDER COLORS */
+  --tb4-border-default: var(--tb4-neutral-200);
+  --tb4-border-muted: var(--tb4-neutral-100);
+  --tb4-border-strong: var(--tb4-neutral-300);
+  --tb4-border-focus: var(--tb4-primary-500);
+  
+  /* SIDEBAR (Dark theme) */
+  --tb4-sidebar-bg: var(--tb4-neutral-900);
+  --tb4-sidebar-bg-hover: rgba(255, 255, 255, 0.06);
+  --tb4-sidebar-bg-active: rgba(255, 255, 255, 0.1);
+  --tb4-sidebar-text: var(--tb4-neutral-400);
+  --tb4-sidebar-text-active: #ffffff;
+  --tb4-sidebar-border: rgba(255, 255, 255, 0.08);
+}
+
+/* ============================================
+   TYPOGRAPHY SYSTEM - TO BE DEFINED IN STEP 1.3
+   ============================================ */
+
+/* Placeholder - will be filled with:
+ * - Google Fonts import (Inter + JetBrains Mono)
+ * - Font size scale (xs, sm, base, lg, xl, 2xl)
+ * - Font weights
+ * - Line heights
+ */
+
+/* END OF FILE */

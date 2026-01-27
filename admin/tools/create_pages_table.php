@@ -1,18 +1,22 @@
 <?php
 declare(strict_types=1);
 
-require_once __DIR__ . '/../../config.php';
-require_once __DIR__ . '/../../core/database.php';
+define('CMS_ROOT', dirname(__DIR__, 2));
+require_once CMS_ROOT . '/config.php';
+if (!defined('DEV_MODE') || DEV_MODE !== true) { http_response_code(403); exit; }
 
-if (!defined('DEV_MODE') || DEV_MODE !== true) {
-    http_response_code(403);
-    echo 'Forbidden';
-    exit;
-}
+require_once CMS_ROOT . '/core/session_boot.php';
+cms_session_start('admin');
+require_once CMS_ROOT . '/core/csrf.php';
+csrf_boot();
+require_once CMS_ROOT . '/core/auth.php';
+authenticateAdmin();
 
 error_reporting(E_ALL);
 ini_set('display_errors', '1');
 header('Content-Type: text/plain; charset=UTF-8');
+
+require_once CMS_ROOT . '/core/database.php';
 
 try {
     $pdo = \core\Database::connection();

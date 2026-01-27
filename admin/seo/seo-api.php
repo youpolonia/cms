@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/../../services/SeoService.php';
+require_once __DIR__ . '/../../services/seoservice.php';
 
 class SeoApi {
     private $seoService;

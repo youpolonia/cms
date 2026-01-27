@@ -3,7 +3,7 @@
  * Admin access control bootstrap file
  */
 require_once __DIR__ . '/../../core/permissionregistry.php';
-require_once __DIR__.'/../../middleware/PermissionMiddleware.php';
+require_once __DIR__.'/../../middleware/permissionmiddleware.php';
 require_once __DIR__.'/../../core/database.php';
 require_once __DIR__ . '/../core/csrf.php';
 

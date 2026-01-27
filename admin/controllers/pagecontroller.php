@@ -2,6 +2,7 @@
 require_once __DIR__ . '/../../config.php';
 if (!defined('DEV_MODE') || DEV_MODE !== true) { http_response_code(403); exit; }
 
+require_once CMS_ROOT . '/core/automation_rules.php';
 class PageController {
     protected $db;
 
@@ -25,9 +26,18 @@ class PageController {
             'content' => $this->sanitize($_POST['content'], false),
             'created_at' => date('Y-m-d H:i:s')
         ];
-        
+
         if ($this->validate($data)) {
             $this->db->insert('pages', $data);
+            $pageId = $this->db->lastInsertId();
+
+            automation_rules_handle_event('page.updated', [
+                'page_id'   => $pageId,
+                'title'     => $data['title'],
+                'slug'      => $data['slug'],
+                'status'    => 'published',
+                'updated_by'=> $_SESSION['user_id'] ?? null
+            ]);
             header('Location: /admin/pages.php');
             exit;
         }
@@ -45,9 +55,17 @@ class PageController {
             'content' => $this->sanitize($_POST['content'], false),
             'updated_at' => date('Y-m-d H:i:s')
         ];
-        
+
         if ($this->validate($data)) {
             $this->db->update('pages', $data, ['id' => $id]);
+
+            automation_rules_handle_event('page.updated', [
+                'page_id'   => $id,
+                'title'     => $data['title'],
+                'slug'      => $data['slug'],
+                'status'    => 'published',
+                'updated_by'=> $_SESSION['user_id'] ?? null
+            ]);
             header('Location: /admin/pages.php');
             exit;
         }

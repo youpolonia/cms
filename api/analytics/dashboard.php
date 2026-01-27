@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/../../services/AnalyticsProcessor.php';
+require_once __DIR__ . '/../../services/analyticsprocessor.php';
 require_once __DIR__ . '/../../core/database.php';
 
 header('Content-Type: application/json');

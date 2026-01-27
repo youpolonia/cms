@@ -1,0 +1,659 @@
+<?php
+declare(strict_types=1);
+/**
+ * AI Designer - Analyzer
+ * 
+ * STEP 1: Analyzes user brief to understand business context,
+ * determine appropriate design style, and plan page structure.
+ *
+ * Supports all 10 design styles from AI Theme Builder:
+ * modern, corporate, creative, minimal, elegant, vintage, luxury, bold, organic, industrial
+ *
+ * Supports all 30 industries from AI Theme Builder.
+ *
+ * @package AiDesigner
+ * @version 4.0
+ */
+
+namespace Core\AiDesigner;
+
+class Analyzer
+{
+    private array $aiSettings;
+    
+    // ═══════════════════════════════════════════════════════════════════════════
+    // Industry to Design Style mapping (defaults)
+    // Maps 30 industries to 10 design styles
+    // ═══════════════════════════════════════════════════════════════════════════
+    
+    private array $industryStyleMap = [
+        // Core
+        'business' => 'corporate',
+        'restaurant' => 'elegant',
+        'technology' => 'modern',
+        'healthcare' => 'modern',
+        'ecommerce' => 'bold',
+        'professional_services' => 'corporate',
+        
+        // Beauty & Wellness
+        'barber' => 'industrial',
+        'salon' => 'elegant',
+        'spa' => 'organic',
+        'fitness' => 'bold',
+        'yoga' => 'organic',
+        
+        // Food & Hospitality
+        'cafe' => 'vintage',
+        'bar' => 'luxury',
+        'hotel' => 'luxury',
+        'catering' => 'elegant',
+        'foodtruck' => 'bold',
+        
+        // Creative Services
+        'photography' => 'minimal',
+        'wedding' => 'elegant',
+        'music' => 'creative',
+        'tattoo' => 'industrial',
+        'art' => 'creative',
+        
+        // Professional
+        'realestate' => 'modern',
+        'finance' => 'corporate',
+        'education' => 'modern',
+        'nonprofit' => 'organic',
+        'automotive' => 'industrial',
+        
+        // Other
+        'construction' => 'industrial',
+        'blog' => 'minimal',
+        'portfolio' => 'creative',
+        'landing' => 'bold'
+    ];
+
+    // ═══════════════════════════════════════════════════════════════════════════
+    // Page section recommendations by page type
+    // Maps 10 page types to recommended sections
+    // ═══════════════════════════════════════════════════════════════════════════
+    
+    private array $pageSections = [
+        'homepage' => ['hero', 'about-preview', 'features', 'services-preview', 'testimonials', 'cta', 'stats'],
+        'about' => ['hero', 'story', 'mission', 'values', 'team-preview', 'timeline', 'cta'],
+        'services' => ['hero', 'services-grid', 'process', 'pricing-preview', 'faq-preview', 'cta'],
+        'contact' => ['hero', 'contact-info', 'contact-form', 'map', 'hours'],
+        'blog' => ['hero', 'featured-post', 'posts-grid', 'categories', 'newsletter'],
+        'portfolio' => ['hero', 'portfolio-grid', 'filter', 'process', 'cta'],
+        'pricing' => ['hero', 'pricing-table', 'features-comparison', 'faq', 'cta'],
+        'team' => ['hero', 'team-grid', 'culture', 'values', 'cta'],
+        'faq' => ['hero', 'faq-list', 'contact-cta'],
+        'testimonials' => ['hero', 'testimonials-grid', 'stats', 'clients', 'cta']
+    ];
+
+    // ═══════════════════════════════════════════════════════════════════════════
+    // Industry-specific page sections
+    // Some industries need different sections
+    // ═══════════════════════════════════════════════════════════════════════════
+    
+    private array $industrySpecificSections = [
+        'restaurant' => [
+            'homepage' => ['hero', 'about-preview', 'menu-highlights', 'gallery-preview', 'testimonials', 'reservation-cta'],
+            'menu' => ['hero', 'menu-categories', 'specials', 'dietary-info', 'reservation-cta']
+        ],
+        'hotel' => [
+            'homepage' => ['hero', 'rooms-preview', 'amenities', 'gallery-preview', 'testimonials', 'booking-cta'],
+            'rooms' => ['hero', 'rooms-grid', 'amenities', 'booking-form']
+        ],
+        'fitness' => [
+            'homepage' => ['hero', 'programs-preview', 'trainers', 'schedule', 'testimonials', 'membership-cta'],
+            'classes' => ['hero', 'class-schedule', 'class-types', 'trainers', 'join-cta']
+        ],
+        'realestate' => [
+            'homepage' => ['hero', 'featured-properties', 'search', 'services', 'testimonials', 'contact-cta'],
+            'listings' => ['hero', 'property-grid', 'search-filters', 'map']
+        ],
+        'ecommerce' => [
+            'homepage' => ['hero', 'featured-products', 'categories', 'deals', 'testimonials', 'newsletter'],
+            'products' => ['hero', 'product-grid', 'filters', 'featured']
+        ]
+    ];
+
+    // Valid design styles
+    private array $validStyles = [
+        'modern', 'corporate', 'creative', 'minimal', 
+        'elegant', 'vintage', 'luxury', 'bold', 
+        'organic', 'industrial'
+    ];
+
+    public function __construct(array $aiSettings)
+    {
+        $this->aiSettings = $aiSettings;
+    }
+
+    /**
+     * Analyze user input and generate comprehensive analysis
+     */
+    public function analyze(array $input): array
+    {
+        $brief = $input['brief'] ?? '';
+        $businessName = $input['business_name'] ?? '';
+        $industry = $input['industry'] ?? 'business';
+        $pages = $input['pages'] ?? ['homepage'];
+        $requestedStyle = $input['design_style'] ?? $input['style'] ?? 'auto';
+
+        // Use AI to deeply analyze the brief
+        $aiAnalysis = $this->callAIForAnalysis($brief, $businessName, $industry);
+        
+        // Determine design style
+        $designStyle = $this->determineDesignStyle($requestedStyle, $industry, $aiAnalysis);
+        
+        // Plan sections for each page
+        $pagePlans = $this->planPages($pages, $industry, $aiAnalysis);
+        
+        // Extract key information
+        $keyMessages = $this->extractKeyMessages($aiAnalysis, $businessName);
+        $targetAudience = $this->extractTargetAudience($aiAnalysis, $industry);
+        $tone = $this->determineTone($designStyle, $industry);
+
+        return [
+            'business_type' => $aiAnalysis['business_type'] ?? $this->inferBusinessType($industry),
+            'target_audience' => $targetAudience,
+            'tone' => $tone,
+            'key_messages' => $keyMessages,
+            'unique_selling_points' => $aiAnalysis['unique_selling_points'] ?? [],
+            'design_style' => $designStyle,
+            'page_plans' => $pagePlans,
+            'color_mood' => $aiAnalysis['color_mood'] ?? $this->getDefaultColorMood($designStyle),
+            'imagery_style' => $aiAnalysis['imagery_style'] ?? $this->getDefaultImageryStyle($designStyle, $industry),
+            'content_suggestions' => $aiAnalysis['content_suggestions'] ?? []
+        ];
+    }
+
+    /**
+     * Call AI for deep brief analysis
+     */
+    private function callAIForAnalysis(string $brief, string $businessName, string $industry): array
+    {
+        $prompt = $this->buildAnalysisPrompt($brief, $businessName, $industry);
+        
+        try {
+            $response = $this->callAI($prompt);
+            
+            // Clean response
+            $response = trim($response);
+            if (strpos($response, '```json') !== false) {
+                $response = preg_replace('/```json\s*/', '', $response);
+                $response = preg_replace('/```\s*$/', '', $response);
+            }
+            
+            $analysis = json_decode($response, true);
+            
+            if (!$analysis || json_last_error() !== JSON_ERROR_NONE) {
+                return $this->basicAnalysis($brief, $businessName, $industry);
+            }
+            
+            return $analysis;
+        } catch (\Exception $e) {
+            error_log("[AI-Designer] Analysis AI call failed: " . $e->getMessage());
+            return $this->basicAnalysis($brief, $businessName, $industry);
+        }
+    }
+
+    /**
+     * Build prompt for AI analysis
+     */
+    private function buildAnalysisPrompt(string $brief, string $businessName, string $industry): string
+    {
+        return <<<PROMPT
+Analyze this business for web design purposes.
+
+BUSINESS: {$businessName}
+INDUSTRY: {$industry}
+BRIEF: {$brief}
+
+Respond ONLY with valid JSON (no markdown, no explanations):
+
+{
+    "business_type": "specific business type description",
+    "target_audience": {
+        "primary": "main target audience",
+        "secondary": "secondary audience",
+        "demographics": "age, income, interests"
+    },
+    "unique_selling_points": ["USP 1", "USP 2", "USP 3"],
+    "key_messages": ["message 1", "message 2", "message 3"],
+    "tone_keywords": ["keyword1", "keyword2", "keyword3"],
+    "color_mood": {
+        "primary_feeling": "elegant/bold/minimal/etc",
+        "suggested_palette": "warm/cool/neutral/vibrant"
+    },
+    "imagery_style": {
+        "type": "photography/illustration/mixed",
+        "mood": "professional/casual/artistic/etc",
+        "subjects": ["subject1", "subject2"]
+    },
+    "content_suggestions": {
+        "headlines": ["headline 1", "headline 2"],
+        "taglines": ["tagline 1", "tagline 2"]
+    }
+}
+PROMPT;
+    }
+
+    /**
+     * Basic analysis fallback when AI fails
+     */
+    private function basicAnalysis(string $brief, string $businessName, string $industry): array
+    {
+        return [
+            'business_type' => $this->inferBusinessType($industry),
+            'target_audience' => [
+                'primary' => 'General consumers',
+                'secondary' => 'Business clients',
+                'demographics' => 'Adults 25-55'
+            ],
+            'unique_selling_points' => [
+                'Quality service',
+                'Professional team',
+                'Customer satisfaction'
+            ],
+            'key_messages' => [
+                "Welcome to {$businessName}",
+                'Quality you can trust',
+                'Your satisfaction is our priority'
+            ],
+            'tone_keywords' => ['professional', 'friendly', 'trustworthy'],
+            'color_mood' => [
+                'primary_feeling' => 'professional',
+                'suggested_palette' => 'neutral'
+            ],
+            'imagery_style' => [
+                'type' => 'photography',
+                'mood' => 'professional',
+                'subjects' => [$industry, 'team', 'workspace']
+            ],
+            'content_suggestions' => [
+                'headlines' => ["Welcome to {$businessName}", "Your trusted partner"],
+                'taglines' => ['Excellence in every detail', 'Where quality meets service']
+            ]
+        ];
+    }
+
+    /**
+     * Determine best design style for the project
+     */
+    private function determineDesignStyle(string $requestedStyle, string $industry, array $aiAnalysis): string
+    {
+        // Normalize style name
+        $requestedStyle = $this->normalizeStyleName($requestedStyle);
+        
+        // If user specified a valid style, use it
+        if ($requestedStyle !== 'auto' && in_array($requestedStyle, $this->validStyles)) {
+            return $requestedStyle;
+        }
+        
+        // Check AI suggestion from color_mood
+        $colorMood = strtolower($aiAnalysis['color_mood']['primary_feeling'] ?? '');
+        if ($colorMood && in_array($colorMood, $this->validStyles)) {
+            return $colorMood;
+        }
+        
+        // Use industry mapping
+        $industry = strtolower($industry);
+        if (isset($this->industryStyleMap[$industry])) {
+            return $this->industryStyleMap[$industry];
+        }
+        
+        // Default
+        return 'modern';
+    }
+
+    /**
+     * Normalize style name to match valid styles
+     */
+    private function normalizeStyleName(string $style): string
+    {
+        $style = strtolower(trim($style));
+        
+        // Map UI names to keys
+        $styleMap = [
+            'modern & clean' => 'modern',
+            'modern_clean' => 'modern',
+            'creative & bold' => 'creative',
+            'creative_bold' => 'creative',
+            'vintage & classic' => 'vintage',
+            'vintage_classic' => 'vintage',
+            'bold & dynamic' => 'bold',
+            'bold_dynamic' => 'bold',
+            'organic & natural' => 'organic',
+            'organic_natural' => 'organic',
+            // Legacy mappings
+            'minimalist' => 'minimal',
+            'playful' => 'organic'
+        ];
+        
+        return $styleMap[$style] ?? $style;
+    }
+
+    /**
+     * Plan sections for each requested page
+     */
+    private function planPages(array $pages, string $industry, array $aiAnalysis): array
+    {
+        $plans = [];
+        
+        foreach ($pages as $page) {
+            $pageLower = strtolower($page);
+            
+            // Check for industry-specific sections first
+            if (isset($this->industrySpecificSections[$industry][$pageLower])) {
+                $sections = $this->industrySpecificSections[$industry][$pageLower];
+            } else {
+                // Use default page sections
+                $sections = $this->pageSections[$pageLower] ?? ['hero', 'content', 'cta'];
+            }
+            
+            $plans[$page] = [
+                'purpose' => $this->getPagePurpose($pageLower, $industry),
+                'sections' => $sections,
+                'priority' => $pageLower === 'homepage' ? 'high' : 'normal'
+            ];
+        }
+        
+        return $plans;
+    }
+
+    /**
+     * Get purpose description for page type
+     */
+    private function getPagePurpose(string $page, string $industry): string
+    {
+        $purposes = [
+            'homepage' => 'First impression, showcase key offerings, drive conversions',
+            'about' => 'Build trust, tell brand story, show values and team',
+            'services' => 'Detail service offerings, show expertise, generate leads',
+            'contact' => 'Enable communication, provide location info, drive inquiries',
+            'blog' => 'Share knowledge, SEO, build authority',
+            'portfolio' => 'Demonstrate capabilities, show past work, generate leads',
+            'pricing' => 'Clear pricing information, comparison, drive purchases',
+            'team' => 'Humanize brand, show expertise, build trust',
+            'faq' => 'Answer common questions, reduce support load',
+            'testimonials' => 'Social proof, build trust, showcase satisfaction'
+        ];
+        
+        return $purposes[$page] ?? 'Provide relevant information and drive engagement';
+    }
+
+    /**
+     * Extract key messages from analysis
+     */
+    private function extractKeyMessages(array $aiAnalysis, string $businessName): array
+    {
+        if (!empty($aiAnalysis['key_messages'])) {
+            return array_slice($aiAnalysis['key_messages'], 0, 5);
+        }
+        
+        return [
+            "Welcome to {$businessName}",
+            'Quality and excellence in every detail',
+            'Professional service you can trust'
+        ];
+    }
+
+    /**
+     * Extract target audience from analysis
+     */
+    private function extractTargetAudience(array $aiAnalysis, string $industry): string
+    {
+        if (!empty($aiAnalysis['target_audience']['primary'])) {
+            return $aiAnalysis['target_audience']['primary'];
+        }
+        
+        // Industry defaults
+        $defaults = [
+            'restaurant' => 'Food enthusiasts, couples, families seeking quality dining',
+            'technology' => 'Tech-savvy professionals and businesses',
+            'healthcare' => 'Patients seeking quality healthcare',
+            'ecommerce' => 'Online shoppers seeking quality products',
+            'fitness' => 'Health-conscious individuals seeking fitness solutions',
+            'spa' => 'Individuals seeking relaxation and wellness',
+            'realestate' => 'Home buyers and property investors',
+            'finance' => 'Individuals and businesses seeking financial services',
+            'education' => 'Students and professionals seeking learning opportunities',
+            'wedding' => 'Engaged couples planning their special day'
+        ];
+        
+        return $defaults[$industry] ?? 'Consumers seeking quality products and services';
+    }
+
+    /**
+     * Determine tone based on design style and industry
+     */
+    private function determineTone(string $designStyle, string $industry): string
+    {
+        $tones = [
+            'modern' => 'Contemporary, clean, professional yet approachable',
+            'corporate' => 'Professional, trustworthy, authoritative',
+            'creative' => 'Artistic, innovative, expressive',
+            'minimal' => 'Clean, refined, understated elegance',
+            'elegant' => 'Sophisticated, warm, refined',
+            'vintage' => 'Classic, nostalgic, timeless charm',
+            'luxury' => 'Exclusive, premium, sophisticated',
+            'bold' => 'Confident, energetic, impactful',
+            'organic' => 'Natural, friendly, warm and welcoming',
+            'industrial' => 'Raw, authentic, straightforward'
+        ];
+        
+        return $tones[$designStyle] ?? 'Professional and approachable';
+    }
+
+    /**
+     * Get default color mood for design style
+     */
+    private function getDefaultColorMood(string $designStyle): array
+    {
+        $moods = [
+            'modern' => ['primary_feeling' => 'contemporary', 'suggested_palette' => 'cool'],
+            'corporate' => ['primary_feeling' => 'professional', 'suggested_palette' => 'cool'],
+            'creative' => ['primary_feeling' => 'artistic', 'suggested_palette' => 'vibrant'],
+            'minimal' => ['primary_feeling' => 'clean', 'suggested_palette' => 'neutral'],
+            'elegant' => ['primary_feeling' => 'sophisticated', 'suggested_palette' => 'warm'],
+            'vintage' => ['primary_feeling' => 'nostalgic', 'suggested_palette' => 'warm'],
+            'luxury' => ['primary_feeling' => 'exclusive', 'suggested_palette' => 'dark'],
+            'bold' => ['primary_feeling' => 'energetic', 'suggested_palette' => 'vibrant'],
+            'organic' => ['primary_feeling' => 'natural', 'suggested_palette' => 'earthy'],
+            'industrial' => ['primary_feeling' => 'raw', 'suggested_palette' => 'neutral']
+        ];
+        
+        return $moods[$designStyle] ?? $moods['modern'];
+    }
+
+    /**
+     * Get default imagery style for design style and industry
+     */
+    private function getDefaultImageryStyle(string $designStyle, string $industry): array
+    {
+        $baseStyles = [
+            'modern' => ['type' => 'photography', 'mood' => 'clean', 'subjects' => ['people', 'products']],
+            'corporate' => ['type' => 'photography', 'mood' => 'professional', 'subjects' => ['team', 'office']],
+            'creative' => ['type' => 'mixed', 'mood' => 'artistic', 'subjects' => ['abstract', 'creative']],
+            'minimal' => ['type' => 'photography', 'mood' => 'minimal', 'subjects' => ['products', 'spaces']],
+            'elegant' => ['type' => 'photography', 'mood' => 'refined', 'subjects' => ['details', 'atmosphere']],
+            'vintage' => ['type' => 'photography', 'mood' => 'nostalgic', 'subjects' => ['classic', 'retro']],
+            'luxury' => ['type' => 'photography', 'mood' => 'premium', 'subjects' => ['luxury', 'exclusive']],
+            'bold' => ['type' => 'photography', 'mood' => 'dynamic', 'subjects' => ['action', 'people']],
+            'organic' => ['type' => 'photography', 'mood' => 'natural', 'subjects' => ['nature', 'wellness']],
+            'industrial' => ['type' => 'photography', 'mood' => 'raw', 'subjects' => ['materials', 'process']]
+        ];
+        
+        $style = $baseStyles[$designStyle] ?? $baseStyles['modern'];
+        
+        // Add industry-specific subjects
+        $industrySubjects = [
+            'restaurant' => ['food', 'interior', 'chef'],
+            'fitness' => ['workout', 'equipment', 'trainers'],
+            'spa' => ['relaxation', 'treatments', 'wellness'],
+            'hotel' => ['rooms', 'amenities', 'views'],
+            'realestate' => ['properties', 'interiors', 'neighborhoods']
+        ];
+        
+        if (isset($industrySubjects[$industry])) {
+            $style['subjects'] = $industrySubjects[$industry];
+        }
+        
+        return $style;
+    }
+
+    /**
+     * Infer business type from industry
+     */
+    private function inferBusinessType(string $industry): string
+    {
+        $types = [
+            'business' => 'General Business',
+            'restaurant' => 'Restaurant & Dining',
+            'technology' => 'Technology Company',
+            'healthcare' => 'Healthcare Provider',
+            'ecommerce' => 'E-commerce Business',
+            'professional_services' => 'Professional Services',
+            'barber' => 'Barbershop',
+            'salon' => 'Hair Salon',
+            'spa' => 'Spa & Wellness Center',
+            'fitness' => 'Fitness & Gym',
+            'yoga' => 'Yoga Studio',
+            'cafe' => 'Cafe & Coffee Shop',
+            'bar' => 'Bar & Cocktails',
+            'hotel' => 'Hotel & Hospitality',
+            'catering' => 'Catering Services',
+            'foodtruck' => 'Food Truck',
+            'photography' => 'Photography Studio',
+            'wedding' => 'Wedding Planning',
+            'music' => 'Music & Band',
+            'tattoo' => 'Tattoo Studio',
+            'art' => 'Art Gallery',
+            'realestate' => 'Real Estate Agency',
+            'finance' => 'Financial Services',
+            'education' => 'Educational Institution',
+            'nonprofit' => 'Non-profit Organization',
+            'automotive' => 'Automotive Business',
+            'construction' => 'Construction Company',
+            'blog' => 'Blog / Content Site',
+            'portfolio' => 'Portfolio / Personal Brand',
+            'landing' => 'Landing Page / Product Launch'
+        ];
+        
+        return $types[$industry] ?? 'Professional Business';
+    }
+
+    /**
+     * Call AI API
+     */
+    private function callAI(string $prompt): string
+    {
+        $provider = $this->aiSettings['default_provider'] ?? 'openai';
+        $config = $this->aiSettings['providers'][$provider] ?? [];
+        
+        if (empty($config['api_key'])) {
+            throw new \Exception("AI provider not configured");
+        }
+        
+        $model = $config['model'] ?? 'gpt-4o-mini';
+        
+        if ($provider === 'openai') {
+            return $this->callOpenAI($config['api_key'], $model, $prompt);
+        } elseif ($provider === 'anthropic') {
+            return $this->callAnthropic($config['api_key'], $model, $prompt);
+        }
+        
+        throw new \Exception("Unknown AI provider: {$provider}");
+    }
+
+    /**
+     * Call OpenAI API
+     */
+    private function callOpenAI(string $apiKey, string $model, string $prompt): string
+    {
+        $ch = curl_init('https://api.openai.com/v1/chat/completions');
+        
+        curl_setopt_array($ch, [
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_POST => true,
+            CURLOPT_TIMEOUT => 60,
+            CURLOPT_HTTPHEADER => [
+                'Content-Type: application/json',
+                'Authorization: Bearer ' . $apiKey
+            ],
+            CURLOPT_POSTFIELDS => json_encode([
+                'model' => $model,
+                'messages' => [
+                    ['role' => 'system', 'content' => 'You are a business analyst. Output only valid JSON.'],
+                    ['role' => 'user', 'content' => $prompt]
+                ],
+                'max_tokens' => 2000,
+                'temperature' => 0.7
+            ])
+        ]);
+        
+        $response = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+        
+        if ($httpCode !== 200) {
+            throw new \Exception("OpenAI API error: HTTP {$httpCode}");
+        }
+        
+        $data = json_decode($response, true);
+        return $data['choices'][0]['message']['content'] ?? '';
+    }
+
+    /**
+     * Call Anthropic API
+     */
+    private function callAnthropic(string $apiKey, string $model, string $prompt): string
+    {
+        $ch = curl_init('https://api.anthropic.com/v1/messages');
+        
+        curl_setopt_array($ch, [
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_POST => true,
+            CURLOPT_TIMEOUT => 60,
+            CURLOPT_HTTPHEADER => [
+                'Content-Type: application/json',
+                'x-api-key: ' . $apiKey,
+                'anthropic-version: 2023-06-01'
+            ],
+            CURLOPT_POSTFIELDS => json_encode([
+                'model' => $model,
+                'max_tokens' => 2000,
+                'messages' => [
+                    ['role' => 'user', 'content' => $prompt]
+                ]
+            ])
+        ]);
+        
+        $response = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+        
+        if ($httpCode !== 200) {
+            throw new \Exception("Anthropic API error: HTTP {$httpCode}");
+        }
+        
+        $data = json_decode($response, true);
+        return $data['content'][0]['text'] ?? '';
+    }
+
+    /**
+     * Get valid design styles
+     */
+    public function getValidStyles(): array
+    {
+        return $this->validStyles;
+    }
+
+    /**
+     * Get industry to style mapping
+     */
+    public function getIndustryStyleMap(): array
+    {
+        return $this->industryStyleMap;
+    }
+}

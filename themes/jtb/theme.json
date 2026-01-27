@@ -1,0 +1,36 @@
+{
+    "name": "JTB Theme",
+    "description": "Official theme for Jessie Theme Builder with full integration. Build custom headers, footers and page layouts using the visual builder.",
+    "version": "1.0",
+    "author": "Jessie Team",
+    "css": "assets/css/style.css",
+    "preview_html": "<div style=\"background: linear-gradient(135deg, #7c3aed 0%, #06b6d4 100%); padding: 40px; text-align: center; color: white; font-family: Inter, sans-serif;\"><h2 style=\"margin: 0 0 10px; font-size: 24px;\">JTB Theme</h2><p style=\"margin: 0; opacity: 0.9;\">Full Theme Builder Integration</p></div>",
+    "supports": {
+        "theme-builder": true,
+        "custom-header": true,
+        "custom-footer": true,
+        "custom-colors": true,
+        "jtb-integration": true
+    },
+    "colors": {
+        "primary": "#7c3aed",
+        "secondary": "#1e1b4b",
+        "accent": "#06b6d4",
+        "background": "#ffffff",
+        "surface": "#f8fafc",
+        "text": "#1e293b",
+        "text_muted": "#64748b",
+        "border": "#e2e8f0",
+        "success": "#10b981",
+        "warning": "#f59e0b",
+        "error": "#ef4444",
+        "info": "#3b82f6"
+    },
+    "typography": {
+        "fontFamily": "Inter",
+        "headingFont": "Inter",
+        "baseFontSize": "16",
+        "lineHeight": "1.6",
+        "headingWeight": "600"
+    }
+}

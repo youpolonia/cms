@@ -2,7 +2,7 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/../../includes/thememanager.php';
-require_once __DIR__.'/../../services/tenant/StyleCompiler.php';
+require_once __DIR__.'/../../services/tenant/stylecompiler.php';
 
 $tenantId = $_GET['tenant_id'] ?? '';
 if (empty($tenantId)) {

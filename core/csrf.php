@@ -30,10 +30,29 @@ if (!function_exists('csrf_validate_or_403')) {
         $good   = csrf_token();
         if ($method !== 'POST' || !$good || !is_string($sent) || !hash_equals($good, $sent)) {
             http_response_code(403);
-            header('Content-Type: text/plain; charset=UTF-8');
-            echo 'CSRF verification failed';
+            // Return JSON for AJAX requests
+            $isAjax = !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && 
+                      strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
+            $wantsJson = isset($_SERVER['HTTP_ACCEPT']) && 
+                         strpos($_SERVER['HTTP_ACCEPT'], 'application/json') !== false;
+            if ($isAjax || $wantsJson) {
+                header('Content-Type: application/json; charset=UTF-8');
+                echo json_encode(['success' => false, 'error' => 'CSRF verification failed']);
+            } else {
+                header('Content-Type: text/plain; charset=UTF-8');
+                echo 'CSRF verification failed';
+            }
             exit;
         }
+    }
+}
+if (!function_exists('csrf_validate')) {
+    function csrf_validate(?string $token): bool {
+        $good = csrf_token();
+        if (!$good || !is_string($token) || $token === '') {
+            return false;
+        }
+        return hash_equals($good, $token);
     }
 }
 // (no closing PHP tag)

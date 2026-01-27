@@ -1,17 +1,23 @@
 <?php
+define('CMS_ROOT', dirname(__DIR__, 3));
+require_once CMS_ROOT . '/config.php';
+require_once CMS_ROOT . '/core/session_boot.php';
+cms_session_start('admin');
+require_once CMS_ROOT . '/core/auth.php';
+authenticateAdmin();
+
+// POST-only guard
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    http_response_code(405);
+    header('Allow: POST');
+    echo json_encode(['success' => false, 'message' => 'Method not allowed']);
+    exit;
+}
+
 /**
  * Widget Layout API Endpoint
  * Handles saving widget positions and visibility rules
  */
-
-require_once __DIR__ . '/../../../includes/api_init.php';
-
-// Only allow POST requests
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    http_response_code(405);
-    echo json_encode(['error' => 'Method Not Allowed']);
-    exit;
-}
 
 require_once __DIR__ . '/../../../core/csrf.php';
 csrf_validate_or_403();

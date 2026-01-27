@@ -1,72 +1,76 @@
 <?php
-require_once __DIR__ . '/../../includes/auth.php';
-require_once __DIR__ . '/../../includes/systemalert.php';
-
-if (empty($_SESSION['csrf_token'])) {
-    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+define('CMS_ROOT', dirname(__DIR__, 2));
+require_once CMS_ROOT . '/config.php';
+if (!defined('DEV_MODE') || DEV_MODE !== true) {
+    http_response_code(403);
+    exit;
 }
+require_once CMS_ROOT . '/core/session_boot.php';
+cms_session_start('admin');
+require_once CMS_ROOT . '/core/csrf.php';
+csrf_boot();
+require_once CMS_ROOT . '/core/auth.php';
+authenticateAdmin();
+require_once CMS_ROOT . '/includes/systemalert.php';
+require_once CMS_ROOT . '/admin/includes/header.php';
+require_once CMS_ROOT . '/admin/includes/navigation.php';
 
-$tenant_id = $_GET['tenant_id'] ?? null;
-$page = $_GET['page'] ?? 1;
+$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 $limit = 20;
 $offset = ($page - 1) * $limit;
 
-$alerts = SystemAlert::get_alerts($tenant_id, $limit, $offset);
-$total_alerts = count(SystemAlert::get_alerts($tenant_id, 0, 0));
-$total_pages = ceil($total_alerts / $limit);
+$alerts = SystemAlert::get_alerts(null, $limit, $offset);
+$total_alerts = count(SystemAlert::get_alerts(null, 0, 0));
+$total_pages = $total_alerts > 0 ? ceil($total_alerts / $limit) : 1;
 
-?><!DOCTYPE html>
-<html>
-<head>
-    <title>System Alerts</title>
-    <link rel="stylesheet" href="/assets/css/main.css">
-    <script src="/assets/js/alerts.js" defer></script>
-</head>
-<body>
-    <div class="admin-container">
-        <h1>System Alerts</h1>
-        
-        <div class="filter-bar">
-            <select id="tenant-filter">
-                <option value="">All Tenants</option>
-                <?php foreach(get_tenants() as $tenant): ?>                    <option value="<?= $tenant['id'] ?>" <?= $tenant_id == $tenant['id'] ? 'selected' : '' ?>>
-                        <?= htmlspecialchars($tenant['name']) ?>
-                    </option>
-                <?php endforeach; ?>
-            </select>
-        </div>
 
-<div class="alert-list">
-            <?php foreach($alerts as $alert): ?>
-<div class="alert-item" data-alert-id="<?= $alert['id'] ?>">
-                    <div class="alert-header">
-                        <span class="alert-type <?= $alert['type'] ?>"><?= ucfirst($alert['type']) ?></span>
-                        <span class="alert-date"><?= date('M j, Y H:i', strtotime($alert['created_at'])) ?></span>
-                    </div>
-                    <div class="alert-message"><?= htmlspecialchars($alert['message']) ?></div>
-                    <form class="resolve-form" method="post" action="/admin/alerts/resolve.php">
-                        <input type="hidden" name="alert_id" value="<?= $alert['id'] ?>">
-                        <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
-                        <button type="submit" class="resolve-btn" data-alert-id="<?= $alert['id'] ?>">
-                            <span class="btn-text">Mark as Resolved</span>
-                            <span class="loading-spinner" style="display:none">Processing...</span>
-                        </button>
-                    </form>
-                    <div class="alert-status"></div>
-                </div>
-            <?php endforeach; ?>
-        </div>
+<div class="admin-container">
+    <h1>System Alerts</h1>
 
-<div class="pagination">
-            <?php if($page > 1): ?>
-<a href="?page=<?= $page-1 ?>&tenant_id=<?= $tenant_id ?>">Previous</a>
-            <?php endif; ?>
-<span>Page <?= $page ?> of <?= $total_pages ?></span>
-            
-            <?php if($page < $total_pages): ?>
-<a href="?page=<?= $page+1 ?>&tenant_id=<?= $tenant_id ?>">Next</a>
-            <?php endif; ?>
+    <?php if (empty($alerts)):
+        <p>No active alerts.</p>
+    <?php else:
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Type</th>
+                    <th>Message</th>
+                    <th>Created</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($alerts as $alert):
+                <tr>
+                    <td><?php echo htmlspecialchars((string)$alert['id'], ENT_QUOTES, 'UTF-8'); ?></td>
+                    <td><?php echo htmlspecialchars(ucfirst($alert['type'] ?? 'info'), ENT_QUOTES, 'UTF-8'); ?></td>
+                    <td><?php echo htmlspecialchars($alert['message'] ?? '', ENT_QUOTES, 'UTF-8'); ?></td>
+                    <td><?php echo htmlspecialchars(date('Y-m-d H:i:s', strtotime($alert['created_at'])), ENT_QUOTES, 'UTF-8'); ?></td>
+                    <td>Unresolved</td>
+                    <td>
+                        <form method="post" action="resolve.php" style="display:inline;">
+                            <?php csrf_field();
+                            <input type="hidden" name="alert_id" value="<?php echo htmlspecialchars((string)$alert['id'], ENT_QUOTES, 'UTF-8'); ?>">
+                            <button type="submit" class="btn btn-sm">Resolve</button>
+                        </form>
+                    </td>
+                </tr>
+                <?php endforeach;
+            </tbody>
+        </table>
+
+        <div class="pagination">
+            <?php if ($page > 1):
+                <a href="?page=<?php echo $page - 1; ?>" class="btn">Previous</a>
+            <?php endif;
+            <span>Page <?php echo $page; ?> of <?php echo $total_pages; ?></span>
+            <?php if ($page < $total_pages):
+                <a href="?page=<?php echo $page + 1; ?>" class="btn">Next</a>
+            <?php endif;
         </div>
-    </div>
-</body>
-</html>
+    <?php endif;
+</div>
+
+<?php require_once CMS_ROOT . '/admin/includes/footer.php';

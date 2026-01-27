@@ -4,11 +4,20 @@ if (!defined('CMS_ROOT')) {
     $___root = dirname(__DIR__, 2);
     if (!is_file($___root . '/config.php')) { $___root = dirname(__DIR__); }
     require_once __DIR__ . '/../config.php';
+require_once __DIR__ . '/../includes/init.php'; // Must be before permissions check - starts session
+
+require_once __DIR__ . '/../core/session_boot.php';
+cms_session_start('admin');
+
+// RBAC: Require admin access
+require_once __DIR__ . '/includes/permissions.php';
+cms_require_admin_role();
 }
 require_once __DIR__ . '/../core/csrf.php';
 csrf_boot('admin');
 if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') { csrf_validate_or_403(); }
 
+require_once __DIR__ . '/../core/automation_rules.php';
 require_once __DIR__ . '/../models/blogmanager.php';
 require_once __DIR__ . '/../models/blogpost.php';
 
@@ -27,7 +36,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $post = new BlogPost($title, $slug, $body, $tags, $published);
     $blogManager->savePost($post);
-    
+
+    if ($published) {
+        automation_rules_handle_event('blog.post_published', [
+            'post_id'   => null,
+            'title'     => $title,
+            'slug'      => $slug,
+            'status'    => 'published',
+            'author_id' => $_SESSION['user_id'] ?? null
+        ]);
+    }
+
     header("Location: /admin/blog-admin-view.php?slug=" . urlencode($slug));
     exit;
 }

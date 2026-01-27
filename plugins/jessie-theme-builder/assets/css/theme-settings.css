@@ -1,0 +1,689 @@
+/**
+ * JTB Theme Settings CSS
+ * Styles for the global theme settings panel
+ */
+
+/* ========================================
+   Layout
+   ======================================== */
+
+.jtb-theme-settings-page .jtb-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 24px;
+    height: 60px;
+    background: #1a1a2e;
+    border-bottom: 1px solid #2d2d44;
+}
+
+.jtb-header-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.jtb-back-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    color: #a0a0b0;
+    transition: all 0.2s;
+}
+
+.jtb-back-link:hover {
+    background: rgba(255,255,255,0.1);
+    color: #ffffff;
+}
+
+.jtb-header-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #ffffff;
+    margin: 0;
+}
+
+.jtb-header-right {
+    display: flex;
+    gap: 12px;
+}
+
+.jtb-theme-settings-main {
+    display: flex;
+    height: calc(100vh - 60px);
+    overflow: hidden;
+}
+
+/* ========================================
+   Sidebar Navigation
+   ======================================== */
+
+.jtb-settings-nav {
+    width: 240px;
+    background: #1a1a2e;
+    border-right: 1px solid #2d2d44;
+    display: flex;
+    flex-direction: column;
+    padding: 20px 0;
+}
+
+.jtb-settings-nav-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    flex: 1;
+}
+
+.jtb-settings-nav-item a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 24px;
+    color: #a0a0b0;
+    text-decoration: none;
+    transition: all 0.2s;
+    border-left: 3px solid transparent;
+}
+
+.jtb-settings-nav-item a:hover {
+    background: rgba(255,255,255,0.05);
+    color: #ffffff;
+}
+
+.jtb-settings-nav-item.active a {
+    background: rgba(138, 99, 210, 0.15);
+    color: #a78bfa;
+    border-left-color: #8a63d2;
+}
+
+.jtb-settings-nav-item a svg {
+    flex-shrink: 0;
+    opacity: 0.7;
+}
+
+.jtb-settings-nav-item.active a svg {
+    opacity: 1;
+}
+
+.jtb-settings-nav-actions {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    border-top: 1px solid #2d2d44;
+    margin-top: auto;
+}
+
+/* ========================================
+   Settings Content
+   ======================================== */
+
+.jtb-settings-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 30px 40px;
+    background: #2d2d44;
+}
+
+.jtb-settings-section {
+    display: none;
+    animation: fadeIn 0.3s ease;
+}
+
+.jtb-settings-section.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.jtb-settings-section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #3d3d5c;
+}
+
+.jtb-settings-section-header h2 {
+    font-size: 24px;
+    font-weight: 600;
+    color: #ffffff;
+    margin: 0;
+}
+
+.jtb-settings-subheading {
+    font-size: 16px;
+    font-weight: 600;
+    color: #a0a0b0;
+    margin: 30px 0 20px;
+    padding-top: 20px;
+    border-top: 1px solid #3d3d5c;
+}
+
+.jtb-settings-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+/* ========================================
+   Fields
+   ======================================== */
+
+.jtb-field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.jtb-field label {
+    font-size: 13px;
+    font-weight: 500;
+    color: #a0a0b0;
+}
+
+.jtb-field-full {
+    grid-column: 1 / -1;
+}
+
+/* Color Field */
+.jtb-color-input-wrapper {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.jtb-color-input-wrapper input[type="color"] {
+    width: 44px;
+    height: 44px;
+    padding: 2px;
+    border: 2px solid #3d3d5c;
+    border-radius: 8px;
+    cursor: pointer;
+    background: transparent;
+}
+
+.jtb-color-input-wrapper input[type="color"]::-webkit-color-swatch-wrapper {
+    padding: 0;
+}
+
+.jtb-color-input-wrapper input[type="color"]::-webkit-color-swatch {
+    border-radius: 4px;
+    border: none;
+}
+
+.jtb-color-text {
+    flex: 1;
+    padding: 10px 12px;
+    background: #1a1a2e;
+    border: 1px solid #3d3d5c;
+    border-radius: 8px;
+    color: #e0e0e0;
+    font-family: monospace;
+    font-size: 13px;
+}
+
+.jtb-color-text:focus {
+    outline: none;
+    border-color: #8a63d2;
+}
+
+/* Range Field */
+.jtb-range-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.jtb-range-wrapper input[type="range"] {
+    flex: 1;
+    height: 6px;
+    background: #3d3d5c;
+    border-radius: 3px;
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+.jtb-range-wrapper input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 18px;
+    height: 18px;
+    background: #8a63d2;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: transform 0.15s;
+}
+
+.jtb-range-wrapper input[type="range"]::-webkit-slider-thumb:hover {
+    transform: scale(1.1);
+}
+
+.jtb-range-value {
+    min-width: 60px;
+    padding: 6px 10px;
+    background: #1a1a2e;
+    border: 1px solid #3d3d5c;
+    border-radius: 6px;
+    color: #e0e0e0;
+    font-size: 12px;
+    font-family: monospace;
+    text-align: center;
+}
+
+/* Select Field */
+.jtb-field-select select {
+    padding: 10px 36px 10px 14px;
+    background: #1a1a2e url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23888' d='M6 8L1 3h10z'/%3E%3C/svg%3E") no-repeat right 12px center;
+    border: 1px solid #3d3d5c;
+    border-radius: 8px;
+    color: #e0e0e0;
+    font-size: 14px;
+    cursor: pointer;
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+.jtb-field-select select:focus {
+    outline: none;
+    border-color: #8a63d2;
+}
+
+.jtb-field-select select option {
+    background: #1a1a2e;
+    color: #e0e0e0;
+}
+
+.jtb-field-select select option:disabled {
+    color: #666;
+    font-weight: 600;
+}
+
+/* Toggle Field */
+.jtb-toggle-label {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+}
+
+.jtb-toggle-label input {
+    display: none;
+}
+
+.jtb-toggle-switch {
+    position: relative;
+    width: 44px;
+    height: 24px;
+    background: #3d3d5c;
+    border-radius: 12px;
+    transition: background 0.2s;
+}
+
+.jtb-toggle-switch::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 20px;
+    height: 20px;
+    background: #ffffff;
+    border-radius: 50%;
+    transition: transform 0.2s;
+}
+
+.jtb-toggle-label input:checked + .jtb-toggle-switch {
+    background: #8a63d2;
+}
+
+.jtb-toggle-label input:checked + .jtb-toggle-switch::after {
+    transform: translateX(20px);
+}
+
+.jtb-toggle-text {
+    font-size: 14px;
+    color: #e0e0e0;
+}
+
+/* Text Field */
+.jtb-field-text input[type="text"] {
+    padding: 10px 14px;
+    background: #1a1a2e;
+    border: 1px solid #3d3d5c;
+    border-radius: 8px;
+    color: #e0e0e0;
+    font-size: 14px;
+}
+
+.jtb-field-text input[type="text"]:focus {
+    outline: none;
+    border-color: #8a63d2;
+}
+
+/* ========================================
+   Button Preview
+   ======================================== */
+
+.jtb-button-preview {
+    background: rgba(0,0,0,0.2);
+    border-radius: 12px;
+    padding: 40px;
+    margin-bottom: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.jtb-preview-button {
+    padding: var(--preview-padding, 12px 24px);
+    background: var(--preview-bg, #7c3aed);
+    color: var(--preview-text, #ffffff);
+    border: var(--preview-border-width, 0) solid var(--preview-border-color, #7c3aed);
+    border-radius: var(--preview-radius, 8px);
+    font-size: var(--preview-font-size, 16px);
+    font-weight: var(--preview-font-weight, 600);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.jtb-preview-button:hover {
+    background: var(--preview-hover-bg, #5b21b6);
+    color: var(--preview-hover-text, #ffffff);
+    border-color: var(--preview-hover-border, #5b21b6);
+}
+
+/* ========================================
+   Preview Panel
+   ======================================== */
+
+.jtb-preview-panel {
+    position: fixed;
+    top: 60px;
+    right: -450px;
+    width: 450px;
+    height: calc(100vh - 60px);
+    background: #1a1a2e;
+    border-left: 1px solid #2d2d44;
+    transition: right 0.3s ease;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+}
+
+.jtb-preview-panel.open {
+    right: 0;
+}
+
+.jtb-preview-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+    background: #2d2d44;
+    border-bottom: 1px solid #3d3d5c;
+    color: #ffffff;
+    font-weight: 600;
+}
+
+.jtb-preview-close {
+    background: transparent;
+    border: none;
+    color: #888;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+.jtb-preview-close:hover {
+    color: #ffffff;
+}
+
+#previewFrame {
+    flex: 1;
+    border: none;
+    background: #ffffff;
+}
+
+/* ========================================
+   Buttons
+   ======================================== */
+
+.jtb-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 18px;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.jtb-btn-primary {
+    background: #8a63d2;
+    color: #ffffff;
+}
+
+.jtb-btn-primary:hover {
+    background: #7c55c4;
+}
+
+.jtb-btn-secondary {
+    background: #3d3d5c;
+    color: #e0e0e0;
+}
+
+.jtb-btn-secondary:hover {
+    background: #4d4d6c;
+}
+
+.jtb-btn-ghost {
+    background: transparent;
+    color: #a0a0b0;
+    padding: 8px 14px;
+}
+
+.jtb-btn-ghost:hover {
+    background: rgba(255,255,255,0.1);
+    color: #ffffff;
+}
+
+.jtb-btn-danger {
+    background: rgba(239, 68, 68, 0.15);
+    color: #f87171;
+}
+
+.jtb-btn-danger:hover {
+    background: rgba(239, 68, 68, 0.25);
+}
+
+.jtb-btn-sm {
+    padding: 8px 14px;
+    font-size: 13px;
+}
+
+/* ========================================
+   Messages
+   ======================================== */
+
+.jtb-message {
+    padding: 14px 20px;
+    border-radius: 8px;
+    margin-bottom: 24px;
+    font-size: 14px;
+}
+
+.jtb-message-success {
+    background: rgba(16, 185, 129, 0.15);
+    color: #34d399;
+    border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.jtb-message-error {
+    background: rgba(239, 68, 68, 0.15);
+    color: #f87171;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+/* ========================================
+   Modal
+   ======================================== */
+
+.jtb-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s;
+}
+
+.jtb-modal-overlay.open {
+    opacity: 1;
+    visibility: visible;
+}
+
+.jtb-modal {
+    background: #2d2d44;
+    border-radius: 12px;
+    width: 100%;
+    max-width: 480px;
+    box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+}
+
+.jtb-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 24px;
+    border-bottom: 1px solid #3d3d5c;
+}
+
+.jtb-modal-header h3 {
+    margin: 0;
+    color: #ffffff;
+    font-size: 18px;
+}
+
+.jtb-modal-close {
+    background: transparent;
+    border: none;
+    color: #888;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+.jtb-modal-body {
+    padding: 24px;
+}
+
+.jtb-modal-body input[type="file"] {
+    width: 100%;
+    padding: 12px;
+    background: #1a1a2e;
+    border: 2px dashed #3d3d5c;
+    border-radius: 8px;
+    color: #e0e0e0;
+}
+
+.jtb-text-muted {
+    color: #888;
+    font-size: 13px;
+    margin-top: 12px;
+}
+
+.jtb-modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    padding: 16px 24px;
+    border-top: 1px solid #3d3d5c;
+}
+
+.jtb-form-group {
+    margin-bottom: 16px;
+}
+
+.jtb-form-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: #a0a0b0;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+/* ========================================
+   Responsive
+   ======================================== */
+
+@media (max-width: 1200px) {
+    .jtb-settings-content {
+        padding: 24px;
+    }
+
+    .jtb-settings-grid {
+        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    }
+}
+
+@media (max-width: 900px) {
+    .jtb-settings-nav {
+        width: 200px;
+    }
+
+    .jtb-preview-panel {
+        width: 100%;
+        right: -100%;
+    }
+}
+
+@media (max-width: 768px) {
+    .jtb-theme-settings-main {
+        flex-direction: column;
+    }
+
+    .jtb-settings-nav {
+        width: 100%;
+        flex-direction: row;
+        overflow-x: auto;
+        padding: 0;
+        border-right: none;
+        border-bottom: 1px solid #2d2d44;
+    }
+
+    .jtb-settings-nav-list {
+        display: flex;
+        padding: 0 16px;
+    }
+
+    .jtb-settings-nav-item a {
+        padding: 16px;
+        border-left: none;
+        border-bottom: 3px solid transparent;
+        white-space: nowrap;
+    }
+
+    .jtb-settings-nav-item.active a {
+        border-left-color: transparent;
+        border-bottom-color: #8a63d2;
+    }
+
+    .jtb-settings-nav-actions {
+        display: none;
+    }
+
+    .jtb-settings-grid {
+        grid-template-columns: 1fr;
+    }
+}

@@ -10,6 +10,14 @@ if ($lastFallback && time() - $lastFallback['timestamp'] < 86400) {
 // Admin Settings Interface
 require_once __DIR__ . '/../includes/core/auth.php';
 require_once __DIR__ . '/../includes/core/config.php';
+require_once __DIR__ . '/../includes/init.php'; // Must be before permissions check - starts session
+
+require_once __DIR__ . '/../core/session_boot.php';
+cms_session_start('admin');
+
+// RBAC: Require admin access
+require_once __DIR__ . '/includes/permissions.php';
+cms_require_admin_role();
 require_once __DIR__ . '/../includes/services/DatabaseTenantConfigStorage.php';
 require_once __DIR__ . '/../core/csrf.php';
 

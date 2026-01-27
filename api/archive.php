@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-require_once __DIR__.'/../services/ArchiveService.php';
+require_once __DIR__.'/../services/archiveservice.php';
 require_once __DIR__.'/../includes/core/apiresponse.php';
 
 header('Content-Type: application/json');

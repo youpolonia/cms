@@ -1,0 +1,1712 @@
+<?php
+/**
+ * Theme Builder 3.0 - Template Editor (Full Screen)
+ * Three-panel layout: Modules | Canvas | Settings
+ * For editing global templates (Header, Footer, Archive, etc.)
+ */
+if (!defined('CMS_ROOT')) { define('CMS_ROOT', dirname(__DIR__, 5)); }
+
+// DEBUG
+file_put_contents('/tmp/template_edit_debug.log', date('Y-m-d H:i:s')." TEMPLATE-EDIT.PHP\n", FILE_APPEND);
+file_put_contents('/tmp/template_edit_debug.log', "modulesJson isset: ".(isset($modulesJson)?'YES':'NO')." empty: ".(empty($modulesJson)?'YES':'NO')."\n", FILE_APPEND);
+file_put_contents('/tmp/template_edit_debug.log', "modulesJson value: ".substr($modulesJson ?? 'NULL', 0, 200)."\n", FILE_APPEND);
+file_put_contents('/tmp/template_edit_debug.log', "modules isset: ".(isset($modules)?'YES':'NO')."\n", FILE_APPEND);
+
+$templateName = esc(is_array($tplRecord) ? ($tplRecord['name'] ?? 'New Template') : 'New Template');
+$templateId = (int)(is_array($tplRecord) ? ($tplRecord['id'] ?? 0) : 0);
+$templateType = esc($templateType ?? 'header');
+$typeLabel = esc(is_array($typeInfo) ? ($typeInfo['label'] ?? ucfirst($templateType)) : ucfirst($templateType));
+$typeIcon = is_array($typeInfo) ? ($typeInfo['icon'] ?? '📄') : '📄';
+$priority = (int)(is_array($tplRecord) ? ($tplRecord['priority'] ?? 0) : 0);
+$isActive = (int)(is_array($tplRecord) ? ($tplRecord['is_active'] ?? 1) : 1);
+// Use pre-encoded JSON from controller if available, otherwise encode from arrays
+if (!isset($contentJson) || empty($contentJson)) {
+    $contentJson = json_encode($content ?? ['sections' => []], JSON_UNESCAPED_UNICODE);
+}
+if (!isset($modulesJson) || empty($modulesJson)) {
+    $modulesJson = json_encode($modules ?? [], JSON_UNESCAPED_UNICODE);
+}
+if (!isset($categoriesJson) || empty($categoriesJson)) {
+    $categoriesJson = json_encode($categories ?? [], JSON_UNESCAPED_UNICODE);
+}
+$csrfToken = csrf_token();
+?>
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><?= $typeLabel ?> Template - <?= $templateName ?></title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+    :root {
+        --tb-bg: #1e1e2e;
+        --tb-surface: #181825;
+        --tb-surface-2: #313244;
+        --tb-border: #45475a;
+        --tb-text: #cdd6f4;
+        --tb-text-muted: #6c7086;
+        --tb-accent: #89b4fa;
+        --tb-accent-hover: #b4befe;
+        --tb-success: #a6e3a1;
+        --tb-warning: #f9e2af;
+        --tb-danger: #f38ba8;
+        --tb-panel-width: 280px;
+        --tb-toolbar-height: 56px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+        height: 100%;
+        overflow: hidden;
+        font-family: 'Inter', sans-serif;
+        font-size: 14px;
+        color: var(--tb-text);
+        background: var(--tb-bg);
+    }
+
+    /* TOOLBAR */
+    .tb-toolbar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: var(--tb-toolbar-height);
+        background: var(--tb-surface);
+        border-bottom: 1px solid var(--tb-border);
+        display: flex;
+        align-items: center;
+        padding: 0 16px;
+        gap: 16px;
+        z-index: 1000;
+    }
+    .tb-toolbar-left, .tb-toolbar-center, .tb-toolbar-right {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .tb-toolbar-left { flex: 0 0 auto; }
+    .tb-toolbar-center { flex: 1; justify-content: center; }
+    .tb-toolbar-right { flex: 0 0 auto; }
+
+    .tb-logo {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: 600;
+        font-size: 15px;
+        text-decoration: none;
+        color: var(--tb-text);
+    }
+    .tb-logo svg { opacity: 0.8; }
+
+    .tb-template-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 10px;
+        background: var(--tb-surface-2);
+        border: 1px solid var(--tb-border);
+        border-radius: 4px;
+        font-size: 12px;
+        font-weight: 500;
+        color: var(--tb-accent);
+    }
+
+    .tb-template-name {
+        background: transparent;
+        border: 1px solid transparent;
+        color: var(--tb-text);
+        font-size: 15px;
+        font-weight: 500;
+        padding: 6px 12px;
+        border-radius: 6px;
+        text-align: center;
+        min-width: 200px;
+    }
+    .tb-template-name:hover { border-color: var(--tb-border); }
+    .tb-template-name:focus {
+        outline: none;
+        border-color: var(--tb-accent);
+        background: var(--tb-surface-2);
+    }
+
+    .tb-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 8px 14px;
+        font-size: 13px;
+        font-weight: 500;
+        border-radius: 6px;
+        border: none;
+        cursor: pointer;
+        transition: all 0.15s;
+        background: var(--tb-surface-2);
+        color: var(--tb-text);
+    }
+    .tb-btn:hover { background: var(--tb-border); }
+    .tb-btn-primary { background: var(--tb-accent); color: #1e1e2e; }
+    .tb-btn-primary:hover { background: var(--tb-accent-hover); }
+    .tb-btn-success { background: var(--tb-success); color: #1e1e2e; }
+    .tb-btn-success:hover { opacity: 0.9; }
+    .tb-btn-icon {
+        padding: 8px;
+        background: transparent;
+    }
+    .tb-btn-icon:hover { background: var(--tb-surface-2); }
+    .tb-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .tb-divider {
+        width: 1px;
+        height: 24px;
+        background: var(--tb-border);
+        margin: 0 4px;
+    }
+
+    /* MAIN LAYOUT */
+    .tb-main {
+        position: fixed;
+        top: var(--tb-toolbar-height);
+        left: 0;
+        right: 0;
+        bottom: 0;
+        display: flex;
+    }
+
+    /* LEFT PANEL - MODULES */
+    .tb-panel-left {
+        width: var(--tb-panel-width);
+        background: var(--tb-surface);
+        border-right: 1px solid var(--tb-border);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+    }
+    .tb-panel-header {
+        padding: 16px;
+        border-bottom: 1px solid var(--tb-border);
+    }
+    .tb-panel-title {
+        font-size: 13px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--tb-text-muted);
+    }
+    .tb-search {
+        width: 100%;
+        padding: 8px 12px;
+        background: var(--tb-surface-2);
+        border: 1px solid var(--tb-border);
+        border-radius: 6px;
+        color: var(--tb-text);
+        font-size: 13px;
+        margin-top: 12px;
+    }
+    .tb-search:focus {
+        outline: none;
+        border-color: var(--tb-accent);
+    }
+    .tb-panel-body {
+        flex: 1;
+        overflow-y: auto;
+        padding: 12px;
+    }
+
+    .tb-module-category { margin-bottom: 16px; }
+    .tb-category-title {
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--tb-text-muted);
+        margin-bottom: 8px;
+        padding: 0 4px;
+    }
+    .tb-modules-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+    }
+    .tb-module-item {
+        background: var(--tb-surface-2);
+        border: 1px solid var(--tb-border);
+        border-radius: 8px;
+        padding: 12px 8px;
+        text-align: center;
+        cursor: grab;
+        transition: all 0.15s;
+    }
+    .tb-module-item:hover {
+        border-color: var(--tb-accent);
+        background: var(--tb-bg);
+    }
+    .tb-module-item.dragging { opacity: 0.5; }
+    .tb-module-icon { font-size: 20px; margin-bottom: 6px; }
+    .tb-module-name {
+        font-size: 11px;
+        font-weight: 500;
+        color: var(--tb-text-muted);
+    }
+
+    /* CENTER - CANVAS */
+    .tb-canvas-wrapper {
+        flex: 1;
+        background: var(--tb-bg);
+        overflow: auto;
+        display: flex;
+        flex-direction: column;
+    }
+    .tb-canvas-toolbar {
+        padding: 12px 16px;
+        background: var(--tb-surface);
+        border-bottom: 1px solid var(--tb-border);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .tb-canvas-info {
+        font-size: 12px;
+        color: var(--tb-text-muted);
+        margin-left: auto;
+    }
+    .tb-viewport-btns {
+        display: flex;
+        gap: 4px;
+    }
+    .tb-viewport-btn {
+        padding: 6px 10px;
+        background: transparent;
+        border: 1px solid transparent;
+        border-radius: 4px;
+        color: var(--tb-text-muted);
+        cursor: pointer;
+    }
+    .tb-viewport-btn:hover { background: var(--tb-surface-2); }
+    .tb-viewport-btn.active {
+        background: var(--tb-surface-2);
+        border-color: var(--tb-border);
+        color: var(--tb-text);
+    }
+
+    .tb-canvas {
+        flex: 1;
+        padding: 24px;
+        overflow: auto;
+    }
+    .tb-canvas-inner {
+        max-width: 1200px;
+        margin: 0 auto;
+        min-height: 400px;
+        background: var(--tb-surface);
+        border-radius: 8px;
+        border: 1px dashed var(--tb-border);
+        transition: max-width 0.3s;
+    }
+    .tb-canvas-inner.viewport-tablet { max-width: 768px; }
+    .tb-canvas-inner.viewport-mobile { max-width: 375px; }
+
+    /* Empty state */
+    .tb-empty-canvas {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 300px;
+        color: var(--tb-text-muted);
+    }
+    .tb-empty-icon { font-size: 48px; margin-bottom: 16px; opacity: 0.5; }
+    .tb-empty-text { font-size: 14px; margin-bottom: 16px; }
+
+    /* RIGHT PANEL - SETTINGS */
+    .tb-panel-right {
+        width: var(--tb-panel-width);
+        background: var(--tb-surface);
+        border-left: 1px solid var(--tb-border);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+    }
+    .tb-tabs {
+        display: flex;
+        border-bottom: 1px solid var(--tb-border);
+    }
+    .tb-tab {
+        flex: 1;
+        padding: 12px;
+        background: transparent;
+        border: none;
+        color: var(--tb-text-muted);
+        font-size: 12px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.15s;
+    }
+    .tb-tab:hover { color: var(--tb-text); }
+    .tb-tab.active {
+        color: var(--tb-accent);
+        border-bottom: 2px solid var(--tb-accent);
+        margin-bottom: -1px;
+    }
+
+    .tb-settings-content {
+        flex: 1;
+        overflow-y: auto;
+        padding: 16px;
+    }
+    .tb-field-group { margin-bottom: 16px; }
+    .tb-field-label {
+        display: block;
+        font-size: 12px;
+        font-weight: 500;
+        color: var(--tb-text-muted);
+        margin-bottom: 6px;
+    }
+    .tb-field-input,
+    .tb-field-select {
+        width: 100%;
+        padding: 8px 12px;
+        background: var(--tb-surface-2);
+        border: 1px solid var(--tb-border);
+        border-radius: 6px;
+        color: var(--tb-text);
+        font-size: 13px;
+    }
+    .tb-field-input:focus,
+    .tb-field-select:focus {
+        outline: none;
+        border-color: var(--tb-accent);
+    }
+    .tb-field-help {
+        font-size: 11px;
+        color: var(--tb-text-muted);
+        margin-top: 4px;
+    }
+    .tb-toggle-wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    .tb-toggle {
+        position: relative;
+        width: 44px;
+        height: 24px;
+    }
+    .tb-toggle input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+    .tb-toggle-slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: var(--tb-surface-2);
+        border: 1px solid var(--tb-border);
+        transition: .3s;
+        border-radius: 24px;
+    }
+    .tb-toggle-slider:before {
+        position: absolute;
+        content: "";
+        height: 18px;
+        width: 18px;
+        left: 2px;
+        bottom: 2px;
+        background-color: var(--tb-text-muted);
+        transition: .3s;
+        border-radius: 50%;
+    }
+    .tb-toggle input:checked + .tb-toggle-slider {
+        background-color: var(--tb-accent);
+        border-color: var(--tb-accent);
+    }
+    .tb-toggle input:checked + .tb-toggle-slider:before {
+        transform: translateX(20px);
+        background-color: #1e1e2e;
+    }
+
+    /* Section/Row/Column/Module elements */
+    .tb-section {
+        margin-bottom: 16px;
+        border: 2px dashed var(--tb-border);
+        border-radius: 8px;
+        min-height: 100px;
+        position: relative;
+        transition: border-color 0.15s;
+    }
+    .tb-section:hover { border-color: var(--tb-accent); }
+    .tb-section.selected { border-color: var(--tb-accent); border-style: solid; }
+
+    .tb-element-actions {
+        position: absolute;
+        top: -12px;
+        right: 8px;
+        display: flex;
+        gap: 4px;
+        opacity: 0;
+        transition: opacity 0.15s;
+    }
+    .tb-section:hover .tb-element-actions,
+    .tb-row:hover > .tb-element-actions,
+    .tb-column:hover > .tb-element-actions,
+    .tb-module:hover > .tb-element-actions { opacity: 1; }
+
+    .tb-element-btn {
+        width: 24px;
+        height: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--tb-accent);
+        color: #1e1e2e;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 12px;
+    }
+    .tb-element-btn:hover { background: var(--tb-accent-hover); }
+    .tb-element-btn.danger { background: var(--tb-danger); }
+    .tb-element-btn.danger:hover { opacity: 0.8; }
+
+    .tb-row {
+        display: flex;
+        gap: 16px;
+        padding: 16px;
+        min-height: 80px;
+        border: 1px dashed transparent;
+        margin: 8px;
+        border-radius: 4px;
+        position: relative;
+    }
+    .tb-row:hover { border-color: var(--tb-border); }
+
+    .tb-column {
+        flex: 1;
+        min-height: 60px;
+        background: rgba(255,255,255,0.02);
+        border: 1px dashed var(--tb-border);
+        border-radius: 4px;
+        padding: 8px;
+        position: relative;
+    }
+    .tb-column.drag-over {
+        border-color: var(--tb-accent);
+        background: rgba(137, 180, 250, 0.1);
+    }
+
+    .tb-module {
+        background: var(--tb-surface-2);
+        border: 1px solid var(--tb-border);
+        border-radius: 6px;
+        padding: 12px;
+        margin-bottom: 8px;
+        cursor: pointer;
+        position: relative;
+        transition: border-color 0.15s;
+    }
+    .tb-module:hover { border-color: var(--tb-accent); }
+    .tb-module.selected { border-color: var(--tb-accent); box-shadow: 0 0 0 2px rgba(137, 180, 250, 0.2); }
+    /* Column Layout Picker */
+    .tb-row-empty {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 100px;
+        background: rgba(137, 180, 250, 0.05);
+        border: 2px dashed var(--tb-border);
+        border-radius: 8px;
+        padding: 20px;
+        margin: 8px;
+    }
+    .tb-layout-picker {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    .tb-layout-option {
+        display: flex;
+        gap: 2px;
+        padding: 8px;
+        background: var(--tb-surface-2);
+        border: 2px solid var(--tb-border);
+        border-radius: 6px;
+        cursor: pointer;
+        transition: all 0.15s;
+    }
+    .tb-layout-option:hover {
+        border-color: var(--tb-accent);
+        background: rgba(137, 180, 250, 0.1);
+    }
+    .tb-layout-col {
+        height: 30px;
+        background: var(--tb-accent);
+        border-radius: 3px;
+        opacity: 0.6;
+    }
+    .tb-layout-option:hover .tb-layout-col { opacity: 1; }
+    .tb-row-label {
+        font-size: 12px;
+        color: var(--tb-text-muted);
+        margin-bottom: 12px;
+    }
+    /* Make row actions always visible */
+    .tb-row .tb-element-actions { opacity: 0.6; }
+    .tb-row:hover .tb-element-actions { opacity: 1; }
+    /* Column add button */
+    .tb-column-add {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 40px;
+        min-height: 60px;
+        background: rgba(137, 180, 250, 0.1);
+        border: 2px dashed var(--tb-accent);
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 20px;
+        color: var(--tb-accent);
+        transition: all 0.15s;
+    }
+    .tb-column-add:hover {
+        background: rgba(137, 180, 250, 0.2);
+    }
+
+    .tb-module-preview {
+        font-size: 12px;
+        color: var(--tb-text-muted);
+    }
+    .tb-module-type {
+        font-size: 10px;
+        text-transform: uppercase;
+        color: var(--tb-accent);
+        margin-bottom: 4px;
+    }
+
+    /* Add section button */
+    .tb-add-section {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 16px;
+        margin: 16px;
+        border: 2px dashed var(--tb-border);
+        border-radius: 8px;
+        color: var(--tb-text-muted);
+        cursor: pointer;
+        transition: all 0.15s;
+    }
+    .tb-add-section:hover {
+        border-color: var(--tb-accent);
+        color: var(--tb-accent);
+    }
+
+    /* Toast notifications */
+    .tb-toast {
+        position: fixed;
+        bottom: 24px;
+        right: 24px;
+        padding: 12px 20px;
+        background: var(--tb-surface);
+        border: 1px solid var(--tb-border);
+        border-radius: 8px;
+        color: var(--tb-text);
+        font-size: 13px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        transform: translateY(100px);
+        opacity: 0;
+        transition: all 0.3s;
+        z-index: 9999;
+    }
+    .tb-toast.show { transform: translateY(0); opacity: 1; }
+    .tb-toast.success { border-color: var(--tb-success); }
+    .tb-toast.error { border-color: var(--tb-danger); }
+    </style>
+</head>
+<body>
+    <!-- TOOLBAR -->
+    <div class="tb-toolbar">
+        <div class="tb-toolbar-left">
+            <a href="/admin/theme-builder/templates" class="tb-logo">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/>
+                </svg>
+                Templates
+            </a>
+            <div class="tb-divider"></div>
+            <span class="tb-template-badge">
+                <?= $typeIcon ?> <?= $typeLabel ?>
+            </span>
+        </div>
+        <div class="tb-toolbar-center">
+            <input type="text" class="tb-template-name" id="templateName" value="<?= $templateName ?>" placeholder="Template name...">
+        </div>
+        <div class="tb-toolbar-right">
+            <button class="tb-btn" onclick="TB.preview()" title="Preview">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+                </svg>
+            </button>
+            <div class="tb-divider"></div>
+            <button class="tb-btn tb-btn-primary" onclick="TB.save()" id="saveBtn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+                    <polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/>
+                </svg>
+                Save
+            </button>
+        </div>
+    </div>
+
+    <!-- MAIN LAYOUT -->
+    <div class="tb-main">
+        <!-- LEFT PANEL - MODULES -->
+        <div class="tb-panel-left">
+            <div class="tb-panel-header">
+                <div class="tb-panel-title">Modules</div>
+                <input type="text" class="tb-search" id="moduleSearch" placeholder="Search modules...">
+            </div>
+            <div class="tb-panel-body" id="modulesList">
+                <!-- Modules will be loaded here -->
+            </div>
+        </div>
+
+        <!-- CENTER - CANVAS -->
+        <div class="tb-canvas-wrapper">
+            <div class="tb-canvas-toolbar">
+                <div class="tb-viewport-btns">
+                    <button class="tb-viewport-btn active" data-viewport="desktop" title="Desktop">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/>
+                        </svg>
+                    </button>
+                    <button class="tb-viewport-btn" data-viewport="tablet" title="Tablet">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="4" y="2" width="16" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/>
+                        </svg>
+                    </button>
+                    <button class="tb-viewport-btn" data-viewport="mobile" title="Mobile">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/>
+                        </svg>
+                    </button>
+                </div>
+                <span class="tb-canvas-info">
+                    <?= $typeLabel ?> template
+                </span>
+            </div>
+            <div class="tb-canvas">
+                <div class="tb-canvas-inner" id="canvas">
+                    <!-- Sections will be rendered here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT PANEL - SETTINGS -->
+        <div class="tb-panel-right">
+            <div class="tb-tabs">
+                <button class="tb-tab active" data-tab="template">Template</button>
+                <button class="tb-tab" data-tab="element">Element</button>
+            </div>
+            <div class="tb-settings-content">
+                <!-- Template settings tab -->
+                <div id="templateSettings">
+                    <div class="tb-field-group">
+                        <label class="tb-field-label">Priority</label>
+                        <input type="number" class="tb-field-input" id="templatePriority" value="<?= $priority ?>" min="0" max="100">
+                        <div class="tb-field-help">Higher priority templates override lower ones</div>
+                    </div>
+                    <div class="tb-field-group">
+                        <div class="tb-toggle-wrapper">
+                            <label class="tb-field-label" style="margin-bottom:0">Active</label>
+                            <label class="tb-toggle">
+                                <input type="checkbox" id="templateActive" <?= $isActive ? 'checked' : '' ?>>
+                                <span class="tb-toggle-slider"></span>
+                            </label>
+                        </div>
+                        <div class="tb-field-help">Only active templates are applied to the site</div>
+                    </div>
+                    <hr style="border:none;border-top:1px solid var(--tb-border);margin:20px 0">
+                    <div class="tb-field-group">
+                        <label class="tb-field-label">Display Conditions</label>
+                        <select class="tb-field-select" id="conditionType">
+                            <option value="all">All Pages</option>
+                            <option value="home">Home Page Only</option>
+                            <option value="pages">Specific Pages</option>
+                            <option value="posts">Blog Posts Only</option>
+                            <option value="archives">Archive Pages Only</option>
+                        </select>
+                        <div class="tb-field-help">Where this <?= strtolower($typeLabel) ?> template should appear</div>
+                    </div>
+                </div>
+                <!-- Element settings tab (hidden by default) -->
+                <div id="elementSettings" style="display:none">
+                    <div class="tb-empty-canvas" style="min-height:200px">
+                        <p style="color:var(--tb-text-muted)">Select an element to edit its settings</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast container -->
+    <div class="tb-toast" id="toast"></div>
+
+    <script>
+    // Theme Builder Template Editor
+    const TB = {
+        templateId: <?= $templateId ?>,
+        templateType: '<?= $templateType ?>',
+        csrfToken: '<?= $csrfToken ?>',
+        content: <?= $contentJson ?>,
+        modules: <?= $modulesJson ?>,
+        categories: <?= $categoriesJson ?>,
+        selectedElement: null,
+        isDirty: false,
+
+        init() {
+            console.log('TB.init() starting...');
+            console.log('this.modules:', this.modules);
+            console.log('Object.keys(this.modules):', Object.keys(this.modules || {}));
+            this.renderModulesList();
+            this.renderCanvas();
+            this.bindEvents();
+            console.log('Theme Builder Template Editor initialized');
+        },
+
+        renderModulesList() {
+            const container = document.getElementById('modulesList');
+            let html = '';
+
+            // Group modules by category
+            const grouped = {};
+            for (const [type, module] of Object.entries(this.modules)) {
+                const cat = module.category || 'other';
+                if (!grouped[cat]) grouped[cat] = [];
+                grouped[cat].push({ type, ...module });
+            }
+
+            // Category labels
+            const catLabels = this.categories;
+
+            for (const [cat, mods] of Object.entries(grouped)) {
+                html += '<div class="tb-module-category" data-category="' + cat + '">';
+                html += '<div class="tb-category-title">' + (catLabels[cat] || cat) + '</div>';
+                html += '<div class="tb-modules-grid">';
+                for (const mod of mods) {
+                    html += '<div class="tb-module-item" draggable="true" data-type="' + mod.type + '">';
+                    html += '<div class="tb-module-icon">' + this.getModuleIcon(mod.type) + '</div>';
+                    html += '<div class="tb-module-name">' + mod.name + '</div>';
+                    html += '</div>';
+                }
+                html += '</div></div>';
+            }
+
+            container.innerHTML = html;
+        },
+
+        getModuleIcon(type) {
+            const icons = {
+                text: '📝', image: '🖼️', button: '🔘', heading: '📑',
+                divider: '➖', spacer: '↕️', video: '🎬', code: '💻',
+                quote: '💬', list: '📋', icon: '⭐', map: '🗺️',
+                accordion: '📂', tabs: '📑', gallery: '🖼️',
+                testimonial: '💭', cta: '📢', pricing: '💰'
+            };
+            return icons[type] || '📦';
+        },
+
+        renderCanvas() {
+            const canvas = document.getElementById('canvas');
+            const sections = this.content.sections || [];
+
+            if (sections.length === 0) {
+                canvas.innerHTML = `
+                    <div class="tb-empty-canvas">
+                        <div class="tb-empty-icon">${this.templateType === 'header' ? '📐' : this.templateType === 'footer' ? '📋' : '📄'}</div>
+                        <div class="tb-empty-text">Drag modules here to build your ${this.templateType}</div>
+                        <button class="tb-btn tb-btn-primary" onclick="TB.addSection()">+ Add Section</button>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = '';
+            sections.forEach((section, si) => {
+                html += this.renderSection(section, si);
+            });
+            html += '<div class="tb-add-section" onclick="TB.addSection()">+ Add Section</div>';
+            canvas.innerHTML = html;
+        },
+
+        renderSection(section, si) {
+            let html = '<div class="tb-section" data-index="' + si + '">';
+            html += '<div class="tb-element-actions">';
+            html += '<button class="tb-element-btn" onclick="TB.addRow(' + si + ')" title="Add Row">+</button>';
+            html += '<button class="tb-element-btn danger" onclick="TB.deleteSection(' + si + ')" title="Delete">×</button>';
+            html += '</div>';
+
+            const rows = section.rows || [];
+            if (rows.length === 0) {
+                html += '<div class="tb-row"><div class="tb-column" data-section="' + si + '" data-row="0" data-column="0"></div></div>';
+            } else {
+                rows.forEach((row, ri) => {
+                    html += this.renderRow(row, si, ri);
+                });
+            }
+
+            html += '</div>';
+            return html;
+        },
+
+        renderRow(row, si, ri) {
+            const columns = row.columns || [{ modules: [] }];
+            const isEmpty = columns.length === 1 && (!columns[0].modules || columns[0].modules.length === 0);
+            
+            let html = '<div class="tb-row" data-section="' + si + '" data-row="' + ri + '">';
+            html += '<div class="tb-element-actions">';
+            html += '<button class="tb-element-btn" onclick="TB.addColumn(' + si + ',' + ri + ')" title="Add Column">+</button>';
+            html += '<button class="tb-element-btn danger" onclick="TB.deleteRow(' + si + ',' + ri + ')" title="Delete">×</button>';
+            html += '</div>';
+
+            if (isEmpty) {
+                // Show layout picker for empty rows
+                html += '<div class="tb-row-empty">';
+                html += '<div class="tb-row-label">Choose Column Layout:</div>';
+                html += '<div class="tb-layout-picker">';
+                html += '<div class="tb-layout-option" onclick="TB.setRowLayout(' + si + ',' + ri + ',[1])" title="1 Column"><div class="tb-layout-col" style="width:60px"></div></div>';
+                html += '<div class="tb-layout-option" onclick="TB.setRowLayout(' + si + ',' + ri + ',[1,1])" title="2 Equal"><div class="tb-layout-col" style="width:28px"></div><div class="tb-layout-col" style="width:28px"></div></div>';
+                html += '<div class="tb-layout-option" onclick="TB.setRowLayout(' + si + ',' + ri + ',[1,2])" title="1/3 + 2/3"><div class="tb-layout-col" style="width:18px"></div><div class="tb-layout-col" style="width:38px"></div></div>';
+                html += '<div class="tb-layout-option" onclick="TB.setRowLayout(' + si + ',' + ri + ',[2,1])" title="2/3 + 1/3"><div class="tb-layout-col" style="width:38px"></div><div class="tb-layout-col" style="width:18px"></div></div>';
+                html += '<div class="tb-layout-option" onclick="TB.setRowLayout(' + si + ',' + ri + ',[1,1,1])" title="3 Equal"><div class="tb-layout-col" style="width:18px"></div><div class="tb-layout-col" style="width:18px"></div><div class="tb-layout-col" style="width:18px"></div></div>';
+                html += '<div class="tb-layout-option" onclick="TB.setRowLayout(' + si + ',' + ri + ',[1,2,1])" title="1/4 + 1/2 + 1/4"><div class="tb-layout-col" style="width:14px"></div><div class="tb-layout-col" style="width:28px"></div><div class="tb-layout-col" style="width:14px"></div></div>';
+                html += '<div class="tb-layout-option" onclick="TB.setRowLayout(' + si + ',' + ri + ',[1,1,1,1])" title="4 Equal"><div class="tb-layout-col" style="width:12px"></div><div class="tb-layout-col" style="width:12px"></div><div class="tb-layout-col" style="width:12px"></div><div class="tb-layout-col" style="width:12px"></div></div>';
+                html += '</div></div>';
+            } else {
+                columns.forEach((col, ci) => {
+                    html += this.renderColumn(col, si, ri, ci);
+                });
+                // Add column button at the end
+                html += '<div class="tb-column-add" onclick="TB.addColumn(' + si + ',' + ri + ')" title="Add Column">+</div>';
+            }
+
+            html += '</div>';
+            return html;
+        },
+
+        renderColumn(column, si, ri, ci) {
+            const flex = column.flex || 1;
+            let html = '<div class="tb-column" style="flex:' + flex + '" data-section="' + si + '" data-row="' + ri + '" data-column="' + ci + '">';
+            html += '<div class="tb-element-actions">';
+            html += '<button class="tb-element-btn danger" onclick="TB.deleteColumn(' + si + ',' + ri + ',' + ci + ')" title="Delete">×</button>';
+            html += '</div>';
+
+            const modules = column.modules || [];
+            modules.forEach((mod, mi) => {
+                html += this.renderModule(mod, si, ri, ci, mi);
+            });
+
+            html += '</div>';
+            return html;
+        },
+
+        renderModule(module, si, ri, ci, mi) {
+            const type = module.type || 'text';
+            const preview = this.getModulePreview(module);
+
+            let html = '<div class="tb-module" data-section="' + si + '" data-row="' + ri + '" data-column="' + ci + '" data-module="' + mi + '">';
+            html += '<div class="tb-element-actions">';
+            html += '<button class="tb-element-btn" onclick="TB.editModule(' + si + ',' + ri + ',' + ci + ',' + mi + ')" title="Edit">✎</button>';
+            html += '<button class="tb-element-btn danger" onclick="TB.deleteModule(' + si + ',' + ri + ',' + ci + ',' + mi + ')" title="Delete">×</button>';
+            html += '</div>';
+            html += '<div class="tb-module-type">' + type + '</div>';
+            html += '<div class="tb-module-preview">' + preview + '</div>';
+            html += '</div>';
+            return html;
+        },
+
+        getModulePreview(module) {
+            const type = module.type || 'text';
+            const content = module.content || {};
+
+            switch (type) {
+                case 'text': return (content.text || '').substring(0, 50) + '...' || 'Text content';
+                case 'heading': return content.text || 'Heading';
+                case 'image': return content.src ? '🖼️ Image' : 'No image';
+                case 'button': return content.text || 'Button';
+                case 'cta': return content.title || 'Call to Action';
+                default: return type + ' module';
+            }
+        },
+
+        bindEvents() {
+            // Module search
+            document.getElementById('moduleSearch').addEventListener('input', (e) => {
+                const q = e.target.value.toLowerCase();
+                document.querySelectorAll('.tb-module-item').forEach(el => {
+                    const name = el.querySelector('.tb-module-name').textContent.toLowerCase();
+                    el.style.display = name.includes(q) ? '' : 'none';
+                });
+            });
+
+            // Viewport buttons
+            document.querySelectorAll('.tb-viewport-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.tb-viewport-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    const vp = btn.dataset.viewport;
+                    const inner = document.querySelector('.tb-canvas-inner');
+                    inner.classList.remove('viewport-tablet', 'viewport-mobile');
+                    if (vp !== 'desktop') inner.classList.add('viewport-' + vp);
+                });
+            });
+
+            // Tab switching
+            document.querySelectorAll('.tb-tab').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    document.querySelectorAll('.tb-tab').forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    const tabName = tab.dataset.tab;
+                    document.getElementById('templateSettings').style.display = tabName === 'template' ? '' : 'none';
+                    document.getElementById('elementSettings').style.display = tabName === 'element' ? '' : 'none';
+                });
+            });
+
+            // Drag and drop
+            document.querySelectorAll('.tb-module-item').forEach(item => {
+                item.addEventListener('dragstart', (e) => {
+                    e.dataTransfer.setData('moduleType', item.dataset.type);
+                    item.classList.add('dragging');
+                });
+                item.addEventListener('dragend', () => item.classList.remove('dragging'));
+            });
+
+            document.getElementById('canvas').addEventListener('dragover', (e) => {
+                e.preventDefault();
+                const col = e.target.closest('.tb-column');
+                if (col) col.classList.add('drag-over');
+            });
+
+            document.getElementById('canvas').addEventListener('dragleave', (e) => {
+                const col = e.target.closest('.tb-column');
+                if (col) col.classList.remove('drag-over');
+            });
+
+            document.getElementById('canvas').addEventListener('drop', (e) => {
+                e.preventDefault();
+                document.querySelectorAll('.tb-column').forEach(c => c.classList.remove('drag-over'));
+
+                const type = e.dataTransfer.getData('moduleType');
+                if (!type) return;
+
+                const col = e.target.closest('.tb-column');
+                if (!col) return;
+
+                const si = parseInt(col.dataset.section);
+                const ri = parseInt(col.dataset.row);
+                const ci = parseInt(col.dataset.column);
+
+                this.addModule(si, ri, ci, type);
+            });
+
+            // Track changes
+            document.getElementById('templateName').addEventListener('input', () => this.isDirty = true);
+            document.getElementById('templatePriority').addEventListener('input', () => this.isDirty = true);
+            document.getElementById('templateActive').addEventListener('change', () => this.isDirty = true);
+
+            // Warn on leave
+            window.addEventListener('beforeunload', (e) => {
+                if (this.isDirty) {
+                    e.preventDefault();
+                    e.returnValue = '';
+                }
+            });
+        },
+
+        addSection() {
+            if (!this.content.sections) this.content.sections = [];
+            this.content.sections.push({
+                rows: [{ columns: [{ modules: [] }] }]
+            });
+            this.isDirty = true;
+            this.renderCanvas();
+        },
+
+        deleteSection(si) {
+            if (!confirm('Delete this section?')) return;
+            this.content.sections.splice(si, 1);
+            this.isDirty = true;
+            this.renderCanvas();
+        },
+
+        addRow(si) {
+            if (!this.content.sections[si].rows) this.content.sections[si].rows = [];
+            this.content.sections[si].rows.push({ columns: [{ modules: [] }] });
+            this.isDirty = true;
+            this.renderCanvas();
+        },
+
+        deleteRow(si, ri) {
+            if (!confirm('Delete this row?')) return;
+            this.content.sections[si].rows.splice(ri, 1);
+            this.isDirty = true;
+            this.renderCanvas();
+        },
+
+        addColumn(si, ri) {
+            if (!this.content.sections[si].rows[ri].columns) {
+                this.content.sections[si].rows[ri].columns = [];
+            }
+            this.content.sections[si].rows[ri].columns.push({ modules: [] });
+            this.isDirty = true;
+            this.renderCanvas();
+        },
+
+        setRowLayout(si, ri, layout) {
+            // layout is array like [1,1] for 2 equal, [1,2,1] for 1/4+1/2+1/4
+            const columns = layout.map(flex => ({ modules: [], flex: flex }));
+            this.content.sections[si].rows[ri].columns = columns;
+            this.isDirty = true;
+            this.renderCanvas();
+        },
+
+        deleteColumn(si, ri, ci) {
+            const cols = this.content.sections[si].rows[ri].columns;
+            if (cols.length <= 1) {
+                alert('Cannot delete the last column. Delete the row instead.');
+                return;
+            }
+            cols.splice(ci, 1);
+            this.isDirty = true;
+            this.renderCanvas();
+        },
+
+        addModule(si, ri, ci, type) {
+            const defaults = this.modules[type]?.defaults || { content: {}, design: {}, advanced: {} };
+            const module = { type, ...JSON.parse(JSON.stringify(defaults)) };
+
+            if (!this.content.sections[si]) this.addSection();
+            if (!this.content.sections[si].rows[ri]) this.addRow(si);
+            if (!this.content.sections[si].rows[ri].columns[ci]) {
+                this.content.sections[si].rows[ri].columns.push({ modules: [] });
+            }
+
+            this.content.sections[si].rows[ri].columns[ci].modules.push(module);
+            this.isDirty = true;
+            this.renderCanvas();
+        },
+
+        deleteModule(si, ri, ci, mi) {
+            if (!confirm('Delete this module?')) return;
+            this.content.sections[si].rows[ri].columns[ci].modules.splice(mi, 1);
+            this.isDirty = true;
+            this.renderCanvas();
+        },
+
+        editModule(si, ri, ci, mi) {
+            const module = this.content.sections[si].rows[ri].columns[ci].modules[mi];
+            // Switch to element tab and show settings
+            document.querySelectorAll('.tb-tab').forEach(t => t.classList.remove('active'));
+            document.querySelector('.tb-tab[data-tab="element"]').classList.add('active');
+            document.getElementById('templateSettings').style.display = 'none';
+            document.getElementById('elementSettings').style.display = '';
+
+            // Build element settings form
+            const container = document.getElementById('elementSettings');
+            let html = '<h4 style="margin-bottom:16px;color:var(--tb-accent)">' + module.type.charAt(0).toUpperCase() + module.type.slice(1) + ' Settings</h4>';
+
+            // Content fields based on module type
+            const content = module.content || {};
+            switch (module.type) {
+                case 'text':
+                    html += this.fieldTextarea('text', 'Text Content', content.text || '', si, ri, ci, mi);
+                    break;
+                case 'heading':
+                    html += this.fieldInput('text', 'Heading Text', content.text || '', si, ri, ci, mi);
+                    html += this.fieldSelect('level', 'Level', content.level || 'h2', ['h1','h2','h3','h4','h5','h6'], si, ri, ci, mi);
+                    break;
+                case 'image':
+                    html += this.fieldInput('src', 'Image URL', content.src || '', si, ri, ci, mi);
+                    html += this.fieldInput('alt', 'Alt Text', content.alt || '', si, ri, ci, mi);
+                    break;
+                case 'button':
+                    html += this.fieldInput('text', 'Button Text', content.text || '', si, ri, ci, mi);
+                    html += this.fieldInput('url', 'Link URL', content.url || '', si, ri, ci, mi);
+                    break;
+                case 'cta':
+                    html += this.fieldInput('title', 'Title', content.title || '', si, ri, ci, mi);
+                    html += this.fieldTextarea('subtitle', 'Subtitle', content.subtitle || '', si, ri, ci, mi);
+                    html += this.fieldInput('button_text', 'Button Text', content.button_text || '', si, ri, ci, mi);
+                    html += this.fieldInput('button_url', 'Button URL', content.button_url || '', si, ri, ci, mi);
+                    break;
+                case 'logo':
+                    html += this.fieldInput('image', 'Logo Image URL', content.image || '', si, ri, ci, mi);
+                    html += this.fieldInput('image_alt', 'Alt Text', content.image_alt || '', si, ri, ci, mi);
+                    html += this.fieldInput('link_url', 'Link URL', content.link_url || '/', si, ri, ci, mi);
+                    html += this.fieldInput('max_height', 'Max Height', content.max_height || '60px', si, ri, ci, mi);
+                    break;
+                case 'menu':
+                    html += this.fieldInput('logo', 'Logo URL (optional)', content.logo || '', si, ri, ci, mi);
+                    html += this.fieldSelect('menu_source', 'Menu Source', content.menu_source || 'custom', ['custom', 'cms'], si, ri, ci, mi);
+                    html += '<div class="tb-field-group"><label class="tb-field-label">Menu Items</label>';
+                    html += '<div id="menuItemsList" style="margin-bottom:8px">';
+                    const items = content.items || [{label:'Home',url:'/'},{label:'About',url:'/about'},{label:'Contact',url:'/contact'}];
+                    items.forEach((item, idx) => {
+                        html += '<div style="display:flex;gap:4px;margin-bottom:4px">';
+                        html += '<input type="text" class="tb-field-input" style="flex:1" placeholder="Label" value="' + this.escHtml(item.label || '') + '" onchange="TB.updateMenuItem(' + si + ',' + ri + ',' + ci + ',' + mi + ',' + idx + ',\'label\',this.value)">';
+                        html += '<input type="text" class="tb-field-input" style="flex:1" placeholder="URL" value="' + this.escHtml(item.url || '') + '" onchange="TB.updateMenuItem(' + si + ',' + ri + ',' + ci + ',' + mi + ',' + idx + ',\'url\',this.value)">';
+                        html += '<button type="button" onclick="TB.removeMenuItem(' + si + ',' + ri + ',' + ci + ',' + mi + ',' + idx + ')" style="background:var(--tb-danger);color:#fff;border:none;border-radius:4px;padding:0 8px;cursor:pointer">×</button>';
+                        html += '</div>';
+                    });
+                    html += '</div>';
+                    html += '<button type="button" onclick="TB.addMenuItem(' + si + ',' + ri + ',' + ci + ',' + mi + ')" style="background:var(--tb-accent);color:#1e1e2e;border:none;border-radius:4px;padding:6px 12px;cursor:pointer;font-size:12px">+ Add Item</button></div>';
+                    break;
+                case 'search':
+                    html += this.fieldInput('placeholder', 'Placeholder Text', content.placeholder || 'Search...', si, ri, ci, mi);
+                    html += this.fieldInput('button_text', 'Button Text', content.button_text || 'Search', si, ri, ci, mi);
+                    html += this.fieldCheckbox('show_button', 'Show Button', content.show_button !== false, si, ri, ci, mi);
+                    break;
+                case 'social':
+                    html += '<div class="tb-field-group"><label class="tb-field-label">Social Networks</label>';
+                    const networks = content.networks || [{network:'facebook',url:'#'},{network:'twitter',url:'#'},{network:'instagram',url:'#'}];
+                    networks.forEach((net, idx) => {
+                        html += '<div style="display:flex;gap:4px;margin-bottom:4px">';
+                        html += '<select class="tb-field-input" style="flex:1" onchange="TB.updateSocialNetwork(' + si + ',' + ri + ',' + ci + ',' + mi + ',' + idx + ',\'network\',this.value)"><option value="facebook"' + (net.network==='facebook'?' selected':'') + '>Facebook</option><option value="twitter"' + (net.network==='twitter'?' selected':'') + '>Twitter/X</option><option value="instagram"' + (net.network==='instagram'?' selected':'') + '>Instagram</option><option value="linkedin"' + (net.network==='linkedin'?' selected':'') + '>LinkedIn</option><option value="youtube"' + (net.network==='youtube'?' selected':'') + '>YouTube</option></select>';
+                        html += '<input type="text" class="tb-field-input" style="flex:2" placeholder="URL" value="' + this.escHtml(net.url || '') + '" onchange="TB.updateSocialNetwork(' + si + ',' + ri + ',' + ci + ',' + mi + ',' + idx + ',\'url\',this.value)">';
+                        html += '<button type="button" onclick="TB.removeSocialNetwork(' + si + ',' + ri + ',' + ci + ',' + mi + ',' + idx + ')" style="background:var(--tb-danger);color:#fff;border:none;border-radius:4px;padding:0 8px;cursor:pointer">×</button>';
+                        html += '</div>';
+                    });
+                    html += '<button type="button" onclick="TB.addSocialNetwork(' + si + ',' + ri + ',' + ci + ',' + mi + ')" style="background:var(--tb-accent);color:#1e1e2e;border:none;border-radius:4px;padding:6px 12px;cursor:pointer;font-size:12px;margin-top:8px">+ Add Network</button></div>';
+                    break;
+                case 'divider':
+                    html += this.fieldSelect('style', 'Style', content.style || 'solid', ['solid', 'dashed', 'dotted', 'double'], si, ri, ci, mi);
+                    html += this.fieldInput('width', 'Width', content.width || '100%', si, ri, ci, mi);
+                    html += this.fieldInput('thickness', 'Thickness', content.thickness || '1px', si, ri, ci, mi);
+                    break;
+                case 'spacer':
+                    html += this.fieldInput('height', 'Height', content.height || '50px', si, ri, ci, mi);
+                    break;
+                case 'icon':
+                    html += this.fieldInput('icon', 'Icon Name', content.icon || 'star', si, ri, ci, mi);
+                    html += this.fieldInput('size', 'Size', content.size || '48px', si, ri, ci, mi);
+                    html += this.fieldInput('url', 'Link URL (optional)', content.url || '', si, ri, ci, mi);
+                    break;
+                case 'video':
+                    html += this.fieldInput('src', 'Video URL', content.src || '', si, ri, ci, mi);
+                    html += this.fieldSelect('type', 'Type', content.type || 'youtube', ['youtube', 'vimeo', 'mp4'], si, ri, ci, mi);
+                    html += this.fieldCheckbox('autoplay', 'Autoplay', content.autoplay || false, si, ri, ci, mi);
+                    break;
+                case 'gallery':
+                    html += '<div class="tb-field-group"><label class="tb-field-label">Gallery Images</label>';
+                    const images = content.images || [];
+                    images.forEach((img, idx) => {
+                        html += '<div style="display:flex;gap:4px;margin-bottom:4px">';
+                        html += '<input type="text" class="tb-field-input" style="flex:1" placeholder="Image URL" value="' + this.escHtml(img.src || img || '') + '" onchange="TB.updateGalleryImage(' + si + ',' + ri + ',' + ci + ',' + mi + ',' + idx + ',this.value)">';
+                        html += '<button type="button" onclick="TB.removeGalleryImage(' + si + ',' + ri + ',' + ci + ',' + mi + ',' + idx + ')" style="background:var(--tb-danger);color:#fff;border:none;border-radius:4px;padding:0 8px;cursor:pointer">×</button>';
+                        html += '</div>';
+                    });
+                    html += '<button type="button" onclick="TB.addGalleryImage(' + si + ',' + ri + ',' + ci + ',' + mi + ')" style="background:var(--tb-accent);color:#1e1e2e;border:none;border-radius:4px;padding:6px 12px;cursor:pointer;font-size:12px;margin-top:8px">+ Add Image</button></div>';
+                    html += this.fieldSelect('columns', 'Columns', content.columns || '3', ['2','3','4','5','6'], si, ri, ci, mi);
+                    break;
+                case 'testimonial':
+                    html += this.fieldTextarea('quote', 'Quote', content.quote || '', si, ri, ci, mi);
+                    html += this.fieldInput('author', 'Author Name', content.author || '', si, ri, ci, mi);
+                    html += this.fieldInput('position', 'Position/Company', content.position || '', si, ri, ci, mi);
+                    html += this.fieldInput('avatar', 'Avatar URL', content.avatar || '', si, ri, ci, mi);
+                    break;
+                case 'pricing':
+                    html += this.fieldInput('title', 'Plan Title', content.title || '', si, ri, ci, mi);
+                    html += this.fieldInput('price', 'Price', content.price || '', si, ri, ci, mi);
+                    html += this.fieldInput('period', 'Period', content.period || '/month', si, ri, ci, mi);
+                    html += this.fieldTextarea('features', 'Features (one per line)', (content.features || []).join('\\n'), si, ri, ci, mi);
+                    html += this.fieldInput('button_text', 'Button Text', content.button_text || 'Get Started', si, ri, ci, mi);
+                    html += this.fieldInput('button_url', 'Button URL', content.button_url || '#', si, ri, ci, mi);
+                    break;
+                case 'hero':
+                    html += this.fieldInput('title', 'Title', content.title || '', si, ri, ci, mi);
+                    html += this.fieldTextarea('subtitle', 'Subtitle', content.subtitle || '', si, ri, ci, mi);
+                    html += this.fieldInput('background_image', 'Background Image URL', content.background_image || '', si, ri, ci, mi);
+                    html += this.fieldInput('button_text', 'Button Text', content.button_text || '', si, ri, ci, mi);
+                    html += this.fieldInput('button_url', 'Button URL', content.button_url || '', si, ri, ci, mi);
+                    break;
+                case 'quote':
+                    html += this.fieldTextarea('text', 'Quote Text', content.text || '', si, ri, ci, mi);
+                    html += this.fieldInput('author', 'Author', content.author || '', si, ri, ci, mi);
+                    break;
+                case 'accordion':
+                case 'tabs':
+                    html += '<div class="tb-field-group"><label class="tb-field-label">Items</label>';
+                    const accItems = content.items || [{title:'Item 1',content:'Content 1'}];
+                    accItems.forEach((item, idx) => {
+                        html += '<div style="border:1px solid var(--tb-border);border-radius:4px;padding:8px;margin-bottom:8px">';
+                        html += '<input type="text" class="tb-field-input" style="margin-bottom:4px" placeholder="Title" value="' + this.escHtml(item.title || '') + '" onchange="TB.updateAccordionItem(' + si + ',' + ri + ',' + ci + ',' + mi + ',' + idx + ',\'title\',this.value)">';
+                        html += '<textarea class="tb-field-input" rows="2" placeholder="Content" onchange="TB.updateAccordionItem(' + si + ',' + ri + ',' + ci + ',' + mi + ',' + idx + ',\'content\',this.value)">' + this.escHtml(item.content || '') + '</textarea>';
+                        html += '<button type="button" onclick="TB.removeAccordionItem(' + si + ',' + ri + ',' + ci + ',' + mi + ',' + idx + ')" style="background:var(--tb-danger);color:#fff;border:none;border-radius:4px;padding:4px 8px;cursor:pointer;font-size:11px;margin-top:4px">Remove</button>';
+                        html += '</div>';
+                    });
+                    html += '<button type="button" onclick="TB.addAccordionItem(' + si + ',' + ri + ',' + ci + ',' + mi + ')" style="background:var(--tb-accent);color:#1e1e2e;border:none;border-radius:4px;padding:6px 12px;cursor:pointer;font-size:12px">+ Add Item</button></div>';
+                    break;
+                case 'counter':
+                    html += this.fieldInput('number', 'Number', content.number || '100', si, ri, ci, mi);
+                    html += this.fieldInput('suffix', 'Suffix', content.suffix || '+', si, ri, ci, mi);
+                    html += this.fieldInput('title', 'Title', content.title || '', si, ri, ci, mi);
+                    break;
+                case 'sidebar':
+                    html += this.fieldInput('sidebar_id', 'Sidebar ID', content.sidebar_id || 'default', si, ri, ci, mi);
+                    break;
+                case 'post_title':
+                    html += this.fieldSelect('tag', 'HTML Tag', content.tag || 'h1', ['h1','h2','h3','h4','div','span'], si, ri, ci, mi);
+                    break;
+                case 'post_content':
+                    html += '<p style="color:var(--tb-text-muted)">Displays the post/page content automatically.</p>';
+                    break;
+                case 'login':
+                    html += this.fieldInput('redirect_url', 'Redirect URL after login', content.redirect_url || '/', si, ri, ci, mi);
+                    html += this.fieldCheckbox('show_register', 'Show Register Link', content.show_register !== false, si, ri, ci, mi);
+                    break;
+                default:
+                    html += '<p style="color:var(--tb-text-muted)">Edit content fields for ' + module.type + '</p>';
+            }
+
+            container.innerHTML = html;
+        },
+
+        fieldInput(name, label, value, si, ri, ci, mi) {
+            return `<div class="tb-field-group">
+                <label class="tb-field-label">${label}</label>
+                <input type="text" class="tb-field-input" value="${this.escHtml(value)}"
+                    onchange="TB.updateModuleContent(${si},${ri},${ci},${mi},'${name}',this.value)">
+            </div>`;
+        },
+
+        fieldTextarea(name, label, value, si, ri, ci, mi) {
+            return `<div class="tb-field-group">
+                <label class="tb-field-label">${label}</label>
+                <textarea class="tb-field-input" rows="4"
+                    onchange="TB.updateModuleContent(${si},${ri},${ci},${mi},'${name}',this.value)">${this.escHtml(value)}</textarea>
+            </div>`;
+        },
+
+        fieldSelect(name, label, value, options, si, ri, ci, mi) {
+            let opts = options.map(o => `<option value="${o}" ${o === value ? 'selected' : ''}>${o}</option>`).join('');
+            return `<div class="tb-field-group">
+                <label class="tb-field-label">${label}</label>
+                <select class="tb-field-select"
+                    onchange="TB.updateModuleContent(${si},${ri},${ci},${mi},'${name}',this.value)">${opts}</select>
+            </div>`;
+        },
+
+        fieldCheckbox(name, label, checked, si, ri, ci, mi) {
+            return `<div class="tb-field-group" style="display:flex;align-items:center;gap:8px">
+                <input type="checkbox" id="chk_${name}_${si}${ri}${ci}${mi}" ${checked?'checked':''}
+                    onchange="TB.updateModuleContent(${si},${ri},${ci},${mi},'${name}',this.checked)">
+                <label for="chk_${name}_${si}${ri}${ci}${mi}" class="tb-field-label" style="margin:0">${label}</label>
+            </div>`;
+        },
+
+        updateModuleContent(si, ri, ci, mi, field, value) {
+            if (!this.content.sections[si].rows[ri].columns[ci].modules[mi].content) {
+                this.content.sections[si].rows[ri].columns[ci].modules[mi].content = {};
+            }
+            this.content.sections[si].rows[ri].columns[ci].modules[mi].content[field] = value;
+            this.isDirty = true;
+            this.renderCanvas();
+        },
+
+        // Menu item helpers
+        updateMenuItem(si, ri, ci, mi, idx, field, value) {
+            const mod = this.content.sections[si].rows[ri].columns[ci].modules[mi];
+            if (!mod.content.items) mod.content.items = [];
+            if (!mod.content.items[idx]) mod.content.items[idx] = {label:'',url:''};
+            mod.content.items[idx][field] = value;
+            this.isDirty = true;
+        },
+        addMenuItem(si, ri, ci, mi) {
+            const mod = this.content.sections[si].rows[ri].columns[ci].modules[mi];
+            if (!mod.content.items) mod.content.items = [];
+            mod.content.items.push({label:'New Item',url:'#'});
+            this.isDirty = true;
+            this.editModule(si, ri, ci, mi);
+        },
+        removeMenuItem(si, ri, ci, mi, idx) {
+            const mod = this.content.sections[si].rows[ri].columns[ci].modules[mi];
+            mod.content.items.splice(idx, 1);
+            this.isDirty = true;
+            this.editModule(si, ri, ci, mi);
+        },
+
+        // Social network helpers
+        updateSocialNetwork(si, ri, ci, mi, idx, field, value) {
+            const mod = this.content.sections[si].rows[ri].columns[ci].modules[mi];
+            if (!mod.content.networks) mod.content.networks = [];
+            if (!mod.content.networks[idx]) mod.content.networks[idx] = {network:'facebook',url:''};
+            mod.content.networks[idx][field] = value;
+            this.isDirty = true;
+        },
+        addSocialNetwork(si, ri, ci, mi) {
+            const mod = this.content.sections[si].rows[ri].columns[ci].modules[mi];
+            if (!mod.content.networks) mod.content.networks = [];
+            mod.content.networks.push({network:'facebook',url:'#',enabled:true});
+            this.isDirty = true;
+            this.editModule(si, ri, ci, mi);
+        },
+        removeSocialNetwork(si, ri, ci, mi, idx) {
+            const mod = this.content.sections[si].rows[ri].columns[ci].modules[mi];
+            mod.content.networks.splice(idx, 1);
+            this.isDirty = true;
+            this.editModule(si, ri, ci, mi);
+        },
+
+        // Gallery image helpers
+        updateGalleryImage(si, ri, ci, mi, idx, value) {
+            const mod = this.content.sections[si].rows[ri].columns[ci].modules[mi];
+            if (!mod.content.images) mod.content.images = [];
+            mod.content.images[idx] = {src: value};
+            this.isDirty = true;
+        },
+        addGalleryImage(si, ri, ci, mi) {
+            const mod = this.content.sections[si].rows[ri].columns[ci].modules[mi];
+            if (!mod.content.images) mod.content.images = [];
+            mod.content.images.push({src:''});
+            this.isDirty = true;
+            this.editModule(si, ri, ci, mi);
+        },
+        removeGalleryImage(si, ri, ci, mi, idx) {
+            const mod = this.content.sections[si].rows[ri].columns[ci].modules[mi];
+            mod.content.images.splice(idx, 1);
+            this.isDirty = true;
+            this.editModule(si, ri, ci, mi);
+        },
+
+        // Accordion/Tabs item helpers
+        updateAccordionItem(si, ri, ci, mi, idx, field, value) {
+            const mod = this.content.sections[si].rows[ri].columns[ci].modules[mi];
+            if (!mod.content.items) mod.content.items = [];
+            if (!mod.content.items[idx]) mod.content.items[idx] = {title:'',content:''};
+            mod.content.items[idx][field] = value;
+            this.isDirty = true;
+        },
+        addAccordionItem(si, ri, ci, mi) {
+            const mod = this.content.sections[si].rows[ri].columns[ci].modules[mi];
+            if (!mod.content.items) mod.content.items = [];
+            mod.content.items.push({title:'New Item',content:'Content here'});
+            this.isDirty = true;
+            this.editModule(si, ri, ci, mi);
+        },
+        removeAccordionItem(si, ri, ci, mi, idx) {
+            const mod = this.content.sections[si].rows[ri].columns[ci].modules[mi];
+            mod.content.items.splice(idx, 1);
+            this.isDirty = true;
+            this.editModule(si, ri, ci, mi);
+        },
+
+        escHtml(str) {
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        },
+
+        async save() {
+            const btn = document.getElementById('saveBtn');
+            btn.disabled = true;
+            btn.innerHTML = 'Saving...';
+
+            const data = {
+                template_id: this.templateId,
+                type: this.templateType,
+                name: document.getElementById('templateName').value.trim() || 'Untitled',
+                content: this.content,
+                priority: parseInt(document.getElementById('templatePriority').value) || 0,
+                is_active: document.getElementById('templateActive').checked ? 1 : 0,
+                conditions: {
+                    type: document.getElementById('conditionType').value
+                },
+                csrf_token: this.csrfToken
+            };
+
+            try {
+                const res = await fetch('/admin/theme-builder/templates/save', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': this.csrfToken
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await res.json();
+
+                if (result.success) {
+                    this.isDirty = false;
+                    if (!this.templateId && result.template_id) {
+                        this.templateId = result.template_id;
+                        history.replaceState(null, '', '/admin/theme-builder/templates/' + result.template_id + '/edit');
+                    }
+                    this.toast('Template saved successfully!', 'success');
+                } else {
+                    this.toast(result.error || 'Save failed', 'error');
+                }
+            } catch (err) {
+                this.toast('Save failed: ' + err.message, 'error');
+            }
+
+            btn.disabled = false;
+            btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> Save';
+        },
+
+        generatePreviewHtml() {
+            let html = '';
+            const sections = this.content.sections || [];
+            
+            sections.forEach(section => {
+                html += '<div class="tb-preview-section">';
+                const rows = section.rows || [];
+                
+                rows.forEach(row => {
+                    html += '<div class="tb-preview-row">';
+                    const columns = row.columns || [];
+                    
+                    columns.forEach(col => {
+                        const flex = col.flex || 1;
+                        html += '<div class="tb-preview-column" style="flex:' + flex + '">';
+                        const modules = col.modules || [];
+                        
+                        modules.forEach(mod => {
+                            html += this.renderModulePreview(mod);
+                        });
+                        
+                        html += '</div>';
+                    });
+                    
+                    html += '</div>';
+                });
+                
+                html += '</div>';
+            });
+            
+            return html || '<div style="padding:40px;text-align:center;color:#999">No content yet. Add sections and modules to see preview.</div>';
+        },
+
+        renderModulePreview(mod) {
+            const type = mod.type;
+            const c = mod.content || {};
+            let html = '<div class="tb-preview-module">';
+            
+            switch(type) {
+                case 'logo':
+                    html += '<div class="tb-mod-logo">';
+                    if (c.image) {
+                        html += '<a href="' + (c.link_url || '/') + '"><img src="' + c.image + '" alt="' + (c.image_alt || 'Logo') + '" style="max-height:' + (c.max_height || '60px') + '"></a>';
+                    } else {
+                        html += '<div style="width:120px;height:40px;background:#ddd;border-radius:4px;display:flex;align-items:center;justify-content:center;color:#999">Logo</div>';
+                    }
+                    html += '</div>';
+                    break;
+                    
+                case 'menu':
+                    html += '<div class="tb-mod-menu">';
+                    if (c.logo) html += '<img src="' + c.logo + '" alt="Logo" style="height:40px">';
+                    html += '<nav>';
+                    const items = c.items || [{label:'Home',url:'/'},{label:'About',url:'/about'}];
+                    items.forEach(item => {
+                        html += '<a href="' + (item.url || '#') + '">' + (item.label || 'Link') + '</a>';
+                    });
+                    html += '</nav></div>';
+                    break;
+                    
+                case 'search':
+                    html += '<div class="tb-mod-search">';
+                    html += '<input type="text" placeholder="' + (c.placeholder || 'Search...') + '">';
+                    if (c.show_button !== false) {
+                        html += '<button>' + (c.button_text || 'Search') + '</button>';
+                    }
+                    html += '</div>';
+                    break;
+                    
+                case 'social':
+                    html += '<div class="tb-mod-social">';
+                    const networks = c.networks || [{network:'facebook',url:'#'}];
+                    networks.forEach(net => {
+                        const icons = {facebook:'f',twitter:'𝕏',instagram:'📷',linkedin:'in',youtube:'▶'};
+                        html += '<a href="' + (net.url || '#') + '" title="' + net.network + '">' + (icons[net.network] || '•') + '</a>';
+                    });
+                    html += '</div>';
+                    break;
+                    
+                case 'text':
+                    html += '<div class="tb-mod-text">' + (c.text || 'Text content...') + '</div>';
+                    break;
+                    
+                case 'heading':
+                    const tag = c.level || 'h2';
+                    html += '<' + tag + ' class="tb-mod-heading">' + (c.text || 'Heading') + '</' + tag + '>';
+                    break;
+                    
+                case 'image':
+                    html += '<div class="tb-mod-image">';
+                    if (c.src) {
+                        html += '<img src="' + c.src + '" alt="' + (c.alt || '') + '">';
+                    } else {
+                        html += '<div style="width:100%;height:200px;background:#eee;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#999">Image</div>';
+                    }
+                    html += '</div>';
+                    break;
+                    
+                case 'button':
+                    html += '<a href="' + (c.url || '#') + '" class="tb-mod-button">' + (c.text || 'Button') + '</a>';
+                    break;
+                    
+                case 'divider':
+                    html += '<div class="tb-mod-divider" style="border-style:' + (c.style || 'solid') + ';border-width:' + (c.thickness || '1px') + '"></div>';
+                    break;
+                    
+                case 'spacer':
+                    html += '<div class="tb-mod-spacer" style="height:' + (c.height || '50px') + '"></div>';
+                    break;
+                    
+                case 'cta':
+                    html += '<div class="tb-mod-cta">';
+                    html += '<h2>' + (c.title || 'Call to Action') + '</h2>';
+                    html += '<p>' + (c.subtitle || 'Your message here') + '</p>';
+                    html += '<a href="' + (c.button_url || '#') + '">' + (c.button_text || 'Get Started') + '</a>';
+                    html += '</div>';
+                    break;
+                    
+                case 'testimonial':
+                    html += '<div class="tb-mod-testimonial">';
+                    html += '<blockquote>"' + (c.quote || 'Quote here...') + '"</blockquote>';
+                    html += '<div class="author">' + (c.author || 'Author') + '</div>';
+                    if (c.position) html += '<div style="color:#666">' + c.position + '</div>';
+                    html += '</div>';
+                    break;
+                    
+                case 'counter':
+                    html += '<div class="tb-mod-counter">';
+                    html += '<div class="number">' + (c.number || '100') + (c.suffix || '') + '</div>';
+                    html += '<div class="title">' + (c.title || '') + '</div>';
+                    html += '</div>';
+                    break;
+                    
+                case 'hero':
+                    const bgStyle = c.background_image ? 'background-image:url(' + c.background_image + ')' : 'background:#333';
+                    html += '<div class="tb-mod-hero" style="' + bgStyle + '">';
+                    html += '<h1>' + (c.title || 'Hero Title') + '</h1>';
+                    html += '<p style="font-size:20px;margin-bottom:30px">' + (c.subtitle || 'Subtitle here') + '</p>';
+                    if (c.button_text) html += '<a href="' + (c.button_url || '#') + '" class="tb-mod-button">' + c.button_text + '</a>';
+                    html += '</div>';
+                    break;
+                    
+                case 'icon':
+                    html += '<div class="tb-mod-icon" style="font-size:' + (c.size || '48px') + '">⭐</div>';
+                    break;
+                    
+                case 'gallery':
+                    html += '<div class="tb-mod-gallery" style="grid-template-columns:repeat(' + (c.columns || 3) + ',1fr)">';
+                    const images = c.images || [];
+                    if (images.length > 0) {
+                        images.forEach(img => {
+                            const src = typeof img === 'string' ? img : img.src;
+                            html += '<img src="' + src + '">';
+                        });
+                    } else {
+                        for(let i=0;i<3;i++) html += '<div style="background:#eee;height:150px;border-radius:6px"></div>';
+                    }
+                    html += '</div>';
+                    break;
+                    
+                default:
+                    html += '<div style="padding:20px;background:#f0f0f0;border-radius:6px;color:#666;text-align:center">[' + type + ' module]</div>';
+            }
+            
+            html += '</div>';
+            return html;
+        },
+
+        preview() {
+            // Generate HTML for preview
+            let previewHtml = this.generatePreviewHtml();
+            
+            // Open preview in new window
+            const previewWindow = window.open('', 'tb_preview', 'width=1200,height=800');
+            previewWindow.document.write(`<!DOCTYPE html>
+<html>
+<head>
+    <title>${this.templateType.charAt(0).toUpperCase() + this.templateType.slice(1)} Template Preview</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', system-ui, sans-serif; background: #f5f5f5; }
+        .tb-preview-container { max-width: 1200px; margin: 20px auto; background: #fff; box-shadow: 0 2px 20px rgba(0,0,0,0.1); }
+        .tb-preview-header { background: #1e1e2e; color: #cdd6f4; padding: 10px 20px; font-size: 12px; }
+        .tb-preview-section { padding: 0; }
+        .tb-preview-row { display: flex; gap: 20px; padding: 20px; }
+        .tb-preview-column { flex: 1; min-height: 40px; }
+        .tb-preview-module { margin-bottom: 15px; }
+        /* Module specific styles */
+        .tb-mod-logo img { max-height: 60px; }
+        .tb-mod-menu { display: flex; align-items: center; gap: 20px; }
+        .tb-mod-menu nav { display: flex; gap: 15px; }
+        .tb-mod-menu nav a { color: #333; text-decoration: none; font-weight: 500; }
+        .tb-mod-menu nav a:hover { color: #0066cc; }
+        .tb-mod-heading { margin-bottom: 10px; }
+        .tb-mod-text { line-height: 1.6; color: #444; }
+        .tb-mod-button { display: inline-block; padding: 12px 24px; background: #0066cc; color: #fff; text-decoration: none; border-radius: 6px; font-weight: 500; }
+        .tb-mod-image img { max-width: 100%; height: auto; border-radius: 8px; }
+        .tb-mod-divider { border-top: 1px solid #ddd; margin: 15px 0; }
+        .tb-mod-spacer { height: 50px; }
+        .tb-mod-social { display: flex; gap: 10px; }
+        .tb-mod-social a { display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; background: #333; color: #fff; border-radius: 50%; text-decoration: none; font-size: 14px; }
+        .tb-mod-cta { text-align: center; padding: 40px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #fff; border-radius: 12px; }
+        .tb-mod-cta h2 { margin-bottom: 10px; }
+        .tb-mod-cta p { margin-bottom: 20px; opacity: 0.9; }
+        .tb-mod-cta a { background: #fff; color: #667eea; padding: 12px 30px; border-radius: 6px; text-decoration: none; font-weight: 600; }
+        .tb-mod-search { display: flex; gap: 8px; }
+        .tb-mod-search input { flex: 1; padding: 10px 15px; border: 1px solid #ddd; border-radius: 6px; }
+        .tb-mod-search button { padding: 10px 20px; background: #0066cc; color: #fff; border: none; border-radius: 6px; cursor: pointer; }
+        .tb-mod-testimonial { background: #f9f9f9; padding: 30px; border-radius: 12px; }
+        .tb-mod-testimonial blockquote { font-size: 18px; font-style: italic; margin-bottom: 15px; }
+        .tb-mod-testimonial .author { font-weight: 600; }
+        .tb-mod-icon { font-size: 48px; }
+        .tb-mod-counter { text-align: center; }
+        .tb-mod-counter .number { font-size: 48px; font-weight: 700; color: #0066cc; }
+        .tb-mod-counter .title { color: #666; }
+        .tb-mod-hero { background-size: cover; background-position: center; padding: 80px 40px; color: #fff; text-align: center; }
+        .tb-mod-hero h1 { font-size: 48px; margin-bottom: 20px; }
+        .tb-mod-pricing { border: 1px solid #ddd; border-radius: 12px; padding: 30px; text-align: center; }
+        .tb-mod-pricing .price { font-size: 36px; font-weight: 700; color: #0066cc; }
+        .tb-mod-gallery { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+        .tb-mod-gallery img { width: 100%; height: 150px; object-fit: cover; border-radius: 6px; }
+    </style>
+</head>
+<body>
+    <div class="tb-preview-container">
+        <div class="tb-preview-header">
+            📄 ${this.templateType.toUpperCase()} TEMPLATE PREVIEW — Click anywhere to close
+        </div>
+        ${previewHtml}
+    </div>
+    <script>document.body.addEventListener('click', () => window.close());</script>
+</body>
+</html>`);
+            previewWindow.document.close();
+        },
+
+        toast(message, type = 'info') {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = 'tb-toast show ' + type;
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+    };
+
+    // Initialize on DOM ready
+    document.addEventListener('DOMContentLoaded', () => TB.init());
+    </script>
+</body>
+</html>

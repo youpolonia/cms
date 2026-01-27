@@ -1,0 +1,8 @@
+{
+  "enabled": false,
+  "base_url": "https://api-inference.huggingface.co",
+  "api_key": "",
+  "model": "",
+  "timeout": 30,
+  "verify_ssl": true
+}

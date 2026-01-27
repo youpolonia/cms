@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/../../core/bootstrap.php';
 require_once __DIR__ . '/../includes/admin_auth.php';
-require_once __DIR__ . '/../services/CommentManager.php';
+require_once __DIR__ . '/../services/commentmanager.php';
 
 // Verify admin access
 if (!AdminAuth::isLoggedIn()) {

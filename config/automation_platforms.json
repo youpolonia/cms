@@ -1,0 +1,27 @@
+{
+    "n8n": {
+        "enabled": false,
+        "base_url": "",
+        "auth_type": "apikey",
+        "api_key": "",
+        "username": "",
+        "password": "",
+        "timeout": 10,
+        "verify_ssl": true,
+        "webhook_url": ""
+    },
+    "zapier": {
+        "enabled": false,
+        "webhook_url": "",
+        "api_key": "",
+        "account_id": ""
+    },
+    "make": {
+        "enabled": false,
+        "api_key": "",
+        "team_id": "",
+        "region": "eu1",
+        "webhook_url": ""
+    },
+    "updated_at": null
+}

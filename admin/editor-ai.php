@@ -6,6 +6,10 @@ require_once __DIR__ . '/../core/csrf.php';
 
 // Simple session-based authentication
 cms_session_start('admin');
+
+// RBAC: Require admin access
+require_once __DIR__ . '/includes/permissions.php';
+cms_require_admin_role();
 if (!isset($_SESSION['admin_logged_in'])) {
     header('Location: login.php');
     exit;

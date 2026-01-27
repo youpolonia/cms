@@ -11,8 +11,8 @@ try {
             'organization' => $_ENV['OPENAI_ORG'] ?? '',
             'timeout' => 30,
             'models' => [
-                'default' => 'gpt-3.5-turbo',
-                'available' => ['gpt-3.5-turbo', 'gpt-4']
+                'default' => 'gpt-4.1-mini',
+                'available' => ['gpt-4.1-mini', 'gpt-4.1']
             ]
         ],
         'huggingface' => [

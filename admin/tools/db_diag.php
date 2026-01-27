@@ -1,13 +1,21 @@
 <?php
 declare(strict_types=1);
-require_once __DIR__ . '/../../config.php';
-require_once __DIR__ . '/../../core/session_boot.php';
-if (!defined('DEV_MODE') || DEV_MODE !== true) { http_response_code(403); echo "Forbidden\n"; exit; }
-header('Content-Type: text/plain; charset=UTF-8');
+
+define('CMS_ROOT', dirname(__DIR__, 2));
+require_once CMS_ROOT . '/config.php';
+if (!defined('DEV_MODE') || DEV_MODE !== true) { http_response_code(403); exit; }
+
+require_once CMS_ROOT . '/core/session_boot.php';
 cms_session_start('admin');
+require_once CMS_ROOT . '/core/csrf.php';
+csrf_boot();
+require_once CMS_ROOT . '/core/auth.php';
+authenticateAdmin();
+
+header('Content-Type: text/plain; charset=UTF-8');
 echo "DB DIAG (DEV)\n";
 try {
-    require_once __DIR__ . '/../../core/database.php';
+    require_once CMS_ROOT . '/core/database.php';
     $pdo = \core\Database::connection();
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     echo "connection: ok\n";

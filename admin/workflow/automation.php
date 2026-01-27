@@ -1,6 +1,6 @@
 <?php
 require_once __DIR__ . '/../../includes/auth/jwt.php';
-require_once __DIR__ . '/../../services/WorkflowAutomation.php';
+require_once __DIR__ . '/../../services/workflowautomation.php';
 require_once __DIR__ . '/../../services/notificationservice.php';
 require_once __DIR__ . '/../../core/csrf.php';
 

@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="64" height="64">
+  <!-- Tło zaokrąglone -->
+  <rect width="100" height="100" rx="18" fill="#313244"/>
+  
+  <!-- Uszy - duże, stojące, spiczaste jak u Jessie -->
+  <path d="M15 52 L5 5 L40 38 Z" fill="#1e1e2e"/>
+  <path d="M85 52 L95 5 L60 38 Z" fill="#1e1e2e"/>
+  <!-- Wewnętrzna część uszu - różowa -->
+  <path d="M18 45 L12 15 L36 38 Z" fill="#f5c2e7" opacity="0.6"/>
+  <path d="M82 45 L88 15 L64 38 Z" fill="#f5c2e7" opacity="0.6"/>
+  
+  <!-- Głowa - ciemna, kształt border collie -->
+  <path d="M50 90 Q15 85 15 50 Q15 30 50 28 Q85 30 85 50 Q85 85 50 90 Z" fill="#1e1e2e"/>
+  
+  <!-- Siwizna na czole i bokach - jak u starszej Jessie -->
+  <path d="M30 45 Q40 35 50 38 Q60 35 70 45 Q65 50 50 48 Q35 50 30 45 Z" fill="#6c7086" opacity="0.7"/>
+  
+  <!-- Brwi - siwe akcenty -->
+  <ellipse cx="32" cy="44" rx="8" ry="3" fill="#585b70"/>
+  <ellipse cx="68" cy="44" rx="8" ry="3" fill="#585b70"/>
+  
+  <!-- Biało-szary pysk -->
+  <path d="M50 55 Q30 58 28 72 Q30 88 50 90 Q70 88 72 72 Q70 58 50 55 Z" fill="#9399b2"/>
+  <path d="M50 62 Q35 65 34 75 Q36 86 50 88 Q64 86 66 75 Q65 65 50 62 Z" fill="#bac2de"/>
+  
+  <!-- Nos - czarny, duży -->
+  <ellipse cx="50" cy="62" rx="10" ry="7" fill="#11111b"/>
+  <ellipse cx="50" cy="60" rx="4" ry="2.5" fill="#45475a"/>
+  
+  <!-- Oczy - brązowe, mądre, ciepłe - WIĘKSZE -->
+  <ellipse cx="34" cy="52" rx="10" ry="11" fill="#cdd6f4"/>
+  <ellipse cx="66" cy="52" rx="10" ry="11" fill="#cdd6f4"/>
+  <!-- Tęczówka brązowa -->
+  <circle cx="34" cy="52" r="7" fill="#7c5c44"/>
+  <circle cx="66" cy="52" r="7" fill="#7c5c44"/>
+  <!-- Źrenice -->
+  <circle cx="34" cy="52" r="4" fill="#1e1e2e"/>
+  <circle cx="66" cy="52" r="4" fill="#1e1e2e"/>
+  <!-- Ciepły błysk -->
+  <circle cx="37" cy="49" r="2.5" fill="#f9e2af"/>
+  <circle cx="69" cy="49" r="2.5" fill="#f9e2af"/>
+  
+  <!-- Usta/uśmiech -->
+  <path d="M40 78 Q50 82 60 78" stroke="#45475a" stroke-width="2" fill="none"/>
+  
+  <!-- Języczek różowy -->
+  <ellipse cx="50" cy="84" rx="7" ry="9" fill="#f5c2e7"/>
+  <ellipse cx="50" cy="82" rx="5" ry="6" fill="#f38ba8"/>
+</svg>

@@ -26,7 +26,7 @@ class TenantAIConfig {
                 ],
                 'anthropic' => [
                     'api_key' => '',
-                    'model' => 'claude-2',
+                    'model' => 'claude-sonnet-4-5-20250929',
                     'rate_limit' => 20,
                     'fallback_order' => 2  
                 ]
