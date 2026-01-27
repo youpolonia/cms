@@ -272,7 +272,7 @@ function ai_seo_assistant_analyze(array $spec): array
         }
 
         $apiKey = $aiConfig['api_key'];
-        $model = $aiConfig['model'] ?? 'gpt-5.2';
+        $model = $aiConfig['model'] ?? 'gpt-4o-mini';
         $baseUrl = $aiConfig['base_url'] ?? 'https://api.openai.com/v1';
         $endpoint = rtrim($baseUrl, '/') . '/chat/completions';
 
@@ -1047,7 +1047,7 @@ function ai_seo_assistant_generate_content(array $analysis, array $context = [])
         }
 
         $apiKey = $aiConfig['api_key'];
-        $model = $aiConfig['model'] ?? 'gpt-5.2';
+        $model = $aiConfig['model'] ?? 'gpt-4o-mini';
         $baseUrl = $aiConfig['base_url'] ?? 'https://api.openai.com/v1';
         $endpoint = rtrim($baseUrl, '/') . '/chat/completions';
 

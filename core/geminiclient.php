@@ -5,7 +5,7 @@ require_once __DIR__ . '/httpclient.php';
 class GeminiClient extends AIClient {
     private $httpClient;
     private $apiKey;
-    private $model = 'gemini-2.0-flash';
+    private $model = 'gemini-pro';
     private $version = 'v1beta';
 
     public function __construct(array $config, int $tenantId) {

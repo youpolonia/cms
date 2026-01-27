@@ -33,7 +33,7 @@ function ai_config_load(): array {
     $normalized = [
         'provider' => '',
         'api_key' => '',
-        'model' => 'gpt-5.2',
+        'model' => 'gpt-4o-mini',
         'base_url' => 'https://api.openai.com/v1'
     ];
 
@@ -45,7 +45,7 @@ function ai_config_load(): array {
         if (!empty($providerSettings['enabled']) && !empty($providerSettings['api_key'])) {
             $normalized['provider'] = $provider;
             $normalized['api_key'] = $providerSettings['api_key'];
-            $normalized['model'] = $providerSettings['default_model'] ?? 'gpt-5.2';
+            $normalized['model'] = $providerSettings['default_model'] ?? 'gpt-4o-mini';
             $normalized['base_url'] = $providerSettings['base_url'] ?? 'https://api.openai.com/v1';
         }
         
@@ -53,7 +53,7 @@ function ai_config_load(): array {
         if (empty($normalized['api_key']) && !empty($config['providers']['openai']['api_key'])) {
             $normalized['provider'] = 'openai';
             $normalized['api_key'] = $config['providers']['openai']['api_key'];
-            $normalized['model'] = $config['providers']['openai']['default_model'] ?? 'gpt-5.2';
+            $normalized['model'] = $config['providers']['openai']['default_model'] ?? 'gpt-4o-mini';
         }
     }
     
@@ -62,12 +62,12 @@ function ai_config_load(): array {
         if (!empty($config['api_key'])) {
             $normalized['provider'] = $config['provider'] ?? 'openai';
             $normalized['api_key'] = $config['api_key'];
-            $normalized['model'] = $config['model'] ?? 'gpt-4.1-mini';
+            $normalized['model'] = $config['model'] ?? 'gpt-3.5-turbo';
             $normalized['base_url'] = $config['base_url'] ?? 'https://api.openai.com/v1';
         } elseif (!empty($config['openai_api_key'])) {
             $normalized['provider'] = 'openai';
             $normalized['api_key'] = $config['openai_api_key'];
-            $normalized['model'] = $config['openai_model'] ?? 'gpt-4.1-mini';
+            $normalized['model'] = $config['openai_model'] ?? 'gpt-3.5-turbo';
         }
     }
 
@@ -178,19 +178,32 @@ function ai_content_generate(array $params): array {
  */
 function ai_content_generate_openai(array $config, string $prompt): array {
     $apiKey = $config['api_key'] ?? '';
-    $model = $config['model'] ?? 'gpt-4.1-mini';
+    $model = $config['model'] ?? 'gpt-4o-mini';
     $baseUrl = !empty($config['base_url']) ? $config['base_url'] : 'https://api.openai.com/v1';
+    $maxTokens = $config['max_tokens'] ?? 2000;
+    $temperature = $config['temperature'] ?? 0.7;
 
     $endpoint = rtrim($baseUrl, '/') . '/chat/completions';
+
+    // Check if model is a reasoning model (GPT-5.x, GPT-4.1, O-series)
+    // Reasoning models use max_completion_tokens which includes reasoning_tokens + output_tokens
+    $isReasoningModel = (bool) preg_match('/^(o[1-4]|gpt-[45]\.|gpt-5$)/', $model);
 
     $payload = [
         'model' => $model,
         'messages' => [
             ['role' => 'user', 'content' => $prompt]
-        ],
-        'temperature' => 0.7,
-        'max_tokens' => 2000
+        ]
     ];
+
+    if ($isReasoningModel) {
+        // Reasoning models need much higher token limit because reasoning_tokens are included
+        // Multiply by 8 to ensure enough room for both reasoning and output
+        $payload['max_completion_tokens'] = min($maxTokens * 8, 32000);
+    } else {
+        $payload['max_tokens'] = $maxTokens;
+        $payload['temperature'] = $temperature;
+    }
 
     $ch = curl_init($endpoint);
     if ($ch === false) {
@@ -209,7 +222,7 @@ function ai_content_generate_openai(array $config, string $prompt): array {
             'Content-Type: application/json',
             'Authorization: Bearer ' . $apiKey
         ],
-        CURLOPT_TIMEOUT => 30
+        CURLOPT_TIMEOUT => 300
     ]);
 
     $response = curl_exec($ch);
@@ -293,7 +306,7 @@ function ai_content_generate_ollama(array $config, string $prompt): array {
         CURLOPT_HTTPHEADER => [
             'Content-Type: application/json'
         ],
-        CURLOPT_TIMEOUT => 60
+        CURLOPT_TIMEOUT => 300
     ]);
 
     $response = curl_exec($ch);
@@ -351,7 +364,7 @@ function ai_content_generate_ollama(array $config, string $prompt): array {
  */
 function ai_content_generate_anthropic(array $config, string $prompt): array {
     $apiKey = $config['api_key'] ?? '';
-    $model = $config['model'] ?? 'claude-opus-4-5-20251101';
+    $model = $config['model'] ?? 'claude-3-5-sonnet-20241022';
 
     if (empty($apiKey)) {
         return ['ok' => false, 'content' => null, 'error' => 'Anthropic API key not configured'];
@@ -386,7 +399,7 @@ function ai_content_generate_anthropic(array $config, string $prompt): array {
             'anthropic-version: 2023-06-01'
         ],
         CURLOPT_POSTFIELDS => json_encode($payload),
-        CURLOPT_TIMEOUT => 120
+        CURLOPT_TIMEOUT => 300
     ]);
 
     $response = curl_exec($ch);
@@ -430,7 +443,7 @@ function ai_content_generate_anthropic(array $config, string $prompt): array {
  */
 function ai_content_generate_google(array $config, string $prompt): array {
     $apiKey = $config['api_key'] ?? '';
-    $model = $config['model'] ?? 'gemini-2.0-flash';
+    $model = $config['model'] ?? 'gemini-1.5-flash';
 
     if (empty($apiKey)) {
         return ['ok' => false, 'content' => null, 'error' => 'Google API key not configured'];
@@ -466,7 +479,7 @@ function ai_content_generate_google(array $config, string $prompt): array {
         CURLOPT_POST => true,
         CURLOPT_HTTPHEADER => ['Content-Type: application/json'],
         CURLOPT_POSTFIELDS => json_encode($payload),
-        CURLOPT_TIMEOUT => 120
+        CURLOPT_TIMEOUT => 300
     ]);
 
     $response = curl_exec($ch);
@@ -510,7 +523,7 @@ function ai_content_generate_google(array $config, string $prompt): array {
  */
 function ai_content_generate_deepseek(array $config, string $prompt): array {
     $apiKey = $config['api_key'] ?? '';
-    $model = $config['model'] ?? 'deepseek-v3';
+    $model = $config['model'] ?? 'deepseek-chat';
     $baseUrl = rtrim(!empty($config['base_url']) ? $config['base_url'] : 'https://api.deepseek.com/v1', '/');
 
     if (empty($apiKey)) {
@@ -552,7 +565,7 @@ function ai_content_generate_deepseek(array $config, string $prompt): array {
             'Authorization: Bearer ' . $apiKey
         ],
         CURLOPT_POSTFIELDS => json_encode($payload),
-        CURLOPT_TIMEOUT => 120
+        CURLOPT_TIMEOUT => 300
     ]);
 
     $response = curl_exec($ch);

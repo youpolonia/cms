@@ -186,7 +186,7 @@ require_once CMS_ROOT . '/admin/includes/page_header.php';
 <div class="form-group">
 <label>Copy Type</label>
 <select name="copy_type">
-<?php foreach ($copyTypes as $k => $v): ?><option value="<?= $k ?>"><?= esc($v) ?></option><?php endforeach; ?>
+<?php foreach ($copyTypes as $k => $v): ?><option value="<?= $k ?>"><?= esc(is_array($v) ? ($v["label"] ?? $k) : $v) ?></option><?php endforeach; ?>
 </select>
 </div>
 <div class="form-group">
@@ -403,8 +403,8 @@ document.getElementById('generateForm').onsubmit = async e => {
     const data = Object.fromEntries(fd);
     data.include_emoji = fd.get('include_emoji') ? '1' : '';
     const r = await post('generate', data);
-    if (r.success && r.variants) {
-        out.innerHTML = r.variants.map((v, i) => `<div class="variant"><div class="variant-head"><span>Variant ${i+1}</span><button class="btn btn-sm btn-secondary" onclick="navigator.clipboard.writeText(this.parentElement.nextElementSibling.textContent)">📋 Copy</button></div><div>${v.content || v}</div></div>`).join('');
+    if (r.success && (r.copies || r.variants)) {
+        out.innerHTML = ((r.copies || r.variants)).map((v, i) => `<div class="variant"><div class="variant-head"><span>Variant ${i+1}</span><button class="btn btn-sm btn-secondary" onclick="navigator.clipboard.writeText(this.parentElement.nextElementSibling.textContent)">📋 Copy</button></div><div>${v.content || v}</div></div>`).join('');
     } else {
         out.innerHTML = `<div class="alert alert-danger">${r.error || 'Failed'}</div>`;
     }
@@ -443,8 +443,8 @@ document.getElementById('abForm').onsubmit = async e => {
     const out = document.getElementById('abOutput');
     out.innerHTML = '<div class="loading">Generating variants...</div>';
     const r = await post('ab_variants', Object.fromEntries(new FormData(e.target)));
-    if (r.success && r.variants) {
-        out.innerHTML = r.variants.map((v, i) => `<div class="variant"><div class="variant-head"><span>Variant ${String.fromCharCode(65+i)}</span><button class="btn btn-sm btn-secondary" onclick="navigator.clipboard.writeText(this.parentElement.nextElementSibling.textContent)">📋</button></div><div>${v.content || v}</div></div>`).join('');
+    if (r.success && (r.copies || r.variants)) {
+        out.innerHTML = ((r.copies || r.variants)).map((v, i) => `<div class="variant"><div class="variant-head"><span>Variant ${String.fromCharCode(65+i)}</span><button class="btn btn-sm btn-secondary" onclick="navigator.clipboard.writeText(this.parentElement.nextElementSibling.textContent)">📋</button></div><div>${v.content || v}</div></div>`).join('');
     } else {
         out.innerHTML = `<div class="alert alert-danger">${r.error}</div>`;
     }
