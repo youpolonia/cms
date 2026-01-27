@@ -13,3 +13,4 @@ vendor/
 php_server.log
 .github/
 deepseek-thinking-claude-3.5-sonnet-cline-mcp/
+config/ai_settings.json
