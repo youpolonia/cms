@@ -1,0 +1,208 @@
+{
+    "type": "page",
+    "name": "Homepage",
+    "slug": "homepage",
+    "sections": [
+        {
+            "id": "section_10_0eab",
+            "name": "Section",
+            "design": [],
+            "rows": [
+                {
+                    "id": "row_8_0ea9",
+                    "columns": [
+                        {
+                            "id": "col_9_0eaa",
+                            "width": "100%",
+                            "modules": [
+                                {
+                                    "type": "hero",
+                                    "content": {
+                                        "heading": "Unlock Your Content's Potential with Jessie AI CMS",
+                                        "subheading": "",
+                                        "text": "Boost your productivity with AI workflows tailored for digital marketers.",
+                                        "button_text": "Get Started",
+                                        "button_url": "#services",
+                                        "secondary_button_text": "",
+                                        "secondary_button_url": "",
+                                        "background_image": "",
+                                        "video_url": ""
+                                    },
+                                    "design": {
+                                        "height": "600px",
+                                        "min_height": "400px",
+                                        "background_color": "linear",
+                                        "overlay_color": "rgba(0,0,0,0.5)",
+                                        "text_color": "#ffffff",
+                                        "text_align": "center",
+                                        "vertical_align": "center",
+                                        "content_width": "800px",
+                                        "parallax": false,
+                                        "background_position": "right"
+                                    },
+                                    "advanced": {
+                                        "css_class": "section section-hero",
+                                        "css_id": ""
+                                    },
+                                    "id": "mod_1_0c53"
+                                },
+                                {
+                                    "type": "testimonial",
+                                    "content": {
+                                        "quote": "Our CMS leverages AI technology to enhance your content strategy and streamline your workflows.",
+                                        "name": "",
+                                        "role": "",
+                                        "company": "",
+                                        "image": "PLACEHOLDER:about-image",
+                                        "rating": 5
+                                    },
+                                    "design": {
+                                        "style": "default",
+                                        "quote_icon": true,
+                                        "quote_color": "#0073e6",
+                                        "text_align": "center",
+                                        "image_size": "80px",
+                                        "image_border_radius": "50%"
+                                    },
+                                    "advanced": {
+                                        "css_class": "section section-about-preview",
+                                        "css_id": ""
+                                    },
+                                    "id": "mod_2_0ca2"
+                                },
+                                {
+                                    "type": "blurb",
+                                    "content": {
+                                        "icon": "robot",
+                                        "image": "",
+                                        "heading": "AI-Driven Workflows",
+                                        "text": "Automate your content creation process and focus on what matters most.",
+                                        "link": "",
+                                        "link_text": ""
+                                    },
+                                    "design": {
+                                        "icon_color": "#0073e6",
+                                        "icon_size": "48px",
+                                        "icon_background": "transparent",
+                                        "icon_placement": "top",
+                                        "text_align": "center",
+                                        "heading_size": "20px",
+                                        "content_padding": "20px"
+                                    },
+                                    "advanced": {
+                                        "css_class": "section section-features",
+                                        "css_id": ""
+                                    },
+                                    "id": "mod_3_0ce4"
+                                },
+                                {
+                                    "type": "testimonial",
+                                    "content": {
+                                        "quote": "Create stunning themes without any coding knowledge.",
+                                        "name": "",
+                                        "role": "",
+                                        "company": "",
+                                        "image": "",
+                                        "rating": 5
+                                    },
+                                    "design": {
+                                        "style": "default",
+                                        "quote_icon": true,
+                                        "quote_color": "#0073e6",
+                                        "text_align": "center",
+                                        "image_size": "80px",
+                                        "image_border_radius": "50%"
+                                    },
+                                    "advanced": {
+                                        "css_class": "section section-services-preview",
+                                        "css_id": ""
+                                    },
+                                    "id": "mod_4_0d46"
+                                },
+                                {
+                                    "type": "testimonial",
+                                    "content": {
+                                        "quote": "\"Jessie AI CMS has transformed our workflow and boosted our productivity!\"",
+                                        "name": "",
+                                        "role": "",
+                                        "company": "",
+                                        "image": "PLACEHOLDER:testimonial-1",
+                                        "rating": 5
+                                    },
+                                    "design": {
+                                        "style": "default",
+                                        "quote_icon": true,
+                                        "quote_color": "#0073e6",
+                                        "text_align": "center",
+                                        "image_size": "80px",
+                                        "image_border_radius": "50%"
+                                    },
+                                    "advanced": {
+                                        "css_class": "section section-testimonials",
+                                        "css_id": ""
+                                    },
+                                    "id": "mod_5_0d8f"
+                                },
+                                {
+                                    "type": "cta",
+                                    "content": {
+                                        "heading": "Ready to Transform Your Content Strategy?",
+                                        "subheading": "",
+                                        "text": "Join thousands of satisfied users and take your content to the next level with Jessie AI CMS.",
+                                        "button_text": "Start Your Journey",
+                                        "button_url": "#services",
+                                        "secondary_button_text": "",
+                                        "secondary_button_url": ""
+                                    },
+                                    "design": {
+                                        "style": "default",
+                                        "background_color": "#0073e6",
+                                        "text_color": "#ffffff",
+                                        "text_align": "center",
+                                        "padding": "60px 40px",
+                                        "border_radius": "0"
+                                    },
+                                    "advanced": {
+                                        "css_class": "section section-cta",
+                                        "css_id": ""
+                                    },
+                                    "id": "mod_6_0db9"
+                                },
+                                {
+                                    "type": "counter",
+                                    "content": {
+                                        "number": "5",
+                                        "prefix": "",
+                                        "suffix": "",
+                                        "label": "",
+                                        "start_value": 0
+                                    },
+                                    "design": {
+                                        "number_size": "48px",
+                                        "number_color": "#0073e6",
+                                        "number_weight": "700",
+                                        "label_size": "16px",
+                                        "label_color": "#666666",
+                                        "animation_duration": 2000,
+                                        "text_align": "center"
+                                    },
+                                    "advanced": {
+                                        "css_class": "section section-stats",
+                                        "css_id": ""
+                                    },
+                                    "id": "mod_7_0e94"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "meta": {
+        "title": "Homepage",
+        "description": "",
+        "keywords": ""
+    },
+    "design_system": "modern"
+}

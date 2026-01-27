@@ -1,0 +1,15 @@
+{
+  "name": "JessieThemeBuilder",
+  "version": "1.0.0",
+  "description": "Visual page builder with Divi-style interface",
+  "author": "Jessie CMS",
+  "requires": "1.0.0",
+  "php_requires": "8.1",
+  "tenant_aware": false,
+  "hooks": {
+    "action": ["init", "admin_menu", "admin_enqueue_scripts"],
+    "filter": ["the_content"]
+  },
+  "dependencies": {},
+  "license": "GPL-3.0"
+}

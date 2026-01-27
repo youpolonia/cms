@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/core/bootstrap.php';
 // version.php — simple CMS version manifest (framework-free)
+if (!defined('CMS_NAME')) { define('CMS_NAME', 'Jessie AI-CMS'); }
 if (!defined('CMS_VERSION')) { define('CMS_VERSION', '1.0.0'); }
 if (!defined('CMS_RELEASE_DATE')) { define('CMS_RELEASE_DATE', '2025-11-05'); }
 // Build time = this file mtime (stable across requests)

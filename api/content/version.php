@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/../../services/ContentLifecycleManager.php';
+require_once __DIR__ . '/../../services/contentlifecyclemanager.php';
 require_once __DIR__ . '/../../api-gateway/middlewares/authmiddleware.php';
 
 header('Content-Type: application/json');

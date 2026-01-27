@@ -1,21 +1,23 @@
 <?php
-require_once dirname(__DIR__, 2) . '/config.php';
-if (!defined('DEV_MODE') || DEV_MODE !== true) { http_response_code(403); exit('DEV only'); }
-require_once CMS_ROOT . '/core/maintenance_gate.php'; // will allow through if your IP is allowlisted when enabled
-// session boot (admin)
-require_once __DIR__ . '/../../core/session_boot.php';
+define('CMS_ROOT', dirname(__DIR__, 2));
+require_once CMS_ROOT . '/config.php';
+if (!defined('DEV_MODE') || DEV_MODE !== true) { http_response_code(403); exit; }
+
+require_once CMS_ROOT . '/core/session_boot.php';
+cms_session_start('admin');
+require_once CMS_ROOT . '/core/csrf.php';
+csrf_boot();
+require_once CMS_ROOT . '/core/auth.php';
+authenticateAdmin();
+
+require_once CMS_ROOT . '/core/maintenance_gate.php';
 
 header('Cache-Control: no-store');
 $flag = CMS_ROOT . '/config/maintenance.flag';
 
-// CSRF
-cms_session_start('admin');
-if (empty($_SESSION['csrf_token'])) { $_SESSION['csrf_token'] = bin2hex(random_bytes(16)); }
-$csrf = $_SESSION['csrf_token'];
-
 $method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
 if ($method === 'POST') {
-  if (!isset($_POST['csrf_token']) || !hash_equals($csrf, $_POST['csrf_token'])) { http_response_code(400); exit('Bad CSRF'); }
+  csrf_validate_or_403();
   $action = $_POST['action'] ?? '';
   if ($action === 'enable') {
     @mkdir(CMS_ROOT . '/config', 0775, true);
@@ -37,7 +39,7 @@ $enabled = is_file($flag);
 <h1>Maintenance: <?= $enabled ? 'ENABLED' : 'DISABLED' ?></h1>
 <p>Your IP: <code><?= htmlspecialchars($_SERVER['REMOTE_ADDR'] ?? '', ENT_QUOTES, 'UTF-8') ?></code></p>
 <form method="post">
-  <input type="hidden" name="csrf_token" value="<?= $csrf ?>">
+  <?php csrf_field(); ?>
   <?php if ($enabled): ?>
     <button name="action" value="disable">Disable</button>
   <?php else: ?>

@@ -2,6 +2,10 @@
 namespace Admin\Controllers;
 
 require_once __DIR__ . '/../../config.php';
+
+// RBAC: Require admin access
+require_once __DIR__ . '/../includes/permissions.php';
+cms_require_admin_role();
 if (!defined('DEV_MODE') || DEV_MODE !== true) { http_response_code(403); exit; }
 
 class DashboardRenderer {

@@ -3,7 +3,7 @@ require_once __DIR__ . '/../core/bootstrap.php';
 // Core dependencies
 require_once __DIR__ . '/../core/router.php';
 require_once __DIR__ . '/../modules/content/services/templaterenderer.php';
-require_once __DIR__ . '/../services/ContentService.php';
+require_once __DIR__ . '/../services/contentservice.php';
 
 // Content module
 require_once __DIR__ . '/../modules/content/contentmodule.php';

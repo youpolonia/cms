@@ -1,8 +1,8 @@
 <?php
 declare(strict_types=1);
 
-require_once __DIR__ . '/../../services/personalization/PrivacyManager.php';
-require_once __DIR__ . '/../../services/personalization/UserTracker.php';
+require_once __DIR__ . '/../../services/personalization/privacymanager.php';
+require_once __DIR__ . '/../../services/personalization/usertracker.php';
 
 /**
  * User Preference Center

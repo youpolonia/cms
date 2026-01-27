@@ -1,0 +1,950 @@
+/**
+ * JTB Template Manager CSS
+ * Styles for Theme Builder dashboard and template editor
+ * Extends builder.css - uses same dark theme
+ */
+
+/* ========================================
+   1. TEMPLATE MANAGER LAYOUT
+   ======================================== */
+
+.jtb-template-manager {
+    min-height: 100vh;
+    background: #1a1a2e;
+}
+
+.jtb-template-main {
+    padding: 24px;
+    max-width: 1600px;
+    margin: 0 auto;
+}
+
+/* ========================================
+   2. FILTER TABS
+   ======================================== */
+
+.jtb-template-filters {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+}
+
+/* ========================================
+   3. TEMPLATE SECTIONS
+   ======================================== */
+
+.jtb-template-section {
+    margin-bottom: 40px;
+}
+
+.jtb-section-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #e0e0e0;
+    margin-bottom: 16px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #3a3a5c;
+}
+
+.jtb-section-title .jtb-count {
+    font-weight: 400;
+    color: #8888aa;
+    font-size: 14px;
+}
+
+/* ========================================
+   4. TEMPLATE GRID
+   ======================================== */
+
+.jtb-template-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+/* ========================================
+   5. TEMPLATE CARD
+   ======================================== */
+
+.jtb-template-card {
+    background: #252540;
+    border: 1px solid #3a3a5c;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: all 0.2s;
+}
+
+.jtb-template-card:hover {
+    border-color: #6366f1;
+    box-shadow: 0 4px 20px rgba(99, 102, 241, 0.15);
+    transform: translateY(-2px);
+}
+
+.jtb-template-preview {
+    height: 140px;
+    background: #1e1e32;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.jtb-template-preview-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #4a4a6c;
+}
+
+.jtb-template-preview-placeholder svg {
+    width: 100%;
+    max-width: 150px;
+    height: auto;
+}
+
+.jtb-template-info {
+    padding: 16px;
+    border-bottom: 1px solid #3a3a5c;
+}
+
+.jtb-template-name {
+    font-size: 15px;
+    font-weight: 600;
+    color: #e0e0e0;
+    margin: 0 0 8px 0;
+}
+
+.jtb-template-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 500;
+    margin-right: 6px;
+}
+
+.jtb-badge-default {
+    background: rgba(99, 102, 241, 0.2);
+    color: #9f7aea;
+}
+
+.jtb-template-conditions {
+    font-size: 12px;
+    color: #8888aa;
+}
+
+.jtb-template-actions {
+    padding: 12px 16px;
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+/* ========================================
+   6. ADD TEMPLATE CARD
+   ======================================== */
+
+.jtb-template-add {
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 260px;
+    border: 2px dashed #3a3a5c;
+    background: transparent;
+}
+
+.jtb-template-add:hover {
+    border-color: #6366f1;
+    background: rgba(99, 102, 241, 0.05);
+}
+
+.jtb-template-add-icon {
+    font-size: 48px;
+    color: #4a4a6c;
+    margin-bottom: 12px;
+    transition: color 0.2s;
+}
+
+.jtb-template-add:hover .jtb-template-add-icon {
+    color: #6366f1;
+}
+
+.jtb-template-add-text {
+    font-size: 14px;
+    color: #8888aa;
+    transition: color 0.2s;
+}
+
+.jtb-template-add:hover .jtb-template-add-text {
+    color: #e0e0e0;
+}
+
+/* ========================================
+   7. BUTTONS
+   ======================================== */
+
+.jtb-btn-sm {
+    padding: 6px 12px;
+    font-size: 12px;
+}
+
+.jtb-btn-danger {
+    color: #F44336;
+    border-color: #F44336;
+}
+
+.jtb-btn-danger:hover {
+    background: rgba(244, 67, 54, 0.1);
+}
+
+/* ========================================
+   8. BADGES
+   ======================================== */
+
+.jtb-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    background: #3a3a5c;
+    border-radius: 12px;
+    font-size: 12px;
+    color: #e0e0e0;
+}
+
+.jtb-badge-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+    background: #6366f1;
+    border-radius: 9px;
+    font-size: 11px;
+    color: #fff;
+    margin-left: 6px;
+}
+
+/* ========================================
+   9. HEADER TITLE INPUT
+   ======================================== */
+
+.jtb-header-title-input {
+    background: transparent;
+    border: 1px solid transparent;
+    padding: 4px 8px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #e0e0e0;
+    border-radius: 4px;
+    width: 200px;
+    transition: all 0.2s;
+}
+
+.jtb-header-title-input:hover {
+    border-color: #3a3a5c;
+}
+
+.jtb-header-title-input:focus {
+    outline: none;
+    border-color: #6366f1;
+    background: #252540;
+}
+
+.jtb-template-type-badge {
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 500;
+    text-transform: uppercase;
+}
+
+.jtb-badge-header {
+    background: rgba(33, 150, 243, 0.2);
+    color: #64b5f6;
+}
+
+.jtb-badge-footer {
+    background: rgba(76, 175, 80, 0.2);
+    color: #81c784;
+}
+
+.jtb-badge-body {
+    background: rgba(255, 152, 0, 0.2);
+    color: #ffb74d;
+}
+
+/* ========================================
+   10. MODULES PANEL
+   ======================================== */
+
+.jtb-modules-panel {
+    width: 280px;
+    background: #1e1e32;
+    border-right: 1px solid #3a3a5c;
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+}
+
+.jtb-panel-header {
+    padding: 16px;
+    border-bottom: 1px solid #3a3a5c;
+}
+
+.jtb-panel-header h3 {
+    font-size: 14px;
+    font-weight: 600;
+    color: #e0e0e0;
+    margin: 0 0 12px 0;
+}
+
+.jtb-module-search {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #3a3a5c;
+    border-radius: 4px;
+    background: #252540;
+    color: #e0e0e0;
+    font-size: 13px;
+}
+
+.jtb-module-search:focus {
+    outline: none;
+    border-color: #6366f1;
+}
+
+.jtb-modules-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 12px;
+}
+
+.jtb-module-list-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border: 1px solid #3a3a5c;
+    border-radius: 6px;
+    margin-bottom: 8px;
+    cursor: grab;
+    background: #252540;
+    transition: all 0.2s;
+}
+
+.jtb-module-list-item:hover {
+    border-color: #6366f1;
+    background: rgba(99, 102, 241, 0.1);
+}
+
+.jtb-module-list-item:active {
+    cursor: grabbing;
+}
+
+.jtb-module-list-icon {
+    font-size: 18px;
+    color: #8888aa;
+}
+
+.jtb-module-list-name {
+    font-size: 13px;
+    color: #e0e0e0;
+}
+
+/* ========================================
+   11. CONDITIONS PANEL
+   ======================================== */
+
+.jtb-conditions-panel {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.jtb-conditions-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px;
+}
+
+.jtb-conditions-list {
+    margin-bottom: 12px;
+}
+
+.jtb-condition-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 12px;
+    background: #252540;
+    border: 1px solid #3a3a5c;
+    border-radius: 4px;
+    margin-bottom: 8px;
+}
+
+.jtb-condition-item:hover {
+    border-color: #4a4a6c;
+}
+
+.jtb-condition-label {
+    font-size: 13px;
+    color: #e0e0e0;
+}
+
+.jtb-condition-remove {
+    padding: 4px 8px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: #8888aa;
+    font-size: 16px;
+    line-height: 1;
+    border-radius: 4px;
+    transition: all 0.2s;
+}
+
+.jtb-condition-remove:hover {
+    background: rgba(244, 67, 54, 0.1);
+    color: #F44336;
+}
+
+.jtb-btn-add-condition {
+    width: 100%;
+    border-style: dashed;
+    margin-top: 8px;
+}
+
+.jtb-default-toggle {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #3a3a5c;
+}
+
+/* ========================================
+   12. GLOBAL MODULES
+   ======================================== */
+
+.jtb-global-modules-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.jtb-global-module-card {
+    background: #252540;
+    border: 1px solid #3a3a5c;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: all 0.2s;
+}
+
+.jtb-global-module-card:hover {
+    border-color: #6366f1;
+    box-shadow: 0 4px 20px rgba(99, 102, 241, 0.15);
+}
+
+.jtb-module-thumbnail {
+    height: 120px;
+    background: #1e1e32;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.jtb-module-thumbnail img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.jtb-module-thumbnail-placeholder {
+    font-size: 40px;
+    color: #4a4a6c;
+}
+
+.jtb-module-info {
+    padding: 16px;
+    border-bottom: 1px solid #3a3a5c;
+}
+
+.jtb-module-name {
+    font-size: 15px;
+    font-weight: 600;
+    color: #e0e0e0;
+    margin: 0 0 4px 0;
+}
+
+.jtb-module-type {
+    font-size: 12px;
+    color: #6366f1;
+}
+
+.jtb-module-description {
+    font-size: 12px;
+    color: #8888aa;
+    margin: 8px 0 0 0;
+}
+
+.jtb-module-actions {
+    padding: 12px 16px;
+    display: flex;
+    gap: 8px;
+}
+
+/* ========================================
+   13. SEARCH WRAPPER
+   ======================================== */
+
+.jtb-search-wrapper {
+    position: relative;
+}
+
+.jtb-search-wrapper .jtb-input-text {
+    width: 250px;
+    padding-right: 36px;
+}
+
+/* ========================================
+   14. MODAL EXTENSIONS
+   ======================================== */
+
+.jtb-modal-large {
+    max-width: 800px;
+}
+
+.jtb-modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    padding: 16px 20px;
+    border-top: 1px solid #3a3a5c;
+    background: #16162a;
+}
+
+/* ========================================
+   15. HIDDEN SECTIONS (for filtering)
+   ======================================== */
+
+.jtb-template-section.hidden {
+    display: none;
+}
+
+.jtb-template-card.hidden,
+.jtb-global-module-card.hidden {
+    display: none;
+}
+
+/* ========================================
+   16. RESPONSIVE
+   ======================================== */
+
+@media (max-width: 1200px) {
+    .jtb-modules-panel {
+        width: 240px;
+    }
+
+    .jtb-settings-panel {
+        width: 350px;
+    }
+}
+
+@media (max-width: 992px) {
+    .jtb-template-grid,
+    .jtb-global-modules-grid {
+        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    }
+}
+
+@media (max-width: 768px) {
+    .jtb-template-filters {
+        overflow-x: auto;
+        flex-wrap: nowrap;
+        padding-bottom: 8px;
+    }
+
+    .jtb-category-tab {
+        white-space: nowrap;
+    }
+}
+
+/* ========================================
+   MODULES LIST (Left Sidebar)
+   ======================================== */
+
+.jtb-modules-panel {
+    width: 280px;
+    background: #1e1e32;
+    border-right: 1px solid #3a3a5c;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.jtb-panel-header {
+    padding: 16px;
+    border-bottom: 1px solid #3a3a5c;
+}
+
+.jtb-panel-header h3 {
+    margin: 0 0 12px 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: #e0e0e0;
+}
+
+.jtb-module-search {
+    width: 100%;
+    padding: 10px 12px;
+    background: #252540;
+    border: 1px solid #3a3a5c;
+    border-radius: 6px;
+    color: #e0e0e0;
+    font-size: 13px;
+}
+
+.jtb-module-search::placeholder {
+    color: #6a6a8c;
+}
+
+.jtb-module-search:focus {
+    outline: none;
+    border-color: #6366f1;
+}
+
+#categoryTabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 12px 16px;
+    border-bottom: 1px solid #3a3a5c;
+}
+
+#categoryTabs .jtb-category-tab {
+    padding: 6px 12px;
+    font-size: 12px;
+    background: transparent;
+    border: 1px solid #3a3a5c;
+    border-radius: 16px;
+    color: #8888aa;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+#categoryTabs .jtb-category-tab:hover {
+    background: #3a3a5c;
+    color: #e0e0e0;
+}
+
+#categoryTabs .jtb-category-tab.active {
+    background: #6366f1;
+    border-color: #6366f1;
+    color: #ffffff;
+}
+
+#modulesList {
+    flex: 1;
+    overflow-y: auto;
+    padding: 12px;
+}
+
+.jtb-module-list-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    background: #252540;
+    border: 1px solid #3a3a5c;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    cursor: grab;
+    transition: all 0.2s;
+}
+
+.jtb-module-list-item:hover {
+    border-color: #6366f1;
+    background: #2a2a48;
+    transform: translateX(4px);
+}
+
+.jtb-module-list-item:active {
+    cursor: grabbing;
+}
+
+.jtb-module-list-item.dragging {
+    opacity: 0.5;
+    border-color: #6366f1;
+}
+
+.jtb-module-list-icon {
+    font-size: 20px;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #1e1e32;
+    border-radius: 6px;
+}
+
+.jtb-module-list-name {
+    flex: 1;
+    font-size: 13px;
+    font-weight: 500;
+    color: #e0e0e0;
+}
+
+/* Drag over indicator */
+.jtb-column-content.drag-over {
+    background: rgba(99, 102, 241, 0.15) !important;
+    border: 2px dashed #6366f1 !important;
+}
+
+/* ========================================
+   17. NO CONDITIONS MESSAGE
+   ======================================== */
+
+.jtb-no-conditions {
+    color: #6a6a8c;
+    font-size: 13px;
+    text-align: center;
+    padding: 20px;
+    margin: 0;
+}
+
+/* ========================================
+   18. CHECKBOX / TOGGLE STYLES
+   ======================================== */
+
+.jtb-checkbox-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+}
+
+.jtb-checkbox-item input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: #6366f1;
+    cursor: pointer;
+}
+
+.jtb-checkbox-label {
+    font-size: 14px;
+    color: #e0e0e0;
+}
+
+.jtb-field-description {
+    font-size: 12px;
+    color: #8888aa;
+    margin: 6px 0 0 28px;
+}
+
+/* ========================================
+   19. PREVIEW MODAL
+   ======================================== */
+
+.jtb-modal-preview {
+    max-width: 95vw;
+    width: 1200px;
+    height: 85vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.jtb-modal-preview .jtb-modal-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.jtb-modal-preview .jtb-modal-title {
+    flex: 1;
+}
+
+.jtb-preview-devices {
+    display: flex;
+    gap: 4px;
+    background: #252540;
+    border-radius: 6px;
+    padding: 4px;
+}
+
+.jtb-preview-device-btn {
+    padding: 8px 16px;
+    background: transparent;
+    border: none;
+    border-radius: 4px;
+    color: #8888aa;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.jtb-preview-device-btn:hover {
+    color: #e0e0e0;
+}
+
+.jtb-preview-device-btn.active {
+    background: #6366f1;
+    color: #ffffff;
+}
+
+.jtb-modal-preview .jtb-modal-body {
+    flex: 1;
+    padding: 20px;
+    background: #2d2d44;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    overflow: auto;
+}
+
+.jtb-preview-frame-wrapper {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.jtb-preview-iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    background: #ffffff;
+    border-radius: 4px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    transition: width 0.3s ease;
+}
+
+/* ========================================
+   20. MODAL OVERLAY ANIMATION
+   ======================================== */
+
+.jtb-modal-overlay {
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.jtb-modal-overlay.show {
+    opacity: 1;
+}
+
+.jtb-modal-overlay .jtb-modal {
+    transform: translateY(-20px);
+    transition: transform 0.3s ease;
+}
+
+.jtb-modal-overlay.show .jtb-modal {
+    transform: translateY(0);
+}
+
+/* ========================================
+   21. TOGGLE GROUP EXTENSIONS
+   ======================================== */
+
+.jtb-conditions-panel .jtb-toggle-group {
+    margin-bottom: 16px;
+}
+
+.jtb-conditions-panel .jtb-toggle-header {
+    padding: 12px 16px;
+    background: #252540;
+    border: 1px solid #3a3a5c;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.2s;
+}
+
+.jtb-conditions-panel .jtb-toggle-header:hover {
+    border-color: #4a4a6c;
+}
+
+.jtb-conditions-panel .jtb-toggle-group.open .jtb-toggle-header {
+    border-radius: 6px 6px 0 0;
+    border-bottom-color: transparent;
+}
+
+.jtb-conditions-panel .jtb-toggle-icon::before {
+    content: '▶';
+    font-size: 10px;
+    color: #8888aa;
+    transition: transform 0.2s;
+    display: inline-block;
+}
+
+.jtb-conditions-panel .jtb-toggle-group.open .jtb-toggle-icon::before {
+    transform: rotate(90deg);
+}
+
+.jtb-conditions-panel .jtb-toggle-label {
+    font-size: 13px;
+    font-weight: 500;
+    color: #e0e0e0;
+}
+
+.jtb-conditions-panel .jtb-toggle-content {
+    display: none;
+    padding: 16px;
+    background: #1e1e32;
+    border: 1px solid #3a3a5c;
+    border-top: none;
+    border-radius: 0 0 6px 6px;
+}
+
+.jtb-conditions-panel .jtb-toggle-group.open .jtb-toggle-content {
+    display: block;
+}
+
+/* ========================================
+   22. CONDITION MODAL FIELDS
+   ======================================== */
+
+.jtb-field {
+    margin-bottom: 16px;
+}
+
+.jtb-field:last-child {
+    margin-bottom: 0;
+}
+
+.jtb-field-label {
+    display: block;
+    font-size: 13px;
+    font-weight: 500;
+    color: #e0e0e0;
+    margin-bottom: 8px;
+}
+
+.jtb-input-select {
+    width: 100%;
+    padding: 10px 12px;
+    background: #252540;
+    border: 1px solid #3a3a5c;
+    border-radius: 6px;
+    color: #e0e0e0;
+    font-size: 14px;
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%238888aa' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+}
+
+.jtb-input-select:focus {
+    outline: none;
+    border-color: #6366f1;
+}
+
+.jtb-input-select option {
+    background: #252540;
+    color: #e0e0e0;
+}

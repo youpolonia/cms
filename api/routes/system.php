@@ -20,7 +20,7 @@ class SystemRoutes {
                 
                 $config = [
                     'api_key' => $_ENV['AI_API_KEY'] ?? '',
-                    'model' => $_ENV['AI_MODEL'] ?? 'gpt-3.5-turbo',
+                    'model' => $_ENV['AI_MODEL'] ?? 'gpt-4.1-mini',
                     'temperature' => 0.7,
                     'max_tokens' => 1000
                 ];

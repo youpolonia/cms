@@ -1,0 +1,212 @@
+{
+    "type": "header",
+    "name": "Site Header",
+    "sections": [
+        {
+            "id": "section_10_df4c",
+            "name": "Header",
+            "design": {
+                "background_color": "var(--color-background)",
+                "box_shadow": "0 2px 5px rgba(0, 0, 0, 0.1)"
+            },
+            "rows": [
+                {
+                    "id": "row_9_df42",
+                    "columns": [
+                        {
+                            "id": "col_2_db50",
+                            "width": "25%",
+                            "modules": [
+                                {
+                                    "type": "logo",
+                                    "content": {
+                                        "image": "",
+                                        "text": "Jessie AI CMS",
+                                        "url": "/",
+                                        "alt": ""
+                                    },
+                                    "design": {
+                                        "max_height": "60px",
+                                        "max_width": "200px",
+                                        "font_family": "'Inter', sans-serif",
+                                        "font_size": "1.5rem",
+                                        "font_weight": "bold",
+                                        "text_color": "var(--color-text)"
+                                    },
+                                    "advanced": {
+                                        "css_class": "logo",
+                                        "css_id": ""
+                                    },
+                                    "id": "mod_1_db49"
+                                }
+                            ]
+                        },
+                        {
+                            "id": "col_4_dc1a",
+                            "width": "25%",
+                            "modules": [
+                                {
+                                    "type": "menu",
+                                    "content": {
+                                        "items": [
+                                            {
+                                                "text": "Homepage",
+                                                "url": "/",
+                                                "target": "_self",
+                                                "children": []
+                                            },
+                                            {
+                                                "text": "About",
+                                                "url": "/about",
+                                                "target": "_self",
+                                                "children": []
+                                            },
+                                            {
+                                                "text": "Services",
+                                                "url": "/services",
+                                                "target": "_self",
+                                                "children": []
+                                            },
+                                            {
+                                                "text": "Contact",
+                                                "url": "/contact",
+                                                "target": "_self",
+                                                "children": []
+                                            },
+                                            {
+                                                "text": "Blog",
+                                                "url": "/blog",
+                                                "target": "_self",
+                                                "children": []
+                                            },
+                                            {
+                                                "text": "Portfolio",
+                                                "url": "/portfolio",
+                                                "target": "_self",
+                                                "children": []
+                                            },
+                                            {
+                                                "text": "Pricing",
+                                                "url": "/pricing",
+                                                "target": "_self",
+                                                "children": []
+                                            },
+                                            {
+                                                "text": "Team",
+                                                "url": "/team",
+                                                "target": "_self",
+                                                "children": []
+                                            },
+                                            {
+                                                "text": "Faq",
+                                                "url": "/faq",
+                                                "target": "_self",
+                                                "children": []
+                                            },
+                                            {
+                                                "text": "Testimonials",
+                                                "url": "/testimonials",
+                                                "target": "_self",
+                                                "children": []
+                                            }
+                                        ],
+                                        "title": ""
+                                    },
+                                    "design": {
+                                        "orientation": "horizontal",
+                                        "alignment": "left",
+                                        "item_spacing": "20px",
+                                        "link_color": "#333333",
+                                        "link_hover_color": "#0073e6",
+                                        "font_size": "16px",
+                                        "font_weight": "500",
+                                        "dropdown_background": "#ffffff",
+                                        "dropdown_shadow": "0 4px 12px rgba(0,0,0,0.1)"
+                                    },
+                                    "advanced": {
+                                        "css_class": "nav-desktop",
+                                        "css_id": ""
+                                    },
+                                    "id": "mod_3_dc16"
+                                }
+                            ]
+                        },
+                        {
+                            "id": "col_6_ddd4",
+                            "width": "25%",
+                            "modules": [
+                                {
+                                    "type": "button",
+                                    "content": {
+                                        "text": "Get Started",
+                                        "url": "#",
+                                        "target": "_self",
+                                        "icon": ""
+                                    },
+                                    "design": {
+                                        "background_color": "var(--color-primary)",
+                                        "text_color": "white",
+                                        "border_radius": "5px",
+                                        "padding": "0.5rem 1rem",
+                                        "font_size": "16px",
+                                        "font_weight": "600",
+                                        "border": "none",
+                                        "hover_background": "#005bb5",
+                                        "hover_text_color": "#ffffff",
+                                        "border_style": "none",
+                                        "padding_top": "0.5rem",
+                                        "padding_bottom": "0.5rem",
+                                        "padding_right": "1rem",
+                                        "padding_left": "1rem"
+                                    },
+                                    "advanced": {
+                                        "css_class": "cta-button",
+                                        "css_id": ""
+                                    },
+                                    "id": "mod_5_ddd2"
+                                }
+                            ]
+                        },
+                        {
+                            "id": "col_8_df39",
+                            "width": "25%",
+                            "modules": [
+                                {
+                                    "type": "button",
+                                    "content": {
+                                        "text": "",
+                                        "url": "#",
+                                        "target": "_self",
+                                        "icon": ""
+                                    },
+                                    "design": {
+                                        "background_color": "none",
+                                        "text_color": "#ffffff",
+                                        "border_radius": "4px",
+                                        "padding": "12px 24px",
+                                        "font_size": "16px",
+                                        "font_weight": "600",
+                                        "border": "none",
+                                        "hover_background": "#005bb5",
+                                        "hover_text_color": "#ffffff",
+                                        "border_style": "none"
+                                    },
+                                    "advanced": {
+                                        "css_class": "hamburger",
+                                        "css_id": ""
+                                    },
+                                    "id": "mod_7_df2d"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "settings": {
+        "sticky": true,
+        "transparent": false,
+        "height": 80
+    }
+}

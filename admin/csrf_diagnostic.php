@@ -4,11 +4,16 @@
  * Helps debug CSRF verification issues
  */
 require_once __DIR__ . '/../config.php';
+require_once __DIR__ . '/../includes/init.php'; // Must be before permissions check - starts session
 require_once __DIR__ . '/../core/session_boot.php';
 require_once __DIR__ . '/../core/csrf.php';
 
 // Start session and CSRF
 cms_session_start('admin');
+
+// RBAC: Require admin access
+require_once __DIR__ . '/includes/permissions.php';
+cms_require_admin_role();
 csrf_boot('admin');
 
 header('Content-Type: text/html; charset=UTF-8');

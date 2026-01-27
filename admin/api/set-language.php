@@ -1,6 +1,14 @@
 <?php
+define('CMS_ROOT', dirname(__DIR__, 2));
+require_once CMS_ROOT . '/config.php';
+require_once CMS_ROOT . '/core/session_boot.php';
+cms_session_start('admin');
+require_once CMS_ROOT . '/core/auth.php';
+authenticateAdmin();
+
 require_once __DIR__ . '/../../includes/localization/languagemanager.php';
 require_once __DIR__ . '/middleware/csrf.php';
+
 header('Content-Type: application/json');
 verifyCSRFToken();
 try {

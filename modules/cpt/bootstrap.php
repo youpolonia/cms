@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/BuilderCore.php';
+require_once __DIR__ . '/buildercore.php';
 /**
  * CPT Module Bootstrap
  */

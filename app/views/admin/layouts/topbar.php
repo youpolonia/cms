@@ -1,0 +1,257 @@
+<?php
+/**
+ * Admin Layout - Topbar Only (No Sidebar)
+ * Uses centralized topbar_nav.php for navigation
+ */
+if (!defined('CMS_ROOT')) { define('CMS_ROOT', dirname(__DIR__, 4)); }
+require_once CMS_ROOT . '/core/session.php';
+
+$username = \Core\Session::getAdminUsername() ?? 'Admin';
+
+// Helper function for escaping
+if (!function_exists('esc')) {
+    function esc($str) { return htmlspecialchars($str ?? '', ENT_QUOTES, 'UTF-8'); }
+}
+?>
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><?= esc($title ?? 'Admin') ?> - Jessie AI-CMS</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        (function() {
+            const saved = localStorage.getItem('cms-theme') || 'dark';
+            document.documentElement.setAttribute('data-theme', saved);
+        })();
+    </script>
+    <style>
+    :root, [data-theme="light"] {
+        --bg-primary: #ffffff;
+        --bg-secondary: #f8fafc;
+        --bg-tertiary: #f1f5f9;
+        --text-primary: #0f172a;
+        --text-secondary: #475569;
+        --text-muted: #94a3b8;
+        --border: #e2e8f0;
+        --accent: #6366f1;
+        --accent-hover: #4f46e5;
+        --accent-muted: rgba(99, 102, 241, 0.1);
+        --success: #10b981;
+        --success-bg: #d1fae5;
+        --warning: #f59e0b;
+        --warning-bg: #fef3c7;
+        --danger: #ef4444;
+        --danger-bg: #fee2e2;
+    }
+    [data-theme="dark"] {
+        --bg-primary: #1e1e2e;
+        --bg-secondary: #181825;
+        --bg-tertiary: #313244;
+        --text-primary: #cdd6f4;
+        --text-secondary: #a6adc8;
+        --text-muted: #6c7086;
+        --border: #313244;
+        --accent: #89b4fa;
+        --accent-hover: #b4befe;
+        --accent-muted: rgba(137, 180, 250, 0.15);
+        --success: #a6e3a1;
+        --success-bg: rgba(166, 227, 161, 0.15);
+        --warning: #f9e2af;
+        --warning-bg: rgba(249, 226, 175, 0.15);
+        --danger: #f38ba8;
+        --danger-bg: rgba(243, 139, 168, 0.15);
+    }
+    :root {
+        --font: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        --radius: 8px;
+        --radius-lg: 12px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 16px; -webkit-font-smoothing: antialiased; }
+    body {
+        font-family: var(--font);
+        font-size: 14px;
+        line-height: 1.5;
+        color: var(--text-primary);
+        background: var(--bg-secondary);
+        min-height: 100vh;
+    }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { color: var(--accent-hover); }
+
+    /* MAIN */
+    .main-content {
+        max-width: 1600px;
+        margin: 0 auto;
+        padding: 32px 24px;
+    }
+    .page-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 24px;
+    }
+    .page-title {
+        font-size: 24px;
+        font-weight: 700;
+        color: var(--text-primary);
+    }
+
+    /* CARDS */
+    .card {
+        background: var(--bg-primary);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
+    }
+    .card-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 16px 20px;
+        border-bottom: 1px solid var(--border);
+    }
+    .card-title { font-size: 16px; font-weight: 600; }
+    .card-body { padding: 20px; }
+
+    /* BUTTONS */
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 18px;
+        font-size: 14px;
+        font-weight: 500;
+        border-radius: var(--radius);
+        border: none;
+        cursor: pointer;
+        transition: all 0.15s;
+    }
+    .btn-primary {
+        background: var(--accent);
+        color: #fff;
+    }
+    .btn-primary:hover {
+        background: var(--accent-hover);
+        color: #fff;
+    }
+    .btn-secondary {
+        background: var(--bg-tertiary);
+        color: var(--text-primary);
+        border: 1px solid var(--border);
+    }
+    .btn-danger {
+        background: rgba(243, 139, 168, 0.2);
+        color: #f38ba8;
+        border: 1px solid rgba(243, 139, 168, 0.4);
+    }
+    .btn-danger:hover {
+        background: rgba(243, 139, 168, 0.35);
+        border-color: #f38ba8;
+    }
+    .btn-ghost {
+        background: transparent;
+        color: var(--text-secondary);
+    }
+    .btn-sm { padding: 6px 12px; font-size: 13px; }
+
+    /* STATS */
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 16px;
+        margin-bottom: 24px;
+    }
+    .stat-card {
+        background: var(--bg-primary);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
+        padding: 20px;
+    }
+    .stat-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: var(--radius);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 22px;
+        margin-bottom: 12px;
+    }
+    .stat-icon.primary { background: var(--accent-muted); }
+    .stat-icon.success { background: var(--success-bg); }
+    .stat-icon.warning { background: var(--warning-bg); }
+    .stat-icon.danger { background: var(--danger-bg); }
+    .stat-value { font-size: 32px; font-weight: 700; }
+    .stat-label { font-size: 14px; color: var(--text-muted); margin-top: 4px; }
+    .stat-change { font-size: 13px; color: var(--success); margin-top: 8px; }
+
+    /* BADGES */
+    .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 10px;
+        font-size: 12px;
+        font-weight: 500;
+        border-radius: 20px;
+    }
+    .badge-success { background: var(--success-bg); color: var(--success); }
+    .badge-warning { background: var(--warning-bg); color: var(--warning); }
+    .badge-danger { background: var(--danger-bg); color: var(--danger); }
+
+    /* TABLES */
+    .table { width: 100%; border-collapse: collapse; }
+    .table th {
+        padding: 12px 16px;
+        text-align: left;
+        font-size: 12px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--text-muted);
+        background: var(--bg-secondary);
+        border-bottom: 1px solid var(--border);
+    }
+    .table td {
+        padding: 12px 16px;
+        border-bottom: 1px solid var(--border);
+    }
+    .table tbody tr:hover { background: var(--bg-secondary); }
+
+    /* FORMS */
+    .form-group { margin-bottom: 20px; }
+    .form-label { display: block; font-size: 14px; font-weight: 500; margin-bottom: 6px; }
+    .form-input, .form-select, .form-textarea {
+        width: 100%;
+        padding: 10px 12px;
+        font-size: 14px;
+        color: var(--text-primary);
+        background: var(--bg-tertiary);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+    }
+    .form-input:focus, .form-select:focus, .form-textarea:focus {
+        outline: none;
+        border-color: var(--accent);
+        box-shadow: 0 0 0 3px var(--accent-muted);
+    }
+    </style>
+    <?php if (file_exists(CMS_ROOT . '/assets/css/theme-custom.css')): ?>
+    <link rel="stylesheet" href="/assets/css/theme-custom.css?v=<?= filemtime(CMS_ROOT . '/assets/css/theme-custom.css') ?>">
+    <?php endif; ?>
+</head>
+<body>
+    <?php 
+    // Include the ONE centralized topbar navigation
+    require_once CMS_ROOT . '/admin/includes/topbar_nav.php'; 
+    ?>
+
+    <main class="main-content">
+        <?= $content ?? '' ?>
+    </main>
+</body>
+</html>

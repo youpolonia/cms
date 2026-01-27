@@ -1,0 +1,40 @@
+{
+  "name": "Jessie AI-CMS",
+  "description": "Professional dark theme for Jessie AI-CMS with purple/cyan accents",
+  "version": 1,
+  "author": "Jessie Team",
+  "css": "assets/css/style.css",
+  "preview_html": "<div style='background:#0a0a0f;color:#fff;padding:20px;font-family:Inter,sans-serif;'><h1 style='background:linear-gradient(135deg,#8b5cf6,#06b6d4);-webkit-background-clip:text;-webkit-text-fill-color:transparent;'>Jessie AI-CMS</h1><p style='color:#a1a1aa;'>Professional dark theme with AI aesthetics</p></div>",
+  "supports": {
+    "theme-builder": true,
+    "custom-header": true,
+    "custom-footer": true,
+    "custom-colors": true
+  },
+  "colors": {
+    "primary": "#8b5cf6",
+    "secondary": "#6366f1",
+    "accent": "#06b6d4",
+    "background": "#0a0a0f",
+    "surface": "#12121a",
+    "text": "#ffffff",
+    "text_muted": "#a1a1aa",
+    "border": "#1a1a25",
+    "success": "#22c55e",
+    "warning": "#f59e0b",
+    "error": "#ef4444"
+  },
+  "typography": {
+    "fontFamily": "Inter",
+    "headingFont": "Inter",
+    "baseFontSize": "16",
+    "lineHeight": "1.6"
+  },
+  "config": {
+    "fonts": {
+      "main": "Inter, sans-serif",
+      "headings": "Inter, sans-serif",
+      "code": "JetBrains Mono, monospace"
+    }
+  }
+}

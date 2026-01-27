@@ -1,0 +1,8 @@
+{
+    "name": "Sample Extension",
+    "slug": "sample-extension",
+    "description": "A sample extension to demonstrate the extension system.",
+    "version": "1.0.0",
+    "author": "CMS Team",
+    "author_url": "https://example.com"
+}

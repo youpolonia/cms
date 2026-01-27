@@ -2,6 +2,7 @@
 require_once __DIR__ . '/../config.php';
 if (!defined('DEV_MODE') || DEV_MODE !== true) { http_response_code(403); exit; }
 
+require_once CMS_ROOT . '/core/automation_rules.php';
 /**
  * Blog Controller - Handles HTTP requests for blog functionality
  */
@@ -48,9 +49,19 @@ class BlogController {
     public function store(): void {
         $this->checkAdminAccess();
         csrf_validate_or_403();
-        
+
         try {
             $post = $this->blogManager->createPost($_POST);
+
+            if (isset($post) && isset($post->status) && $post->status === 'published') {
+                automation_rules_handle_event('blog.post_published', [
+                    'post_id'   => $post->id ?? null,
+                    'title'     => $post->title ?? '',
+                    'slug'      => $post->slug ?? '',
+                    'status'    => $post->status,
+                    'author_id' => $post->author_id ?? null
+                ]);
+            }
             header("Location: /blog/{$post->id}");
         } catch (InvalidArgumentException $e) {
             $_SESSION['error'] = $e->getMessage();
@@ -75,9 +86,20 @@ class BlogController {
     public function update(int $id): void {
         $this->checkAdminAccess();
         csrf_validate_or_403();
-        
+
         try {
             $post = $this->blogManager->updatePost($id, $_POST);
+
+            if (isset($post) && isset($post->status) && $post->status === 'published') {
+                automation_rules_handle_event('blog.post_published', [
+                    'post_id'   => $post->id ?? null,
+                    'title'     => $post->title ?? '',
+                    'slug'      => $post->slug ?? '',
+                    'status'    => $post->status,
+                    'author_id' => $post->author_id ?? null
+                ]);
+            }
+
             header("Location: /blog/{$post->id}");
         } catch (InvalidArgumentException $e) {
             $_SESSION['error'] = $e->getMessage();

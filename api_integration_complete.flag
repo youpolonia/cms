@@ -1,5 +1,0 @@
-API integration completed successfully on 2025-06-04 00:37:00
-Federation endpoints:
-- POST /api/federation/share
-- GET /api/federation/sync 
-- POST /api/federation/resolve

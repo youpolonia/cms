@@ -1,6 +1,10 @@
 <?php
 define('CMS_ENTRY_POINT', true);
 require_once __DIR__ . '/../../config.php';
+
+// RBAC: Require admin access
+require_once __DIR__ . '/../includes/permissions.php';
+cms_require_admin_role();
 require_once CMS_ROOT . '/includes/controllers/auth/authcontroller.php';
 
 $authController = new AuthController($dbConnection);

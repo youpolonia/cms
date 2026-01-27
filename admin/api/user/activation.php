@@ -1,8 +1,19 @@
 <?php
 require_once __DIR__ . '/../../../includes/admin_header.php';
 require_once __DIR__ . '/../../../includes/security.php';
+require_once __DIR__ . '/../../../core/database.php';
 
 header('Content-Type: application/json');
+
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    http_response_code(405);
+    header('Allow: POST');
+    echo json_encode([
+        'success' => false,
+        'message' => 'Method not allowed'
+    ]);
+    exit;
+}
 
 try {
     // Verify CSRF token

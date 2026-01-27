@@ -1,6 +1,14 @@
 <?php
 if (!defined('DEV_MODE')) { require_once __DIR__ . '/../config.php'; }
+require_once __DIR__ . '/../includes/init.php'; // Must be before permissions check - starts session
 if (!defined('DEV_MODE') || DEV_MODE !== true) { http_response_code(403); exit; }
+// Start session before checking permissions
+require_once __DIR__ . '/../core/session_boot.php';
+cms_session_start('admin');
+// RBAC: Require admin access
+require_once __DIR__ . '/includes/permissions.php';
+cms_require_admin_role();
+
 require_once __DIR__ . '/includes/header.php';
 require_once __DIR__ . '/includes/navigation.php';
 ?>
@@ -39,8 +47,9 @@ require_once __DIR__ . '/includes/navigation.php';
       <p class="muted">Scheduler, maintenance and backup.</p>
       <div class="card-actions">
         <a class="btn primary" href="/admin/scheduler.php">Scheduler</a>
+        <a class="btn" href="/admin/settings/">Settings</a>
         <a class="btn" href="/admin/maintenance.php">Maintenance</a>
-        <a class="btn" href="/admin/backup.php">Backup</a>
+        <a class="btn" href="/admin/backup/">Backup</a>
         <a class="btn" href="/admin/logs/">Logs</a>
       </div>
     </div>
@@ -50,7 +59,7 @@ require_once __DIR__ . '/includes/navigation.php';
       <div class="card-actions">
         <a class="btn primary" href="/admin/menus.php">Menus</a>
         <a class="btn" href="/admin/widgets.php">Widgets</a>
-        <a class="btn" href="/admin/urls.php">URLs</a>
+        <a class="btn" href="/admin/urls/">URLs</a>
       </div>
     </div>
     <div class="card">

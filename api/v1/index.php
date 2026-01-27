@@ -6,7 +6,7 @@
 
 declare(strict_types=1);
 
-require_once __DIR__ . '/../../includes/api/router.php';
+// require_once __DIR__ . '/../../includes/api/router.php'; // DISABLED: File does not exist - router.php never implemented
 require_once __DIR__ . '/../../includes/api/authentication.php';
 require_once __DIR__ . '/../../includes/api/ratelimiter.php';
 require_once __DIR__ . '/../../includes/api/response.php';

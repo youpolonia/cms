@@ -1,0 +1,433 @@
+/**
+ * Theme Builder 3.0 Frontend CSS
+ * All 52 modules styling - THEME AWARE (uses CSS variables from layout)
+ * Variables --primary, --secondary, --background, --surface, --text, --text-muted, --border
+ * are defined in theme layout.php <style> tag
+ */
+
+/* RESET & BASE */
+.tb-page-wrapper { width: 100%; }
+.tb-section, .tb-row, .tb-column, .tb-module { box-sizing: border-box; }
+.tb-module * { box-sizing: border-box; }
+
+/* SECTIONS */
+.tb-section { position: relative; width: 100%; padding: 60px 0; }
+.tb-section-inner { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+.tb-section-fullwidth .tb-section-inner { max-width: 100%; padding: 0; }
+
+/* ROWS - FLEXBOX GRID */
+.tb-row { display: flex !important; flex-wrap: wrap; margin: 0 -15px; }
+.tb-row-align-start { justify-content: flex-start; }
+.tb-row-align-center { justify-content: center; }
+.tb-row-align-end { justify-content: flex-end; }
+.tb-row-align-between { justify-content: space-between; }
+.tb-row-valign-start { align-items: flex-start; }
+.tb-row-valign-center { align-items: center; }
+.tb-row-valign-end { align-items: flex-end; }
+.tb-row-valign-stretch { align-items: stretch; }
+
+/* COLUMNS */
+.tb-column { padding: 0 15px; min-height: 1px; flex: 1 1 0%; }
+.tb-col-100 { flex: 0 0 100%; max-width: 100%; }
+.tb-col-50 { flex: 0 0 50%; max-width: 50%; }
+.tb-col-33, .tb-col-33-33 { flex: 0 0 33.333%; max-width: 33.333%; }
+.tb-col-66, .tb-col-66-66 { flex: 0 0 66.666%; max-width: 66.666%; }
+.tb-col-25 { flex: 0 0 25%; max-width: 25%; }
+.tb-col-75 { flex: 0 0 75%; max-width: 75%; }
+.tb-col-20 { flex: 0 0 20%; max-width: 20%; }
+.tb-col-40 { flex: 0 0 40%; max-width: 40%; }
+.tb-col-60 { flex: 0 0 60%; max-width: 60%; }
+.tb-col-80 { flex: 0 0 80%; max-width: 80%; }
+
+/* MODULES BASE */
+.tb-module { margin-bottom: 20px; color: var(--text); }
+.tb-module:last-child { margin-bottom: 0; }
+
+/* 1. TEXT MODULE */
+.tb-module-text { line-height: 1.7; color: var(--text); }
+.tb-module-text p { margin: 0 0 1em; }
+.tb-module-text p:last-child { margin-bottom: 0; }
+.tb-module-text a { color: var(--primary); text-decoration: underline; }
+.tb-module-text ul, .tb-module-text ol { margin: 1em 0; padding-left: 1.5em; }
+
+/* 2. IMAGE MODULE */
+.tb-module-image { line-height: 0; }
+.tb-module-image img { display: block; max-width: 100%; height: auto; }
+.tb-module-image figcaption { line-height: 1.5; font-size: 0.875rem; color: var(--text-muted); margin-top: 8px; text-align: center; }
+
+/* 3. HEADING MODULE */
+.tb-module-heading h1, .tb-module-heading h2, .tb-module-heading h3,
+.tb-module-heading h4, .tb-module-heading h5, .tb-module-heading h6 { margin: 0; line-height: 1.3; color: var(--text); }
+
+/* 4. BUTTON MODULE */
+.tb-module-button { display: inline-block; }
+.tb-button { display: inline-flex; align-items: center; gap: 8px; padding: 14px 28px; border-radius: 8px; font-weight: 600; text-decoration: none; transition: all 0.2s ease; cursor: pointer; border: none; }
+.tb-button-primary { background: var(--primary); color: #fff; }
+.tb-button-secondary { background: var(--secondary); color: #fff; }
+.tb-button-outline { background: transparent; border: 2px solid var(--primary); color: var(--primary); }
+
+/* 5. DIVIDER MODULE */
+.tb-divider-solid { border-top: 1px solid var(--border); }
+.tb-divider-dashed { border-top: 2px dashed var(--border); }
+.tb-divider-dotted { border-top: 2px dotted var(--border); }
+
+/* 9. MAP MODULE */
+.tb-map-wrapper { position: relative; height: 400px; border-radius: 8px; overflow: hidden; }
+.tb-map-wrapper iframe { width: 100%; height: 100%; border: 0; }
+
+/* 13. ACCORDION MODULE */
+.tb-accordion { border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+.tb-accordion-item { border-bottom: 1px solid var(--border); }
+.tb-accordion-header { padding: 16px 20px; background: var(--surface); cursor: pointer; font-weight: 600; color: var(--text); }
+.tb-accordion-content { padding: 20px; background: var(--background); color: var(--text); }
+
+/* 14. TABS MODULE */
+.tb-tabs-nav { display: flex; border-bottom: 2px solid var(--border); }
+.tb-tabs-nav button { padding: 12px 24px; background: none; border: none; font-weight: 600; color: var(--text-muted); cursor: pointer; }
+.tb-tabs-nav button.active { color: var(--primary); border-bottom: 2px solid var(--primary); }
+.tb-tabs-content { padding: 24px 0; color: var(--text); }
+
+/* 15. TESTIMONIAL MODULE */
+.tb-testimonial { text-align: center; padding: 32px; color: var(--text); }
+.tb-testimonial-quote { font-size: 1.25rem; font-style: italic; line-height: 1.6; }
+.tb-testimonial-role { color: var(--text-muted); font-size: 0.875rem; }
+
+/* 16. COUNTER MODULE */
+.tb-counter-value { font-size: 3rem; font-weight: 700; color: var(--primary); }
+.tb-counter-label { margin-top: 8px; color: var(--text-muted); }
+
+/* 17. COUNTDOWN MODULE */
+.tb-countdown { display: flex; justify-content: center; gap: 24px; }
+.tb-countdown-value { font-size: 3rem; font-weight: 700; color: var(--text); }
+.tb-countdown-label { color: var(--text-muted); font-size: 0.875rem; text-transform: uppercase; }
+
+/* 18. PROGRESS MODULE */
+.tb-progress { background: var(--border); border-radius: 9999px; height: 12px; overflow: hidden; }
+.tb-progress-bar { height: 100%; background: var(--primary); border-radius: 9999px; }
+.tb-progress-label { display: flex; justify-content: space-between; margin-bottom: 8px; font-weight: 600; color: var(--text); }
+
+/* 19. PRICING MODULE */
+.tb-pricing { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 32px; text-align: center; color: var(--text); }
+.tb-pricing.featured { border-color: var(--primary); }
+.tb-pricing-price { font-size: 3rem; font-weight: 700; color: var(--text); }
+.tb-pricing-price span { font-size: 1rem; color: var(--text-muted); }
+.tb-pricing-features { list-style: none; padding: 0; margin: 0 0 24px; }
+.tb-pricing-features li { padding: 12px 0; border-bottom: 1px solid var(--border); color: var(--text); }
+
+/* 20. CTA MODULE */
+.tb-cta { background: linear-gradient(135deg, var(--primary), var(--secondary)); padding: 48px; border-radius: 16px; text-align: center; color: #fff; }
+
+/* 21. TEAM MODULE */
+.tb-team { display: grid; gap: 24px; }
+.tb-team-name { font-weight: 700; color: var(--text); }
+.tb-team-role { color: var(--text-muted); font-size: 0.875rem; }
+.tb-team-social a { color: var(--text-muted); font-size: 1.25rem; }
+
+/* 22. SOCIAL MODULE */
+.tb-social { display: flex; gap: 12px; }
+.tb-social a { display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; border-radius: 50%; background: var(--surface); color: var(--text); transition: all 0.2s; }
+.tb-social a:hover { background: var(--primary); color: #fff; }
+
+/* 23. MENU MODULE */
+.tb-menu { display: flex; gap: 24px; list-style: none; padding: 0; margin: 0; }
+.tb-menu-vertical { flex-direction: column; gap: 12px; }
+.tb-menu a { text-decoration: none; color: var(--text); font-weight: 500; transition: color 0.2s; }
+.tb-menu a:hover { color: var(--primary); }
+
+/* 24. LOGO MODULE */
+.tb-logo img { max-height: 60px; width: auto; }
+
+/* 25. SEARCH MODULE */
+.tb-search { display: flex; gap: 8px; }
+.tb-search input { flex: 1; padding: 12px 16px; border: 1px solid var(--border); border-radius: 8px; font-size: 1rem; background: var(--surface); color: var(--text); }
+.tb-search button { padding: 12px 24px; background: var(--primary); color: #fff; border: none; border-radius: 8px; cursor: pointer; }
+
+/* 26. FORM MODULE */
+.tb-form { display: flex; flex-direction: column; gap: 16px; }
+.tb-form-title { color: var(--text); margin: 0 0 16px; }
+.tb-form-label { display: block; margin-bottom: 6px; font-weight: 500; color: var(--text); }
+.tb-form-input { width: 100%; padding: 12px 16px; border: 1px solid var(--border); border-radius: 8px; font-size: 1rem; background: var(--surface); color: var(--text); }
+.tb-form-textarea { min-height: 120px; resize: vertical; }
+.tb-form-submit { padding: 14px 28px; background: var(--primary); color: #fff; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; }
+
+/* 27. CODE MODULE */
+.tb-code { background: #1e293b; color: #e2e8f0; padding: 24px; border-radius: 8px; overflow-x: auto; }
+.tb-code pre { margin: 0; font-family: 'Fira Code', monospace; font-size: 0.875rem; line-height: 1.6; }
+
+/* 28. QUOTE MODULE */
+.tb-quote { border-left: 4px solid var(--primary); padding: 24px 32px; background: var(--surface); border-radius: 0 8px 8px 0; }
+.tb-quote-text { font-size: 1.25rem; font-style: italic; margin: 0 0 16px; line-height: 1.6; color: var(--text); }
+.tb-quote-author { color: var(--text-muted); font-weight: 600; }
+
+/* 29. ALERT MODULE */
+.tb-alert { padding: 16px 20px; border-radius: 8px; display: flex; align-items: flex-start; gap: 12px; }
+.tb-alert-info { background: rgba(59,130,246,0.15); color: var(--primary); border: 1px solid var(--primary); }
+.tb-alert-success { background: rgba(16,185,129,0.15); color: #10b981; border: 1px solid #10b981; }
+.tb-alert-warning { background: rgba(245,158,11,0.15); color: #f59e0b; border: 1px solid #f59e0b; }
+.tb-alert-error { background: rgba(239,68,68,0.15); color: #ef4444; border: 1px solid #ef4444; }
+
+/* 30. BLOG MODULE */
+.tb-blog { display: grid; gap: 24px; }
+.tb-blog-cols-2 { grid-template-columns: repeat(2, 1fr); }
+.tb-blog-cols-3 { grid-template-columns: repeat(3, 1fr); }
+.tb-blog-post { background: var(--surface); border-radius: 12px; overflow: hidden; border: 1px solid var(--border); }
+.tb-blog-post-content { padding: 20px; }
+.tb-blog-post-title { font-size: 1.25rem; font-weight: 700; color: var(--text); }
+.tb-blog-post-title a { color: inherit; text-decoration: none; }
+.tb-blog-post-meta { font-size: 0.875rem; color: var(--text-muted); }
+.tb-blog-post-excerpt { color: var(--text-muted); line-height: 1.6; }
+
+/* 36. HERO MODULE */
+.tb-hero { min-height: 500px; display: flex; align-items: center; justify-content: center; text-align: center; padding: 80px 40px; background-size: cover; background-position: center; }
+.tb-hero-title { font-size: 3.5rem; font-weight: 700; margin: 0 0 16px; color: var(--text); }
+.tb-hero-subtitle { font-size: 1.25rem; margin: 0 0 32px; color: var(--text-muted); }
+
+/* 37. FEATURES MODULE */
+.tb-features { display: grid; gap: 32px; }
+.tb-features-cols-3 { grid-template-columns: repeat(3, 1fr); }
+.tb-feature { text-align: center; padding: 24px; }
+.tb-feature-icon { font-size: 48px; margin-bottom: 16px; color: var(--primary); }
+.tb-feature-title { font-size: 1.25rem; font-weight: 700; color: var(--text); }
+.tb-feature-text { color: var(--text-muted); line-height: 1.6; }
+
+/* 38. PORTFOLIO MODULE */
+.tb-portfolio { display: grid; gap: 24px; }
+.tb-portfolio-cols-3 { grid-template-columns: repeat(3, 1fr); }
+.tb-portfolio-item { position: relative; overflow: hidden; border-radius: 12px; }
+.tb-portfolio-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s; }
+.tb-portfolio-item:hover .tb-portfolio-overlay { opacity: 1; }
+.tb-portfolio-title { color: #fff; font-weight: 700; font-size: 1.25rem; }
+
+/* 39. FULLWIDTH MODULES */
+.tb-fullwidth-map { height: 450px; }
+.tb-fullwidth-map iframe { width: 100%; height: 100%; border: 0; }
+
+/* 40. SIDEBAR MODULE */
+.tb-sidebar { padding: 24px; background: var(--surface); border-radius: 12px; border: 1px solid var(--border); }
+
+/* PRODUCTS MODULE */
+.tb-products { display: grid; gap: 24px; }
+.tb-products-cols-3 { grid-template-columns: repeat(3, 1fr); }
+.tb-product { background: var(--surface); border-radius: 12px; overflow: hidden; border: 1px solid var(--border); }
+.tb-product-info { padding: 16px; text-align: center; }
+.tb-product-title { font-weight: 600; color: var(--text); }
+.tb-product-price { color: var(--primary); font-weight: 700; font-size: 1.25rem; }
+
+/* FILTER MODULE */
+.tb-filter-nav { display: flex; justify-content: center; gap: 12px; margin-bottom: 32px; flex-wrap: wrap; }
+.tb-filter-btn { padding: 8px 20px; border: 1px solid var(--border); background: var(--surface); border-radius: 9999px; cursor: pointer; font-weight: 500; color: var(--text); }
+.tb-filter-btn.active, .tb-filter-btn:hover { background: var(--primary); color: #fff; border-color: var(--primary); }
+
+/* SIGNUP MODULE */
+.tb-signup { background: var(--surface); padding: 48px; border-radius: 16px; text-align: center; border: 1px solid var(--border); }
+.tb-signup-title { font-size: 1.75rem; font-weight: 700; color: var(--text); }
+.tb-signup-subtitle { color: var(--text-muted); }
+.tb-signup-form input { padding: 14px 20px; border: 1px solid var(--border); border-radius: 8px; background: var(--background); color: var(--text); }
+.tb-signup-form button { padding: 14px 32px; background: var(--primary); color: #fff; border: none; border-radius: 8px; font-weight: 600; }
+
+/* NUMBER COUNTERS */
+.tb-number-counters { display: flex; justify-content: center; gap: 48px; text-align: center; }
+.tb-number-counter-value { font-size: 3rem; font-weight: 700; color: var(--primary); }
+.tb-number-counter-label { color: var(--text-muted); margin-top: 8px; }
+
+/* CIRCLE COUNTER */
+.tb-circle-counter-bg { fill: none; stroke: var(--border); stroke-width: 8; }
+.tb-circle-counter-progress { fill: none; stroke: var(--primary); stroke-width: 8; }
+.tb-circle-counter-value { font-size: 1.5rem; font-weight: 700; color: var(--text); }
+.tb-circle-counter-label { color: var(--text-muted); }
+
+/* FORM MODULE - COMPLETE STYLES */
+.tb-form-container { background: var(--surface); padding: 32px; border-radius: 12px; border: 1px solid var(--border); }
+.tb-form-stacked { display: flex; flex-direction: column; gap: 16px; }
+.tb-form-fields { display: flex; flex-direction: column; gap: 16px; }
+.tb-form-field { margin-bottom: 0; }
+.tb-form-field-text, .tb-form-field-email, .tb-form-field-textarea { width: 100%; }
+.tb-form-label { display: block; margin-bottom: 8px; font-weight: 500; color: var(--text); }
+.tb-form-required { color: #ef4444; margin-left: 2px; }
+.tb-form-input { width: 100%; padding: 12px 16px; border: 1px solid var(--border); border-radius: 8px; font-size: 1rem; background: var(--background); color: var(--text); }
+.tb-form-input::placeholder { color: var(--text-muted); }
+.tb-form-textarea { min-height: 120px; resize: vertical; }
+.tb-form-submit { width: 100%; padding: 14px 28px; border: none; border-radius: 8px; font-weight: 600; font-size: 1rem; cursor: pointer; transition: all 0.2s; }
+.tb-form-btn-primary { background: var(--primary); color: #fff; }
+.tb-form-btn-primary:hover { opacity: 0.9; }
+.tb-form-btn-secondary { background: var(--secondary); color: #fff; }
+.tb-form-btn-outline { background: transparent; border: 2px solid var(--primary); color: var(--primary); }
+
+/* QUOTE MODULE - COMPLETE STYLES */
+.tb-quote-default { border-left: 4px solid var(--primary); padding: 24px 32px; background: var(--surface); border-radius: 0 8px 8px 0; }
+.tb-quote-text { font-size: 1.25rem; font-style: italic; margin: 0; line-height: 1.6; color: var(--text); }
+.tb-quote-author { color: var(--text-muted); font-weight: 600; margin-top: 12px; }
+
+/* RESPONSIVE */
+@media (max-width: 1024px) {
+    .tb-col-33, .tb-col-25, .tb-col-20 { flex: 0 0 50%; max-width: 50%; }
+    .tb-col-66, .tb-col-75 { flex: 0 0 100%; max-width: 100%; }
+    .tb-hero { min-height: 400px; padding: 60px 24px; }
+    .tb-hero-title { font-size: 2.5rem; }
+}
+
+@media (max-width: 768px) {
+    .tb-section { padding: 40px 0; }
+    .tb-row { margin: 0 -10px; }
+    .tb-column { padding: 0 10px; flex: 0 0 100% !important; max-width: 100% !important; margin-bottom: 20px; }
+    .tb-column:last-child { margin-bottom: 0; }
+    .tb-gallery-cols-3, .tb-gallery-cols-4 { grid-template-columns: repeat(2, 1fr); }
+    .tb-blog-cols-3, .tb-blog-cols-4 { grid-template-columns: 1fr; }
+    .tb-team-cols-3, .tb-team-cols-4 { grid-template-columns: repeat(2, 1fr); }
+    .tb-portfolio-cols-3, .tb-portfolio-cols-4 { grid-template-columns: repeat(2, 1fr); }
+    .tb-features-cols-3, .tb-features-cols-4 { grid-template-columns: 1fr; }
+    .tb-products-cols-3, .tb-products-cols-4 { grid-template-columns: repeat(2, 1fr); }
+    .tb-hero { min-height: 350px; padding: 40px 20px; }
+    .tb-hero-title { font-size: 2rem; }
+    .tb-countdown { gap: 16px; }
+    .tb-countdown-value { font-size: 2rem; }
+    .tb-menu { flex-direction: column; gap: 12px; }
+    .tb-signup-form { flex-direction: column; }
+    .tb-number-counters { flex-direction: column; gap: 32px; }
+}
+
+@media (max-width: 480px) {
+    .tb-gallery-cols-2 { grid-template-columns: 1fr; }
+    .tb-team-cols-2 { grid-template-columns: 1fr; }
+    .tb-portfolio-cols-2 { grid-template-columns: 1fr; }
+    .tb-products-cols-2 { grid-template-columns: 1fr; }
+}
+
+/* ========================================
+   ANIMATION KEYFRAMES
+   Used by renderer for module animations
+   Renderer outputs: animation: fadeIn 500ms...
+   Editor outputs: animation: tb-fadeIn 500ms...
+   So we need BOTH naming conventions
+   ======================================== */
+
+/* Fade Animations - without prefix (renderer uses these) */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeInDown {
+    from { opacity: 0; transform: translateY(-30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeInLeft {
+    from { opacity: 0; transform: translateX(-30px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+@keyframes fadeInRight {
+    from { opacity: 0; transform: translateX(30px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+/* Slide Animations */
+@keyframes slideInUp {
+    from { transform: translateY(100%); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+@keyframes slideInDown {
+    from { transform: translateY(-100%); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+@keyframes slideInLeft {
+    from { transform: translateX(-100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+@keyframes slideInRight {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+/* Zoom Animations */
+@keyframes zoomIn {
+    from { opacity: 0; transform: scale(0.3); }
+    to { opacity: 1; transform: scale(1); }
+}
+@keyframes zoomOut {
+    from { opacity: 1; transform: scale(1); }
+    to { opacity: 0; transform: scale(0.3); }
+}
+@keyframes zoomInUp {
+    from { opacity: 0; transform: scale(0.3) translateY(100px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+}
+@keyframes zoomInDown {
+    from { opacity: 0; transform: scale(0.3) translateY(-100px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+/* Bounce Animations */
+@keyframes bounceIn {
+    0% { opacity: 0; transform: scale(0.3); }
+    50% { opacity: 1; transform: scale(1.05); }
+    70% { transform: scale(0.9); }
+    100% { transform: scale(1); }
+}
+@keyframes bounceInUp {
+    0% { opacity: 0; transform: translateY(100px); }
+    60% { opacity: 1; transform: translateY(-20px); }
+    80% { transform: translateY(10px); }
+    100% { transform: translateY(0); }
+}
+@keyframes bounceInDown {
+    0% { opacity: 0; transform: translateY(-100px); }
+    60% { opacity: 1; transform: translateY(20px); }
+    80% { transform: translateY(-10px); }
+    100% { transform: translateY(0); }
+}
+
+/* Flip Animations */
+@keyframes flipInX {
+    0% { opacity: 0; transform: perspective(400px) rotateX(90deg); }
+    40% { transform: perspective(400px) rotateX(-20deg); }
+    60% { opacity: 1; transform: perspective(400px) rotateX(10deg); }
+    80% { transform: perspective(400px) rotateX(-5deg); }
+    100% { transform: perspective(400px) rotateX(0deg); }
+}
+@keyframes flipInY {
+    0% { opacity: 0; transform: perspective(400px) rotateY(90deg); }
+    40% { transform: perspective(400px) rotateY(-20deg); }
+    60% { opacity: 1; transform: perspective(400px) rotateY(10deg); }
+    80% { transform: perspective(400px) rotateY(-5deg); }
+    100% { transform: perspective(400px) rotateY(0deg); }
+}
+
+/* Special Animations */
+@keyframes rollIn {
+    from { opacity: 0; transform: translateX(-100%) rotate(-120deg); }
+    to { opacity: 1; transform: translateX(0) rotate(0deg); }
+}
+@keyframes lightSpeedIn {
+    0% { opacity: 0; transform: translateX(100%) skewX(-30deg); }
+    60% { opacity: 1; transform: skewX(20deg); }
+    80% { transform: skewX(-5deg); }
+    100% { transform: skewX(0deg); }
+}
+@keyframes jackInTheBox {
+    0% { opacity: 0; transform: scale(0.1) rotate(30deg); transform-origin: center bottom; }
+    50% { transform: rotate(-10deg); }
+    70% { transform: rotate(3deg); }
+    100% { opacity: 1; transform: scale(1) rotate(0deg); }
+}
+
+/* ========================================
+   PREFIXED VERSIONS (tb-) for editor preview
+   Editor JS adds 'tb-' prefix when previewing
+   ======================================== */
+@keyframes tb-fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes tb-fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes tb-fadeInDown { from { opacity: 0; transform: translateY(-30px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes tb-fadeInLeft { from { opacity: 0; transform: translateX(-30px); } to { opacity: 1; transform: translateX(0); } }
+@keyframes tb-fadeInRight { from { opacity: 0; transform: translateX(30px); } to { opacity: 1; transform: translateX(0); } }
+@keyframes tb-slideInUp { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+@keyframes tb-slideInDown { from { transform: translateY(-100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+@keyframes tb-slideInLeft { from { transform: translateX(-100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+@keyframes tb-slideInRight { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+@keyframes tb-zoomIn { from { opacity: 0; transform: scale(0.3); } to { opacity: 1; transform: scale(1); } }
+@keyframes tb-zoomOut { from { opacity: 1; transform: scale(1); } to { opacity: 0; transform: scale(0.3); } }
+@keyframes tb-bounceIn { 0% { opacity: 0; transform: scale(0.3); } 50% { opacity: 1; transform: scale(1.05); } 70% { transform: scale(0.9); } 100% { transform: scale(1); } }
+@keyframes tb-flipInX { 0% { opacity: 0; transform: perspective(400px) rotateX(90deg); } 40% { transform: perspective(400px) rotateX(-20deg); } 60% { opacity: 1; transform: perspective(400px) rotateX(10deg); } 80% { transform: perspective(400px) rotateX(-5deg); } 100% { transform: perspective(400px) rotateX(0deg); } }
+@keyframes tb-flipInY { 0% { opacity: 0; transform: perspective(400px) rotateY(90deg); } 40% { transform: perspective(400px) rotateY(-20deg); } 60% { opacity: 1; transform: perspective(400px) rotateY(10deg); } 80% { transform: perspective(400px) rotateY(-5deg); } 100% { transform: perspective(400px) rotateY(0deg); } }

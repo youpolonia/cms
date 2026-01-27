@@ -1,10 +1,17 @@
 <?php
+declare(strict_types=1);
 require_once __DIR__ . '/../config.php';
+
+require_once __DIR__ . '/../core/session_boot.php';
+cms_session_start('admin');
+
+// RBAC: Require admin access
+require_once __DIR__ . '/includes/permissions.php';
+cms_require_admin_role();
 if (!defined('DEV_MODE') || DEV_MODE !== true) { http_response_code(403); exit; }
 require_once __DIR__ . '/../core/database.php';
-
-declare(strict_types=1);
 header('Content-Type: application/json');
+require_once __DIR__ . '/../includes/init.php'; // Session init
 require_once __DIR__.'/../core/database.php';
 require_once __DIR__.'/../services/authservice.php';
 

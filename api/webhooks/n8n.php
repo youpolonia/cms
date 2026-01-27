@@ -15,17 +15,12 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     die(json_encode(['error' => 'Method Not Allowed']));
 }
 
-// Debug environment and token validation
-$logMessage = date('Y-m-d H:i:s') . " - ENV: " . json_encode($_ENV) . "\n";
-$logMessage .= date('Y-m-d H:i:s') . " - SERVER: " . json_encode(array_filter($_SERVER, function($k) {
-    return strpos($k, 'HTTP_') === 0 || $k === 'REQUEST_METHOD';
-}, ARRAY_FILTER_USE_KEY)) . "\n";
-$logMessage .= date('Y-m-d H:i:s') . " - Received token: " . ($_SERVER['HTTP_X_N8N_TOKEN'] ?? 'NULL') . "\n";
-$logMessage .= date('Y-m-d H:i:s') . " - Expected token: " . (isset($_ENV['N8N_WEBHOOK_TOKEN']) ? '[set]' : 'NULL') . "\n";
-
-// Log to both error_log and file
-error_log($logMessage);
-file_put_contents(__DIR__ . '/../../logs/n8n_debug.log', $logMessage, FILE_APPEND);
+// Safe request logging (no credentials or sensitive data)
+$safeLogMessage = date('Y-m-d H:i:s') . " - Webhook request received" .
+    " | Method: " . ($_SERVER['REQUEST_METHOD'] ?? 'UNKNOWN') .
+    " | IP: " . ($_SERVER['REMOTE_ADDR'] ?? 'UNKNOWN') .
+    " | Token provided: " . (!empty($_SERVER['HTTP_X_N8N_TOKEN']) ? 'yes' : 'no') . "\n";
+file_put_contents(__DIR__ . '/../../logs/n8n_debug.log', $safeLogMessage, FILE_APPEND);
 
 // Validate token
 $providedToken = $_POST['N8N_WEBHOOK_TOKEN'] ?? $_SERVER['HTTP_X_N8N_TOKEN'] ?? null;

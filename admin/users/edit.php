@@ -43,7 +43,7 @@ $isPermissionRevalidation = isset($_GET['revalidate_permissions']);
 
 ?><h1>Edit User: <?php echo Sanitizer::text($user['username']); ?></h1>
 <form action="<?php echo APP_URL; ?>/admin/users/update/<?php echo $user['id']; ?>" method="POST">
-    <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
+    <?php csrf_field('admin'); ?>
     <div class="form-group">
         <label for="username">Username:</label>
         <input type="text" id="username" name="username" class="form-control" value="<?php echo Sanitizer::text($user['username']); ?>"

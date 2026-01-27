@@ -4,7 +4,7 @@ namespace CMS\PageBuilder;
 use CMS\AI\WorkerMonitoringService;
 
 class AIContentService {
-    const CONTENT_MODEL = 'gpt-4-turbo';
+    const CONTENT_MODEL = 'gpt-4.1';
     const MAX_TOKENS = 1000;
     const RATE_LIMIT = 5; // Requests per minute
     

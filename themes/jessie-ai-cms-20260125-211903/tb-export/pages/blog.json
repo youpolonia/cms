@@ -1,0 +1,380 @@
+{
+    "type": "page",
+    "name": "Blog",
+    "slug": "blog",
+    "sections": [
+        {
+            "id": "section_22_84a3",
+            "name": "Section",
+            "design": [],
+            "rows": [
+                {
+                    "id": "row_8_83cc",
+                    "columns": [
+                        {
+                            "id": "col_9_83cd",
+                            "width": "100%",
+                            "modules": [
+                                {
+                                    "type": "hero",
+                                    "content": {
+                                        "heading": "Boost Your Productivity with AI Workflows",
+                                        "subheading": "",
+                                        "text": "Transform your content strategy with our theme builder and elevate your SEO game with cutting-edge AI technology.",
+                                        "button_text": "Get Started",
+                                        "button_url": "#newsletter",
+                                        "secondary_button_text": "",
+                                        "secondary_button_url": "",
+                                        "background_image": "",
+                                        "video_url": ""
+                                    },
+                                    "design": {
+                                        "height": "600px",
+                                        "min_height": "400px",
+                                        "background_color": "#1a1a2e",
+                                        "overlay_color": "rgba(0,0,0,0.5)",
+                                        "text_color": "#ffffff",
+                                        "text_align": "center",
+                                        "vertical_align": "center",
+                                        "content_width": "800px",
+                                        "parallax": false
+                                    },
+                                    "advanced": {
+                                        "css_class": "section section-hero",
+                                        "css_id": ""
+                                    },
+                                    "id": "mod_1_81ee"
+                                },
+                                {
+                                    "type": "image",
+                                    "content": {
+                                        "src": "PLACEHOLDER:featured-post",
+                                        "alt": "Featured Blog Post",
+                                        "title": "",
+                                        "link": ""
+                                    },
+                                    "design": {
+                                        "width": "100%",
+                                        "height": "auto",
+                                        "max_width": "100%",
+                                        "border_radius": "12px",
+                                        "object_fit": "cover",
+                                        "box_shadow": "none"
+                                    },
+                                    "advanced": {
+                                        "css_class": "",
+                                        "css_id": "",
+                                        "lazy_load": false
+                                    },
+                                    "id": "mod_2_8292"
+                                },
+                                {
+                                    "type": "heading",
+                                    "content": {
+                                        "text": "Unleash the Power of AI in Your Marketing Strategy",
+                                        "level": "h2"
+                                    },
+                                    "design": {
+                                        "font_size": "32px",
+                                        "font_weight": "700",
+                                        "text_color": "var(--color-text)",
+                                        "text_align": "left",
+                                        "line_height": "1.3",
+                                        "letter_spacing": "0",
+                                        "text_transform": "none",
+                                        "margin_bottom": "20px",
+                                        "font_family": "'Inter', sans-serif",
+                                        "margin_top": "15px"
+                                    },
+                                    "advanced": {
+                                        "css_class": "",
+                                        "css_id": ""
+                                    },
+                                    "id": "mod_3_82ad"
+                                },
+                                {
+                                    "type": "text",
+                                    "content": {
+                                        "text": "Discover how Jessie AI CMS can streamline your content creation process and enhance your SEO performance."
+                                    },
+                                    "design": {
+                                        "font_size": "18px",
+                                        "line_height": "1.6",
+                                        "text_color": "var(--color-text)",
+                                        "text_align": "left",
+                                        "font_weight": "400",
+                                        "font_family": "'Inter', sans-serif"
+                                    },
+                                    "advanced": {
+                                        "css_class": "",
+                                        "css_id": ""
+                                    },
+                                    "id": "mod_4_82c8"
+                                },
+                                {
+                                    "type": "button",
+                                    "content": {
+                                        "text": "Read More",
+                                        "url": "#featured-post",
+                                        "target": "_self",
+                                        "icon": ""
+                                    },
+                                    "design": {
+                                        "background_color": "#0073e6",
+                                        "text_color": "#ffffff",
+                                        "border_radius": "8px",
+                                        "padding": "12px 24px",
+                                        "font_size": "16px",
+                                        "font_weight": "600",
+                                        "border": "none",
+                                        "hover_background": "#005bb5",
+                                        "hover_text_color": "#ffffff"
+                                    },
+                                    "advanced": {
+                                        "css_class": "btn btn-secondary",
+                                        "css_id": ""
+                                    },
+                                    "id": "mod_5_8302"
+                                },
+                                {
+                                    "type": "gallery",
+                                    "content": {
+                                        "images": [
+                                            {
+                                                "src": "PLACEHOLDER:post-1",
+                                                "alt": "Blog Post 1",
+                                                "title": "Blog Post 1",
+                                                "link": ""
+                                            },
+                                            {
+                                                "src": "PLACEHOLDER:post-2",
+                                                "alt": "Blog Post 2",
+                                                "title": "Blog Post 2",
+                                                "link": ""
+                                            },
+                                            {
+                                                "src": "PLACEHOLDER:post-3",
+                                                "alt": "Blog Post 3",
+                                                "title": "Blog Post 3",
+                                                "link": ""
+                                            }
+                                        ],
+                                        "lightbox": false
+                                    },
+                                    "design": {
+                                        "columns": 3,
+                                        "columns_tablet": 2,
+                                        "columns_mobile": 1,
+                                        "gap": "15px",
+                                        "border_radius": "4px",
+                                        "hover_effect": "zoom"
+                                    },
+                                    "advanced": {
+                                        "css_class": "section section-posts-grid",
+                                        "css_id": ""
+                                    },
+                                    "id": "mod_6_832c"
+                                },
+                                {
+                                    "type": "heading",
+                                    "content": {
+                                        "text": "Explore Categories",
+                                        "level": "h3"
+                                    },
+                                    "design": {
+                                        "font_size": "28px",
+                                        "font_weight": "700",
+                                        "text_color": "var(--color-text)",
+                                        "text_align": "left",
+                                        "line_height": "1.3",
+                                        "letter_spacing": "0",
+                                        "text_transform": "none",
+                                        "margin_bottom": "20px",
+                                        "font_family": "'Inter', sans-serif"
+                                    },
+                                    "advanced": {
+                                        "css_class": "",
+                                        "css_id": ""
+                                    },
+                                    "id": "mod_7_83ba"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "id": "row_18_8476",
+                    "columns": [
+                        {
+                            "id": "col_11_8408",
+                            "width": "25%",
+                            "modules": [
+                                {
+                                    "type": "heading",
+                                    "content": {
+                                        "text": "AI Workflows",
+                                        "level": "h4"
+                                    },
+                                    "design": {
+                                        "font_size": "22px",
+                                        "font_weight": "700",
+                                        "text_color": "var(--color-text)",
+                                        "text_align": "left",
+                                        "line_height": "1.3",
+                                        "letter_spacing": "0",
+                                        "text_transform": "none",
+                                        "margin_bottom": "20px",
+                                        "font_family": "'Inter', sans-serif"
+                                    },
+                                    "advanced": {
+                                        "css_class": "",
+                                        "css_id": ""
+                                    },
+                                    "id": "mod_10_8405"
+                                }
+                            ]
+                        },
+                        {
+                            "id": "col_13_8433",
+                            "width": "25%",
+                            "modules": [
+                                {
+                                    "type": "heading",
+                                    "content": {
+                                        "text": "Content Strategy",
+                                        "level": "h4"
+                                    },
+                                    "design": {
+                                        "font_size": "22px",
+                                        "font_weight": "700",
+                                        "text_color": "var(--color-text)",
+                                        "text_align": "left",
+                                        "line_height": "1.3",
+                                        "letter_spacing": "0",
+                                        "text_transform": "none",
+                                        "margin_bottom": "20px",
+                                        "font_family": "'Inter', sans-serif"
+                                    },
+                                    "advanced": {
+                                        "css_class": "",
+                                        "css_id": ""
+                                    },
+                                    "id": "mod_12_8432"
+                                }
+                            ]
+                        },
+                        {
+                            "id": "col_15_8455",
+                            "width": "25%",
+                            "modules": [
+                                {
+                                    "type": "heading",
+                                    "content": {
+                                        "text": "SEO Tips",
+                                        "level": "h4"
+                                    },
+                                    "design": {
+                                        "font_size": "22px",
+                                        "font_weight": "700",
+                                        "text_color": "var(--color-text)",
+                                        "text_align": "left",
+                                        "line_height": "1.3",
+                                        "letter_spacing": "0",
+                                        "text_transform": "none",
+                                        "margin_bottom": "20px",
+                                        "font_family": "'Inter', sans-serif"
+                                    },
+                                    "advanced": {
+                                        "css_class": "",
+                                        "css_id": ""
+                                    },
+                                    "id": "mod_14_8454"
+                                }
+                            ]
+                        },
+                        {
+                            "id": "col_17_8475",
+                            "width": "25%",
+                            "modules": [
+                                {
+                                    "type": "heading",
+                                    "content": {
+                                        "text": "N8N Automation",
+                                        "level": "h4"
+                                    },
+                                    "design": {
+                                        "font_size": "22px",
+                                        "font_weight": "700",
+                                        "text_color": "var(--color-text)",
+                                        "text_align": "left",
+                                        "line_height": "1.3",
+                                        "letter_spacing": "0",
+                                        "text_transform": "none",
+                                        "margin_bottom": "20px",
+                                        "font_family": "'Inter', sans-serif"
+                                    },
+                                    "advanced": {
+                                        "css_class": "",
+                                        "css_id": ""
+                                    },
+                                    "id": "mod_16_8474"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "id": "row_20_84a1",
+                    "columns": [
+                        {
+                            "id": "col_21_84a2",
+                            "width": "100%",
+                            "modules": [
+                                {
+                                    "type": "form",
+                                    "content": {
+                                        "title": "Subscribe to Our Newsletter",
+                                        "fields": [
+                                            {
+                                                "type": "email",
+                                                "name": "",
+                                                "label": "",
+                                                "placeholder": "Enter your email",
+                                                "required": true,
+                                                "options": []
+                                            }
+                                        ],
+                                        "submit_text": "Subscribe",
+                                        "action": "#",
+                                        "method": "POST",
+                                        "success_message": "Thank you for your submission!",
+                                        "error_message": "Please check your input and try again."
+                                    },
+                                    "design": {
+                                        "style": "default",
+                                        "label_position": "top",
+                                        "field_background": "#ffffff",
+                                        "field_border": "1px solid #ddd",
+                                        "field_border_radius": "4px",
+                                        "button_style": "filled"
+                                    },
+                                    "advanced": {
+                                        "css_class": "section section-newsletter",
+                                        "css_id": "newsletter"
+                                    },
+                                    "id": "mod_19_849f"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "meta": {
+        "title": "Blog",
+        "description": "",
+        "keywords": ""
+    },
+    "design_system": "modern"
+}

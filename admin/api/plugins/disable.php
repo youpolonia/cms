@@ -1,7 +1,23 @@
 <?php
+define('CMS_ROOT', dirname(__DIR__, 3));
+require_once CMS_ROOT . '/config.php';
+require_once CMS_ROOT . '/core/session_boot.php';
+cms_session_start('admin');
+require_once CMS_ROOT . '/core/auth.php';
+authenticateAdmin();
+
 require_once __DIR__ . '/../../../includes/init.php';
 require_once __DIR__ . '/../middleware/csrf.php';
 header('Content-Type: application/json');
+
+// Method guard: POST only
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    http_response_code(405);
+    header('Allow: POST');
+    echo json_encode(['success' => false, 'message' => 'Method not allowed']);
+    exit;
+}
+
 verifyCSRFToken();
 if (!isset($_SERVER['HTTP_X_REQUESTED_WITH']) || strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) !== 'xmlhttprequest') {
     http_response_code(403);

@@ -1,0 +1,68 @@
+{
+    "name": "Blank Canvas",
+    "description": "Minimal blank theme for full Theme Builder control. Build everything from scratch.",
+    "version": "1.0.0",
+    "author": "Jessie AI-CMS",
+    "supports": {
+        "blank-canvas": true,
+        "theme-builder": true,
+        "custom-header": true,
+        "custom-footer": true,
+        "custom-colors": true
+    },
+    "options": {
+        "show_header": false,
+        "show_footer": false,
+        "body_background": "#ffffff",
+        "preload_fonts": false
+    },
+    "colors": {
+        "primary": "#0ea5e9",
+        "secondary": "#06b6d4",
+        "accent": "#f59e0b",
+        "background": "#0c1222",
+        "surface": "#1e293b",
+        "text": "#f1f5f9",
+        "text_muted": "#94a3b8",
+        "border": "#334155",
+        "success": "#10b981",
+        "warning": "#f59e0b",
+        "error": "#ef4444"
+    },
+    "typography": {
+        "fontFamily": "Inter",
+        "headingFont": "Inter",
+        "baseFontSize": "16",
+        "lineHeight": "1.6",
+        "h1Size": "3",
+        "h2Size": "2.25",
+        "h3Size": "1.5",
+        "fontWeight": "400",
+        "headingWeight": "700"
+    },
+    "header": {
+        "background": "transparent",
+        "sticky": true,
+        "blur": true,
+        "height": "72",
+        "logoSize": "32"
+    },
+    "buttons": {
+        "borderRadius": "8",
+        "paddingX": "24",
+        "paddingY": "12",
+        "fontWeight": "600",
+        "uppercase": false,
+        "shadow": true
+    },
+    "layout": {
+        "containerWidth": "1200",
+        "sectionSpacing": "100",
+        "borderRadius": "12"
+    },
+    "effects": {
+        "shadowStrength": "20",
+        "hoverScale": "1.02",
+        "transitionSpeed": "200"
+    }
+}

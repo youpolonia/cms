@@ -13,7 +13,7 @@ final class SuggestionEngine
 
     public function __construct(
         private string $apiKey,
-        private string $model = 'gpt-3.5-turbo'
+        private string $model = 'gpt-4.1-mini'
     ) {
         $this->validateApiKey($apiKey);
     }

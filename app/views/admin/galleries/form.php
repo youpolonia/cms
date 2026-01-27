@@ -1,0 +1,429 @@
+<?php
+/**
+ * Gallery Form - Modern Dark Theme
+ */
+$title = $gallery ? 'Edit Gallery' : 'New Gallery';
+$isEdit = $gallery !== null;
+ob_start();
+?>
+
+<div class="page-header">
+    <div class="page-header-content">
+        <a href="/admin/galleries" class="back-link">← Back to Galleries</a>
+        <h1><?= $isEdit ? '✏️ Edit Gallery' : '➕ New Gallery' ?></h1>
+        <p class="page-subtitle"><?= $isEdit ? 'Update gallery details' : 'Create a new photo gallery' ?></p>
+    </div>
+</div>
+
+<?php if (!empty($success)): ?>
+    <div class="alert alert-success"><?= esc($success) ?></div>
+<?php endif; ?>
+
+<?php if (!empty($error)): ?>
+    <div class="alert alert-error"><?= esc($error) ?></div>
+<?php endif; ?>
+
+<form method="post" action="<?= $isEdit ? '/admin/galleries/' . (int)$gallery['id'] : '/admin/galleries/' ?>">
+    <?= csrf_field() ?>
+
+    <div class="form-layout">
+        <!-- Main Settings -->
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">🖼️ Gallery Details</h2>
+            </div>
+            <div class="card-body">
+                <div class="form-group">
+                    <label for="name">Gallery Name <span class="required">*</span></label>
+                    <input type="text" id="name" name="name" required 
+                           value="<?= esc($gallery['name'] ?? '') ?>" 
+                           placeholder="e.g., Summer Vacation 2025, Product Photos"
+                           class="form-control">
+                </div>
+
+                <div class="form-group">
+                    <label for="slug">URL Slug</label>
+                    <div class="input-with-prefix">
+                        <span class="input-prefix">/gallery/</span>
+                        <input type="text" id="slug" name="slug" 
+                               value="<?= esc($gallery['slug'] ?? '') ?>" 
+                               placeholder="auto-generated"
+                               class="form-control">
+                    </div>
+                    <p class="form-hint">Leave empty to auto-generate from name</p>
+                </div>
+
+                <div class="form-group">
+                    <label for="description">Description</label>
+                    <textarea id="description" name="description" rows="3" 
+                              placeholder="Brief description of this gallery..."
+                              class="form-control"><?= esc($gallery['description'] ?? '') ?></textarea>
+                    <p class="form-hint">Shown on gallery page and SEO</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Settings -->
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">⚙️ Settings</h2>
+            </div>
+            <div class="card-body">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="sort_order">Sort Order</label>
+                        <input type="number" id="sort_order" name="sort_order" 
+                               value="<?= (int)($gallery['sort_order'] ?? 0) ?>" 
+                               min="0" step="1"
+                               class="form-control">
+                        <p class="form-hint">Lower numbers appear first</p>
+                    </div>
+
+                    <div class="form-group visibility-toggle">
+                        <label>Visibility</label>
+                        <div class="toggle-options">
+                            <label class="toggle-option <?= ($gallery['is_public'] ?? 1) ? 'active' : '' ?>">
+                                <input type="radio" name="is_public" value="1" <?= ($gallery['is_public'] ?? 1) ? 'checked' : '' ?>>
+                                <span class="toggle-icon">🌐</span>
+                                <span class="toggle-text">Public</span>
+                            </label>
+                            <label class="toggle-option <?= !($gallery['is_public'] ?? 1) ? 'active' : '' ?>">
+                                <input type="radio" name="is_public" value="0" <?= !($gallery['is_public'] ?? 1) ? 'checked' : '' ?>>
+                                <span class="toggle-icon">🔒</span>
+                                <span class="toggle-text">Private</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <?php if ($isEdit): ?>
+        <!-- Quick Stats (Edit only) -->
+        <div class="card info-card">
+            <div class="card-header">
+                <h2 class="card-title">ℹ️ Information</h2>
+            </div>
+            <div class="card-body">
+                <div class="info-grid">
+                    <div class="info-item">
+                        <span class="info-label">ID</span>
+                        <span class="info-value">#<?= (int)$gallery['id'] ?></span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Images</span>
+                        <span class="info-value"><?= (int)($gallery['image_count'] ?? 0) ?></span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Created</span>
+                        <span class="info-value"><?= date('M j, Y', strtotime($gallery['created_at'])) ?></span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Updated</span>
+                        <span class="info-value"><?= date('M j, Y g:i A', strtotime($gallery['updated_at'])) ?></span>
+                    </div>
+                </div>
+                <a href="/admin/galleries/<?= (int)$gallery['id'] ?>/images" class="btn btn-secondary btn-block">
+                    📷 Manage Images
+                </a>
+            </div>
+        </div>
+        <?php endif; ?>
+    </div>
+
+    <!-- Form Actions -->
+    <div class="form-actions-bar">
+        <a href="/admin/galleries" class="btn btn-secondary">Cancel</a>
+        <button type="submit" class="btn btn-primary btn-lg">
+            <?= $isEdit ? '💾 Save Changes' : '✨ Create Gallery' ?>
+        </button>
+    </div>
+</form>
+
+<style>
+/* Page Header */
+.page-header {
+    margin-bottom: 1.5rem;
+}
+.back-link {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    text-decoration: none;
+    display: inline-block;
+    margin-bottom: 0.5rem;
+}
+.back-link:hover {
+    color: var(--accent-color);
+}
+.page-header h1 {
+    font-size: 1.75rem;
+    margin: 0 0 0.25rem 0;
+}
+.page-subtitle {
+    color: var(--text-muted);
+    margin: 0;
+}
+
+/* Alerts */
+.alert {
+    padding: 1rem 1.25rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+    font-weight: 500;
+}
+.alert-success {
+    background: rgba(34, 197, 94, 0.15);
+    border: 1px solid rgba(34, 197, 94, 0.3);
+    color: #22c55e;
+}
+.alert-error {
+    background: rgba(239, 68, 68, 0.15);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    color: #ef4444;
+}
+
+/* Form Layout */
+.form-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    max-width: 700px;
+}
+
+/* Card */
+.card {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    overflow: hidden;
+}
+.card-header {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+}
+.card-title {
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 0;
+}
+.card-body {
+    padding: 1.5rem;
+}
+
+/* Form Elements */
+.form-group {
+    margin-bottom: 1.25rem;
+}
+.form-group:last-child {
+    margin-bottom: 0;
+}
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: var(--text-primary);
+}
+.required {
+    color: #ef4444;
+}
+.form-control {
+    width: 100%;
+    padding: 0.625rem 0.875rem;
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    color: var(--text-primary);
+    font-size: 0.9375rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+.form-control:focus {
+    outline: none;
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+}
+textarea.form-control {
+    resize: vertical;
+    min-height: 80px;
+}
+.form-hint {
+    font-size: 0.8125rem;
+    color: var(--text-muted);
+    margin: 0.375rem 0 0 0;
+}
+
+/* Input with prefix */
+.input-with-prefix {
+    display: flex;
+    align-items: center;
+}
+.input-prefix {
+    padding: 0.625rem 0.875rem;
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-right: none;
+    border-radius: 8px 0 0 8px;
+    color: var(--text-muted);
+    font-size: 0.875rem;
+    white-space: nowrap;
+}
+.input-with-prefix .form-control {
+    border-radius: 0 8px 8px 0;
+}
+
+/* Form Row */
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+}
+
+/* Toggle Options */
+.toggle-options {
+    display: flex;
+    gap: 0.75rem;
+}
+.toggle-option {
+    flex: 1;
+    padding: 1rem;
+    background: var(--bg-primary);
+    border: 2px solid var(--border-color);
+    border-radius: 10px;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.2s;
+}
+.toggle-option input {
+    display: none;
+}
+.toggle-option.active,
+.toggle-option:has(input:checked) {
+    border-color: var(--accent-color);
+    background: rgba(59, 130, 246, 0.1);
+}
+.toggle-icon {
+    display: block;
+    font-size: 1.5rem;
+    margin-bottom: 0.25rem;
+}
+.toggle-text {
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+/* Info Card */
+.info-card .card-body {
+    padding: 1rem 1.5rem;
+}
+.info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+.info-item {
+    display: flex;
+    flex-direction: column;
+}
+.info-label {
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+.info-value {
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-top: 0.25rem;
+}
+
+/* Buttons */
+.btn {
+    padding: 0.625rem 1.25rem;
+    border-radius: 8px;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.2s;
+    border: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+.btn-primary {
+    background: var(--accent-color);
+    color: white;
+}
+.btn-primary:hover {
+    background: #2563eb;
+}
+.btn-secondary {
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+}
+.btn-secondary:hover {
+    background: var(--bg-primary);
+}
+.btn-lg {
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+}
+.btn-block {
+    width: 100%;
+}
+
+/* Form Actions Bar */
+.form-actions-bar {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border-color);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+    .info-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+</style>
+
+<script>
+// Auto-generate slug from name
+const nameInput = document.getElementById('name');
+const slugInput = document.getElementById('slug');
+
+nameInput?.addEventListener('input', function() {
+    if (!slugInput.dataset.manual) {
+        const slug = this.value
+            .toLowerCase()
+            .replace(/[^a-z0-9\s-]/g, '')
+            .replace(/[\s_]+/g, '-')
+            .replace(/-+/g, '-')
+            .replace(/^-|-$/g, '');
+        slugInput.value = slug;
+    }
+});
+
+slugInput?.addEventListener('input', function() {
+    this.dataset.manual = 'true';
+});
+
+// Toggle option active state
+document.querySelectorAll('.toggle-option input').forEach(input => {
+    input.addEventListener('change', function() {
+        document.querySelectorAll('.toggle-option').forEach(opt => opt.classList.remove('active'));
+        this.closest('.toggle-option').classList.add('active');
+    });
+});
+</script>
+
+<?php
+$content = ob_get_clean();
+require CMS_APP . '/views/admin/layouts/topbar.php';

@@ -1,11 +1,29 @@
 <?php
-require_once __DIR__ . '/../../core/csrf.php';
 require_once __DIR__ . '/../../config.php';
+if (!defined('DEV_MODE') || DEV_MODE !== true) { http_response_code(403); exit; }
+// Start session before checking permissions
+require_once __DIR__ . '/../../core/session_boot.php';
+cms_session_start('admin');
+require_once __DIR__ . '/../../core/csrf.php';
+csrf_boot('admin');
+// RBAC: Require admin access
+require_once __DIR__ . '/../includes/permissions.php';
+cms_require_admin_role();
 require_once __DIR__ . '/../../includes/security.php';
 verifyAdminAccess();
 
 require_once __DIR__ . '/../includes/admin_header.php';
 require_once __DIR__ . '/../../core/database.php';
+
+// Fetch all widgets for listing
+$widgets = [];
+try {
+    $db = \core\Database::connection();
+    $stmt = $db->query("SELECT * FROM widgets ORDER BY id DESC");
+    $widgets = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    error_log('Widget list fetch error: ' . $e->getMessage());
+}
 
 // Handle form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['csrf_token'])) {
@@ -97,7 +115,8 @@ if (isset($_GET['success'])) {
             <tr>
                 <th>ID</th>
                 <th>Name</th>
-                <th>Description</th>
+                <th>Type</th>
+                <th>Area</th>
                 <th>Status</th>
                 <th>Actions</th>
             </tr>
@@ -105,14 +124,15 @@ if (isset($_GET['success'])) {
         <tbody>
             <?php foreach ($widgets as $widget): ?>
                 <tr>
-                    <td><?= htmlspecialchars($widget['id']) ?></td>
-                    <td><?= htmlspecialchars($widget['name']) ?></td>
-                    <td><?= htmlspecialchars($widget['description'] ?? 'N/A') ?></td>
-                    <td><span class="badge bg-<?= $widget['active'] ? 'success' : 'secondary' ?>">
-                        <?= $widget['active'] ? 'Active' : 'Inactive' 
-?>                    </span></td>
+                    <td><?= htmlspecialchars($widget['id'] ?? '') ?></td>
+                    <td><?= htmlspecialchars($widget['name'] ?? $widget['title'] ?? 'N/A') ?></td>
+                    <td><?= htmlspecialchars($widget['type'] ?? 'N/A') ?></td>
+                    <td><?= htmlspecialchars($widget['area'] ?? 'N/A') ?></td>
+                    <td><span class="badge bg-<?= ($widget['is_active'] ?? $widget['status'] ?? 0) ? 'success' : 'secondary' ?>">
+                        <?= ($widget['is_active'] ?? $widget['status'] ?? 0) ? 'Active' : 'Inactive' ?>
+                    </span></td>
                     <td>
-                        <a href="?action=settings&id=<?= $widget['id'] ?>" class="btn btn-sm btn-primary">Settings</a>
+                        <a href="?id=<?= $widget['id'] ?>" class="btn btn-sm btn-primary">Edit</a>
                     </td>
                 </tr>
             <?php endforeach; ?>

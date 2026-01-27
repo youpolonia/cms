@@ -6,7 +6,7 @@ namespace Includes\Content;
 
 use PDO;
 use PDOException;
-use JsonSchema\Validator;
+// Pure PHP JSON Schema validation - no external dependencies
 use RuntimeException;
 
 /**
@@ -92,9 +92,10 @@ class ContentTypeManager
 
     /**
      * Validates content data against a given content type's schema.
+     * Pure PHP implementation - no external dependencies.
      *
      * @param string $contentTypeName The name of the content type.
-     * @param object|array $contentData The content data to validate (as an object or associative array).
+     * @param object|array $contentData The content data to validate.
      * @return array Returns an array of validation errors. Empty if valid.
      */
     public function validateContent(string $contentTypeName, $contentData): array
@@ -105,27 +106,148 @@ class ContentTypeManager
             return [['property' => '', 'message' => "Content type '{$contentTypeName}' definition not found."]];
         }
 
-        // Ensure $contentData is an object for the validator, as it often expects objects.
-        // If it's an array, convert it.
-        if (is_array($contentData)) {
-            $contentData = json_decode(json_encode($contentData));
+        // Convert to array for easier handling
+        if (is_object($contentData)) {
+            $contentData = json_decode(json_encode($contentData), true);
         }
 
-        $validator = new Validator();
-        $validator->validate($contentData, (object)$schema); // Schema should also be an object
+        return $this->validateAgainstSchema($contentData, $schema, '');
+    }
 
-        if ($validator->isValid()) {
-            return [];
-        }
-
+    /**
+     * Pure PHP JSON Schema validator.
+     * Supports: type, required, properties, minLength, maxLength, minimum, maximum, enum
+     *
+     * @param mixed $data The data to validate.
+     * @param array $schema The schema to validate against.
+     * @param string $path Current property path for error messages.
+     * @return array Validation errors.
+     */
+    private function validateAgainstSchema($data, array $schema, string $path): array
+    {
         $errors = [];
-        foreach ($validator->getErrors() as $error) {
-            $errors[] = [
-                'property' => $error['property'],
-                'message' => $error['message']
-            ];
+
+        // Type validation
+        if (isset($schema['type'])) {
+            $typeError = $this->validateType($data, $schema['type'], $path);
+            if ($typeError) {
+                $errors[] = $typeError;
+                return $errors; // Stop if type mismatch
+            }
         }
+
+        // Required fields (for objects)
+        if (isset($schema['required']) && is_array($schema['required']) && is_array($data)) {
+            foreach ($schema['required'] as $requiredField) {
+                if (!array_key_exists($requiredField, $data)) {
+                    $errors[] = [
+                        'property' => $path ? "{$path}.{$requiredField}" : $requiredField,
+                        'message' => "Required property '{$requiredField}' is missing."
+                    ];
+                }
+            }
+        }
+
+        // Properties validation (for objects)
+        if (isset($schema['properties']) && is_array($schema['properties']) && is_array($data)) {
+            foreach ($schema['properties'] as $propName => $propSchema) {
+                if (array_key_exists($propName, $data)) {
+                    $propPath = $path ? "{$path}.{$propName}" : $propName;
+                    $propErrors = $this->validateAgainstSchema($data[$propName], $propSchema, $propPath);
+                    $errors = array_merge($errors, $propErrors);
+                }
+            }
+        }
+
+        // String validations
+        if (is_string($data)) {
+            if (isset($schema['minLength']) && strlen($data) < $schema['minLength']) {
+                $errors[] = [
+                    'property' => $path,
+                    'message' => "String is too short. Minimum length: {$schema['minLength']}."
+                ];
+            }
+            if (isset($schema['maxLength']) && strlen($data) > $schema['maxLength']) {
+                $errors[] = [
+                    'property' => $path,
+                    'message' => "String is too long. Maximum length: {$schema['maxLength']}."
+                ];
+            }
+        }
+
+        // Number validations
+        if (is_numeric($data)) {
+            if (isset($schema['minimum']) && $data < $schema['minimum']) {
+                $errors[] = [
+                    'property' => $path,
+                    'message' => "Value is too small. Minimum: {$schema['minimum']}."
+                ];
+            }
+            if (isset($schema['maximum']) && $data > $schema['maximum']) {
+                $errors[] = [
+                    'property' => $path,
+                    'message' => "Value is too large. Maximum: {$schema['maximum']}."
+                ];
+            }
+        }
+
+        // Enum validation
+        if (isset($schema['enum']) && is_array($schema['enum'])) {
+            if (!in_array($data, $schema['enum'], true)) {
+                $allowed = implode(', ', array_map(function($v) { return json_encode($v); }, $schema['enum']));
+                $errors[] = [
+                    'property' => $path,
+                    'message' => "Value is not allowed. Allowed values: {$allowed}."
+                ];
+            }
+        }
+
         return $errors;
+    }
+
+    /**
+     * Validates data type against JSON Schema type.
+     *
+     * @param mixed $data The data to check.
+     * @param string|array $expectedType Expected type(s).
+     * @param string $path Property path for error message.
+     * @return array|null Error array or null if valid.
+     */
+    private function validateType($data, $expectedType, string $path): ?array
+    {
+        $types = is_array($expectedType) ? $expectedType : [$expectedType];
+
+        foreach ($types as $type) {
+            switch ($type) {
+                case 'string':
+                    if (is_string($data)) return null;
+                    break;
+                case 'number':
+                    if (is_int($data) || is_float($data)) return null;
+                    break;
+                case 'integer':
+                    if (is_int($data)) return null;
+                    break;
+                case 'boolean':
+                    if (is_bool($data)) return null;
+                    break;
+                case 'array':
+                    if (is_array($data) && array_keys($data) === range(0, count($data) - 1)) return null;
+                    break;
+                case 'object':
+                    if (is_array($data) && (empty($data) || array_keys($data) !== range(0, count($data) - 1))) return null;
+                    break;
+                case 'null':
+                    if (is_null($data)) return null;
+                    break;
+            }
+        }
+
+        $expectedStr = is_array($expectedType) ? implode(' or ', $expectedType) : $expectedType;
+        return [
+            'property' => $path,
+            'message' => "Expected type '{$expectedStr}', got '" . gettype($data) . "'."
+        ];
     }
 
     /**

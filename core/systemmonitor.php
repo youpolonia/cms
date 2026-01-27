@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__.'/../utilities/TokenMonitor.php';
+require_once __DIR__.'/../utilities/tokenmonitor.php';
 require_once __DIR__ . '/modetokenguard.php';
 
 class SystemMonitor {

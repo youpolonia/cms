@@ -89,4 +89,33 @@ class SettingsModel {
             return false;
         }
     }
+
+    public static function getActiveTheme($tenant_id = null): string
+    {
+        $settings = self::getSettings($tenant_id);
+        return $settings['active_theme'] ?? 'default';
+    }
+
+    public static function setActiveTheme(string $theme, $tenant_id = null): bool
+    {
+        $cacheKey = 'system_settings' . ($tenant_id ? '_tenant_' . $tenant_id : '');
+        Cache::clear($cacheKey);
+
+        try {
+            $pdo = \core\Database::connection();
+
+            if ($tenant_id !== null) {
+                $stmt = $pdo->prepare("UPDATE " . self::$table . " SET active_theme = :theme WHERE tenant_id = :tenant_id");
+                $stmt->execute([':theme' => $theme, ':tenant_id' => $tenant_id]);
+            } else {
+                $stmt = $pdo->prepare("UPDATE " . self::$table . " SET active_theme = :theme WHERE tenant_id IS NULL");
+                $stmt->execute([':theme' => $theme]);
+            }
+
+            return $stmt->rowCount() > 0;
+        } catch (\Throwable $e) {
+            error_log('DB error in SettingsModel::setActiveTheme: ' . $e->getMessage());
+            return false;
+        }
+    }
 }

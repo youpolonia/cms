@@ -20,27 +20,26 @@ if (!function_exists('cms_session_start')) {
             'domain'   => $cur['domain'] ?? '',
             'secure'   => $https ? true : false,
             'httponly' => true,
-            'samesite' => 'Lax',
+            'samesite' => 'Lax'
         ];
 
-        if (PHP_VERSION_ID >= 70300) {
-            session_set_cookie_params($opts);
-        } else {
-            session_set_cookie_params(
-                (int)$opts['lifetime'],
-                $opts['path'].'; samesite='.$opts['samesite'],
-                $opts['domain'],
-                (bool)$opts['secure'],
-                (bool)$opts['httponly']
-            );
-        }
-
-        ini_set('session.use_strict_mode', '1');
-        ini_set('session.use_only_cookies', '1');
-        ini_set('session.cookie_httponly', '1');
-        ini_set('session.cookie_samesite', 'Lax');
-        if ($https) { ini_set('session.cookie_secure', '1'); }
-
+        session_set_cookie_params($opts);
         session_start();
+
+        if ($area === 'admin' && empty($_SESSION['_init'])) {
+            session_regenerate_id(true);
+            $_SESSION['_init'] = true;
+        }
+    }
+}
+
+if (!function_exists('cms_session_destroy')) {
+    function cms_session_destroy(): void {
+        $_SESSION = [];
+        if (ini_get('session.use_cookies')) {
+            $p = session_get_cookie_params();
+            setcookie(session_name(), '', time() - 42000, $p['path'], $p['domain'], $p['secure'], $p['httponly']);
+        }
+        session_destroy();
     }
 }

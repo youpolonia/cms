@@ -11,6 +11,9 @@ return [
         '/admin/content/create' => 'Admin\ContentController@create',
         '/admin/content/edit/{id}' => 'Admin\ContentController@edit',
         
+        // AI Layout Composer (redirects to AI Theme Builder)
+        '/admin/ai-layout-composer' => 'Admin\AiThemeBuilderController@index',
+
         // Admin user management
         '/admin/users' => 'Admin\UserController@index',
         '/admin/users/create' => 'Admin\UserController@create',
@@ -31,6 +34,9 @@ return [
     ],
     'POST' => [
         '/login' => 'AuthController@handleLogin',
+        '/admin/ai-layout-composer/generate' => 'Admin\AiThemeBuilderController@generatePages',
+        '/admin/ai-layout-composer/preview' => 'Admin\AiThemeBuilderController@preview',
+        '/admin/ai-layout-composer/save' => 'Admin\AiThemeBuilderController@deploy',
         '/admin/content/store' => 'Admin\ContentController@store',
         '/admin/content/update/{id}' => 'Admin\ContentController@update',
         '/admin/content/delete/{id}' => 'Admin\ContentController@delete',

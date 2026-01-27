@@ -1,0 +1,276 @@
+{
+    "default_provider": "openai",
+    "providers": {
+        "openai": {
+            "enabled": true,
+            "api_key": "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",
+            "organization": "",
+            "default_model": "gpt-5.2",
+            "models": {
+                "gpt-5.2": {
+                    "name": "GPT-5.2 (Flagship Thinking)",
+                    "max_tokens": 256000,
+                    "cost_per_1k_input": 0.012,
+                    "cost_per_1k_output": 0.036,
+                    "reasoning": true
+                },
+                "gpt-5.1": {
+                    "name": "GPT-5.1 (Flagship Reasoning)",
+                    "max_tokens": 256000,
+                    "cost_per_1k_input": 0.01,
+                    "cost_per_1k_output": 0.03,
+                    "reasoning": true
+                },
+                "gpt-5": {
+                    "name": "GPT-5 (General/Agentic)",
+                    "max_tokens": 256000,
+                    "cost_per_1k_input": 0.008,
+                    "cost_per_1k_output": 0.024
+                },
+                "gpt-4.1": {
+                    "name": "GPT-4.1 (Coding Specialist)",
+                    "max_tokens": 1000000,
+                    "cost_per_1k_input": 0.002,
+                    "cost_per_1k_output": 0.008,
+                    "recommended": false
+                },
+                "gpt-4.1-mini": {
+                    "name": "GPT-4.1 Mini (Fast)",
+                    "max_tokens": 1000000,
+                    "cost_per_1k_input": 0.0004,
+                    "cost_per_1k_output": 0.0016
+                },
+                "gpt-4.1-nano": {
+                    "name": "GPT-4.1 Nano (Ultra Fast)",
+                    "max_tokens": 128000,
+                    "cost_per_1k_input": 0.0001,
+                    "cost_per_1k_output": 0.0004
+                },
+                "o3-pro": {
+                    "name": "O3 Pro (Most Intelligent)",
+                    "max_tokens": 200000,
+                    "cost_per_1k_input": 0.02,
+                    "cost_per_1k_output": 0.08,
+                    "reasoning": true
+                },
+                "o3": {
+                    "name": "O3 (Deep Reasoning)",
+                    "max_tokens": 200000,
+                    "cost_per_1k_input": 0.01,
+                    "cost_per_1k_output": 0.04,
+                    "reasoning": true
+                },
+                "o4-mini": {
+                    "name": "O4 Mini (Reasoning Budget)",
+                    "max_tokens": 200000,
+                    "cost_per_1k_input": 0.001,
+                    "cost_per_1k_output": 0.004,
+                    "reasoning": true
+                },
+                "gpt-4o": {
+                    "name": "GPT-4o (Legacy)",
+                    "max_tokens": 128000,
+                    "cost_per_1k_input": 0.005,
+                    "cost_per_1k_output": 0.015,
+                    "legacy": true
+                },
+                "gpt-4o-mini": {
+                    "name": "GPT-4o Mini (Legacy)",
+                    "max_tokens": 128000,
+                    "cost_per_1k_input": 0.00015,
+                    "cost_per_1k_output": 0.0006,
+                    "legacy": true
+                }
+            }
+        },
+        "anthropic": {
+            "enabled": true,
+            "api_key": "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",
+            "default_model": "claude-opus-4-5-20251101",
+            "anthropic_version": "2023-06-01",
+            "models": {
+                "claude-opus-4-5-20251101": {
+                    "name": "Claude Opus 4.5 (Best for Themes)",
+                    "max_tokens": 200000,
+                    "cost_per_1k_input": 0.005,
+                    "cost_per_1k_output": 0.025,
+                    "extended_thinking": true,
+                    "recommended": true
+                },
+                "claude-sonnet-4-5-20250929": {
+                    "name": "Claude Sonnet 4.5 (Best Balance)",
+                    "max_tokens": 200000,
+                    "cost_per_1k_input": 0.003,
+                    "cost_per_1k_output": 0.015,
+                    "extended_thinking": true
+                },
+                "claude-haiku-4-5-20251001": {
+                    "name": "Claude Haiku 4.5 (Fastest)",
+                    "max_tokens": 200000,
+                    "cost_per_1k_input": 0.001,
+                    "cost_per_1k_output": 0.005,
+                    "extended_thinking": true
+                },
+                "claude-opus-4-1-20250805": {
+                    "name": "Claude Opus 4.1",
+                    "max_tokens": 200000,
+                    "cost_per_1k_input": 0.015,
+                    "cost_per_1k_output": 0.075,
+                    "legacy": true
+                },
+                "claude-sonnet-4-20250514": {
+                    "name": "Claude Sonnet 4",
+                    "max_tokens": 200000,
+                    "cost_per_1k_input": 0.003,
+                    "cost_per_1k_output": 0.015,
+                    "legacy": true
+                },
+                "claude-opus-4-20250514": {
+                    "name": "Claude Opus 4",
+                    "max_tokens": 200000,
+                    "cost_per_1k_input": 0.015,
+                    "cost_per_1k_output": 0.075,
+                    "legacy": true
+                }
+            },
+            "aliases": {
+                "claude-opus-4-5": "claude-opus-4-5-20251101",
+                "claude-sonnet-4-5": "claude-sonnet-4-5-20250929",
+                "claude-haiku-4-5": "claude-haiku-4-5-20251001"
+            }
+        },
+        "google": {
+            "enabled": true,
+            "api_key": "AIzaSyBNksWhPNe7Jy1zTGtfJE1lI_YM8vIuhaU",
+            "default_model": "gemini-2.0-flash",
+            "models": {
+                "gemini-2.0-flash": {
+                    "name": "Gemini 2.0 Flash (Free Tier)",
+                    "max_tokens": 1000000,
+                    "cost_per_1k_input": 0,
+                    "cost_per_1k_output": 0,
+                    "free_tier": true,
+                    "recommended": true
+                },
+                "gemini-2.0-flash-lite": {
+                    "name": "Gemini 2.0 Flash-Lite (Ultra Fast)",
+                    "max_tokens": 1000000,
+                    "cost_per_1k_input": 4e-05,
+                    "cost_per_1k_output": 0.00015,
+                    "free_tier": true
+                },
+                "gemini-2.5-flash": {
+                    "name": "Gemini 2.5 Flash (Latest)",
+                    "max_tokens": 1000000,
+                    "cost_per_1k_input": 0.00015,
+                    "cost_per_1k_output": 0.0006
+                },
+                "gemini-2.5-flash-lite": {
+                    "name": "Gemini 2.5 Flash-Lite (Budget)",
+                    "max_tokens": 1000000,
+                    "cost_per_1k_input": 0.0001,
+                    "cost_per_1k_output": 0.0004
+                },
+                "gemini-2.5-pro": {
+                    "name": "Gemini 2.5 Pro (Best Quality)",
+                    "max_tokens": 2000000,
+                    "cost_per_1k_input": 0.00125,
+                    "cost_per_1k_output": 0.005
+                },
+                "gemini-3-flash": {
+                    "name": "Gemini 3 Flash (Preview - Reasoning)",
+                    "max_tokens": 1000000,
+                    "cost_per_1k_input": 0.0005,
+                    "cost_per_1k_output": 0.002,
+                    "reasoning": true,
+                    "preview": true
+                },
+                "gemini-3-pro": {
+                    "name": "Gemini 3 Pro (Preview - Most Intelligent)",
+                    "max_tokens": 1000000,
+                    "cost_per_1k_input": 0.002,
+                    "cost_per_1k_output": 0.008,
+                    "reasoning": true,
+                    "preview": true
+                }
+            }
+        },
+        "deepseek": {
+            "enabled": true,
+            "api_key": "sk-bc6b1f62e5f641a2a8fb9790a3f625d1",
+            "base_url": "https://api.deepseek.com/v1",
+            "default_model": "deepseek-chat",
+            "models": {
+                "deepseek-v3": {
+                    "name": "DeepSeek V3",
+                    "max_tokens": 64000,
+                    "cost_per_1k_input": 0.0001,
+                    "cost_per_1k_output": 0.0002
+                },
+                "deepseek-r1": {
+                    "name": "DeepSeek R1 (Reasoning)",
+                    "max_tokens": 64000,
+                    "cost_per_1k_input": 0.0005,
+                    "cost_per_1k_output": 0.002,
+                    "reasoning": true
+                }
+            }
+        },
+        "huggingface": {
+            "enabled": true,
+            "api_key": "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",
+            "models": {
+                "text": "HuggingFaceTB/SmolLM3-3B",
+                "image": "stabilityai/stable-diffusion-xl-base-1.0",
+                "vision": "Salesforce/blip-image-captioning-large"
+            }
+        },
+        "ollama": {
+            "enabled": false,
+            "base_url": "http://localhost:11434",
+            "default_model": "llama3.2"
+        }
+    },
+    "generation_defaults": {
+        "temperature": 0.7,
+        "max_tokens": 8000,
+        "top_p": 1,
+        "frequency_penalty": 0,
+        "presence_penalty": 0
+    },
+    "rate_limits": {
+        "requests_per_minute": 60,
+        "tokens_per_day": 1000000,
+        "cost_limit_daily_usd": 50
+    },
+    "usage_tracking": {
+        "enabled": true,
+        "log_requests": true,
+        "log_file": "logs/ai_usage.log"
+    },
+    "updated_at": "2026-01-27 12:20:24",
+    "pexels_api_key": "",
+    "unsplash_access_key": "",
+    "recommended_models": {
+        "theme_generation": [
+            "claude-opus-4-5-20251101",
+            "claude-sonnet-4-5-20250929",
+            "claude-haiku-4-5-20251001"
+        ],
+        "content_writing": [
+            "claude-sonnet-4-5-20250929",
+            "claude-opus-4-5-20251101",
+            "gpt-5"
+        ],
+        "code_generation": [
+            "claude-sonnet-4-5-20250929",
+            "gpt-4.1",
+            "claude-opus-4-5-20251101"
+        ],
+        "quick_tasks": [
+            "claude-haiku-4-5-20251001",
+            "gpt-4.1-mini",
+            "gemini-2.0-flash"
+        ]
+    }
+}

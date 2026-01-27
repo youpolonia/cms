@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__.'/../../services/TokenMonitoringService.php';
+require_once __DIR__.'/../../services/tokenmonitoringservice.php';
 
 // Check authentication
 if (!Auth::check()) {

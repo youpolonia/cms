@@ -1,26 +1,26 @@
 <?php
 declare(strict_types=1);
 
-require_once __DIR__ . '/../../config.php';
-require_once __DIR__ . '/../../core/database.php';
+define('CMS_ROOT', dirname(__DIR__, 2));
+require_once CMS_ROOT . '/config.php';
+if (!defined('DEV_MODE') || DEV_MODE !== true) { http_response_code(403); exit; }
 
-// DEV-only gate
-if (!defined('DEV_MODE') || DEV_MODE !== true) {
-    http_response_code(403);
-    echo 'Forbidden';
-    exit;
-}
+require_once CMS_ROOT . '/core/session_boot.php';
+cms_session_start('admin');
+require_once CMS_ROOT . '/core/csrf.php';
+csrf_boot();
+require_once CMS_ROOT . '/core/auth.php';
+authenticateAdmin();
 
 // Verbose diagnostics only in DEV to surface 500 root cause
-if (defined('DEV_MODE') && DEV_MODE === true) {
-    error_reporting(E_ALL);
-    ini_set('display_errors', '1');
-    header('Content-Type: text/plain; charset=UTF-8');
-}
+error_reporting(E_ALL);
+ini_set('display_errors', '1');
+header('Content-Type: text/plain; charset=UTF-8');
 
+require_once CMS_ROOT . '/core/database.php';
 // Fallback include path if class not found (literal path, require_once only)
-if (!class_exists('\\core\\Database') && file_exists(__DIR__ . '/../../includes/core/database.php')) {
-    require_once __DIR__ . '/../../includes/core/database.php';
+if (!class_exists('\\core\\Database') && file_exists(CMS_ROOT . '/includes/core/database.php')) {
+    require_once CMS_ROOT . '/includes/core/database.php';
 }
 if (!class_exists('\\core\\Database')) {
     http_response_code(500);

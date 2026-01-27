@@ -1,5 +1,13 @@
 <?php
 require_once __DIR__ . '/../config.php';
+require_once __DIR__ . '/../includes/init.php'; // Must be before permissions check - starts session
+
+require_once __DIR__ . '/../core/session_boot.php';
+cms_session_start('admin');
+
+// RBAC: Require admin access
+require_once __DIR__ . '/includes/permissions.php';
+cms_require_admin_role();
 if (!defined('DEV_MODE') || DEV_MODE !== true) { http_response_code(403); exit; }
 
 /**

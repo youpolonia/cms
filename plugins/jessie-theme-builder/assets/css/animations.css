@@ -1,0 +1,550 @@
+/**
+ * JTB Animations CSS
+ * Contains all animation keyframes and classes
+ */
+
+/* ========================================
+   Base Animation Styles
+   ======================================== */
+
+.jtb-animated {
+    animation-fill-mode: both;
+}
+
+.jtb-animated.jtb-animation-repeat {
+    animation-iteration-count: infinite;
+}
+
+/* ========================================
+   FADE ANIMATIONS
+   ======================================== */
+
+/* Fade In */
+@keyframes jtbFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+.jtb-animation-fade { animation-name: jtbFadeIn; }
+
+/* Fade In Up */
+@keyframes jtbFadeInUp {
+    from {
+        opacity: 0;
+        transform: translate3d(0, 40px, 0);
+    }
+    to {
+        opacity: 1;
+        transform: translate3d(0, 0, 0);
+    }
+}
+.jtb-animation-fadeUp { animation-name: jtbFadeInUp; }
+
+/* Fade In Down */
+@keyframes jtbFadeInDown {
+    from {
+        opacity: 0;
+        transform: translate3d(0, -40px, 0);
+    }
+    to {
+        opacity: 1;
+        transform: translate3d(0, 0, 0);
+    }
+}
+.jtb-animation-fadeDown { animation-name: jtbFadeInDown; }
+
+/* Fade In Left */
+@keyframes jtbFadeInLeft {
+    from {
+        opacity: 0;
+        transform: translate3d(-40px, 0, 0);
+    }
+    to {
+        opacity: 1;
+        transform: translate3d(0, 0, 0);
+    }
+}
+.jtb-animation-fadeLeft { animation-name: jtbFadeInLeft; }
+
+/* Fade In Right */
+@keyframes jtbFadeInRight {
+    from {
+        opacity: 0;
+        transform: translate3d(40px, 0, 0);
+    }
+    to {
+        opacity: 1;
+        transform: translate3d(0, 0, 0);
+    }
+}
+.jtb-animation-fadeRight { animation-name: jtbFadeInRight; }
+
+/* ========================================
+   SLIDE ANIMATIONS
+   ======================================== */
+
+/* Slide Up */
+@keyframes jtbSlideUp {
+    from {
+        transform: translate3d(0, 100%, 0);
+        visibility: visible;
+    }
+    to {
+        transform: translate3d(0, 0, 0);
+    }
+}
+.jtb-animation-slideUp { animation-name: jtbSlideUp; }
+
+/* Slide Down */
+@keyframes jtbSlideDown {
+    from {
+        transform: translate3d(0, -100%, 0);
+        visibility: visible;
+    }
+    to {
+        transform: translate3d(0, 0, 0);
+    }
+}
+.jtb-animation-slideDown { animation-name: jtbSlideDown; }
+
+/* Slide Left */
+@keyframes jtbSlideLeft {
+    from {
+        transform: translate3d(-100%, 0, 0);
+        visibility: visible;
+    }
+    to {
+        transform: translate3d(0, 0, 0);
+    }
+}
+.jtb-animation-slideLeft { animation-name: jtbSlideLeft; }
+
+/* Slide Right */
+@keyframes jtbSlideRight {
+    from {
+        transform: translate3d(100%, 0, 0);
+        visibility: visible;
+    }
+    to {
+        transform: translate3d(0, 0, 0);
+    }
+}
+.jtb-animation-slideRight { animation-name: jtbSlideRight; }
+
+/* ========================================
+   ZOOM ANIMATIONS
+   ======================================== */
+
+/* Zoom In */
+@keyframes jtbZoomIn {
+    from {
+        opacity: 0;
+        transform: scale3d(0.3, 0.3, 0.3);
+    }
+    50% {
+        opacity: 1;
+    }
+}
+.jtb-animation-zoomIn { animation-name: jtbZoomIn; }
+
+/* Zoom Out */
+@keyframes jtbZoomOut {
+    from {
+        opacity: 0;
+        transform: scale3d(1.5, 1.5, 1.5);
+    }
+    to {
+        opacity: 1;
+        transform: scale3d(1, 1, 1);
+    }
+}
+.jtb-animation-zoomOut { animation-name: jtbZoomOut; }
+
+/* Zoom In Up */
+@keyframes jtbZoomInUp {
+    from {
+        opacity: 0;
+        transform: scale3d(0.1, 0.1, 0.1) translate3d(0, 1000px, 0);
+    }
+    60% {
+        opacity: 1;
+        transform: scale3d(0.475, 0.475, 0.475) translate3d(0, -60px, 0);
+    }
+}
+.jtb-animation-zoomInUp { animation-name: jtbZoomInUp; }
+
+/* Zoom In Down */
+@keyframes jtbZoomInDown {
+    from {
+        opacity: 0;
+        transform: scale3d(0.1, 0.1, 0.1) translate3d(0, -1000px, 0);
+    }
+    60% {
+        opacity: 1;
+        transform: scale3d(0.475, 0.475, 0.475) translate3d(0, 60px, 0);
+    }
+}
+.jtb-animation-zoomInDown { animation-name: jtbZoomInDown; }
+
+/* ========================================
+   BOUNCE ANIMATIONS
+   ======================================== */
+
+/* Bounce */
+@keyframes jtbBounce {
+    from, 20%, 53%, 80%, to {
+        animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+        transform: translate3d(0, 0, 0);
+    }
+    40%, 43% {
+        animation-timing-function: cubic-bezier(0.755, 0.05, 0.855, 0.06);
+        transform: translate3d(0, -30px, 0);
+    }
+    70% {
+        animation-timing-function: cubic-bezier(0.755, 0.05, 0.855, 0.06);
+        transform: translate3d(0, -15px, 0);
+    }
+    90% {
+        transform: translate3d(0, -4px, 0);
+    }
+}
+.jtb-animation-bounce { animation-name: jtbBounce; transform-origin: center bottom; }
+
+/* Bounce In */
+@keyframes jtbBounceIn {
+    from, 20%, 40%, 60%, 80%, to {
+        animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+    }
+    0% {
+        opacity: 0;
+        transform: scale3d(0.3, 0.3, 0.3);
+    }
+    20% {
+        transform: scale3d(1.1, 1.1, 1.1);
+    }
+    40% {
+        transform: scale3d(0.9, 0.9, 0.9);
+    }
+    60% {
+        opacity: 1;
+        transform: scale3d(1.03, 1.03, 1.03);
+    }
+    80% {
+        transform: scale3d(0.97, 0.97, 0.97);
+    }
+    to {
+        opacity: 1;
+        transform: scale3d(1, 1, 1);
+    }
+}
+.jtb-animation-bounceIn { animation-name: jtbBounceIn; }
+
+/* Bounce In Up */
+@keyframes jtbBounceInUp {
+    from, 60%, 75%, 90%, to {
+        animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+    }
+    from {
+        opacity: 0;
+        transform: translate3d(0, 3000px, 0);
+    }
+    60% {
+        opacity: 1;
+        transform: translate3d(0, -20px, 0);
+    }
+    75% {
+        transform: translate3d(0, 10px, 0);
+    }
+    90% {
+        transform: translate3d(0, -5px, 0);
+    }
+    to {
+        transform: translate3d(0, 0, 0);
+    }
+}
+.jtb-animation-bounceInUp { animation-name: jtbBounceInUp; }
+
+/* Bounce In Down */
+@keyframes jtbBounceInDown {
+    from, 60%, 75%, 90%, to {
+        animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+    }
+    0% {
+        opacity: 0;
+        transform: translate3d(0, -3000px, 0);
+    }
+    60% {
+        opacity: 1;
+        transform: translate3d(0, 25px, 0);
+    }
+    75% {
+        transform: translate3d(0, -10px, 0);
+    }
+    90% {
+        transform: translate3d(0, 5px, 0);
+    }
+    to {
+        transform: translate3d(0, 0, 0);
+    }
+}
+.jtb-animation-bounceInDown { animation-name: jtbBounceInDown; }
+
+/* Bounce In Left */
+@keyframes jtbBounceInLeft {
+    from, 60%, 75%, 90%, to {
+        animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+    }
+    0% {
+        opacity: 0;
+        transform: translate3d(-3000px, 0, 0);
+    }
+    60% {
+        opacity: 1;
+        transform: translate3d(25px, 0, 0);
+    }
+    75% {
+        transform: translate3d(-10px, 0, 0);
+    }
+    90% {
+        transform: translate3d(5px, 0, 0);
+    }
+    to {
+        transform: translate3d(0, 0, 0);
+    }
+}
+.jtb-animation-bounceInLeft { animation-name: jtbBounceInLeft; }
+
+/* Bounce In Right */
+@keyframes jtbBounceInRight {
+    from, 60%, 75%, 90%, to {
+        animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+    }
+    from {
+        opacity: 0;
+        transform: translate3d(3000px, 0, 0);
+    }
+    60% {
+        opacity: 1;
+        transform: translate3d(-25px, 0, 0);
+    }
+    75% {
+        transform: translate3d(10px, 0, 0);
+    }
+    90% {
+        transform: translate3d(-5px, 0, 0);
+    }
+    to {
+        transform: translate3d(0, 0, 0);
+    }
+}
+.jtb-animation-bounceInRight { animation-name: jtbBounceInRight; }
+
+/* ========================================
+   FLIP ANIMATIONS
+   ======================================== */
+
+/* Flip In X */
+@keyframes jtbFlipInX {
+    from {
+        transform: perspective(400px) rotate3d(1, 0, 0, 90deg);
+        opacity: 0;
+    }
+    40% {
+        transform: perspective(400px) rotate3d(1, 0, 0, -20deg);
+    }
+    60% {
+        transform: perspective(400px) rotate3d(1, 0, 0, 10deg);
+        opacity: 1;
+    }
+    80% {
+        transform: perspective(400px) rotate3d(1, 0, 0, -5deg);
+    }
+    to {
+        transform: perspective(400px);
+    }
+}
+.jtb-animation-flipInX { animation-name: jtbFlipInX; backface-visibility: visible !important; }
+
+/* Flip In Y */
+@keyframes jtbFlipInY {
+    from {
+        transform: perspective(400px) rotate3d(0, 1, 0, 90deg);
+        opacity: 0;
+    }
+    40% {
+        transform: perspective(400px) rotate3d(0, 1, 0, -20deg);
+    }
+    60% {
+        transform: perspective(400px) rotate3d(0, 1, 0, 10deg);
+        opacity: 1;
+    }
+    80% {
+        transform: perspective(400px) rotate3d(0, 1, 0, -5deg);
+    }
+    to {
+        transform: perspective(400px);
+    }
+}
+.jtb-animation-flipInY { animation-name: jtbFlipInY; backface-visibility: visible !important; }
+
+/* ========================================
+   ROTATE ANIMATIONS
+   ======================================== */
+
+/* Rotate In */
+@keyframes jtbRotateIn {
+    from {
+        transform: rotate3d(0, 0, 1, -200deg);
+        opacity: 0;
+    }
+    to {
+        transform: translate3d(0, 0, 0);
+        opacity: 1;
+    }
+}
+.jtb-animation-rotateIn { animation-name: jtbRotateIn; }
+
+/* Rotate In Up Left */
+@keyframes jtbRotateInUpLeft {
+    from {
+        transform: rotate3d(0, 0, 1, 45deg);
+        opacity: 0;
+    }
+    to {
+        transform: translate3d(0, 0, 0);
+        opacity: 1;
+    }
+}
+.jtb-animation-rotateInUpLeft { animation-name: jtbRotateInUpLeft; transform-origin: left bottom; }
+
+/* Rotate In Up Right */
+@keyframes jtbRotateInUpRight {
+    from {
+        transform: rotate3d(0, 0, 1, -90deg);
+        opacity: 0;
+    }
+    to {
+        transform: translate3d(0, 0, 0);
+        opacity: 1;
+    }
+}
+.jtb-animation-rotateInUpRight { animation-name: jtbRotateInUpRight; transform-origin: right bottom; }
+
+/* Rotate In Down Left */
+@keyframes jtbRotateInDownLeft {
+    from {
+        transform: rotate3d(0, 0, 1, -45deg);
+        opacity: 0;
+    }
+    to {
+        transform: translate3d(0, 0, 0);
+        opacity: 1;
+    }
+}
+.jtb-animation-rotateInDownLeft { animation-name: jtbRotateInDownLeft; transform-origin: left bottom; }
+
+/* Rotate In Down Right */
+@keyframes jtbRotateInDownRight {
+    from {
+        transform: rotate3d(0, 0, 1, 45deg);
+        opacity: 0;
+    }
+    to {
+        transform: translate3d(0, 0, 0);
+        opacity: 1;
+    }
+}
+.jtb-animation-rotateInDownRight { animation-name: jtbRotateInDownRight; transform-origin: right bottom; }
+
+/* ========================================
+   SPECIAL ANIMATIONS
+   ======================================== */
+
+/* Roll In */
+@keyframes jtbRollIn {
+    from {
+        opacity: 0;
+        transform: translate3d(-100%, 0, 0) rotate3d(0, 0, 1, -120deg);
+    }
+    to {
+        opacity: 1;
+        transform: translate3d(0, 0, 0);
+    }
+}
+.jtb-animation-roll { animation-name: jtbRollIn; }
+
+/* Light Speed In */
+@keyframes jtbLightSpeedIn {
+    from {
+        transform: translate3d(100%, 0, 0) skewX(-30deg);
+        opacity: 0;
+    }
+    60% {
+        transform: skewX(20deg);
+        opacity: 1;
+    }
+    80% {
+        transform: skewX(-5deg);
+    }
+    to {
+        transform: translate3d(0, 0, 0);
+    }
+}
+.jtb-animation-lightSpeedIn { animation-name: jtbLightSpeedIn; }
+
+/* Pulse */
+@keyframes jtbPulse {
+    from { transform: scale3d(1, 1, 1); }
+    50% { transform: scale3d(1.05, 1.05, 1.05); }
+    to { transform: scale3d(1, 1, 1); }
+}
+.jtb-animation-pulse { animation-name: jtbPulse; }
+
+/* Shake */
+@keyframes jtbShake {
+    from, to { transform: translate3d(0, 0, 0); }
+    10%, 30%, 50%, 70%, 90% { transform: translate3d(-10px, 0, 0); }
+    20%, 40%, 60%, 80% { transform: translate3d(10px, 0, 0); }
+}
+.jtb-animation-shake { animation-name: jtbShake; }
+
+/* Swing */
+@keyframes jtbSwing {
+    20% { transform: rotate3d(0, 0, 1, 15deg); }
+    40% { transform: rotate3d(0, 0, 1, -10deg); }
+    60% { transform: rotate3d(0, 0, 1, 5deg); }
+    80% { transform: rotate3d(0, 0, 1, -5deg); }
+    to { transform: rotate3d(0, 0, 1, 0deg); }
+}
+.jtb-animation-swing { animation-name: jtbSwing; transform-origin: top center; }
+
+/* Tada */
+@keyframes jtbTada {
+    from { transform: scale3d(1, 1, 1); }
+    10%, 20% { transform: scale3d(0.9, 0.9, 0.9) rotate3d(0, 0, 1, -3deg); }
+    30%, 50%, 70%, 90% { transform: scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, 3deg); }
+    40%, 60%, 80% { transform: scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, -3deg); }
+    to { transform: scale3d(1, 1, 1); }
+}
+.jtb-animation-tada { animation-name: jtbTada; }
+
+/* Wobble */
+@keyframes jtbWobble {
+    from { transform: translate3d(0, 0, 0); }
+    15% { transform: translate3d(-25%, 0, 0) rotate3d(0, 0, 1, -5deg); }
+    30% { transform: translate3d(20%, 0, 0) rotate3d(0, 0, 1, 3deg); }
+    45% { transform: translate3d(-15%, 0, 0) rotate3d(0, 0, 1, -3deg); }
+    60% { transform: translate3d(10%, 0, 0) rotate3d(0, 0, 1, 2deg); }
+    75% { transform: translate3d(-5%, 0, 0) rotate3d(0, 0, 1, -1deg); }
+    to { transform: translate3d(0, 0, 0); }
+}
+.jtb-animation-wobble { animation-name: jtbWobble; }
+
+/* Heart Beat */
+@keyframes jtbHeartBeat {
+    0% { transform: scale(1); }
+    14% { transform: scale(1.3); }
+    28% { transform: scale(1); }
+    42% { transform: scale(1.3); }
+    70% { transform: scale(1); }
+}
+.jtb-animation-heartBeat { animation-name: jtbHeartBeat; animation-timing-function: ease-in-out; }

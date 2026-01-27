@@ -1,9 +1,9 @@
-<?php /* SECURITY HARDENING: headers + session flags */ ?>
 <?php
+/* SECURITY HARDENING: headers + session flags */
 require_once __DIR__ . '/security_headers.php';
 cms_emit_security_headers();
-// Only configure session if not already started
-if (session_status() === PHP_SESSION_NONE) {
+// Only configure session if not already started and headers not sent
+if (session_status() === PHP_SESSION_NONE && !headers_sent()) {
     @ini_set('session.use_strict_mode', '1');
     @ini_set('session.cookie_httponly', '1');
     // Secure cookie only if HTTPS detected (no proxy assumptions here)
@@ -13,7 +13,7 @@ if (session_status() === PHP_SESSION_NONE) {
     @ini_set('session.cookie_samesite', 'Strict');
     // Harden session cookie parameters explicitly before session_start()
     if (PHP_VERSION_ID >= 70300) {
-        session_set_cookie_params([
+        @session_set_cookie_params([
             'lifetime' => 0,
             'path'     => '/',
             'secure'   => true,
@@ -22,11 +22,10 @@ if (session_status() === PHP_SESSION_NONE) {
         ]);
     } else {
         // Fallback for older PHP: no SameSite support, keep secure+httponly
-        session_set_cookie_params(0, '/; HttpOnly', '', true, true);
+        @session_set_cookie_params(0, '/; HttpOnly', '', true, true);
     }
 }
-?>
-<?php
+
 // Define BASE_URL for asset and link normalization
 if (!defined('BASE_URL')) {
     $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? "https://" : "http://";
@@ -147,16 +146,21 @@ if (file_exists(__DIR__ . '/../modules/content/contentmodule.php')) {
 ContentModule::init();
 
 // Initialize admin module
-if (file_exists(__DIR__ . '/../modules/admin/module.php')) {
-    require_once __DIR__ . '/../modules/admin/module.php';
-} else {
-    error_log('Missing modules/admin/module.php');
-}
-AdminModule::init();
+// NOTE: AdminModule::init() disabled - it calls non-existent Router::get() static method
+// Admin routes are defined in config/routes.php instead
+// if (file_exists(__DIR__ . '/../modules/admin/module.php')) {
+//     require_once __DIR__ . '/../modules/admin/module.php';
+// } else {
+//     error_log('Missing modules/admin/module.php');
+// }
+// AdminModule::init();
+
 // Initialize auth module
-if (file_exists(__DIR__ . '/../modules/auth/authmodule.php')) {
-    require_once __DIR__ . '/../modules/auth/authmodule.php';
-} else {
-    error_log('Missing modules/auth/authmodule.php');
-}
-AuthModule::init();
+// NOTE: AuthModule::init() disabled - it calls non-existent Router::addRoute() static method
+// Auth routes are defined in config/routes.php instead
+// if (file_exists(__DIR__ . '/../modules/auth/authmodule.php')) {
+//     require_once __DIR__ . '/../modules/auth/authmodule.php';
+// } else {
+//     error_log('Missing modules/auth/authmodule.php');
+// }
+// AuthModule::init();

@@ -2,6 +2,10 @@
 require_once __DIR__ . '/../../config.php';
 require_once __DIR__ . '/../../core/session_boot.php';
 cms_session_start('admin');
+
+// RBAC: Require admin access
+require_once __DIR__ . '/../includes/permissions.php';
+cms_require_admin_role();
 require_once __DIR__ . '/../../core/csrf.php';
 require_once __DIR__ . '/../../core/extensions_state.php';
 require_once __DIR__ . '/../includes/flashmessage.php';

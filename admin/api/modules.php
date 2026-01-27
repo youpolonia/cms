@@ -1,8 +1,14 @@
 <?php
 require_once __DIR__ . '/../../config.php';
-require_once __DIR__ . '/../../core/csrf.php';
 if (!defined('DEV_MODE') || DEV_MODE !== true) { http_response_code(403); exit; }
-csrf_boot();
+// Start session before checking permissions
+require_once __DIR__ . '/../../core/session_boot.php';
+cms_session_start('admin');
+require_once __DIR__ . '/../../core/csrf.php';
+csrf_boot('admin');
+// RBAC: Require admin access
+require_once __DIR__ . '/../includes/permissions.php';
+cms_require_admin_role();
 header('Content-Type: application/json; charset=UTF-8');
 
 $modules = [
@@ -31,7 +37,6 @@ $modules = [
   ['Users','/admin/users.php'],
   ['Settings','/admin/settings.php'],
   ['Content (legacy)','/admin/content.php'],
-  ['Admin Modules Hub','/admin/modules.php'],
   ['Menus','/admin/menus.php'],
   ['Widgets','/admin/widgets.php'],
   ['Search','/admin/search.php'],

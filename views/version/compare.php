@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__.'/../../services/VersionService.php';
+require_once __DIR__.'/../../services/versionservice.php';
 
 class VersionCompareView {
     public static function render(array $version1, array $version2): string {

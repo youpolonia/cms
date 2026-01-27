@@ -1,0 +1,677 @@
+<?php
+/**
+ * Unified AI Content Generation Wrapper
+ * Provides simple interface to AI providers configured in config/ai_settings.json
+ */
+
+/**
+ * Load AI configuration from config/ai_settings.json
+ * Supports both old flat format and new nested providers format
+ * @return array Normalized configuration array with provider, model, api_key, base_url
+ */
+function ai_config_load(): array {
+    $configPath = __DIR__ . '/../config/ai_settings.json';
+
+    if (!file_exists($configPath)) {
+        error_log('[AI_CONTENT] config/ai_settings.json not found');
+        return [];
+    }
+
+    $json = file_get_contents($configPath);
+    if ($json === false) {
+        error_log('[AI_CONTENT] Failed to read config/ai_settings.json');
+        return [];
+    }
+
+    $config = json_decode($json, true);
+    if (!is_array($config)) {
+        error_log('[AI_CONTENT] Invalid JSON in config/ai_settings.json');
+        return [];
+    }
+
+    // Normalize config: support both old flat format and new nested providers format
+    $normalized = [
+        'provider' => '',
+        'api_key' => '',
+        'model' => 'gpt-4o-mini',
+        'base_url' => 'https://api.openai.com/v1'
+    ];
+
+    // New format: providers.{provider}.api_key
+    if (!empty($config['providers'])) {
+        $provider = $config['default_provider'] ?? 'openai';
+        $providerSettings = $config['providers'][$provider] ?? [];
+        
+        if (!empty($providerSettings['enabled']) && !empty($providerSettings['api_key'])) {
+            $normalized['provider'] = $provider;
+            $normalized['api_key'] = $providerSettings['api_key'];
+            $normalized['model'] = $providerSettings['default_model'] ?? 'gpt-4o-mini';
+            $normalized['base_url'] = $providerSettings['base_url'] ?? 'https://api.openai.com/v1';
+        }
+        
+        // Fallback to openai if default provider not configured
+        if (empty($normalized['api_key']) && !empty($config['providers']['openai']['api_key'])) {
+            $normalized['provider'] = 'openai';
+            $normalized['api_key'] = $config['providers']['openai']['api_key'];
+            $normalized['model'] = $config['providers']['openai']['default_model'] ?? 'gpt-4o-mini';
+        }
+    }
+    
+    // Old flat format: api_key at root level
+    if (empty($normalized['api_key'])) {
+        if (!empty($config['api_key'])) {
+            $normalized['provider'] = $config['provider'] ?? 'openai';
+            $normalized['api_key'] = $config['api_key'];
+            $normalized['model'] = $config['model'] ?? 'gpt-3.5-turbo';
+            $normalized['base_url'] = $config['base_url'] ?? 'https://api.openai.com/v1';
+        } elseif (!empty($config['openai_api_key'])) {
+            $normalized['provider'] = 'openai';
+            $normalized['api_key'] = $config['openai_api_key'];
+            $normalized['model'] = $config['openai_model'] ?? 'gpt-3.5-turbo';
+        }
+    }
+
+    return $normalized;
+}
+
+/**
+ * Generate content using configured AI provider
+ * @param array $params Parameters for generation:
+ *   - topic: Main topic/prompt (required)
+ *   - keywords: Comma-separated keywords (optional)
+ *   - language: Language code (default: 'en')
+ *   - tone: Content tone (optional)
+ *   - length_hint: 'short', 'medium', 'long' (default: 'medium')
+ * @return array Result with keys:
+ *   - ok: bool - Success status
+ *   - content: string|null - Generated content
+ *   - error: string|null - Error message if failed
+ */
+function ai_content_generate(array $params): array {
+    $config = ai_config_load();
+
+    // Validate configuration
+    if (empty($config['provider'])) {
+        return [
+            'ok' => false,
+            'content' => null,
+            'error' => 'AI provider not configured'
+        ];
+    }
+
+    if (empty($config['api_key']) && empty($config['base_url'])) {
+        return [
+            'ok' => false,
+            'content' => null,
+            'error' => 'AI API credentials not configured'
+        ];
+    }
+
+    // Extract parameters
+    $topic = isset($params['topic']) ? trim((string)$params['topic']) : '';
+    $keywords = isset($params['keywords']) ? trim((string)$params['keywords']) : '';
+    $language = isset($params['language']) ? trim((string)$params['language']) : 'en';
+    $tone = isset($params['tone']) ? trim((string)$params['tone']) : '';
+    $lengthHint = isset($params['length_hint']) ? trim((string)$params['length_hint']) : 'medium';
+
+    if ($topic === '') {
+        return [
+            'ok' => false,
+            'content' => null,
+            'error' => 'Topic is required'
+        ];
+    }
+
+    // Build prompt
+    $promptParts = [$topic];
+    if ($keywords !== '') {
+        $promptParts[] = 'Keywords: ' . $keywords;
+    }
+    if ($language !== 'en') {
+        $promptParts[] = 'Language: ' . $language;
+    }
+    if ($tone !== '') {
+        $promptParts[] = 'Tone: ' . $tone;
+    }
+    if ($lengthHint !== 'medium') {
+        $promptParts[] = 'Length: ' . $lengthHint;
+    }
+
+    $prompt = implode('. ', $promptParts);
+
+    // Call provider-specific implementation
+    $provider = strtolower($config['provider']);
+
+    try {
+        if ($provider === 'openai') {
+            return ai_content_generate_openai($config, $prompt);
+        } elseif ($provider === 'ollama' || $provider === 'local') {
+            return ai_content_generate_ollama($config, $prompt);
+        } elseif ($provider === 'anthropic') {
+            return ai_content_generate_anthropic($config, $prompt);
+        } elseif ($provider === 'google') {
+            return ai_content_generate_google($config, $prompt);
+        } elseif ($provider === 'deepseek') {
+            return ai_content_generate_deepseek($config, $prompt);
+        } else {
+            return [
+                'ok' => false,
+                'content' => null,
+                'error' => 'Unsupported AI provider: ' . $provider
+            ];
+        }
+    } catch (\Throwable $e) {
+        error_log('[AI_CONTENT] Generation exception: ' . $e->getMessage());
+        return [
+            'ok' => false,
+            'content' => null,
+            'error' => 'AI generation failed: ' . $e->getMessage()
+        ];
+    }
+}
+
+/**
+ * Generate content using OpenAI API
+ * @param array $config Configuration
+ * @param string $prompt Prompt text
+ * @return array Result array
+ */
+function ai_content_generate_openai(array $config, string $prompt): array {
+    $apiKey = $config['api_key'] ?? '';
+    $model = $config['model'] ?? 'gpt-3.5-turbo';
+    $baseUrl = !empty($config['base_url']) ? $config['base_url'] : 'https://api.openai.com/v1';
+
+    $endpoint = rtrim($baseUrl, '/') . '/chat/completions';
+
+    $payload = [
+        'model' => $model,
+        'messages' => [
+            ['role' => 'user', 'content' => $prompt]
+        ],
+        'temperature' => 0.7,
+        'max_tokens' => 2000
+    ];
+
+    $ch = curl_init($endpoint);
+    if ($ch === false) {
+        return [
+            'ok' => false,
+            'content' => null,
+            'error' => 'Failed to initialize cURL'
+        ];
+    }
+
+    curl_setopt_array($ch, [
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_POST => true,
+        CURLOPT_POSTFIELDS => json_encode($payload),
+        CURLOPT_HTTPHEADER => [
+            'Content-Type: application/json',
+            'Authorization: Bearer ' . $apiKey
+        ],
+        CURLOPT_TIMEOUT => 30
+    ]);
+
+    $response = curl_exec($ch);
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    $curlError = curl_error($ch);
+    curl_close($ch);
+
+    if ($response === false) {
+        return [
+            'ok' => false,
+            'content' => null,
+            'error' => 'cURL error: ' . $curlError
+        ];
+    }
+
+    if ($httpCode !== 200) {
+        error_log('[AI_CONTENT] OpenAI API error: HTTP ' . $httpCode . ' - ' . $response);
+        return [
+            'ok' => false,
+            'content' => null,
+            'error' => 'OpenAI API error: HTTP ' . $httpCode
+        ];
+    }
+
+    $data = json_decode($response, true);
+    if (!is_array($data)) {
+        return [
+            'ok' => false,
+            'content' => null,
+            'error' => 'Invalid JSON response from OpenAI'
+        ];
+    }
+
+    $content = $data['choices'][0]['message']['content'] ?? null;
+    if ($content === null || trim($content) === '') {
+        return [
+            'ok' => false,
+            'content' => null,
+            'error' => 'Empty response from OpenAI'
+        ];
+    }
+
+    return [
+        'ok' => true,
+        'content' => trim($content),
+        'error' => null
+    ];
+}
+
+/**
+ * Generate content using Ollama/local LLM
+ * @param array $config Configuration
+ * @param string $prompt Prompt text
+ * @return array Result array
+ */
+function ai_content_generate_ollama(array $config, string $prompt): array {
+    $baseUrl = !empty($config['base_url']) ? $config['base_url'] : 'http://localhost:11434';
+    $model = $config['model'] ?? 'llama2';
+
+    $endpoint = rtrim($baseUrl, '/') . '/api/generate';
+
+    $payload = [
+        'model' => $model,
+        'prompt' => $prompt,
+        'stream' => false
+    ];
+
+    $ch = curl_init($endpoint);
+    if ($ch === false) {
+        return [
+            'ok' => false,
+            'content' => null,
+            'error' => 'Failed to initialize cURL'
+        ];
+    }
+
+    curl_setopt_array($ch, [
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_POST => true,
+        CURLOPT_POSTFIELDS => json_encode($payload),
+        CURLOPT_HTTPHEADER => [
+            'Content-Type: application/json'
+        ],
+        CURLOPT_TIMEOUT => 60
+    ]);
+
+    $response = curl_exec($ch);
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    $curlError = curl_error($ch);
+    curl_close($ch);
+
+    if ($response === false) {
+        return [
+            'ok' => false,
+            'content' => null,
+            'error' => 'cURL error: ' . $curlError
+        ];
+    }
+
+    if ($httpCode !== 200) {
+        error_log('[AI_CONTENT] Ollama API error: HTTP ' . $httpCode . ' - ' . $response);
+        return [
+            'ok' => false,
+            'content' => null,
+            'error' => 'Ollama API error: HTTP ' . $httpCode
+        ];
+    }
+
+    $data = json_decode($response, true);
+    if (!is_array($data)) {
+        return [
+            'ok' => false,
+            'content' => null,
+            'error' => 'Invalid JSON response from Ollama'
+        ];
+    }
+
+    $content = $data['response'] ?? null;
+    if ($content === null || trim($content) === '') {
+        return [
+            'ok' => false,
+            'content' => null,
+            'error' => 'Empty response from Ollama'
+        ];
+    }
+
+    return [
+        'ok' => true,
+        'content' => trim($content),
+        'error' => null
+    ];
+}
+
+/**
+ * Generate content using Anthropic Claude API
+ * @param array $config Configuration with api_key, model
+ * @param string $prompt The prompt to send
+ * @return array Result with ok, content, error keys
+ */
+function ai_content_generate_anthropic(array $config, string $prompt): array {
+    $apiKey = $config['api_key'] ?? '';
+    $model = $config['model'] ?? 'claude-3-5-sonnet-20241022';
+
+    if (empty($apiKey)) {
+        return ['ok' => false, 'content' => null, 'error' => 'Anthropic API key not configured'];
+    }
+
+    $maxTokens = (int)($config['max_tokens'] ?? 4000);
+
+    $payload = [
+        'model' => $model,
+        'max_tokens' => $maxTokens,
+        'messages' => [
+            ['role' => 'user', 'content' => $prompt]
+        ]
+    ];
+
+    // Add system prompt if provided
+    if (!empty($config['system_prompt'])) {
+        $payload['system'] = $config['system_prompt'];
+    }
+
+    $ch = curl_init('https://api.anthropic.com/v1/messages');
+    if ($ch === false) {
+        return ['ok' => false, 'content' => null, 'error' => 'Failed to initialize cURL'];
+    }
+
+    curl_setopt_array($ch, [
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_POST => true,
+        CURLOPT_HTTPHEADER => [
+            'Content-Type: application/json',
+            'x-api-key: ' . $apiKey,
+            'anthropic-version: 2023-06-01'
+        ],
+        CURLOPT_POSTFIELDS => json_encode($payload),
+        CURLOPT_TIMEOUT => 120
+    ]);
+
+    $response = curl_exec($ch);
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    $error = curl_error($ch);
+    curl_close($ch);
+
+    if ($response === false || $error) {
+        error_log('[AI_CONTENT] Anthropic curl error: ' . $error);
+        return ['ok' => false, 'content' => null, 'error' => 'Connection error: ' . $error];
+    }
+
+    if ($httpCode !== 200) {
+        $data = json_decode($response, true);
+        $errorMsg = $data['error']['message'] ?? 'HTTP ' . $httpCode;
+        error_log('[AI_CONTENT] Anthropic API error: ' . $errorMsg);
+        return ['ok' => false, 'content' => null, 'error' => $errorMsg];
+    }
+
+    $data = json_decode($response, true);
+    if (!is_array($data)) {
+        return ['ok' => false, 'content' => null, 'error' => 'Invalid JSON response from Anthropic'];
+    }
+
+    // Anthropic response format: content[0].text
+    $content = $data['content'][0]['text'] ?? null;
+
+    if (empty($content)) {
+        error_log('[AI_CONTENT] Anthropic empty response');
+        return ['ok' => false, 'content' => null, 'error' => 'Empty response from Anthropic'];
+    }
+
+    return ['ok' => true, 'content' => trim($content), 'error' => null];
+}
+
+/**
+ * Generate content using Google Gemini API
+ * @param array $config Configuration with api_key, model
+ * @param string $prompt The prompt to send
+ * @return array Result with ok, content, error keys
+ */
+function ai_content_generate_google(array $config, string $prompt): array {
+    $apiKey = $config['api_key'] ?? '';
+    $model = $config['model'] ?? 'gemini-1.5-flash';
+
+    if (empty($apiKey)) {
+        return ['ok' => false, 'content' => null, 'error' => 'Google API key not configured'];
+    }
+
+    $baseUrl = 'https://generativelanguage.googleapis.com/v1beta';
+    $url = $baseUrl . '/models/' . $model . ':generateContent?key=' . $apiKey;
+
+    $payload = [
+        'contents' => [
+            ['parts' => [['text' => $prompt]]]
+        ]
+    ];
+
+    // Add system instruction if provided
+    if (!empty($config['system_prompt'])) {
+        $payload['systemInstruction'] = ['parts' => [['text' => $config['system_prompt']]]];
+    }
+
+    // Generation config
+    $payload['generationConfig'] = [
+        'maxOutputTokens' => (int)($config['max_tokens'] ?? 4000),
+        'temperature' => (float)($config['temperature'] ?? 0.7)
+    ];
+
+    $ch = curl_init($url);
+    if ($ch === false) {
+        return ['ok' => false, 'content' => null, 'error' => 'Failed to initialize cURL'];
+    }
+
+    curl_setopt_array($ch, [
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_POST => true,
+        CURLOPT_HTTPHEADER => ['Content-Type: application/json'],
+        CURLOPT_POSTFIELDS => json_encode($payload),
+        CURLOPT_TIMEOUT => 120
+    ]);
+
+    $response = curl_exec($ch);
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    $error = curl_error($ch);
+    curl_close($ch);
+
+    if ($response === false || $error) {
+        error_log('[AI_CONTENT] Google curl error: ' . $error);
+        return ['ok' => false, 'content' => null, 'error' => 'Connection error: ' . $error];
+    }
+
+    if ($httpCode !== 200) {
+        $data = json_decode($response, true);
+        $errorMsg = $data['error']['message'] ?? 'HTTP ' . $httpCode;
+        error_log('[AI_CONTENT] Google API error: ' . $errorMsg);
+        return ['ok' => false, 'content' => null, 'error' => $errorMsg];
+    }
+
+    $data = json_decode($response, true);
+    if (!is_array($data)) {
+        return ['ok' => false, 'content' => null, 'error' => 'Invalid JSON response from Google'];
+    }
+
+    // Google response format: candidates[0].content.parts[0].text
+    $content = $data['candidates'][0]['content']['parts'][0]['text'] ?? null;
+
+    if (empty($content)) {
+        error_log('[AI_CONTENT] Google empty response');
+        return ['ok' => false, 'content' => null, 'error' => 'Empty response from Google'];
+    }
+
+    return ['ok' => true, 'content' => trim($content), 'error' => null];
+}
+
+/**
+ * Generate content using DeepSeek API (OpenAI-compatible)
+ * @param array $config Configuration with api_key, model
+ * @param string $prompt The prompt to send
+ * @return array Result with ok, content, error keys
+ */
+function ai_content_generate_deepseek(array $config, string $prompt): array {
+    $apiKey = $config['api_key'] ?? '';
+    $model = $config['model'] ?? 'deepseek-chat';
+    $baseUrl = rtrim(!empty($config['base_url']) ? $config['base_url'] : 'https://api.deepseek.com/v1', '/');
+
+    if (empty($apiKey)) {
+        return ['ok' => false, 'content' => null, 'error' => 'DeepSeek API key not configured'];
+    }
+
+    $maxTokens = (int)($config['max_tokens'] ?? 4000);
+    $isReasoning = strpos($model, 'reasoner') !== false;
+
+    $messages = [];
+    if (!empty($config['system_prompt'])) {
+        $messages[] = ['role' => 'system', 'content' => $config['system_prompt']];
+    }
+    $messages[] = ['role' => 'user', 'content' => $prompt];
+
+    $payload = [
+        'model' => $model,
+        'messages' => $messages
+    ];
+
+    // Reasoning models use max_completion_tokens
+    if ($isReasoning) {
+        $payload['max_completion_tokens'] = $maxTokens;
+    } else {
+        $payload['max_tokens'] = $maxTokens;
+        $payload['temperature'] = (float)($config['temperature'] ?? 0.7);
+    }
+
+    $ch = curl_init($baseUrl . '/chat/completions');
+    if ($ch === false) {
+        return ['ok' => false, 'content' => null, 'error' => 'Failed to initialize cURL'];
+    }
+
+    curl_setopt_array($ch, [
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_POST => true,
+        CURLOPT_HTTPHEADER => [
+            'Content-Type: application/json',
+            'Authorization: Bearer ' . $apiKey
+        ],
+        CURLOPT_POSTFIELDS => json_encode($payload),
+        CURLOPT_TIMEOUT => 120
+    ]);
+
+    $response = curl_exec($ch);
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    $error = curl_error($ch);
+    curl_close($ch);
+
+    if ($response === false || $error) {
+        error_log('[AI_CONTENT] DeepSeek curl error: ' . $error);
+        return ['ok' => false, 'content' => null, 'error' => 'Connection error: ' . $error];
+    }
+
+    if ($httpCode !== 200) {
+        $data = json_decode($response, true);
+        $errorMsg = $data['error']['message'] ?? 'HTTP ' . $httpCode;
+        error_log('[AI_CONTENT] DeepSeek API error: ' . $errorMsg);
+        return ['ok' => false, 'content' => null, 'error' => $errorMsg];
+    }
+
+    $data = json_decode($response, true);
+    if (!is_array($data)) {
+        return ['ok' => false, 'content' => null, 'error' => 'Invalid JSON response from DeepSeek'];
+    }
+
+    // DeepSeek uses OpenAI format: choices[0].message.content
+    $content = $data['choices'][0]['message']['content'] ?? null;
+
+    if (empty($content)) {
+        error_log('[AI_CONTENT] DeepSeek empty response');
+        return ['ok' => false, 'content' => null, 'error' => 'Empty response from DeepSeek'];
+    }
+
+    return ['ok' => true, 'content' => trim($content), 'error' => null];
+}
+
+/**
+ * Load full AI settings (not just active provider)
+ * @return array Full settings array with all providers
+ */
+function ai_config_load_full(): array {
+    $configPath = __DIR__ . '/../config/ai_settings.json';
+    if (!file_exists($configPath)) {
+        return [];
+    }
+    $json = file_get_contents($configPath);
+    if ($json === false) {
+        return [];
+    }
+    $data = json_decode($json, true);
+    return is_array($data) ? $data : [];
+}
+
+/**
+ * Universal AI generate with system prompt support
+ * Works with all providers
+ *
+ * @param string $provider Provider name (openai, anthropic, google, deepseek, ollama)
+ * @param string $model Model ID
+ * @param string $systemPrompt System/context prompt
+ * @param string $userPrompt User message
+ * @param array $options Additional options (max_tokens, temperature)
+ * @return array ['ok' => bool, 'content' => string|null, 'error' => string|null]
+ */
+function ai_universal_generate(
+    string $provider,
+    string $model,
+    string $systemPrompt,
+    string $userPrompt,
+    array $options = []
+): array {
+    // Load settings to get API key
+    $settings = ai_config_load_full();
+    $providerConfig = $settings['providers'][$provider] ?? [];
+
+    if (empty($providerConfig['api_key']) && $provider !== 'ollama') {
+        return ['ok' => false, 'content' => null, 'error' => ucfirst($provider) . ' API key not configured'];
+    }
+
+    // Provider-specific default base URLs
+    $defaultBaseUrls = [
+        'openai' => 'https://api.openai.com/v1',
+        'anthropic' => 'https://api.anthropic.com/v1',
+        'google' => 'https://generativelanguage.googleapis.com/v1beta',
+        'deepseek' => 'https://api.deepseek.com/v1',
+        'ollama' => 'http://localhost:11434',
+        'local' => 'http://localhost:11434',
+    ];
+
+    // Get base_url from config, falling back to provider default
+    $configBaseUrl = trim($providerConfig['base_url'] ?? '');
+    $baseUrl = !empty($configBaseUrl) ? $configBaseUrl : ($defaultBaseUrls[$provider] ?? '');
+
+    // Build config for the specific provider function
+    $config = [
+        'provider' => $provider,
+        'api_key' => $providerConfig['api_key'] ?? '',
+        'model' => $model,
+        'base_url' => $baseUrl,
+        'system_prompt' => $systemPrompt,
+        'max_tokens' => $options['max_tokens'] ?? 4000,
+        'temperature' => $options['temperature'] ?? 0.7,
+    ];
+
+    // Combine prompts for providers that don't support system prompt natively
+    $fullPrompt = $systemPrompt ? $systemPrompt . "\n\n" . $userPrompt : $userPrompt;
+
+    switch ($provider) {
+        case 'openai':
+            return ai_content_generate_openai($config, $fullPrompt);
+        case 'anthropic':
+            return ai_content_generate_anthropic($config, $userPrompt); // Uses system_prompt from config
+        case 'google':
+            return ai_content_generate_google($config, $userPrompt); // Uses systemInstruction
+        case 'deepseek':
+            return ai_content_generate_deepseek($config, $userPrompt); // Uses system message
+        case 'ollama':
+        case 'local':
+            return ai_content_generate_ollama($config, $fullPrompt);
+        default:
+            return ['ok' => false, 'content' => null, 'error' => 'Unknown provider: ' . $provider];
+    }
+}

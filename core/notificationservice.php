@@ -1,4 +1,3 @@
-
 <?php
 /**
  * NotificationService - Minimal stub for bootstrap compatibility

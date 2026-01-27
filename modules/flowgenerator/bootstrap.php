@@ -1,7 +1,7 @@
 <?php
-require_once __DIR__.'/FlowRegistry.php';
-require_once __DIR__.'/FlowTrigger.php';
-require_once __DIR__.'/FlowSender.php';
+require_once __DIR__.'/flowregistry.php';
+require_once __DIR__.'/flowtrigger.php';
+require_once __DIR__.'/flowsender.php';
 
 // Register CMS event listeners
 register_event('layout_published', function($layoutId, $userId) {

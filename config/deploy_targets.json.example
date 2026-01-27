@@ -1,0 +1,26 @@
+{
+  "targets": {
+    "staging": {
+      "label": "Staging server",
+      "method": "ftp",
+      "host": "ftp.example-staging.com",
+      "port": 21,
+      "username": "your-ftp-username",
+      "password": "your-ftp-password",
+      "path": "/public_html/staging",
+      "passive": true,
+      "ssl": false
+    },
+    "production": {
+      "label": "Production server",
+      "method": "ftp",
+      "host": "ftp.example.com",
+      "port": 21,
+      "username": "your-ftp-username",
+      "password": "your-ftp-password",
+      "path": "/public_html",
+      "passive": true,
+      "ssl": false
+    }
+  }
+}

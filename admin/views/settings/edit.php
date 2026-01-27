@@ -1,64 +1,162 @@
 <?php
 /**
  * Settings Edit View
+ * Edit an existing setting
+ *
+ * Variables:
+ *   $setting - array with setting data (id, key, value, group_name, updated_at)
+ *   $groups - array of existing group names
+ *   $errors - array of validation errors (optional)
+ *   $data - form data for repopulating on error (optional)
  */
-require_once __DIR__ . '/../../includes/security/InputValidator.php';
 
-// CSRF token generation
-$csrfToken = bin2hex(random_bytes(32));
-$_SESSION['csrf_token'] = $csrfToken;
+// Escape helper
+if (!function_exists('esc')) {
+    function esc($str) {
+        return htmlspecialchars($str ?? '', ENT_QUOTES, 'UTF-8');
+    }
+}
 
-// Get existing settings or initialize empty array
-$settings = $settings ?? [];
-$errors = $errors ?? [];
+// Use form data if validation failed, otherwise use setting data
+$formData = $data ?? $setting;
+?>
 
-?><div class="settings-container">
-    <h2>Edit Settings</h2>
-    
-    <?php if (!empty($errors)): ?>
-        <div class="alert alert-danger">
-            <ul>
-                <?php foreach ($errors as $error): ?>
-                    <li><?= htmlspecialchars($error) ?></li>
-                <?php endforeach;  ?>
-            </ul>
-        </div>
-    <?php endif;  ?>
-    <form method="post" action="/admin/settings/update">
-        <input type="hidden" name="csrf_token" value="<?= $csrfToken ?>">
-        <div class="form-group">
-            <label for="site_name">Site Name</label>
-            <input type="text" class="form-control" id="site_name" name="site_name" 
-                   value="<?= htmlspecialchars($settings['site_name'] ?? '') ?>">
-            <?php if (isset($errors['site_name'])): ?>                <small class="text-danger"><?= $errors['site_name'] ?></small>
-            <?php endif;  ?>
-        </div>
-
-        <div class="form-group">
-            <label for="admin_email">Admin Email</label>
-            <input type="email" class="form-control" id="admin_email" name="admin_email" 
-                   value="<?= htmlspecialchars($settings['admin_email'] ?? '') ?>">
-            <?php if (isset($errors['admin_email'])): ?>                <small class="text-danger"><?= $errors['admin_email'] ?></small>
-            <?php endif;  ?>
-        </div>
-
-        <div class="form-group">
-            <label for="items_per_page">Items Per Page</label>
-            <input type="number" class="form-control" id="items_per_page" name="items_per_page" 
-                   value="<?= htmlspecialchars($settings['items_per_page'] ?? '10') ?>" min="1" max="100">
-            <?php if (isset($errors['items_per_page'])): ?>                <small class="text-danger"><?= $errors['items_per_page'] ?></small>
-            <?php endif;  ?>
-        </div>
-
-        <div class="form-group">
-            <label for="site_url">Site URL</label>
-            <input type="url" class="form-control" id="site_url" name="site_url" 
-                   value="<?= htmlspecialchars($settings['site_url'] ?? '') ?>">
-            <?php if (isset($errors['site_url'])): ?>                <small class="text-danger"><?= $errors['site_url'] ?></small>
-            <?php endif;  ?>
-        </div>
-
-
-        <button type="submit" class="btn btn-primary">Save Settings</button>
-    </form>
+<div class="content-header">
+    <h1>Edit Setting</h1>
+    <div class="header-actions">
+        <a href="index.php" class="btn btn-secondary">Back to Settings</a>
+    </div>
 </div>
+
+<?php if (!empty($errors)): ?>
+    <div class="alert alert-danger">
+        <ul class="error-list">
+            <?php foreach ($errors as $error): ?>
+                <li><?php echo esc($error); ?></li>
+            <?php endforeach; ?>
+        </ul>
+    </div>
+<?php endif; ?>
+
+<div class="card">
+    <div class="card-header">
+        <h3>Setting Details</h3>
+    </div>
+    <div class="card-body">
+        <form method="post" action="update.php">
+            <?php csrf_field(); ?>
+            <input type="hidden" name="id" value="<?php echo (int) $setting['id']; ?>">
+
+            <div class="form-group">
+                <label for="key">Setting Key <span class="required">*</span></label>
+                <input type="text" class="form-control" id="key" name="key"
+                       value="<?php echo esc($formData['key']); ?>"
+                       required
+                       pattern="[a-zA-Z0-9_.-]+"
+                       title="Only letters, numbers, underscores, dots, and hyphens allowed"
+                       maxlength="100">
+                <small class="form-text text-muted">
+                    Unique identifier for this setting (e.g., site_name, smtp_host)
+                </small>
+            </div>
+
+            <div class="form-group">
+                <label for="value">Value</label>
+                <textarea class="form-control" id="value" name="value"
+                          rows="4"><?php echo esc($formData['value']); ?></textarea>
+                <small class="form-text text-muted">
+                    The setting value. Can be text, JSON, or any string data.
+                </small>
+            </div>
+
+            <div class="form-group">
+                <label for="group_name">Group</label>
+                <input type="text" class="form-control" id="group_name" name="group_name"
+                       value="<?php echo esc($formData['group_name']); ?>"
+                       list="group-options"
+                       maxlength="50"
+                       placeholder="e.g., general, email, security">
+                <datalist id="group-options">
+                    <?php foreach ($groups as $group): ?>
+                        <option value="<?php echo esc($group); ?>">
+                    <?php endforeach; ?>
+                </datalist>
+                <small class="form-text text-muted">
+                    Optional group for organizing settings. Select existing or type new.
+                </small>
+            </div>
+
+            <?php if (!empty($setting['updated_at'])): ?>
+                <div class="form-group">
+                    <label>Last Updated</label>
+                    <p class="form-static">
+                        <?php echo date('F j, Y g:i A', strtotime($setting['updated_at'])); ?>
+                    </p>
+                </div>
+            <?php endif; ?>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Update Setting</button>
+                <a href="index.php" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+.content-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+.form-group {
+    margin-bottom: 1.25rem;
+}
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+.form-control {
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+.form-control:focus {
+    outline: none;
+    border-color: #0066cc;
+    box-shadow: 0 0 0 2px rgba(0, 102, 204, 0.2);
+}
+textarea.form-control {
+    font-family: monospace;
+    resize: vertical;
+}
+.form-text {
+    display: block;
+    margin-top: 0.25rem;
+    font-size: 0.875rem;
+    color: #666;
+}
+.form-static {
+    padding: 0.5rem 0;
+    margin: 0;
+    color: #666;
+}
+.form-actions {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid #eee;
+}
+.required {
+    color: #dc3545;
+}
+.error-list {
+    margin: 0;
+    padding-left: 1.25rem;
+}
+</style>

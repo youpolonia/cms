@@ -34,6 +34,23 @@ class NotificationManager {
         return file_put_contents(self::$queueFile, json_encode($notifications, JSON_PRETTY_PRINT)) !== false;
     }
 
+    public static function markAllAsRead(): bool {
+        $notifications = self::loadNotifications();
+        foreach ($notifications as &$n) {
+            $n['read'] = true;
+        }
+        return file_put_contents(self::$queueFile, json_encode($notifications, JSON_PRETTY_PRINT)) !== false;
+    }
+
+    public static function getUnreadCount(): int {
+        $notifications = self::loadNotifications();
+        return count(array_filter($notifications, fn($n) => empty($n['read'])));
+    }
+
+    public static function deleteNotification(string $id): bool {
+        return self::clearNotification($id);
+    }
+
     private static function loadNotifications(): array {
         if (!file_exists(self::$queueFile)) {
             file_put_contents(self::$queueFile, '[]');

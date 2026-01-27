@@ -1,19 +1,67 @@
 {
-  "name": "Default Theme",
-  "description": "Base theme for the CMS",
-  "version": 1,
-  "author": "CMS Team",
-  "css": "",
-  "preview_html": "<div class='theme-preview'><h1>Default Theme Preview</h1><p>This is a preview of the default theme</p></div>",
-  "config": {
-    "colors": {
-      "primary": "#007bff",
-      "secondary": "#6c757d",
-      "background": "#ffffff"
+    "name": "Default Theme",
+    "description": "Base theme for the CMS with full customization options",
+    "version": "1.0.0",
+    "author": "CMS Team",
+    "supports": {
+        "theme-builder": true,
+        "custom-header": true,
+        "custom-footer": true,
+        "custom-colors": true
     },
-    "fonts": {
-      "main": "Arial, sans-serif",
-      "headings": "Arial, sans-serif"
+    "options": {
+        "show_header": true,
+        "show_footer": true,
+        "body_background": "#0f172a",
+        "preload_fonts": true
+    },
+    "colors": {
+        "primary": "#f97316",
+        "secondary": "#fb923c",
+        "accent": "#ec4899",
+        "background": "#18120a",
+        "surface": "#292017",
+        "text": "#fff7ed",
+        "text_muted": "#fdba74",
+        "border": "#431407",
+        "success": "#10b981",
+        "warning": "#f59e0b",
+        "error": "#ef4444"
+    },
+    "typography": {
+        "fontFamily": "Inter",
+        "headingFont": "Inter",
+        "baseFontSize": "16",
+        "lineHeight": "1.6",
+        "h1Size": "3",
+        "h2Size": "2.25",
+        "h3Size": "1.5",
+        "fontWeight": "400",
+        "headingWeight": "700"
+    },
+    "header": {
+        "background": "transparent",
+        "sticky": true,
+        "blur": true,
+        "height": "72",
+        "logoSize": "32"
+    },
+    "buttons": {
+        "borderRadius": "8",
+        "paddingX": "24",
+        "paddingY": "12",
+        "fontWeight": "600",
+        "uppercase": false,
+        "shadow": true
+    },
+    "layout": {
+        "containerWidth": "1200",
+        "sectionSpacing": "100",
+        "borderRadius": "12"
+    },
+    "effects": {
+        "shadowStrength": "20",
+        "hoverScale": "1.02",
+        "transitionSpeed": "200"
     }
-  }
 }

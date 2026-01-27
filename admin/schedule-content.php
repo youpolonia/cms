@@ -11,6 +11,10 @@ if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== tru
 
 csrf_boot();
 
+
+// RBAC: Require admin access
+require_once __DIR__ . '/includes/permissions.php';
+cms_require_admin_role();
 // Handle form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     csrf_validate_or_403();

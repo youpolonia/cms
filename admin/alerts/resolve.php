@@ -1,32 +1,35 @@
 <?php
-require_once __DIR__ . '/../core/csrf.php';
-require_once __DIR__ . '/../../includes/auth.php';
-require_once __DIR__ . '/../../includes/systemalert.php';
-
-csrf_boot('admin');
-
-header('Content-Type: application/json');
+define('CMS_ROOT', dirname(__DIR__, 2));
+require_once CMS_ROOT . '/config.php';
+if (!defined('DEV_MODE') || DEV_MODE !== true) {
+    http_response_code(403);
+    exit;
+}
+require_once CMS_ROOT . '/core/session_boot.php';
+cms_session_start('admin');
+require_once CMS_ROOT . '/core/csrf.php';
+csrf_boot();
+require_once CMS_ROOT . '/core/auth.php';
+authenticateAdmin();
+require_once CMS_ROOT . '/includes/systemalert.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
-    echo json_encode(['error' => 'Method not allowed']);
-    exit;
-}
-
-if (empty($_POST['alert_id'])) {
-    http_response_code(400);
-    echo json_encode(['error' => 'Missing required parameters']);
+    header('Allow: POST');
     exit;
 }
 
 csrf_validate_or_403();
 
-$alert_id = (int)$_POST['alert_id'];
-$success = SystemAlert::resolve_alert($alert_id);
+$id = isset($_POST['alert_id']) ? (int)$_POST['alert_id'] : 0;
 
-if ($success) {
-    echo json_encode(['success' => true]);
-} else {
-    http_response_code(500);
-    echo json_encode(['error' => 'Failed to resolve alert']);
+if ($id <= 0) {
+    http_response_code(400);
+    echo 'Invalid alert id.';
+    exit;
 }
+
+SystemAlert::resolve_alert($id);
+
+header('Location: /admin/alerts/index.php', true, 303);
+exit;

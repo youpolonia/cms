@@ -1,0 +1,1377 @@
+<?php
+declare(strict_types=1);
+/**
+ * AI Designer - Page Builder
+ * 
+ * STEP 3: Builds individual pages based on analysis, design system, and style.
+ * Each page is generated with full HTML/PHP, respecting the design system.
+ *
+ * Supports all 10 design styles from AI Theme Builder.
+ * Supports all 30 industries from AI Theme Builder.
+ * Supports all 10 page types from AI Theme Builder.
+ *
+ * @package AiDesigner
+ * @version 4.0
+ */
+
+namespace Core\AiDesigner;
+
+class PageBuilder
+{
+    private array $aiSettings;
+    
+    // ═══════════════════════════════════════════════════════════════════════════
+    // Section type descriptions for AI prompts
+    // ═══════════════════════════════════════════════════════════════════════════
+    
+    private array $sectionDescriptions = [
+        // Hero sections
+        'hero' => 'Full-width hero section with headline, subheadline, CTA button, background image/gradient',
+        
+        // About sections
+        'about-preview' => 'Brief about section with image and text, link to full about page',
+        'story' => 'Company story/history narrative with timeline or milestones',
+        'mission' => 'Mission and vision statement with icons or imagery',
+        'values' => 'Core values grid with icons and descriptions (3-4 items)',
+        'timeline' => 'Company history timeline with dates and milestones',
+        'culture' => 'Company culture showcase with photos and descriptions',
+        
+        // Features & Services
+        'features' => 'Grid of 3-4 feature cards with icons, titles, descriptions',
+        'services-preview' => 'Preview of top services with cards, link to full page',
+        'services-grid' => 'Full grid of all services with details and icons',
+        'process' => 'How it works / process steps (3-5 steps with icons)',
+        
+        // Testimonials & Social Proof
+        'testimonials' => '2-3 customer testimonials with photos, quotes, names, roles',
+        'testimonials-grid' => 'Full testimonials grid (6+ testimonials)',
+        'stats' => 'Counter stats section (years, clients, projects - 3-4 numbers)',
+        'clients' => 'Client logos grid or carousel',
+        
+        // Team
+        'team-preview' => 'Preview of key team members (3-4 people with photos)',
+        'team-grid' => 'Full team grid with all members, roles, social links',
+        
+        // Pricing
+        'pricing-preview' => 'Featured pricing plans (2-3 plans)',
+        'pricing-table' => 'Full pricing comparison table with features',
+        'features-comparison' => 'Feature comparison table for pricing tiers',
+        
+        // FAQ
+        'faq' => 'Frequently asked questions accordion (6-8 questions)',
+        'faq-preview' => 'Top 3-4 FAQs with link to full FAQ page',
+        
+        // Portfolio & Gallery
+        'gallery-preview' => 'Preview gallery grid (4-6 images)',
+        'gallery-grid' => 'Full image gallery with lightbox',
+        'portfolio-grid' => 'Portfolio items grid with filters and categories',
+        'filter' => 'Category filter buttons for portfolio/gallery',
+        
+        // Contact
+        'contact-info' => 'Contact information blocks (address, phone, email, hours)',
+        'contact-form' => 'Contact form with name, email, phone, message fields',
+        'map' => 'Location map embed (Google Maps placeholder)',
+        'hours' => 'Business hours table',
+        
+        // CTA sections
+        'cta' => 'Call-to-action banner with headline, text, and button',
+        'contact-cta' => 'Contact call-to-action with phone/email and button',
+        'newsletter' => 'Newsletter signup form with email field',
+        
+        // Blog
+        'featured-post' => 'Featured/latest blog post highlight',
+        'posts-grid' => 'Blog posts grid with thumbnails, titles, excerpts',
+        'categories' => 'Blog/product categories list or grid',
+        
+        // Industry-specific
+        'menu-highlights' => 'Restaurant menu highlights with images and prices',
+        'menu-categories' => 'Full menu organized by categories',
+        'specials' => 'Special offers, deals, or featured items',
+        'reservation-cta' => 'Reservation/booking call-to-action',
+        'dietary-info' => 'Dietary information icons and descriptions',
+        'rooms-preview' => 'Hotel rooms preview with images and prices',
+        'rooms-grid' => 'Full rooms listing with details',
+        'amenities' => 'Amenities list with icons',
+        'booking-cta' => 'Booking call-to-action section',
+        'booking-form' => 'Booking/reservation form',
+        'programs-preview' => 'Fitness programs or classes preview',
+        'trainers' => 'Trainers/instructors showcase',
+        'schedule' => 'Class schedule or timetable',
+        'membership-cta' => 'Membership signup CTA',
+        'class-schedule' => 'Detailed class schedule',
+        'class-types' => 'Types of classes offered',
+        'join-cta' => 'Join/signup CTA',
+        'featured-properties' => 'Featured real estate properties',
+        'search' => 'Property search form',
+        'property-grid' => 'Properties listing grid',
+        'search-filters' => 'Search filters sidebar',
+        'featured-products' => 'Featured products grid',
+        'deals' => 'Special deals and offers',
+        'product-grid' => 'Products listing grid',
+        'filters' => 'Product filters'
+    ];
+
+    // ═══════════════════════════════════════════════════════════════════════════
+    // Style-specific design traits for AI prompts
+    // ═══════════════════════════════════════════════════════════════════════════
+    
+    private array $styleTraits = [
+        'modern' => [
+            'layout' => 'Clean grid layouts, generous whitespace, asymmetric compositions',
+            'typography' => 'Sans-serif fonts, large headings, readable body text',
+            'colors' => 'Blue primary, green accents, white backgrounds, subtle shadows',
+            'elements' => 'Rounded corners (8-12px), soft shadows, gradient accents',
+            'imagery' => 'High-quality photography, clean product shots'
+        ],
+        'corporate' => [
+            'layout' => 'Structured grid, professional spacing, organized hierarchy',
+            'typography' => 'Professional sans-serif, moderate sizes, clear hierarchy',
+            'colors' => 'Navy blue primary, green secondary, white/gray backgrounds',
+            'elements' => 'Small border radius (4-6px), minimal shadows, clean lines',
+            'imagery' => 'Professional photography, business settings, team photos'
+        ],
+        'creative' => [
+            'layout' => 'Dynamic layouts, overlapping elements, unexpected compositions',
+            'typography' => 'Mix of fonts, large expressive headings, creative treatments',
+            'colors' => 'Purple/pink gradients, vibrant accents, bold contrasts',
+            'elements' => 'Varied border radius, colored shadows, animated elements',
+            'imagery' => 'Artistic photography, illustrations, abstract elements'
+        ],
+        'minimal' => [
+            'layout' => 'Maximum whitespace, centered content, simple grids',
+            'typography' => 'Clean sans-serif, large sizes, high contrast',
+            'colors' => 'Black/white primary, minimal accent colors',
+            'elements' => 'No border radius, no shadows, thin borders only',
+            'imagery' => 'Minimal photography, lots of negative space'
+        ],
+        'elegant' => [
+            'layout' => 'Balanced compositions, refined spacing, editorial feel',
+            'typography' => 'Serif headings, classic proportions, refined details',
+            'colors' => 'Warm browns, gold accents, cream backgrounds',
+            'elements' => 'Small border radius (2-4px), subtle shadows, delicate borders',
+            'imagery' => 'High-end photography, atmospheric shots, details'
+        ],
+        'vintage' => [
+            'layout' => 'Classic layouts, centered compositions, decorative elements',
+            'typography' => 'Serif fonts, vintage-style headings, ornamental details',
+            'colors' => 'Sepia tones, earthy colors, cream/beige backgrounds',
+            'elements' => 'No/minimal border radius, textured backgrounds, borders',
+            'imagery' => 'Vintage-style photography, nostalgic imagery'
+        ],
+        'luxury' => [
+            'layout' => 'Dramatic layouts, bold spacing, cinematic feel',
+            'typography' => 'Elegant serif/sans-serif, large headings, letter-spacing',
+            'colors' => 'Black/dark backgrounds, gold accents, high contrast',
+            'elements' => 'Minimal border radius, dramatic shadows, metallic effects',
+            'imagery' => 'Premium photography, dramatic lighting, exclusive feel'
+        ],
+        'bold' => [
+            'layout' => 'Full-bleed sections, dramatic contrasts, impactful',
+            'typography' => 'Extra-bold fonts, oversized headings, uppercase',
+            'colors' => 'Red/orange primary, dark backgrounds, high saturation',
+            'elements' => 'Medium border radius, strong shadows, bold buttons',
+            'imagery' => 'Dynamic photography, action shots, energetic'
+        ],
+        'organic' => [
+            'layout' => 'Flowing layouts, soft curves, natural feel',
+            'typography' => 'Friendly rounded fonts, warm feel',
+            'colors' => 'Greens, earth tones, natural palette, soft backgrounds',
+            'elements' => 'Large border radius (16-24px), soft shadows, rounded shapes',
+            'imagery' => 'Nature photography, organic textures, warm lighting'
+        ],
+        'industrial' => [
+            'layout' => 'Grid-based, structured, utilitarian',
+            'typography' => 'Condensed fonts, all-caps headings, mechanical feel',
+            'colors' => 'Grays, yellows/orange accents, concrete backgrounds',
+            'elements' => 'Minimal border radius, hard shadows, visible structure',
+            'imagery' => 'Raw photography, textures, behind-the-scenes'
+        ]
+    ];
+
+    public function __construct(array $aiSettings)
+    {
+        $this->aiSettings = $aiSettings;
+    }
+
+    /**
+     * Build a single page
+     */
+    public function build(
+        string $pageName,
+        array $analysis,
+        array $designSystem,
+        array $personality,
+        array $input
+    ): string {
+        $pagePlan = $analysis['page_plans'][$pageName] ?? null;
+        $sections = $pagePlan['sections'] ?? $this->getDefaultSections($pageName);
+        $style = $designSystem['style'] ?? 'modern';
+        $industry = $input['industry'] ?? 'business';
+        
+        // Try AI-generated page first
+        $pageHtml = $this->callAIForPage($pageName, $sections, $analysis, $designSystem, $style, $input);
+        
+        if (!empty($pageHtml) && $this->validatePageHtml($pageHtml)) {
+            return $this->wrapPage($pageHtml, $pageName, $input);
+        }
+        
+        // Fallback to template-based generation
+        return $this->buildFromTemplate($pageName, $sections, $analysis, $designSystem, $style, $input);
+    }
+
+    /**
+     * Get default sections for page type
+     */
+    private function getDefaultSections(string $pageName): array
+    {
+        $defaults = [
+            'homepage' => ['hero', 'about-preview', 'features', 'services-preview', 'testimonials', 'cta'],
+            'about' => ['hero', 'story', 'values', 'team-preview', 'cta'],
+            'services' => ['hero', 'services-grid', 'process', 'cta'],
+            'contact' => ['hero', 'contact-info', 'contact-form', 'map'],
+            'blog' => ['hero', 'posts-grid', 'newsletter'],
+            'portfolio' => ['hero', 'portfolio-grid', 'cta'],
+            'pricing' => ['hero', 'pricing-table', 'faq-preview', 'cta'],
+            'team' => ['hero', 'team-grid', 'culture', 'cta'],
+            'faq' => ['hero', 'faq', 'contact-cta'],
+            'testimonials' => ['hero', 'testimonials-grid', 'stats', 'cta']
+        ];
+        
+        return $defaults[strtolower($pageName)] ?? ['hero', 'content', 'cta'];
+    }
+
+    /**
+     * Call AI to generate page HTML
+     */
+    private function callAIForPage(
+        string $pageName,
+        array $sections,
+        array $analysis,
+        array $designSystem,
+        string $style,
+        array $input
+    ): string {
+        $prompt = $this->buildPagePrompt($pageName, $sections, $analysis, $designSystem, $style, $input);
+        
+        try {
+            $response = $this->callAI($prompt);
+            $html = $this->extractHtmlFromResponse($response);
+            return $html;
+        } catch (\Exception $e) {
+            error_log("[AI-Designer] Page generation failed for {$pageName}: " . $e->getMessage());
+            return '';
+        }
+    }
+
+    /**
+     * Build comprehensive prompt for AI page generation
+     */
+    private function buildPagePrompt(
+        string $pageName,
+        array $sections,
+        array $analysis,
+        array $designSystem,
+        string $style,
+        array $input
+    ): string {
+        $businessName = $input['business_name'] ?? 'Business';
+        $industry = $input['industry'] ?? 'business';
+        $brief = $input['brief'] ?? '';
+        
+        // Get style traits
+        $styleTraits = $this->styleTraits[$style] ?? $this->styleTraits['modern'];
+        
+        // Get colors
+        $colors = $designSystem['colors'] ?? [];
+        $typography = $designSystem['typography'] ?? [];
+        
+        // Build sections description
+        $sectionsDesc = $this->buildSectionsDescription($sections);
+        
+        // Get content suggestions
+        $keyMessages = implode(', ', $analysis['key_messages'] ?? []);
+        $targetAudience = $analysis['target_audience'] ?? '';
+        $tone = $analysis['tone'] ?? 'professional';
+        $usps = implode(', ', $analysis['unique_selling_points'] ?? []);
+        
+        // Format colors for prompt
+        $colorsList = "Primary: {$colors['primary']}, Secondary: {$colors['secondary']}, " .
+                      "Background: {$colors['background']}, Text: {$colors['text']}";
+        
+        return <<<PROMPT
+You are an elite web designer building the {$pageName} page for "{$businessName}".
+
+═══════════════════════════════════════════════════════════════════════════════
+DESIGN STYLE: {$style} (FOLLOW STRICTLY!)
+═══════════════════════════════════════════════════════════════════════════════
+Layout: {$styleTraits['layout']}
+Typography: {$styleTraits['typography']}
+Colors: {$styleTraits['colors']}
+Elements: {$styleTraits['elements']}
+Imagery: {$styleTraits['imagery']}
+
+═══════════════════════════════════════════════════════════════════════════════
+BUSINESS CONTEXT
+═══════════════════════════════════════════════════════════════════════════════
+Industry: {$industry}
+Target Audience: {$targetAudience}
+Tone: {$tone}
+Key Messages: {$keyMessages}
+Unique Selling Points: {$usps}
+
+Brief: {$brief}
+
+═══════════════════════════════════════════════════════════════════════════════
+DESIGN SYSTEM
+═══════════════════════════════════════════════════════════════════════════════
+Colors: {$colorsList}
+Heading Font: {$typography['heading_font']}
+Body Font: {$typography['body_font']}
+
+═══════════════════════════════════════════════════════════════════════════════
+PAGE SECTIONS TO BUILD
+═══════════════════════════════════════════════════════════════════════════════
+{$sectionsDesc}
+
+═══════════════════════════════════════════════════════════════════════════════
+REQUIREMENTS
+═══════════════════════════════════════════════════════════════════════════════
+1. Create ONLY the <main> content (no <html>, <head>, <body>, header, footer)
+2. Each section must be wrapped in <section class="section section-[name]">
+3. Use semantic HTML5 elements
+4. Use these CSS classes:
+   - .container (max-width wrapper)
+   - .btn, .btn-primary, .btn-secondary (buttons)
+   - .card (card components)
+   - .grid, .grid-2, .grid-3, .grid-4 (grid layouts)
+5. Use CSS variables: var(--color-primary), var(--color-text), etc.
+6. Font Awesome icons: <i class="fas fa-icon-name"></i> or <i class="far fa-icon-name"></i>
+7. Image placeholders: <img src="PLACEHOLDER:description" alt="description">
+8. Write REAL, SPECIFIC content for {$businessName} - NO lorem ipsum!
+9. Match the {$style} style EXACTLY in your design choices
+
+═══════════════════════════════════════════════════════════════════════════════
+OUTPUT FORMAT
+═══════════════════════════════════════════════════════════════════════════════
+Return ONLY the HTML code starting with <main> and ending with </main>.
+No explanations, no markdown code blocks - just pure HTML.
+
+BUILD THE {$pageName} PAGE NOW:
+PROMPT;
+    }
+
+    /**
+     * Build sections description for prompt
+     */
+    private function buildSectionsDescription(array $sections): string
+    {
+        $lines = [];
+        $index = 1;
+        
+        foreach ($sections as $section) {
+            $desc = $this->sectionDescriptions[$section] ?? "Section: {$section}";
+            $lines[] = "{$index}. {$section}: {$desc}";
+            $index++;
+        }
+        
+        return implode("\n", $lines);
+    }
+
+    /**
+     * Extract HTML from AI response
+     */
+    private function extractHtmlFromResponse(string $response): string
+    {
+        // Remove markdown code blocks if present
+        $response = preg_replace('/```html?\s*/i', '', $response);
+        $response = preg_replace('/```\s*$/m', '', $response);
+        $response = trim($response);
+        
+        // Try to extract <main>...</main>
+        if (preg_match('/<main[^>]*>.*<\/main>/is', $response, $matches)) {
+            return $matches[0];
+        }
+        
+        // If no main tag but has sections, wrap in main
+        if (strpos($response, '<section') !== false) {
+            return "<main class=\"page-content\">\n{$response}\n</main>";
+        }
+        
+        // If has div content, wrap
+        if (strpos($response, '<div') !== false || strpos($response, '<') === 0) {
+            return "<main class=\"page-content\">\n{$response}\n</main>";
+        }
+        
+        return '';
+    }
+
+    /**
+     * Validate page HTML has minimum required structure
+     */
+    private function validatePageHtml(string $html): bool
+    {
+        // Must have some content
+        if (strlen($html) < 200) {
+            return false;
+        }
+        
+        // Must have section or div tags
+        if (strpos($html, '<section') === false && strpos($html, '<div') === false) {
+            return false;
+        }
+        
+        return true;
+    }
+
+    /**
+     * Wrap page content with PHP template structure
+     */
+    private function wrapPage(string $mainContent, string $pageName, array $input): string
+    {
+        $title = ucfirst(str_replace(['-', '_'], ' ', $pageName));
+        $businessName = $input['business_name'] ?? 'Website';
+        $pageTitle = $pageName === 'homepage' ? $businessName : "{$title} | {$businessName}";
+        
+        // Clean up the main content
+        $mainContent = trim($mainContent);
+        
+        return <<<PHP
+<?php
+/**
+ * {$title} Page
+ * Generated by AI Designer for {$businessName}
+ * 
+ * @package Theme
+ */
+
+// Page configuration
+\$page_title = '{$pageTitle}';
+\$page_name = '{$pageName}';
+
+// Include header
+if (isset(\$theme_path) && file_exists(\$theme_path . '/header.php')) {
+    include \$theme_path . '/header.php';
+}
+?>
+
+{$mainContent}
+
+<?php
+// Include footer
+if (isset(\$theme_path) && file_exists(\$theme_path . '/footer.php')) {
+    include \$theme_path . '/footer.php';
+}
+PHP;
+    }
+
+    /**
+     * Build page from template when AI fails (fallback)
+     */
+    private function buildFromTemplate(
+        string $pageName,
+        array $sections,
+        array $analysis,
+        array $designSystem,
+        string $style,
+        array $input
+    ): string {
+        $businessName = $input['business_name'] ?? 'Business';
+        $industry = $input['industry'] ?? 'business';
+        $colors = $designSystem['colors'] ?? [];
+        
+        $html = "<main class=\"page-content page-{$pageName}\">\n";
+        
+        foreach ($sections as $section) {
+            $html .= $this->buildSection($section, $businessName, $industry, $colors, $analysis);
+        }
+        
+        $html .= "</main>";
+        
+        return $this->wrapPage($html, $pageName, $input);
+    }
+
+    /**
+     * Build individual section HTML (template fallback)
+     */
+    private function buildSection(
+        string $sectionType,
+        string $businessName,
+        string $industry,
+        array $colors,
+        array $analysis
+    ): string {
+        $keyMessages = $analysis['key_messages'] ?? [];
+        $headline = $keyMessages[0] ?? "Welcome to {$businessName}";
+        
+        switch ($sectionType) {
+            case 'hero':
+                return $this->buildHeroSection($businessName, $headline, $industry);
+            
+            case 'about-preview':
+                return $this->buildAboutPreviewSection($businessName);
+            
+            case 'features':
+                return $this->buildFeaturesSection($industry);
+            
+            case 'services-preview':
+            case 'services-grid':
+                return $this->buildServicesSection($industry);
+            
+            case 'testimonials':
+            case 'testimonials-grid':
+                return $this->buildTestimonialsSection();
+            
+            case 'cta':
+            case 'contact-cta':
+                return $this->buildCtaSection($businessName);
+            
+            case 'stats':
+                return $this->buildStatsSection();
+            
+            case 'team-preview':
+            case 'team-grid':
+                return $this->buildTeamSection();
+            
+            case 'contact-info':
+                return $this->buildContactInfoSection($businessName);
+            
+            case 'contact-form':
+                return $this->buildContactFormSection();
+            
+            case 'map':
+                return $this->buildMapSection();
+            
+            case 'pricing-table':
+            case 'pricing-preview':
+                return $this->buildPricingSection();
+            
+            case 'faq':
+            case 'faq-preview':
+                return $this->buildFaqSection();
+            
+            case 'portfolio-grid':
+            case 'gallery-grid':
+            case 'gallery-preview':
+                return $this->buildGallerySection();
+            
+            case 'posts-grid':
+            case 'featured-post':
+                return $this->buildBlogSection();
+            
+            case 'newsletter':
+                return $this->buildNewsletterSection();
+            
+            case 'story':
+                return $this->buildStorySection($businessName);
+            
+            case 'values':
+            case 'mission':
+                return $this->buildValuesSection();
+            
+            case 'process':
+                return $this->buildProcessSection();
+            
+            default:
+                return $this->buildGenericSection($sectionType);
+        }
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════════
+    // Section Templates (Fallback)
+    // ═══════════════════════════════════════════════════════════════════════════
+
+    private function buildHeroSection(string $businessName, string $headline, string $industry): string
+    {
+        return <<<HTML
+
+    <section class="section section-hero" style="background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%); padding: 120px 0; text-align: center;">
+        <div class="container">
+            <h1 style="color: #fff; font-size: 3.5rem; margin-bottom: 1.5rem;">{$headline}</h1>
+            <p style="color: rgba(255,255,255,0.9); font-size: 1.25rem; max-width: 600px; margin: 0 auto 2rem;">
+                Experience excellence with {$businessName}. We deliver quality {$industry} services that exceed expectations.
+            </p>
+            <div class="hero-buttons">
+                <a href="#contact" class="btn btn-primary" style="background: #fff; color: var(--color-primary); margin-right: 1rem;">Get Started</a>
+                <a href="#about" class="btn btn-secondary" style="border-color: #fff; color: #fff;">Learn More</a>
+            </div>
+        </div>
+    </section>
+
+HTML;
+    }
+
+    private function buildAboutPreviewSection(string $businessName): string
+    {
+        return <<<HTML
+
+    <section class="section section-about-preview" style="padding: 100px 0;">
+        <div class="container">
+            <div class="grid grid-2" style="display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center;">
+                <div class="about-image">
+                    <img src="PLACEHOLDER:professional team working together" alt="Our Team" style="width: 100%; border-radius: var(--radius-lg); box-shadow: var(--shadow-lg);">
+                </div>
+                <div class="about-content">
+                    <h2 style="font-size: 2.5rem; margin-bottom: 1.5rem;">About {$businessName}</h2>
+                    <p style="color: var(--color-text-muted); margin-bottom: 1.5rem; line-height: 1.8;">
+                        We are passionate about delivering exceptional service and creating lasting relationships with our clients. 
+                        With years of experience and a dedicated team, we've built a reputation for excellence.
+                    </p>
+                    <p style="color: var(--color-text-muted); margin-bottom: 2rem; line-height: 1.8;">
+                        Our commitment to quality and innovation drives everything we do. We believe in going above and beyond to meet your needs.
+                    </p>
+                    <a href="/about" class="btn btn-primary">Learn More About Us</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+HTML;
+    }
+
+    private function buildFeaturesSection(string $industry): string
+    {
+        return <<<HTML
+
+    <section class="section section-features" style="padding: 100px 0; background: var(--color-surface);">
+        <div class="container">
+            <div class="section-header" style="text-align: center; margin-bottom: 60px;">
+                <h2 style="font-size: 2.5rem; margin-bottom: 1rem;">Why Choose Us</h2>
+                <p style="color: var(--color-text-muted); max-width: 600px; margin: 0 auto;">
+                    Discover what makes us the preferred choice in the {$industry} industry.
+                </p>
+            </div>
+            <div class="grid grid-3" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px;">
+                <div class="card feature-card" style="text-align: center; padding: 40px 30px;">
+                    <div class="feature-icon" style="font-size: 3rem; color: var(--color-primary); margin-bottom: 1.5rem;">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <h3 style="margin-bottom: 1rem;">Quality Excellence</h3>
+                    <p style="color: var(--color-text-muted);">We maintain the highest standards in everything we do, ensuring exceptional results every time.</p>
+                </div>
+                <div class="card feature-card" style="text-align: center; padding: 40px 30px;">
+                    <div class="feature-icon" style="font-size: 3rem; color: var(--color-primary); margin-bottom: 1.5rem;">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h3 style="margin-bottom: 1rem;">Expert Team</h3>
+                    <p style="color: var(--color-text-muted);">Our experienced professionals are dedicated to delivering outstanding service and support.</p>
+                </div>
+                <div class="card feature-card" style="text-align: center; padding: 40px 30px;">
+                    <div class="feature-icon" style="font-size: 3rem; color: var(--color-primary); margin-bottom: 1.5rem;">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <h3 style="margin-bottom: 1rem;">Always Available</h3>
+                    <p style="color: var(--color-text-muted);">We're here when you need us, providing responsive support and timely solutions.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+HTML;
+    }
+
+    private function buildServicesSection(string $industry): string
+    {
+        return <<<HTML
+
+    <section class="section section-services" style="padding: 100px 0;">
+        <div class="container">
+            <div class="section-header" style="text-align: center; margin-bottom: 60px;">
+                <h2 style="font-size: 2.5rem; margin-bottom: 1rem;">Our Services</h2>
+                <p style="color: var(--color-text-muted); max-width: 600px; margin: 0 auto;">
+                    Comprehensive {$industry} solutions tailored to your needs.
+                </p>
+            </div>
+            <div class="grid grid-3" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px;">
+                <div class="card service-card" style="padding: 0; overflow: hidden;">
+                    <img src="PLACEHOLDER:professional service image 1" alt="Service 1" style="width: 100%; height: 200px; object-fit: cover;">
+                    <div style="padding: 30px;">
+                        <h3 style="margin-bottom: 1rem;">Service One</h3>
+                        <p style="color: var(--color-text-muted); margin-bottom: 1.5rem;">Professional service designed to meet your specific requirements.</p>
+                        <a href="/services" style="color: var(--color-primary); font-weight: 600;">Learn More →</a>
+                    </div>
+                </div>
+                <div class="card service-card" style="padding: 0; overflow: hidden;">
+                    <img src="PLACEHOLDER:professional service image 2" alt="Service 2" style="width: 100%; height: 200px; object-fit: cover;">
+                    <div style="padding: 30px;">
+                        <h3 style="margin-bottom: 1rem;">Service Two</h3>
+                        <p style="color: var(--color-text-muted); margin-bottom: 1.5rem;">Expert solutions that deliver measurable results.</p>
+                        <a href="/services" style="color: var(--color-primary); font-weight: 600;">Learn More →</a>
+                    </div>
+                </div>
+                <div class="card service-card" style="padding: 0; overflow: hidden;">
+                    <img src="PLACEHOLDER:professional service image 3" alt="Service 3" style="width: 100%; height: 200px; object-fit: cover;">
+                    <div style="padding: 30px;">
+                        <h3 style="margin-bottom: 1rem;">Service Three</h3>
+                        <p style="color: var(--color-text-muted); margin-bottom: 1.5rem;">Comprehensive approach to achieve your goals.</p>
+                        <a href="/services" style="color: var(--color-primary); font-weight: 600;">Learn More →</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+HTML;
+    }
+
+    private function buildTestimonialsSection(): string
+    {
+        return <<<HTML
+
+    <section class="section section-testimonials" style="padding: 100px 0; background: var(--color-surface);">
+        <div class="container">
+            <div class="section-header" style="text-align: center; margin-bottom: 60px;">
+                <h2 style="font-size: 2.5rem; margin-bottom: 1rem;">What Our Clients Say</h2>
+                <p style="color: var(--color-text-muted);">Hear from our satisfied customers.</p>
+            </div>
+            <div class="grid grid-3" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px;">
+                <div class="card testimonial-card" style="padding: 40px; text-align: center;">
+                    <img src="PLACEHOLDER:professional headshot person 1" alt="Client" style="width: 80px; height: 80px; border-radius: 50%; margin-bottom: 1.5rem; object-fit: cover;">
+                    <p style="font-style: italic; color: var(--color-text-muted); margin-bottom: 1.5rem; line-height: 1.8;">
+                        "Exceptional service from start to finish. The team exceeded our expectations and delivered outstanding results."
+                    </p>
+                    <h4 style="margin-bottom: 0.25rem;">Sarah Johnson</h4>
+                    <p style="color: var(--color-text-muted); font-size: 0.875rem;">CEO, Company Inc.</p>
+                </div>
+                <div class="card testimonial-card" style="padding: 40px; text-align: center;">
+                    <img src="PLACEHOLDER:professional headshot person 2" alt="Client" style="width: 80px; height: 80px; border-radius: 50%; margin-bottom: 1.5rem; object-fit: cover;">
+                    <p style="font-style: italic; color: var(--color-text-muted); margin-bottom: 1.5rem; line-height: 1.8;">
+                        "Professional, reliable, and incredibly talented. I couldn't be happier with the results."
+                    </p>
+                    <h4 style="margin-bottom: 0.25rem;">Michael Chen</h4>
+                    <p style="color: var(--color-text-muted); font-size: 0.875rem;">Director, Tech Corp</p>
+                </div>
+                <div class="card testimonial-card" style="padding: 40px; text-align: center;">
+                    <img src="PLACEHOLDER:professional headshot person 3" alt="Client" style="width: 80px; height: 80px; border-radius: 50%; margin-bottom: 1.5rem; object-fit: cover;">
+                    <p style="font-style: italic; color: var(--color-text-muted); margin-bottom: 1.5rem; line-height: 1.8;">
+                        "A pleasure to work with. Their attention to detail and commitment to quality is unmatched."
+                    </p>
+                    <h4 style="margin-bottom: 0.25rem;">Emily Davis</h4>
+                    <p style="color: var(--color-text-muted); font-size: 0.875rem;">Founder, Startup LLC</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+HTML;
+    }
+
+    private function buildCtaSection(string $businessName): string
+    {
+        return <<<HTML
+
+    <section class="section section-cta" style="padding: 100px 0; background: var(--color-primary); text-align: center;">
+        <div class="container">
+            <h2 style="color: #fff; font-size: 2.5rem; margin-bottom: 1.5rem;">Ready to Get Started?</h2>
+            <p style="color: rgba(255,255,255,0.9); max-width: 600px; margin: 0 auto 2rem; font-size: 1.125rem;">
+                Contact {$businessName} today and let's discuss how we can help you achieve your goals.
+            </p>
+            <a href="/contact" class="btn" style="background: #fff; color: var(--color-primary); padding: 16px 40px; font-size: 1.125rem;">Contact Us Now</a>
+        </div>
+    </section>
+
+HTML;
+    }
+
+    private function buildStatsSection(): string
+    {
+        return <<<HTML
+
+    <section class="section section-stats" style="padding: 80px 0; background: var(--color-primary);">
+        <div class="container">
+            <div class="grid grid-4" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 30px; text-align: center;">
+                <div class="stat-item">
+                    <div style="font-size: 3rem; font-weight: 700; color: #fff; margin-bottom: 0.5rem;">15+</div>
+                    <div style="color: rgba(255,255,255,0.8);">Years Experience</div>
+                </div>
+                <div class="stat-item">
+                    <div style="font-size: 3rem; font-weight: 700; color: #fff; margin-bottom: 0.5rem;">500+</div>
+                    <div style="color: rgba(255,255,255,0.8);">Happy Clients</div>
+                </div>
+                <div class="stat-item">
+                    <div style="font-size: 3rem; font-weight: 700; color: #fff; margin-bottom: 0.5rem;">1000+</div>
+                    <div style="color: rgba(255,255,255,0.8);">Projects Completed</div>
+                </div>
+                <div class="stat-item">
+                    <div style="font-size: 3rem; font-weight: 700; color: #fff; margin-bottom: 0.5rem;">24/7</div>
+                    <div style="color: rgba(255,255,255,0.8);">Support Available</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+HTML;
+    }
+
+    private function buildTeamSection(): string
+    {
+        return <<<HTML
+
+    <section class="section section-team" style="padding: 100px 0;">
+        <div class="container">
+            <div class="section-header" style="text-align: center; margin-bottom: 60px;">
+                <h2 style="font-size: 2.5rem; margin-bottom: 1rem;">Meet Our Team</h2>
+                <p style="color: var(--color-text-muted);">The talented people behind our success.</p>
+            </div>
+            <div class="grid grid-4" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 30px;">
+                <div class="card team-card" style="text-align: center; padding: 30px;">
+                    <img src="PLACEHOLDER:professional headshot CEO" alt="Team Member" style="width: 120px; height: 120px; border-radius: 50%; margin-bottom: 1.5rem; object-fit: cover;">
+                    <h4 style="margin-bottom: 0.25rem;">John Smith</h4>
+                    <p style="color: var(--color-primary); font-size: 0.875rem; margin-bottom: 1rem;">CEO & Founder</p>
+                    <div class="social-links">
+                        <a href="#" style="color: var(--color-text-muted); margin: 0 8px;"><i class="fab fa-linkedin"></i></a>
+                        <a href="#" style="color: var(--color-text-muted); margin: 0 8px;"><i class="fab fa-twitter"></i></a>
+                    </div>
+                </div>
+                <div class="card team-card" style="text-align: center; padding: 30px;">
+                    <img src="PLACEHOLDER:professional headshot CTO" alt="Team Member" style="width: 120px; height: 120px; border-radius: 50%; margin-bottom: 1.5rem; object-fit: cover;">
+                    <h4 style="margin-bottom: 0.25rem;">Jane Doe</h4>
+                    <p style="color: var(--color-primary); font-size: 0.875rem; margin-bottom: 1rem;">CTO</p>
+                    <div class="social-links">
+                        <a href="#" style="color: var(--color-text-muted); margin: 0 8px;"><i class="fab fa-linkedin"></i></a>
+                        <a href="#" style="color: var(--color-text-muted); margin: 0 8px;"><i class="fab fa-twitter"></i></a>
+                    </div>
+                </div>
+                <div class="card team-card" style="text-align: center; padding: 30px;">
+                    <img src="PLACEHOLDER:professional headshot designer" alt="Team Member" style="width: 120px; height: 120px; border-radius: 50%; margin-bottom: 1.5rem; object-fit: cover;">
+                    <h4 style="margin-bottom: 0.25rem;">Mike Wilson</h4>
+                    <p style="color: var(--color-primary); font-size: 0.875rem; margin-bottom: 1rem;">Lead Designer</p>
+                    <div class="social-links">
+                        <a href="#" style="color: var(--color-text-muted); margin: 0 8px;"><i class="fab fa-linkedin"></i></a>
+                        <a href="#" style="color: var(--color-text-muted); margin: 0 8px;"><i class="fab fa-dribbble"></i></a>
+                    </div>
+                </div>
+                <div class="card team-card" style="text-align: center; padding: 30px;">
+                    <img src="PLACEHOLDER:professional headshot developer" alt="Team Member" style="width: 120px; height: 120px; border-radius: 50%; margin-bottom: 1.5rem; object-fit: cover;">
+                    <h4 style="margin-bottom: 0.25rem;">Lisa Chen</h4>
+                    <p style="color: var(--color-primary); font-size: 0.875rem; margin-bottom: 1rem;">Lead Developer</p>
+                    <div class="social-links">
+                        <a href="#" style="color: var(--color-text-muted); margin: 0 8px;"><i class="fab fa-linkedin"></i></a>
+                        <a href="#" style="color: var(--color-text-muted); margin: 0 8px;"><i class="fab fa-github"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+HTML;
+    }
+
+    private function buildContactInfoSection(string $businessName): string
+    {
+        return <<<HTML
+
+    <section class="section section-contact-info" style="padding: 100px 0;">
+        <div class="container">
+            <div class="grid grid-3" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px;">
+                <div class="card contact-card" style="text-align: center; padding: 40px;">
+                    <div style="font-size: 2.5rem; color: var(--color-primary); margin-bottom: 1.5rem;">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </div>
+                    <h3 style="margin-bottom: 1rem;">Our Location</h3>
+                    <p style="color: var(--color-text-muted);">123 Business Street<br>City, State 12345</p>
+                </div>
+                <div class="card contact-card" style="text-align: center; padding: 40px;">
+                    <div style="font-size: 2.5rem; color: var(--color-primary); margin-bottom: 1.5rem;">
+                        <i class="fas fa-phone-alt"></i>
+                    </div>
+                    <h3 style="margin-bottom: 1rem;">Phone</h3>
+                    <p style="color: var(--color-text-muted);">+1 (555) 123-4567<br>Mon-Fri: 9am - 6pm</p>
+                </div>
+                <div class="card contact-card" style="text-align: center; padding: 40px;">
+                    <div style="font-size: 2.5rem; color: var(--color-primary); margin-bottom: 1.5rem;">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <h3 style="margin-bottom: 1rem;">Email</h3>
+                    <p style="color: var(--color-text-muted);">info@{$businessName}.com<br>support@{$businessName}.com</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+HTML;
+    }
+
+    private function buildContactFormSection(): string
+    {
+        return <<<HTML
+
+    <section class="section section-contact-form" style="padding: 100px 0; background: var(--color-surface);">
+        <div class="container" style="max-width: 800px;">
+            <div class="section-header" style="text-align: center; margin-bottom: 40px;">
+                <h2 style="font-size: 2.5rem; margin-bottom: 1rem;">Send Us a Message</h2>
+                <p style="color: var(--color-text-muted);">We'd love to hear from you. Fill out the form below.</p>
+            </div>
+            <form class="contact-form card" style="padding: 40px;">
+                <div class="grid grid-2" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+                    <div class="form-group">
+                        <label style="display: block; margin-bottom: 8px; font-weight: 600;">Full Name</label>
+                        <input type="text" name="name" required style="width: 100%; padding: 12px 16px; border: 1px solid var(--color-border, #e5e5e5); border-radius: var(--radius-sm, 4px);">
+                    </div>
+                    <div class="form-group">
+                        <label style="display: block; margin-bottom: 8px; font-weight: 600;">Email Address</label>
+                        <input type="email" name="email" required style="width: 100%; padding: 12px 16px; border: 1px solid var(--color-border, #e5e5e5); border-radius: var(--radius-sm, 4px);">
+                    </div>
+                </div>
+                <div class="form-group" style="margin-bottom: 20px;">
+                    <label style="display: block; margin-bottom: 8px; font-weight: 600;">Phone Number</label>
+                    <input type="tel" name="phone" style="width: 100%; padding: 12px 16px; border: 1px solid var(--color-border, #e5e5e5); border-radius: var(--radius-sm, 4px);">
+                </div>
+                <div class="form-group" style="margin-bottom: 20px;">
+                    <label style="display: block; margin-bottom: 8px; font-weight: 600;">Subject</label>
+                    <input type="text" name="subject" required style="width: 100%; padding: 12px 16px; border: 1px solid var(--color-border, #e5e5e5); border-radius: var(--radius-sm, 4px);">
+                </div>
+                <div class="form-group" style="margin-bottom: 30px;">
+                    <label style="display: block; margin-bottom: 8px; font-weight: 600;">Message</label>
+                    <textarea name="message" rows="5" required style="width: 100%; padding: 12px 16px; border: 1px solid var(--color-border, #e5e5e5); border-radius: var(--radius-sm, 4px); resize: vertical;"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%; padding: 16px;">Send Message</button>
+            </form>
+        </div>
+    </section>
+
+HTML;
+    }
+
+    private function buildMapSection(): string
+    {
+        return <<<HTML
+
+    <section class="section section-map" style="padding: 0; height: 400px; background: var(--color-surface);">
+        <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, var(--color-surface) 0%, #e5e5e5 100%);">
+            <div style="text-align: center;">
+                <i class="fas fa-map-marked-alt" style="font-size: 4rem; color: var(--color-primary); margin-bottom: 1rem;"></i>
+                <p style="color: var(--color-text-muted);">Google Maps Integration<br><small>Replace with actual map embed</small></p>
+            </div>
+        </div>
+    </section>
+
+HTML;
+    }
+
+    private function buildPricingSection(): string
+    {
+        return <<<HTML
+
+    <section class="section section-pricing" style="padding: 100px 0;">
+        <div class="container">
+            <div class="section-header" style="text-align: center; margin-bottom: 60px;">
+                <h2 style="font-size: 2.5rem; margin-bottom: 1rem;">Our Pricing</h2>
+                <p style="color: var(--color-text-muted);">Choose the plan that's right for you.</p>
+            </div>
+            <div class="grid grid-3" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px;">
+                <div class="card pricing-card" style="text-align: center; padding: 40px;">
+                    <h3 style="margin-bottom: 0.5rem;">Basic</h3>
+                    <p style="color: var(--color-text-muted); margin-bottom: 1.5rem;">For individuals</p>
+                    <div style="font-size: 3rem; font-weight: 700; color: var(--color-primary); margin-bottom: 1.5rem;">$29<span style="font-size: 1rem; font-weight: normal;">/mo</span></div>
+                    <ul style="list-style: none; padding: 0; margin-bottom: 2rem; text-align: left;">
+                        <li style="padding: 10px 0; border-bottom: 1px solid var(--color-border, #e5e5e5);"><i class="fas fa-check" style="color: var(--color-success, #10B981); margin-right: 10px;"></i> Feature One</li>
+                        <li style="padding: 10px 0; border-bottom: 1px solid var(--color-border, #e5e5e5);"><i class="fas fa-check" style="color: var(--color-success, #10B981); margin-right: 10px;"></i> Feature Two</li>
+                        <li style="padding: 10px 0; border-bottom: 1px solid var(--color-border, #e5e5e5);"><i class="fas fa-check" style="color: var(--color-success, #10B981); margin-right: 10px;"></i> Feature Three</li>
+                    </ul>
+                    <a href="#" class="btn btn-secondary" style="width: 100%;">Get Started</a>
+                </div>
+                <div class="card pricing-card featured" style="text-align: center; padding: 40px; background: var(--color-primary); color: #fff; transform: scale(1.05);">
+                    <h3 style="margin-bottom: 0.5rem; color: #fff;">Professional</h3>
+                    <p style="color: rgba(255,255,255,0.8); margin-bottom: 1.5rem;">Most popular</p>
+                    <div style="font-size: 3rem; font-weight: 700; margin-bottom: 1.5rem;">$79<span style="font-size: 1rem; font-weight: normal;">/mo</span></div>
+                    <ul style="list-style: none; padding: 0; margin-bottom: 2rem; text-align: left;">
+                        <li style="padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.2);"><i class="fas fa-check" style="margin-right: 10px;"></i> Everything in Basic</li>
+                        <li style="padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.2);"><i class="fas fa-check" style="margin-right: 10px;"></i> Feature Four</li>
+                        <li style="padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.2);"><i class="fas fa-check" style="margin-right: 10px;"></i> Feature Five</li>
+                        <li style="padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.2);"><i class="fas fa-check" style="margin-right: 10px;"></i> Priority Support</li>
+                    </ul>
+                    <a href="#" class="btn" style="width: 100%; background: #fff; color: var(--color-primary);">Get Started</a>
+                </div>
+                <div class="card pricing-card" style="text-align: center; padding: 40px;">
+                    <h3 style="margin-bottom: 0.5rem;">Enterprise</h3>
+                    <p style="color: var(--color-text-muted); margin-bottom: 1.5rem;">For large teams</p>
+                    <div style="font-size: 3rem; font-weight: 700; color: var(--color-primary); margin-bottom: 1.5rem;">$199<span style="font-size: 1rem; font-weight: normal;">/mo</span></div>
+                    <ul style="list-style: none; padding: 0; margin-bottom: 2rem; text-align: left;">
+                        <li style="padding: 10px 0; border-bottom: 1px solid var(--color-border, #e5e5e5);"><i class="fas fa-check" style="color: var(--color-success, #10B981); margin-right: 10px;"></i> Everything in Pro</li>
+                        <li style="padding: 10px 0; border-bottom: 1px solid var(--color-border, #e5e5e5);"><i class="fas fa-check" style="color: var(--color-success, #10B981); margin-right: 10px;"></i> Custom Solutions</li>
+                        <li style="padding: 10px 0; border-bottom: 1px solid var(--color-border, #e5e5e5);"><i class="fas fa-check" style="color: var(--color-success, #10B981); margin-right: 10px;"></i> Dedicated Support</li>
+                    </ul>
+                    <a href="#" class="btn btn-secondary" style="width: 100%;">Contact Sales</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+HTML;
+    }
+
+    private function buildFaqSection(): string
+    {
+        return <<<HTML
+
+    <section class="section section-faq" style="padding: 100px 0; background: var(--color-surface);">
+        <div class="container" style="max-width: 800px;">
+            <div class="section-header" style="text-align: center; margin-bottom: 60px;">
+                <h2 style="font-size: 2.5rem; margin-bottom: 1rem;">Frequently Asked Questions</h2>
+                <p style="color: var(--color-text-muted);">Find answers to common questions.</p>
+            </div>
+            <div class="faq-list">
+                <div class="card faq-item" style="margin-bottom: 16px; padding: 24px;">
+                    <h4 style="margin-bottom: 12px; cursor: pointer;"><i class="fas fa-plus" style="margin-right: 12px; color: var(--color-primary);"></i>What services do you offer?</h4>
+                    <p style="color: var(--color-text-muted); margin-left: 28px;">We offer a comprehensive range of services tailored to meet your specific needs. Contact us for a detailed consultation.</p>
+                </div>
+                <div class="card faq-item" style="margin-bottom: 16px; padding: 24px;">
+                    <h4 style="margin-bottom: 12px; cursor: pointer;"><i class="fas fa-plus" style="margin-right: 12px; color: var(--color-primary);"></i>How do I get started?</h4>
+                    <p style="color: var(--color-text-muted); margin-left: 28px;">Getting started is easy! Simply reach out through our contact form or give us a call, and we'll guide you through the process.</p>
+                </div>
+                <div class="card faq-item" style="margin-bottom: 16px; padding: 24px;">
+                    <h4 style="margin-bottom: 12px; cursor: pointer;"><i class="fas fa-plus" style="margin-right: 12px; color: var(--color-primary);"></i>What are your business hours?</h4>
+                    <p style="color: var(--color-text-muted); margin-left: 28px;">We're open Monday through Friday, 9am to 6pm. For urgent matters, our support team is available 24/7.</p>
+                </div>
+                <div class="card faq-item" style="margin-bottom: 16px; padding: 24px;">
+                    <h4 style="margin-bottom: 12px; cursor: pointer;"><i class="fas fa-plus" style="margin-right: 12px; color: var(--color-primary);"></i>Do you offer refunds?</h4>
+                    <p style="color: var(--color-text-muted); margin-left: 28px;">Yes, we offer a 30-day money-back guarantee on all our services. Your satisfaction is our priority.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+HTML;
+    }
+
+    private function buildGallerySection(): string
+    {
+        return <<<HTML
+
+    <section class="section section-gallery" style="padding: 100px 0;">
+        <div class="container">
+            <div class="section-header" style="text-align: center; margin-bottom: 60px;">
+                <h2 style="font-size: 2.5rem; margin-bottom: 1rem;">Our Work</h2>
+                <p style="color: var(--color-text-muted);">A showcase of our recent projects.</p>
+            </div>
+            <div class="grid grid-3" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
+                <div class="gallery-item" style="overflow: hidden; border-radius: var(--radius-lg, 8px);">
+                    <img src="PLACEHOLDER:portfolio project 1" alt="Project 1" style="width: 100%; height: 250px; object-fit: cover; transition: transform 0.3s;">
+                </div>
+                <div class="gallery-item" style="overflow: hidden; border-radius: var(--radius-lg, 8px);">
+                    <img src="PLACEHOLDER:portfolio project 2" alt="Project 2" style="width: 100%; height: 250px; object-fit: cover; transition: transform 0.3s;">
+                </div>
+                <div class="gallery-item" style="overflow: hidden; border-radius: var(--radius-lg, 8px);">
+                    <img src="PLACEHOLDER:portfolio project 3" alt="Project 3" style="width: 100%; height: 250px; object-fit: cover; transition: transform 0.3s;">
+                </div>
+                <div class="gallery-item" style="overflow: hidden; border-radius: var(--radius-lg, 8px);">
+                    <img src="PLACEHOLDER:portfolio project 4" alt="Project 4" style="width: 100%; height: 250px; object-fit: cover; transition: transform 0.3s;">
+                </div>
+                <div class="gallery-item" style="overflow: hidden; border-radius: var(--radius-lg, 8px);">
+                    <img src="PLACEHOLDER:portfolio project 5" alt="Project 5" style="width: 100%; height: 250px; object-fit: cover; transition: transform 0.3s;">
+                </div>
+                <div class="gallery-item" style="overflow: hidden; border-radius: var(--radius-lg, 8px);">
+                    <img src="PLACEHOLDER:portfolio project 6" alt="Project 6" style="width: 100%; height: 250px; object-fit: cover; transition: transform 0.3s;">
+                </div>
+            </div>
+        </div>
+    </section>
+
+HTML;
+    }
+
+    private function buildBlogSection(): string
+    {
+        return <<<HTML
+
+    <section class="section section-blog" style="padding: 100px 0; background: var(--color-surface);">
+        <div class="container">
+            <div class="section-header" style="text-align: center; margin-bottom: 60px;">
+                <h2 style="font-size: 2.5rem; margin-bottom: 1rem;">Latest Articles</h2>
+                <p style="color: var(--color-text-muted);">Insights and updates from our team.</p>
+            </div>
+            <div class="grid grid-3" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px;">
+                <article class="card blog-card" style="padding: 0; overflow: hidden;">
+                    <img src="PLACEHOLDER:blog post image 1" alt="Blog Post" style="width: 100%; height: 200px; object-fit: cover;">
+                    <div style="padding: 24px;">
+                        <p style="color: var(--color-primary); font-size: 0.875rem; margin-bottom: 8px;">December 30, 2024</p>
+                        <h3 style="margin-bottom: 12px;">How to Achieve Success in Your Industry</h3>
+                        <p style="color: var(--color-text-muted); margin-bottom: 16px;">Discover the key strategies that can help you stand out and succeed...</p>
+                        <a href="#" style="color: var(--color-primary); font-weight: 600;">Read More →</a>
+                    </div>
+                </article>
+                <article class="card blog-card" style="padding: 0; overflow: hidden;">
+                    <img src="PLACEHOLDER:blog post image 2" alt="Blog Post" style="width: 100%; height: 200px; object-fit: cover;">
+                    <div style="padding: 24px;">
+                        <p style="color: var(--color-primary); font-size: 0.875rem; margin-bottom: 8px;">December 28, 2024</p>
+                        <h3 style="margin-bottom: 12px;">Top Trends to Watch in 2025</h3>
+                        <p style="color: var(--color-text-muted); margin-bottom: 16px;">Stay ahead of the curve with these emerging trends that will shape...</p>
+                        <a href="#" style="color: var(--color-primary); font-weight: 600;">Read More →</a>
+                    </div>
+                </article>
+                <article class="card blog-card" style="padding: 0; overflow: hidden;">
+                    <img src="PLACEHOLDER:blog post image 3" alt="Blog Post" style="width: 100%; height: 200px; object-fit: cover;">
+                    <div style="padding: 24px;">
+                        <p style="color: var(--color-primary); font-size: 0.875rem; margin-bottom: 8px;">December 25, 2024</p>
+                        <h3 style="margin-bottom: 12px;">Building Strong Client Relationships</h3>
+                        <p style="color: var(--color-text-muted); margin-bottom: 16px;">Learn how to create lasting connections with your clients and customers...</p>
+                        <a href="#" style="color: var(--color-primary); font-weight: 600;">Read More →</a>
+                    </div>
+                </article>
+            </div>
+        </div>
+    </section>
+
+HTML;
+    }
+
+    private function buildNewsletterSection(): string
+    {
+        return <<<HTML
+
+    <section class="section section-newsletter" style="padding: 80px 0; background: var(--color-primary);">
+        <div class="container" style="max-width: 600px; text-align: center;">
+            <h2 style="color: #fff; margin-bottom: 1rem;">Subscribe to Our Newsletter</h2>
+            <p style="color: rgba(255,255,255,0.9); margin-bottom: 2rem;">Stay updated with our latest news and offers.</p>
+            <form class="newsletter-form" style="display: flex; gap: 12px;">
+                <input type="email" placeholder="Enter your email" required style="flex: 1; padding: 16px 20px; border: none; border-radius: var(--radius-sm, 4px);">
+                <button type="submit" class="btn" style="background: #fff; color: var(--color-primary); padding: 16px 32px;">Subscribe</button>
+            </form>
+        </div>
+    </section>
+
+HTML;
+    }
+
+    private function buildStorySection(string $businessName): string
+    {
+        return <<<HTML
+
+    <section class="section section-story" style="padding: 100px 0;">
+        <div class="container">
+            <div class="grid grid-2" style="display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center;">
+                <div class="story-content">
+                    <h2 style="font-size: 2.5rem; margin-bottom: 1.5rem;">Our Story</h2>
+                    <p style="color: var(--color-text-muted); margin-bottom: 1.5rem; line-height: 1.8;">
+                        {$businessName} was founded with a simple mission: to deliver exceptional quality and service that exceeds expectations. 
+                        What started as a small venture has grown into a trusted name in the industry.
+                    </p>
+                    <p style="color: var(--color-text-muted); margin-bottom: 1.5rem; line-height: 1.8;">
+                        Over the years, we've helped hundreds of clients achieve their goals, building lasting relationships based on trust, 
+                        integrity, and results. Our team of dedicated professionals brings passion and expertise to every project.
+                    </p>
+                    <p style="color: var(--color-text-muted); line-height: 1.8;">
+                        Today, we continue to innovate and grow, always staying true to our core values while adapting to meet the 
+                        evolving needs of our clients.
+                    </p>
+                </div>
+                <div class="story-image">
+                    <img src="PLACEHOLDER:company story historical image" alt="Our Story" style="width: 100%; border-radius: var(--radius-lg, 8px); box-shadow: var(--shadow-lg);">
+                </div>
+            </div>
+        </div>
+    </section>
+
+HTML;
+    }
+
+    private function buildValuesSection(): string
+    {
+        return <<<HTML
+
+    <section class="section section-values" style="padding: 100px 0; background: var(--color-surface);">
+        <div class="container">
+            <div class="section-header" style="text-align: center; margin-bottom: 60px;">
+                <h2 style="font-size: 2.5rem; margin-bottom: 1rem;">Our Values</h2>
+                <p style="color: var(--color-text-muted);">The principles that guide everything we do.</p>
+            </div>
+            <div class="grid grid-4" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 30px;">
+                <div class="card value-card" style="text-align: center; padding: 40px 30px;">
+                    <div style="font-size: 3rem; color: var(--color-primary); margin-bottom: 1.5rem;">
+                        <i class="fas fa-heart"></i>
+                    </div>
+                    <h3 style="margin-bottom: 1rem;">Passion</h3>
+                    <p style="color: var(--color-text-muted);">We love what we do and it shows in every project we deliver.</p>
+                </div>
+                <div class="card value-card" style="text-align: center; padding: 40px 30px;">
+                    <div style="font-size: 3rem; color: var(--color-primary); margin-bottom: 1.5rem;">
+                        <i class="fas fa-handshake"></i>
+                    </div>
+                    <h3 style="margin-bottom: 1rem;">Integrity</h3>
+                    <p style="color: var(--color-text-muted);">We believe in honest communication and transparent relationships.</p>
+                </div>
+                <div class="card value-card" style="text-align: center; padding: 40px 30px;">
+                    <div style="font-size: 3rem; color: var(--color-primary); margin-bottom: 1.5rem;">
+                        <i class="fas fa-lightbulb"></i>
+                    </div>
+                    <h3 style="margin-bottom: 1rem;">Innovation</h3>
+                    <p style="color: var(--color-text-muted);">We constantly seek new and better ways to serve our clients.</p>
+                </div>
+                <div class="card value-card" style="text-align: center; padding: 40px 30px;">
+                    <div style="font-size: 3rem; color: var(--color-primary); margin-bottom: 1.5rem;">
+                        <i class="fas fa-trophy"></i>
+                    </div>
+                    <h3 style="margin-bottom: 1rem;">Excellence</h3>
+                    <p style="color: var(--color-text-muted);">We strive for the highest quality in everything we do.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+HTML;
+    }
+
+    private function buildProcessSection(): string
+    {
+        return <<<HTML
+
+    <section class="section section-process" style="padding: 100px 0;">
+        <div class="container">
+            <div class="section-header" style="text-align: center; margin-bottom: 60px;">
+                <h2 style="font-size: 2.5rem; margin-bottom: 1rem;">How We Work</h2>
+                <p style="color: var(--color-text-muted);">Our proven process for delivering results.</p>
+            </div>
+            <div class="grid grid-4" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 30px;">
+                <div class="process-step" style="text-align: center;">
+                    <div style="width: 80px; height: 80px; background: var(--color-primary); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; font-weight: 700; margin: 0 auto 1.5rem;">1</div>
+                    <h3 style="margin-bottom: 1rem;">Discovery</h3>
+                    <p style="color: var(--color-text-muted);">We learn about your needs, goals, and vision for the project.</p>
+                </div>
+                <div class="process-step" style="text-align: center;">
+                    <div style="width: 80px; height: 80px; background: var(--color-primary); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; font-weight: 700; margin: 0 auto 1.5rem;">2</div>
+                    <h3 style="margin-bottom: 1rem;">Planning</h3>
+                    <p style="color: var(--color-text-muted);">We create a detailed strategy and roadmap for success.</p>
+                </div>
+                <div class="process-step" style="text-align: center;">
+                    <div style="width: 80px; height: 80px; background: var(--color-primary); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; font-weight: 700; margin: 0 auto 1.5rem;">3</div>
+                    <h3 style="margin-bottom: 1rem;">Execution</h3>
+                    <p style="color: var(--color-text-muted);">Our team brings the plan to life with precision and care.</p>
+                </div>
+                <div class="process-step" style="text-align: center;">
+                    <div style="width: 80px; height: 80px; background: var(--color-primary); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; font-weight: 700; margin: 0 auto 1.5rem;">4</div>
+                    <h3 style="margin-bottom: 1rem;">Delivery</h3>
+                    <p style="color: var(--color-text-muted);">We deliver results and provide ongoing support.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+HTML;
+    }
+
+    private function buildGenericSection(string $sectionType): string
+    {
+        $title = ucwords(str_replace(['-', '_'], ' ', $sectionType));
+        return <<<HTML
+
+    <section class="section section-{$sectionType}" style="padding: 100px 0;">
+        <div class="container">
+            <div class="section-header" style="text-align: center; margin-bottom: 40px;">
+                <h2 style="font-size: 2.5rem; margin-bottom: 1rem;">{$title}</h2>
+                <p style="color: var(--color-text-muted);">Content for {$title} section.</p>
+            </div>
+            <div class="section-content" style="text-align: center;">
+                <p style="color: var(--color-text-muted);">This section will be customized with relevant content.</p>
+            </div>
+        </div>
+    </section>
+
+HTML;
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════════
+    // AI API Methods
+    // ═══════════════════════════════════════════════════════════════════════════
+
+    /**
+     * Call AI API
+     */
+    private function callAI(string $prompt): string
+    {
+        $provider = $this->aiSettings['default_provider'] ?? 'openai';
+        $config = $this->aiSettings['providers'][$provider] ?? [];
+        
+        if (empty($config['api_key'])) {
+            throw new \Exception("AI provider not configured");
+        }
+        
+        $model = $config['model'] ?? 'gpt-4o-mini';
+        
+        if ($provider === 'openai') {
+            return $this->callOpenAI($config['api_key'], $model, $prompt);
+        } elseif ($provider === 'anthropic') {
+            return $this->callAnthropic($config['api_key'], $model, $prompt);
+        }
+        
+        throw new \Exception("Unknown AI provider: {$provider}");
+    }
+
+    /**
+     * Call OpenAI API
+     */
+    private function callOpenAI(string $apiKey, string $model, string $prompt): string
+    {
+        $ch = curl_init('https://api.openai.com/v1/chat/completions');
+        
+        curl_setopt_array($ch, [
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_POST => true,
+            CURLOPT_TIMEOUT => 120,
+            CURLOPT_HTTPHEADER => [
+                'Content-Type: application/json',
+                'Authorization: Bearer ' . $apiKey
+            ],
+            CURLOPT_POSTFIELDS => json_encode([
+                'model' => $model,
+                'messages' => [
+                    [
+                        'role' => 'system', 
+                        'content' => 'You are an expert web designer. Generate clean, semantic HTML following the exact style specifications given. Output only HTML code, no explanations.'
+                    ],
+                    ['role' => 'user', 'content' => $prompt]
+                ],
+                'max_tokens' => 8000,
+                'temperature' => 0.7
+            ])
+        ]);
+        
+        $response = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+        
+        if ($httpCode !== 200) {
+            throw new \Exception("OpenAI API error: HTTP {$httpCode}");
+        }
+        
+        $data = json_decode($response, true);
+        return $data['choices'][0]['message']['content'] ?? '';
+    }
+
+    /**
+     * Call Anthropic API
+     */
+    private function callAnthropic(string $apiKey, string $model, string $prompt): string
+    {
+        $ch = curl_init('https://api.anthropic.com/v1/messages');
+        
+        curl_setopt_array($ch, [
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_POST => true,
+            CURLOPT_TIMEOUT => 120,
+            CURLOPT_HTTPHEADER => [
+                'Content-Type: application/json',
+                'x-api-key: ' . $apiKey,
+                'anthropic-version: 2023-06-01'
+            ],
+            CURLOPT_POSTFIELDS => json_encode([
+                'model' => $model,
+                'max_tokens' => 8000,
+                'system' => 'You are an expert web designer. Generate clean, semantic HTML following the exact style specifications given. Output only HTML code, no explanations.',
+                'messages' => [
+                    ['role' => 'user', 'content' => $prompt]
+                ]
+            ])
+        ]);
+        
+        $response = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+        
+        if ($httpCode !== 200) {
+            throw new \Exception("Anthropic API error: HTTP {$httpCode}");
+        }
+        
+        $data = json_decode($response, true);
+        return $data['content'][0]['text'] ?? '';
+    }
+}

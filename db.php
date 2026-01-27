@@ -20,7 +20,9 @@ class DatabaseConnection {
     }
 }
 
-// Helper function for easy access
-function db(): PDO {
-    return \core\Database::connection();
+// Helper function for easy access (check if not already defined)
+if (!function_exists('db')) {
+    function db(): PDO {
+        return \core\Database::connection();
+    }
 }

@@ -1,0 +1,107 @@
+{
+    "type": "page",
+    "name": "Faq",
+    "slug": "faq",
+    "sections": [
+        {
+            "id": "section_6_118b",
+            "name": "Section",
+            "design": [],
+            "rows": [
+                {
+                    "id": "row_4_1189",
+                    "columns": [
+                        {
+                            "id": "col_5_118a",
+                            "width": "100%",
+                            "modules": [
+                                {
+                                    "type": "hero",
+                                    "content": {
+                                        "heading": "Frequently Asked Questions",
+                                        "subheading": "",
+                                        "text": "Everything you need to know about Jessie AI CMS to boost your productivity and transform your content strategy.",
+                                        "button_text": "Get Started",
+                                        "button_url": "#contact",
+                                        "secondary_button_text": "",
+                                        "secondary_button_url": "",
+                                        "background_image": "",
+                                        "video_url": ""
+                                    },
+                                    "design": {
+                                        "height": "600px",
+                                        "min_height": "400px",
+                                        "background_color": "linear",
+                                        "overlay_color": "rgba(0,0,0,0.5)",
+                                        "text_color": "#ffffff",
+                                        "text_align": "center",
+                                        "vertical_align": "center",
+                                        "content_width": "800px",
+                                        "parallax": false,
+                                        "background_position": "right"
+                                    },
+                                    "advanced": {
+                                        "css_class": "section section-hero",
+                                        "css_id": ""
+                                    },
+                                    "id": "mod_1_111a"
+                                },
+                                {
+                                    "type": "accordion",
+                                    "content": {
+                                        "items": [],
+                                        "multiple_open": false
+                                    },
+                                    "design": {
+                                        "style": "default",
+                                        "icon_position": "right",
+                                        "border_color": "#e0e0e0",
+                                        "active_color": "#0073e6",
+                                        "header_background": "#f8f9fa",
+                                        "content_background": "#ffffff"
+                                    },
+                                    "advanced": {
+                                        "css_class": "section section-faq-list",
+                                        "css_id": ""
+                                    },
+                                    "id": "mod_2_1140"
+                                },
+                                {
+                                    "type": "cta",
+                                    "content": {
+                                        "heading": "Need More Help?",
+                                        "subheading": "",
+                                        "text": "Contact us for personalized assistance and support.",
+                                        "button_text": "Contact Us",
+                                        "button_url": "mailto:support@jessieai.com",
+                                        "secondary_button_text": "",
+                                        "secondary_button_url": ""
+                                    },
+                                    "design": {
+                                        "style": "default",
+                                        "background_color": "#0073e6",
+                                        "text_color": "#ffffff",
+                                        "text_align": "center",
+                                        "padding": "60px 40px",
+                                        "border_radius": "0"
+                                    },
+                                    "advanced": {
+                                        "css_class": "section section-contact-cta",
+                                        "css_id": "contact"
+                                    },
+                                    "id": "mod_3_1188"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "meta": {
+        "title": "Faq",
+        "description": "",
+        "keywords": ""
+    },
+    "design_system": "modern"
+}

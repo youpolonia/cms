@@ -9,8 +9,8 @@ if (!ob_start()) {
 require_once __DIR__ . '/../config.php';
 
 require_once __DIR__ . '/tenantmanager.php';
-require_once CORE_DIR . '/router.php';
-require_once CORE_DIR . '/RequestHandler.php';
+require_once __DIR__ . '/router.php';
+require_once __DIR__ . '/requesthandler.php';
 
 try {
     // Initialize database connection

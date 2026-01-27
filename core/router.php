@@ -122,6 +122,8 @@ class Router {
     public static function dispatch(): void {
         $method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
         $path = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?? '/';
+        // Normalize trailing slash (but keep root as /)
+        if ($path !== '/' && str_ends_with($path, '/')) { $path = rtrim($path, '/'); }
 
         // Static asset fallback: skip dispatch for files under /uploads or with common static extensions
         $uri = $_SERVER['REQUEST_URI'] ?? '';

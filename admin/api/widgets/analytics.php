@@ -1,5 +1,10 @@
 <?php
-require_once __DIR__ . '/../../../config/bootstrap.php';
+define('CMS_ROOT', dirname(__DIR__, 3));
+require_once CMS_ROOT . '/config.php';
+require_once CMS_ROOT . '/core/session_boot.php';
+cms_session_start('admin');
+require_once CMS_ROOT . '/core/auth.php';
+authenticateAdmin();
 
 header('Content-Type: application/json');
 

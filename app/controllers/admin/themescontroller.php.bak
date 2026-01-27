@@ -1,0 +1,337 @@
+<?php
+declare(strict_types=1);
+
+namespace App\Controllers\Admin;
+
+require_once CMS_ROOT . '/models/settingsmodel.php';
+require_once CMS_ROOT . '/core/cache.php';
+
+use Core\Request;
+use Core\Response;
+use Core\Session;
+
+class ThemesController
+{
+    private string $themesDir;
+    private string $configPath;
+
+    public function __construct()
+    {
+        $this->themesDir = CMS_ROOT . '/themes';
+        $this->configPath = CMS_ROOT . '/config_core/theme.php';
+    }
+
+    public function index(Request $request): void
+    {
+        $themes = $this->listThemes();
+        $activeTheme = $this->getActiveTheme();
+
+        render('admin/themes/index', [
+            'themes' => $themes,
+            'activeTheme' => $activeTheme,
+            'themesDir' => $this->themesDir,
+            'success' => Session::getFlash('success'),
+            'error' => Session::getFlash('error')
+        ]);
+    }
+
+    public function activate(Request $request): void
+    {
+        $slug = $request->post('theme', '');
+        
+        if (empty($slug) || !preg_match('/^[A-Za-z0-9_-]+$/', $slug)) {
+            Session::flash('error', 'Invalid theme name.');
+            Response::redirect('/admin/themes');
+            return;
+        }
+
+        $themePath = $this->themesDir . '/' . $slug;
+        if (!is_dir($themePath)) {
+            Session::flash('error', 'Theme directory not found.');
+            Response::redirect('/admin/themes');
+            return;
+        }
+
+        if ($this->setActiveTheme($slug)) {
+            // Clear theme-related caches
+            \Cache::clear('system_settings');
+            \Cache::clear('active_theme');
+            \Cache::clear('theme_config');
+
+            Session::flash('success', "Theme '{$slug}' activated successfully!");
+        } else {
+            Session::flash('error', 'Failed to activate theme. Check file permissions.');
+        }
+
+        // Cache-busting headers to ensure browser fetches fresh content
+        header('Cache-Control: no-cache, no-store, must-revalidate');
+        header('Pragma: no-cache');
+        header('Expires: 0');
+
+        Response::redirect('/admin/themes');
+    }
+
+    public function delete(Request $request): void
+    {
+        $slug = $request->post('theme', '');
+        
+        // Validate theme name
+        if (empty($slug) || !preg_match('/^[A-Za-z0-9_-]+$/', $slug)) {
+            Session::flash('error', 'Invalid theme name.');
+            Response::redirect('/admin/themes');
+            return;
+        }
+
+        // Protected themes that cannot be deleted
+        $protected = ['jessie', 'default', 'default_public', 'core', 'presets', 'current'];
+        if (in_array($slug, $protected)) {
+            Session::flash('error', "Theme '{$slug}' is protected and cannot be deleted.");
+            Response::redirect('/admin/themes');
+            return;
+        }
+
+        // Cannot delete active theme
+        $activeTheme = $this->getActiveTheme();
+        if ($slug === $activeTheme) {
+            Session::flash('error', 'Cannot delete the active theme. Please activate another theme first.');
+            Response::redirect('/admin/themes');
+            return;
+        }
+
+        $themePath = $this->themesDir . '/' . $slug;
+        
+        // Verify path is within themes directory (security check)
+        $realThemesDir = realpath($this->themesDir);
+        $realThemePath = realpath($themePath);
+        
+        if (!$realThemePath || !str_starts_with($realThemePath, $realThemesDir . DIRECTORY_SEPARATOR)) {
+            Session::flash('error', 'Invalid theme path.');
+            Response::redirect('/admin/themes');
+            return;
+        }
+
+        if (!is_dir($realThemePath)) {
+            Session::flash('error', 'Theme directory not found.');
+            Response::redirect('/admin/themes');
+            return;
+        }
+
+        // Recursively delete theme directory
+        if ($this->deleteDirectory($realThemePath)) {
+            Session::flash('success', "Theme '{$slug}' deleted successfully!");
+        } else {
+            Session::flash('error', 'Failed to delete theme. Check file permissions.');
+        }
+
+        Response::redirect('/admin/themes');
+    }
+
+    private function deleteDirectory(string $dir): bool
+    {
+        if (!is_dir($dir)) {
+            return false;
+        }
+
+        $files = array_diff(scandir($dir), ['.', '..']);
+        
+        foreach ($files as $file) {
+            $path = $dir . DIRECTORY_SEPARATOR . $file;
+            if (is_dir($path)) {
+                $this->deleteDirectory($path);
+            } else {
+                @unlink($path);
+            }
+        }
+
+        return @rmdir($dir);
+    }
+
+    private function getActiveTheme(): string
+    {
+        return \SettingsModel::getActiveTheme();
+    }
+
+    private function setActiveTheme(string $slug): bool
+    {
+        return \SettingsModel::setActiveTheme($slug);
+    }
+
+    private function listThemes(): array
+    {
+        $themes = [];
+
+        if (!is_dir($this->themesDir)) {
+            return $themes;
+        }
+
+        $dirs = @scandir($this->themesDir);
+        if (!$dirs) {
+            return $themes;
+        }
+
+        foreach ($dirs as $dir) {
+            if ($dir === '.' || $dir === '..' || $dir === 'README.md' || $dir === 'core' || $dir === 'presets') {
+                continue;
+            }
+
+            $themePath = $this->themesDir . '/' . $dir;
+            if (!is_dir($themePath)) {
+                continue;
+            }
+
+            $metadata = [];
+            $jsonPath = $themePath . '/theme.json';
+            if (file_exists($jsonPath)) {
+                $json = @file_get_contents($jsonPath);
+                if ($json) {
+                    $metadata = json_decode($json, true) ?: [];
+                }
+            }
+
+            $screenshot = null;
+            foreach (['screenshot.png', 'screenshot.jpg', 'preview.png', 'preview.jpg'] as $img) {
+                if (file_exists($themePath . '/' . $img)) {
+                    $screenshot = '/themes/' . $dir . '/' . $img;
+                    break;
+                }
+            }
+
+            $themes[] = [
+                'slug' => $dir,
+                'name' => $metadata['name'] ?? ucfirst($dir),
+                'description' => $metadata['description'] ?? '',
+                'version' => $metadata['version'] ?? '1.0.0',
+                'author' => $metadata['author'] ?? '',
+                'screenshot' => $screenshot,
+            ];
+        }
+
+        usort($themes, fn($a, $b) => strcasecmp($a['name'], $b['name']));
+        return $themes;
+    }
+
+
+    /**
+     * Show theme customization form
+     */
+    public function customize(Request $request): void
+    {
+        $slug = $request->param('slug', '');
+        
+        if (empty($slug) || !preg_match('/^[A-Za-z0-9_-]+$/', $slug)) {
+            Session::flash('error', 'Invalid theme name.');
+            Response::redirect('/admin/themes');
+            return;
+        }
+
+        $themePath = $this->themesDir . '/' . $slug;
+        if (!is_dir($themePath)) {
+            Session::flash('error', 'Theme directory not found.');
+            Response::redirect('/admin/themes');
+            return;
+        }
+
+        // Load theme.json for metadata and default options
+        $themeConfig = [];
+        $jsonPath = $themePath . '/theme.json';
+        if (file_exists($jsonPath)) {
+            $json = @file_get_contents($jsonPath);
+            if ($json) {
+                $themeConfig = json_decode($json, true) ?: [];
+            }
+        }
+
+        // Load current options from options.json
+        $currentOptions = [];
+        $optionsPath = $themePath . '/options.json';
+        if (file_exists($optionsPath)) {
+            $json = @file_get_contents($optionsPath);
+            if ($json) {
+                $currentOptions = json_decode($json, true) ?: [];
+            }
+        }
+
+        // Merge defaults with current options
+        $defaultOptions = $themeConfig['options'] ?? [];
+        $options = array_merge($defaultOptions, $currentOptions);
+
+        // Check if theme supports customization
+        $supports = $themeConfig['supports'] ?? [];
+        $hasCustomize = !empty($supports['blank-canvas']) || 
+                        !empty($supports['custom-header']) || 
+                        !empty($supports['custom-footer']) ||
+                        !empty($defaultOptions);
+
+        render('admin/themes/customize', [
+            'theme' => [
+                'slug' => $slug,
+                'name' => $themeConfig['name'] ?? ucfirst($slug),
+                'description' => $themeConfig['description'] ?? '',
+                'version' => $themeConfig['version'] ?? '1.0.0',
+            ],
+            'themeConfig' => $themeConfig,
+            'options' => $options,
+            'defaultOptions' => $defaultOptions,
+            'supports' => $supports,
+            'hasCustomize' => $hasCustomize,
+            'success' => Session::getFlash('success'),
+            'error' => Session::getFlash('error')
+        ]);
+    }
+
+    /**
+     * Save theme customization options
+     */
+    public function saveCustomize(Request $request): void
+    {
+        $slug = $request->param('slug', '');
+        
+        if (empty($slug) || !preg_match('/^[A-Za-z0-9_-]+$/', $slug)) {
+            Session::flash('error', 'Invalid theme name.');
+            Response::redirect('/admin/themes');
+            return;
+        }
+
+        $themePath = $this->themesDir . '/' . $slug;
+        if (!is_dir($themePath)) {
+            Session::flash('error', 'Theme directory not found.');
+            Response::redirect('/admin/themes');
+            return;
+        }
+
+        // Get form data
+        $options = [];
+        
+        // Boolean options (checkboxes)
+        $booleanFields = ['show_header', 'show_footer', 'preload_fonts'];
+        foreach ($booleanFields as $field) {
+            $options[$field] = $request->post($field) === '1' || $request->post($field) === 'on';
+        }
+        
+        // String options
+        $stringFields = ['body_background', 'header_style', 'footer_style'];
+        foreach ($stringFields as $field) {
+            $value = $request->post($field, '');
+            if (!empty($value)) {
+                $options[$field] = htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
+            }
+        }
+
+        // Save to options.json
+        $optionsPath = $themePath . '/options.json';
+        $json = json_encode($options, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+        
+        if (@file_put_contents($optionsPath, $json) !== false) {
+            // Clear any theme-related caches
+            \Cache::clear('theme_config');
+            \Cache::clear('theme_options_' . $slug);
+            
+            Session::flash('success', 'Theme options saved successfully!');
+        } else {
+            Session::flash('error', 'Failed to save theme options. Check file permissions.');
+        }
+
+        Response::redirect('/admin/themes/' . $slug . '/customize');
+    }
+
+}
