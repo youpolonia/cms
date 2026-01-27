@@ -65,14 +65,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $keyword = trim($_POST['keyword'] ?? '');
             $targetLength = (int)($_POST['target_length'] ?? 0);
             $provider = $_POST['ai_provider'] ?? 'openai';
-            $selectedModel = $_POST['ai_model'] ?? 'gpt-4.1-mini';
+            $selectedModel = $_POST['ai_model'] ?? 'gpt-5.2';
 
             // Validate provider and model selection
             if (!function_exists('ai_is_valid_provider') || !ai_is_valid_provider($provider)) {
                 $provider = 'openai';
             }
             if (!function_exists('ai_is_valid_provider_model') || !ai_is_valid_provider_model($provider, $selectedModel)) {
-                $selectedModel = function_exists('ai_get_provider_default_model') ? ai_get_provider_default_model($provider) : 'gpt-4.1-mini';
+                $selectedModel = function_exists('ai_get_provider_default_model') ? ai_get_provider_default_model($provider) : 'gpt-5.2';
             }
 
             if (empty(trim($content))) {
@@ -317,7 +317,7 @@ textarea { min-height: 150px; resize: vertical; font-family: inherit; line-heigh
 
                         <div class="form-group">
                             <label>AI Provider & Model</label>
-                            <?= ai_render_dual_selector('ai_provider', 'ai_model', 'openai', 'gpt-4.1-mini') ?>
+                            <?= ai_render_dual_selector('ai_provider', 'ai_model', 'openai', 'gpt-5.2') ?>
                         </div>
 
                         <div class="form-row">

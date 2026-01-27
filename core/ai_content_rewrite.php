@@ -39,11 +39,11 @@ function ai_openai_generate_text(string $prompt, array $options = []): array
     }
 
     // Model selection: options > config > default
-    $model = $options['model'] ?? $openaiConfig['default_model'] ?? 'gpt-4.1-mini';
+    $model = $options['model'] ?? $openaiConfig['default_model'] ?? 'gpt-5.2';
 
     // Validate model if ai_models.php is loaded
     if (function_exists('ai_is_valid_model') && !ai_is_valid_model($model)) {
-        $model = function_exists('ai_get_default_model') ? ai_get_default_model() : 'gpt-4.1-mini';
+        $model = function_exists('ai_get_default_model') ? ai_get_default_model() : 'gpt-5.2';
     }
 
     $maxTokens = $options['params']['max_new_tokens'] ?? $options['params']['max_tokens'] ?? 1000;
@@ -288,14 +288,14 @@ function ai_rewrite_content(string $content, string $mode = 'paraphrase', array 
 
     // Use multi-provider ai_universal_generate if provider specified
     $provider = $options['provider'] ?? 'openai';
-    $model = $options['model'] ?? 'gpt-4.1-mini';
+    $model = $options['model'] ?? 'gpt-5.2';
 
     // Validate provider and model
     if (function_exists('ai_is_valid_provider') && !ai_is_valid_provider($provider)) {
         $provider = 'openai';
     }
     if (function_exists('ai_is_valid_provider_model') && !ai_is_valid_provider_model($provider, $model)) {
-        $model = function_exists('ai_get_provider_default_model') ? ai_get_provider_default_model($provider) : 'gpt-4.1-mini';
+        $model = function_exists('ai_get_provider_default_model') ? ai_get_provider_default_model($provider) : 'gpt-5.2';
     }
 
     $systemPrompt = 'You are a professional content rewriter. Output clean, high-quality text. Do not add any preamble or explanation.';

@@ -431,14 +431,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['ajax'])) {
         $style = $_POST['style'] ?? 'natural';
         $keywords = trim($_POST['keywords'] ?? '');
         $provider = $_POST['provider'] ?? 'openai';
-        $selectedModel = $_POST['model'] ?? 'gpt-4.1-mini';
+        $selectedModel = $_POST['model'] ?? 'gpt-5.2';
 
         // Validate provider and model
         if (!function_exists('ai_is_valid_provider') || !ai_is_valid_provider($provider)) {
             $provider = 'openai';
         }
         if (!function_exists('ai_is_valid_provider_model') || !ai_is_valid_provider_model($provider, $selectedModel)) {
-            $selectedModel = function_exists('ai_get_provider_default_model') ? ai_get_provider_default_model($provider) : 'gpt-4.1-mini';
+            $selectedModel = function_exists('ai_get_provider_default_model') ? ai_get_provider_default_model($provider) : 'gpt-5.2';
         }
         
         if (strlen($content) < 50) {
@@ -502,14 +502,14 @@ OUTPUT: Return the full rewritten text with ## headings preserved.";
         $level = $_POST['level'] ?? 'moderate';
         $keywords = trim($_POST['keywords'] ?? '');
         $provider = $_POST['provider'] ?? 'openai';
-        $selectedModel = $_POST['model'] ?? 'gpt-4.1-mini';
+        $selectedModel = $_POST['model'] ?? 'gpt-5.2';
 
         // Validate provider and model
         if (!function_exists('ai_is_valid_provider') || !ai_is_valid_provider($provider)) {
             $provider = 'openai';
         }
         if (!function_exists('ai_is_valid_provider_model') || !ai_is_valid_provider_model($provider, $selectedModel)) {
-            $selectedModel = function_exists('ai_get_provider_default_model') ? ai_get_provider_default_model($provider) : 'gpt-4.1-mini';
+            $selectedModel = function_exists('ai_get_provider_default_model') ? ai_get_provider_default_model($provider) : 'gpt-5.2';
         }
 
         if (strlen($content) < 50) {
@@ -574,14 +574,14 @@ OUTPUT: Return full text with ## headings preserved.{$keywordInstruction}";
         $level = $_POST['level'] ?? 'medium';
         $keywords = trim($_POST['keywords'] ?? '');
         $provider = $_POST['provider'] ?? 'openai';
-        $selectedModel = $_POST['model'] ?? 'gpt-4.1-mini';
+        $selectedModel = $_POST['model'] ?? 'gpt-5.2';
 
         // Validate provider and model
         if (!function_exists('ai_is_valid_provider') || !ai_is_valid_provider($provider)) {
             $provider = 'openai';
         }
         if (!function_exists('ai_is_valid_provider_model') || !ai_is_valid_provider_model($provider, $selectedModel)) {
-            $selectedModel = function_exists('ai_get_provider_default_model') ? ai_get_provider_default_model($provider) : 'gpt-4.1-mini';
+            $selectedModel = function_exists('ai_get_provider_default_model') ? ai_get_provider_default_model($provider) : 'gpt-5.2';
         }
 
         if (strlen($content) < 50) {
@@ -651,14 +651,14 @@ OUTPUT: Return the complete rewritten text.";
         $content = trim($_POST['content'] ?? '');
         $keywords = trim($_POST['keywords'] ?? '');
         $provider = $_POST['provider'] ?? 'openai';
-        $selectedModel = $_POST['model'] ?? 'gpt-4.1-mini';
+        $selectedModel = $_POST['model'] ?? 'gpt-5.2';
 
         // Validate provider and model
         if (!function_exists('ai_is_valid_provider') || !ai_is_valid_provider($provider)) {
             $provider = 'openai';
         }
         if (!function_exists('ai_is_valid_provider_model') || !ai_is_valid_provider_model($provider, $selectedModel)) {
-            $selectedModel = function_exists('ai_get_provider_default_model') ? ai_get_provider_default_model($provider) : 'gpt-4.1-mini';
+            $selectedModel = function_exists('ai_get_provider_default_model') ? ai_get_provider_default_model($provider) : 'gpt-5.2';
         }
 
         if (strlen($content) < 50) {
@@ -836,8 +836,8 @@ Return the perfected text. No explanations, just the improved content with ## he
 // AI helper function
 function ai_generate_with_system(string $systemPrompt, string $userPrompt, array $config, array $options = []): array {
     $apiKey = $config['api_key'];
-    // Allow model override from options, default to gpt-4.1-mini for better quality
-    $model = $options['model'] ?? $config['model'] ?? 'gpt-4.1-mini';
+    // Allow model override from options, default to gpt-5.2 for better quality
+    $model = $options['model'] ?? $config['model'] ?? 'gpt-5.2';
     $baseUrl = rtrim(!empty($config['base_url']) ? $config['base_url'] : 'https://api.openai.com/v1', '/');
     
     $maxTokens = $options['max_tokens'] ?? 4000;
@@ -1108,7 +1108,7 @@ require_once CMS_ROOT . '/admin/includes/page_header.php';
         <h3 style="font-size:15px;margin-bottom:16px">🛠️ Content Improvement Tools</h3>
         
         <!-- Provider & Model Selection -->
-        <?= ai_render_dual_selector('ai_provider', 'ai_model', 'openai', 'gpt-4.1-mini') ?>
+        <?= ai_render_dual_selector('ai_provider', 'ai_model', 'openai', 'gpt-5.2') ?>
         
         <!-- PERFECT CONTENT - Main Tool -->
         <div style="margin-bottom:20px;padding:20px;background:linear-gradient(135deg, var(--accent) 0%, #7c3aed 100%);border-radius:12px;border:2px solid var(--accent)">
@@ -1460,7 +1460,7 @@ document.getElementById('humanizeBtn').addEventListener('click', async () => {
     fd.append('style', selectedStyle);
     fd.append('keywords', document.getElementById('keywordsInput').value);
     fd.append('provider', document.querySelector('[name="ai_provider"]')?.value || 'openai');
-    fd.append('model', document.querySelector('[name="ai_model"]')?.value || 'gpt-4.1-mini');
+    fd.append('model', document.querySelector('[name="ai_model"]')?.value || 'gpt-5.2');
     
     try {
         const res = await fetch('', { method: 'POST', body: fd });
@@ -1501,7 +1501,7 @@ document.getElementById('readabilityBtn').addEventListener('click', async () => 
     fd.append('content', currentContent);
     fd.append('keywords', document.getElementById('keywordsInput').value);
     fd.append('provider', document.querySelector('[name="ai_provider"]')?.value || 'openai');
-    fd.append('model', document.querySelector('[name="ai_model"]')?.value || 'gpt-4.1-mini');
+    fd.append('model', document.querySelector('[name="ai_model"]')?.value || 'gpt-5.2');
 
     try {
         const res = await fetch('', { method: 'POST', body: fd });
@@ -1553,7 +1553,7 @@ document.getElementById('perfectBtn').addEventListener('click', async () => {
     fd.append('content', currentContent);
     fd.append('keywords', document.getElementById('keywordsInput').value);
     fd.append('provider', document.querySelector('[name="ai_provider"]')?.value || 'openai');
-    fd.append('model', document.querySelector('[name="ai_model"]')?.value || 'gpt-4.1-mini');
+    fd.append('model', document.querySelector('[name="ai_model"]')?.value || 'gpt-5.2');
 
     try {
         const res = await fetch('', { method: 'POST', body: fd });
@@ -1594,7 +1594,7 @@ document.getElementById('uniqueBtn').addEventListener('click', async () => {
     fd.append('level', selectedUniqueness);
     fd.append('keywords', document.getElementById('keywordsInput').value);
     fd.append('provider', document.querySelector('[name="ai_provider"]')?.value || 'openai');
-    fd.append('model', document.querySelector('[name="ai_model"]')?.value || 'gpt-4.1-mini');
+    fd.append('model', document.querySelector('[name="ai_model"]')?.value || 'gpt-5.2');
 
     try {
         const res = await fetch('', { method: 'POST', body: fd });

@@ -42,7 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_SERVER['HTTP_X_REQUESTED_W
     if ($model) {
         // Validate model for provider
         if (function_exists('ai_is_valid_provider_model') && !ai_is_valid_provider_model($provider, $model)) {
-            $model = function_exists('ai_get_provider_default_model') ? ai_get_provider_default_model($provider) : 'gpt-4.1-mini';
+            $model = function_exists('ai_get_provider_default_model') ? ai_get_provider_default_model($provider) : 'gpt-5.2';
         }
         $copywriter->setModel($model);
     }
@@ -231,7 +231,7 @@ require_once CMS_ROOT . '/admin/includes/page_header.php';
 </div>
 <div class="form-group">
 <label>AI Provider & Model</label>
-<?= ai_render_dual_selector('provider', 'model', 'openai', 'gpt-4.1-mini') ?>
+<?= ai_render_dual_selector('provider', 'model', 'openai', 'gpt-5.2') ?>
 </div>
 </div>
 <label class="form-check"><input type="checkbox" name="include_emoji"> Include emojis</label>
@@ -279,7 +279,7 @@ require_once CMS_ROOT . '/admin/includes/page_header.php';
 </div>
 <div class="form-group">
 <label>AI Provider & Model</label>
-<?= ai_render_dual_selector('provider', 'model', 'openai', 'gpt-4.1-mini') ?>
+<?= ai_render_dual_selector('provider', 'model', 'openai', 'gpt-5.2') ?>
 </div>
 </div>
 <button type="submit" class="btn btn-primary">🔧 Improve Copy</button>
@@ -346,7 +346,7 @@ require_once CMS_ROOT . '/admin/includes/page_header.php';
 </div>
 <div class="form-group">
 <label>AI Provider & Model</label>
-<?= ai_render_dual_selector('provider', 'model', 'openai', 'gpt-4.1-mini') ?>
+<?= ai_render_dual_selector('provider', 'model', 'openai', 'gpt-5.2') ?>
 </div>
 </div>
 <button type="submit" class="btn btn-primary">🔀 Generate Variants</button>
