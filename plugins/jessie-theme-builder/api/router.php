@@ -150,7 +150,9 @@ $validEndpoints = [
     // Layout Library (Page & Section layouts)
     'layout-library',
     // Theme Builder Layouts (header, footer, body)
-    'library-theme-builder'
+    'library-theme-builder',
+    // CMS Integration
+    'cms-galleries'
 ];
 
 if (!in_array($action, $validEndpoints)) {

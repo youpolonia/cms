@@ -438,6 +438,11 @@
 
         // Bind field events (pass signal for cleanup)
         JTB.Settings.bindFieldEvents(panel, signal);
+
+        // Load dynamic options for select fields (e.g., CMS galleries)
+        if (typeof JTB.Fields.loadDynamicOptions === 'function') {
+            JTB.Fields.loadDynamicOptions(panel);
+        }
     };
 
     JTB.Settings.bindFieldEvents = function(container, signal) {

@@ -95,18 +95,82 @@
     JTB.Fields.renderSelect = function(name, config, value) {
         const options = config.options || {};
         const currentValue = value !== undefined ? value : (config.default || '');
+        const dynamicOptions = config.dynamic_options || null;
 
-        let html = `<select class="jtb-input-select" name="${JTB.Fields.esc(name)}" data-field="${JTB.Fields.esc(name)}">`;
+        // Add data attribute for dynamic loading
+        let dataAttrs = `data-field="${JTB.Fields.esc(name)}"`;
+        if (dynamicOptions) {
+            dataAttrs += ` data-dynamic-options="${JTB.Fields.esc(dynamicOptions)}"`;
+            dataAttrs += ` data-current-value="${JTB.Fields.esc(currentValue)}"`;
+        }
 
-        for (const optValue in options) {
-            const optLabel = options[optValue];
-            const selected = optValue == currentValue ? ' selected' : '';
-            html += `<option value="${JTB.Fields.esc(optValue)}"${selected}>${JTB.Fields.esc(optLabel)}</option>`;
+        let html = `<select class="jtb-input-select" name="${JTB.Fields.esc(name)}" ${dataAttrs}>`;
+
+        // For dynamic options, show loading state initially
+        if (dynamicOptions && Object.keys(options).length === 0) {
+            html += `<option value="">Loading...</option>`;
+        } else {
+            for (const optValue in options) {
+                const optLabel = options[optValue];
+                const selected = optValue == currentValue ? ' selected' : '';
+                html += `<option value="${JTB.Fields.esc(optValue)}"${selected}>${JTB.Fields.esc(optLabel)}</option>`;
+            }
         }
 
         html += '</select>';
 
         return html;
+    };
+
+    /**
+     * Load dynamic options for select fields
+     * Called after panel is rendered
+     */
+    JTB.Fields.loadDynamicOptions = function(container) {
+        const dynamicSelects = container.querySelectorAll('select[data-dynamic-options]');
+
+        dynamicSelects.forEach(select => {
+            const endpoint = select.dataset.dynamicOptions;
+            const currentValue = select.dataset.currentValue || '';
+
+            // Fetch options from API
+            fetch(JTB.config.apiUrl + '/' + endpoint, {
+                method: 'GET',
+                credentials: 'include',
+                headers: {
+                    'Accept': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success && Array.isArray(data.data)) {
+                    // Clear loading state
+                    select.innerHTML = '<option value="">-- Select --</option>';
+
+                    // Add options from API
+                    data.data.forEach(opt => {
+                        const option = document.createElement('option');
+                        option.value = opt.value;
+                        option.textContent = opt.label;
+                        if (opt.value === currentValue) {
+                            option.selected = true;
+                        }
+                        select.appendChild(option);
+                    });
+
+                    // Trigger change event if value was pre-selected
+                    if (currentValue) {
+                        select.dispatchEvent(new Event('change', { bubbles: true }));
+                    }
+                } else {
+                    select.innerHTML = '<option value="">No options available</option>';
+                }
+            })
+            .catch(error => {
+                console.error('Failed to load dynamic options:', error);
+                select.innerHTML = '<option value="">Error loading options</option>';
+            });
+        });
     };
 
     JTB.Fields.renderToggle = function(name, config, value) {

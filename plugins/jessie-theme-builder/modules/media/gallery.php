@@ -2,6 +2,7 @@
 /**
  * Gallery Module
  * Image gallery with various layouts
+ * Supports both custom images and CMS Gallery integration
  *
  * @package JessieThemeBuilder
  */
@@ -38,11 +39,35 @@ class JTB_Module_Gallery extends JTB_Element
     public function getFields(): array
     {
         return [
+            // === SOURCE SELECTION ===
+            'gallery_source' => [
+                'label' => 'Gallery Source',
+                'type' => 'select',
+                'options' => [
+                    'custom' => 'Custom Images',
+                    'cms_gallery' => 'CMS Gallery'
+                ],
+                'default' => 'custom',
+                'description' => 'Choose between custom uploaded images or an existing CMS gallery'
+            ],
+            // CMS Gallery selector (shown when source = cms_gallery)
+            'cms_gallery_id' => [
+                'label' => 'Select Gallery',
+                'type' => 'select',
+                'options' => [], // Loaded dynamically via API
+                'default' => '',
+                'description' => 'Choose a gallery from your CMS',
+                'show_if' => ['gallery_source' => 'cms_gallery'],
+                'dynamic_options' => 'cms-galleries' // Tells JS to fetch from /api/jtb/cms-galleries
+            ],
+            // Custom images (shown when source = custom)
             'gallery_images' => [
                 'label' => 'Gallery Images',
                 'type' => 'gallery',
-                'description' => 'Select multiple images for the gallery'
+                'description' => 'Select multiple images for the gallery',
+                'show_if' => ['gallery_source' => 'custom']
             ],
+            // === LAYOUT OPTIONS ===
             'gallery_layout' => [
                 'label' => 'Layout',
                 'type' => 'select',
@@ -129,17 +154,61 @@ class JTB_Module_Gallery extends JTB_Element
         ];
     }
 
+    /**
+     * Fetch images from CMS Gallery
+     */
+    private function fetchCmsGalleryImages(int $galleryId): array
+    {
+        if ($galleryId <= 0) {
+            return [];
+        }
+
+        try {
+            $db = \core\Database::connection();
+
+            $stmt = $db->prepare("
+                SELECT id, filename, title, caption, sort_order
+                FROM gallery_images
+                WHERE gallery_id = ?
+                ORDER BY sort_order ASC, id ASC
+            ");
+            $stmt->execute([$galleryId]);
+            $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+            return array_map(function($row) {
+                return [
+                    'url' => '/uploads/media/' . $row['filename'],
+                    'title' => $row['title'] ?? '',
+                    'caption' => $row['caption'] ?? '',
+                    'alt' => $row['title'] ?? 'Gallery image'
+                ];
+            }, $rows);
+
+        } catch (\Exception $e) {
+            // Log error but don't break the page
+            error_log('JTB Gallery: Failed to fetch CMS gallery images - ' . $e->getMessage());
+            return [];
+        }
+    }
+
     public function render(array $attrs, string $content = ''): string
     {
-        $images = $attrs['gallery_images'] ?? [];
+        $source = $attrs['gallery_source'] ?? 'custom';
         $layout = $attrs['gallery_layout'] ?? 'grid';
         $columns = $attrs['columns'] ?? '3';
         $showCaptions = $attrs['show_title_caption'] ?? true;
         $overlay = $attrs['overlay_on_hover'] ?? true;
         $lightbox = $attrs['lightbox'] ?? true;
 
-        if (is_string($images)) {
-            $images = json_decode($images, true) ?: [];
+        // Get images based on source
+        if ($source === 'cms_gallery') {
+            $galleryId = (int)($attrs['cms_gallery_id'] ?? 0);
+            $images = $this->fetchCmsGalleryImages($galleryId);
+        } else {
+            $images = $attrs['gallery_images'] ?? [];
+            if (is_string($images)) {
+                $images = json_decode($images, true) ?: [];
+            }
         }
 
         $containerClass = 'jtb-gallery-container jtb-gallery-' . $layout . ' jtb-gallery-cols-' . $columns;
@@ -194,7 +263,11 @@ class JTB_Module_Gallery extends JTB_Element
         }
 
         if (empty($images)) {
-            $innerHtml .= '<p class="jtb-gallery-empty">No images selected for this gallery.</p>';
+            if ($source === 'cms_gallery') {
+                $innerHtml .= '<p class="jtb-gallery-empty">No CMS gallery selected or gallery is empty.</p>';
+            } else {
+                $innerHtml .= '<p class="jtb-gallery-empty">No images selected for this gallery.</p>';
+            }
         }
 
         $innerHtml .= '</div>';
