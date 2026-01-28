@@ -225,7 +225,23 @@ class Router {
                 $className = $handler[0];
                 $methodName = $handler[1];
                 $instance = new $className();
-                call_user_func_array([$instance, $methodName], $route['params']);
+
+                // Check if method requires Request as first parameter
+                $reflection = new \ReflectionMethod($instance, $methodName);
+                $params = $reflection->getParameters();
+                $args = $route['params'];
+
+                if (!empty($params) && $params[0]->getType() !== null) {
+                    $typeName = $params[0]->getType()->getName();
+                    if ($typeName === 'Core\\Request' || $typeName === 'Request') {
+                        // Prepend Request object to arguments
+                        $request = new \Core\Request();
+                        $request->setParams($route['params']);
+                        array_unshift($args, $request);
+                    }
+                }
+
+                call_user_func_array([$instance, $methodName], $args);
             } else {
                 call_user_func_array($handler, $route['params']);
             }
