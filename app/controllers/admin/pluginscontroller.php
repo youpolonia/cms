@@ -15,8 +15,8 @@ class PluginsController
 
     public function __construct()
     {
-        $this->pluginsDir = CMS_ROOT . '/plugins';
-        $this->configFile = CMS_ROOT . '/config/installed_plugins.json';
+        $this->pluginsDir = \CMS_ROOT . '/plugins';
+        $this->configFile = \CMS_ROOT . '/config/installed_plugins.json';
     }
 
     /**

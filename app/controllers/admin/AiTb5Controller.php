@@ -28,7 +28,7 @@ class AiTb5Controller
         } else {
             throw new \Exception('Database class not found');
         }
-        $this->jtbPluginPath = CMS_ROOT . '/plugins/jessie-theme-builder';
+        $this->jtbPluginPath = \CMS_ROOT . '/plugins/jessie-theme-builder';
         $this->loadAiSettings();
     }
 
@@ -37,7 +37,7 @@ class AiTb5Controller
      */
     private function loadAiSettings(): void
     {
-        $aiSettingsPath = CMS_ROOT . '/config/ai_settings.json';
+        $aiSettingsPath = \CMS_ROOT . '/config/ai_settings.json';
         if (file_exists($aiSettingsPath)) {
             $this->aiSettings = json_decode(file_get_contents($aiSettingsPath), true) ?: [];
         }

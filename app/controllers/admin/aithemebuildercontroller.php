@@ -34,7 +34,7 @@ class AiThemeBuilderController
         $this->db = \core\Database::connection();
 
         // Load AI settings
-        $aiSettingsPath = CMS_ROOT . '/config/ai_settings.json';
+        $aiSettingsPath = \CMS_ROOT . '/config/ai_settings.json';
         if (file_exists($aiSettingsPath)) {
             $this->aiSettings = json_decode(file_get_contents($aiSettingsPath), true) ?: [];
         }
@@ -1353,7 +1353,7 @@ USERPROMPT;
      */
     private function getPexelsApiKey(): ?string
     {
-        $configPath = CMS_ROOT . '/config/api_keys.json';
+        $configPath = \CMS_ROOT . '/config/api_keys.json';
         if (file_exists($configPath)) {
             $config = json_decode(file_get_contents($configPath), true);
             if (!empty($config['pexels'])) {
@@ -1386,7 +1386,7 @@ USERPROMPT;
         }
 
         try {
-            $uploadDir = CMS_ROOT . "/public/uploads/media/";
+            $uploadDir = \CMS_ROOT . "/public/uploads/media/";
             if (!is_dir($uploadDir)) {
                 mkdir($uploadDir, 0755, true);
             }

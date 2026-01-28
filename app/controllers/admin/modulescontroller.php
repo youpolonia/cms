@@ -15,8 +15,8 @@ class ModulesController
 
     public function __construct()
     {
-        $this->modulesDir = CMS_ROOT . '/modules';
-        $this->stateFile = CMS_ROOT . '/cms_storage/modules_state.json';
+        $this->modulesDir = \CMS_ROOT . '/modules';
+        $this->stateFile = \CMS_ROOT . '/cms_storage/modules_state.json';
         $this->ensureStorageDir();
     }
 
@@ -493,7 +493,7 @@ class ModulesController
 
     private function logModuleAction(string $slug, string $action): void
     {
-        $logFile = CMS_ROOT . '/logs/modules.log';
+        $logFile = \CMS_ROOT . '/logs/modules.log';
         $logDir = dirname($logFile);
 
         if (!is_dir($logDir)) {

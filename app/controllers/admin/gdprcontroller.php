@@ -206,7 +206,7 @@ class GdprController
 
     private function getRecentActions(int $limit = 20): array
     {
-        $logDir = CMS_ROOT . '/storage/logs/gdpr/';
+        $logDir = \CMS_ROOT . '/storage/logs/gdpr/';
         if (!is_dir($logDir)) {
             return [];
         }
@@ -231,7 +231,7 @@ class GdprController
 
     private function getStats(): array
     {
-        $logDir = CMS_ROOT . '/storage/logs/gdpr/';
+        $logDir = \CMS_ROOT . '/storage/logs/gdpr/';
         $stats = ['exports' => 0, 'anonymizations' => 0, 'deletions' => 0, 'total' => 0];
 
         if (!is_dir($logDir)) return $stats;
@@ -255,7 +255,7 @@ class GdprController
 
     private function logGdprAction(string $action, $userId, string $description): void
     {
-        $logDir = CMS_ROOT . '/storage/logs/gdpr/';
+        $logDir = \CMS_ROOT . '/storage/logs/gdpr/';
         if (!is_dir($logDir)) {
             mkdir($logDir, 0755, true);
         }

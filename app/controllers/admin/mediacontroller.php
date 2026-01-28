@@ -30,7 +30,7 @@ class MediaController
 
     public function __construct()
     {
-        $this->uploadDir = CMS_ROOT . '/uploads/media';
+        $this->uploadDir = \CMS_ROOT . '/uploads/media';
         $this->uploadUrl = '/uploads/media';
     }
 
@@ -303,7 +303,7 @@ class MediaController
         }
 
         // Load Pexels API key from config
-        $aiSettingsPath = CMS_ROOT . '/config/ai_settings.json';
+        $aiSettingsPath = \CMS_ROOT . '/config/ai_settings.json';
         $pexelsKey = '';
         if (file_exists($aiSettingsPath)) {
             $settings = json_decode(file_get_contents($aiSettingsPath), true);
@@ -373,7 +373,7 @@ class MediaController
         }
 
         // Load OpenAI API key
-        $aiSettingsPath = CMS_ROOT . '/config/ai_settings.json';
+        $aiSettingsPath = \CMS_ROOT . '/config/ai_settings.json';
         $openaiKey = '';
         if (file_exists($aiSettingsPath)) {
             $settings = json_decode(file_get_contents($aiSettingsPath), true);
@@ -433,7 +433,7 @@ class MediaController
             $imageData = file_get_contents($imageUrl);
             if ($imageData) {
                 $filename = 'ai-' . date('YmdHis') . '-' . substr(md5($prompt), 0, 8) . '.png';
-                $savePath = CMS_ROOT . '/uploads/media/' . $filename;
+                $savePath = \CMS_ROOT . '/uploads/media/' . $filename;
                 file_put_contents($savePath, $imageData);
                 
                 echo json_encode([

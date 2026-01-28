@@ -9,7 +9,7 @@ class JtbApiController
 {
     private function initPlugin(): void
     {
-        $pluginPath = CMS_ROOT . '/plugins/jessie-theme-builder';
+        $pluginPath = \CMS_ROOT . '/plugins/jessie-theme-builder';
 
         require_once $pluginPath . '/includes/class-jtb-element.php';
         require_once $pluginPath . '/includes/class-jtb-registry.php';
@@ -219,7 +219,7 @@ class JtbApiController
 
         $extension = $allowedTypes[$mimeType];
         $filename = uniqid('jtb_') . '_' . time() . '.' . $extension;
-        $uploadDir = CMS_ROOT . '/uploads/jtb/' . date('Y/m');
+        $uploadDir = \CMS_ROOT . '/uploads/jtb/' . date('Y/m');
 
         if (!is_dir($uploadDir)) {
             mkdir($uploadDir, 0755, true);

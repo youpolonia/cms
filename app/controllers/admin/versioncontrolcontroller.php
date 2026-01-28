@@ -189,7 +189,7 @@ class VersionControlController
 
     private function getContentTypesWithVersions(): array
     {
-        $versionDir = CMS_ROOT . '/cms_storage/versions/';
+        $versionDir = \CMS_ROOT . '/cms_storage/versions/';
         $types = [];
 
         if (!is_dir($versionDir)) {

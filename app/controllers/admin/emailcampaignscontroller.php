@@ -215,7 +215,7 @@ class EmailCampaignsController
             return ['ok' => false, 'error' => 'Invalid campaign ID.'];
         }
 
-        $storageDir = CMS_ROOT . '/cms_storage/ai-email-campaigns';
+        $storageDir = \CMS_ROOT . '/cms_storage/ai-email-campaigns';
         $filepath = $storageDir . '/' . $campaignId . '.json';
 
         if (!is_file($filepath)) {

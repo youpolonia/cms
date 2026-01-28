@@ -77,7 +77,7 @@ class WidgetsController
 
     private function isAiConfigured(): bool
     {
-        $configPath = CMS_ROOT . '/config/ai_settings.json';
+        $configPath = \CMS_ROOT . '/config/ai_settings.json';
         if (!file_exists($configPath)) {
             return false;
         }

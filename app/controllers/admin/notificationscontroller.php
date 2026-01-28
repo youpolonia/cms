@@ -87,7 +87,7 @@ class NotificationsController
 
     public function clearAll(Request $request): void
     {
-        $file = CMS_ROOT . '/logs/notifications.json';
+        $file = \CMS_ROOT . '/logs/notifications.json';
         $success = file_put_contents($file, '[]') !== false;
 
         if ($success) {
