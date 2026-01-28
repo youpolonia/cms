@@ -563,7 +563,7 @@ class ThemeBuilderController
         }
 
         // Load AI settings
-        $aiSettingsPath = CMS_ROOT . '/config/ai_settings.json';
+        $aiSettingsPath = \CMS_ROOT . '/config/ai_settings.json';
         if (!file_exists($aiSettingsPath)) {
             echo json_encode(['success' => false, 'error' => 'AI settings not configured']);
             return;
@@ -1240,7 +1240,7 @@ class ThemeBuilderController
         }
         
         // Load theme.json
-        $themePath = CMS_ROOT . '/themes/' . $activeTheme . '/theme.json';
+        $themePath = \CMS_ROOT . '/themes/' . $activeTheme . '/theme.json';
         if (file_exists($themePath)) {
             $themeData = json_decode(file_get_contents($themePath), true);
             if (!empty($themeData['colors'])) {

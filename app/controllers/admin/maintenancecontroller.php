@@ -155,7 +155,7 @@ class MaintenanceController
 
     private function createFlagFile(): void
     {
-        $flagPath = CMS_ROOT . '/storage/maintenance.flag';
+        $flagPath = \CMS_ROOT . '/storage/maintenance.flag';
         $settings = $this->getSettings();
 
         $data = [
@@ -167,7 +167,7 @@ class MaintenanceController
         ];
 
         // Ensure storage directory exists
-        $storageDir = CMS_ROOT . '/storage';
+        $storageDir = \CMS_ROOT . '/storage';
         if (!is_dir($storageDir)) {
             mkdir($storageDir, 0755, true);
         }
@@ -177,7 +177,7 @@ class MaintenanceController
 
     private function removeFlagFile(): void
     {
-        $flagPath = CMS_ROOT . '/storage/maintenance.flag';
+        $flagPath = \CMS_ROOT . '/storage/maintenance.flag';
         if (file_exists($flagPath)) {
             unlink($flagPath);
         }

@@ -14,7 +14,7 @@ class JtbController
             Response::redirect('/admin/login');
         }
 
-        $pluginPath = CMS_ROOT . '/plugins/jessie-theme-builder';
+        $pluginPath = \CMS_ROOT . '/plugins/jessie-theme-builder';
 
         if (!file_exists($pluginPath . '/admin.php')) {
             echo '<h1>Error: Jessie Theme Builder plugin not found</h1>';
@@ -30,7 +30,7 @@ class JtbController
             Response::redirect('/admin/login');
         }
 
-        $pluginPath = CMS_ROOT . '/plugins/jessie-theme-builder';
+        $pluginPath = \CMS_ROOT . '/plugins/jessie-theme-builder';
 
         if (!file_exists($pluginPath . '/views/builder.php')) {
             echo '<h1>Error: Jessie Theme Builder plugin not found</h1>';

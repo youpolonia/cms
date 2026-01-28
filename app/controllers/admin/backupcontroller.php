@@ -13,7 +13,7 @@ class BackupController
 
     public function __construct()
     {
-        $this->backupDir = CMS_ROOT . '/storage/backups';
+        $this->backupDir = \CMS_ROOT . '/storage/backups';
     }
 
     public function index(Request $request): void

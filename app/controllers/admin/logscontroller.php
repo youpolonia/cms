@@ -74,7 +74,7 @@ class LogsController
     public function files(Request $request): void
     {
         $logFiles = [];
-        $logDir = CMS_ROOT . '/storage/logs';
+        $logDir = \CMS_ROOT . '/storage/logs';
 
         if (is_dir($logDir)) {
             $files = scandir($logDir);
@@ -108,7 +108,7 @@ class LogsController
             Response::redirect('/admin/logs/files');
         }
 
-        $path = CMS_ROOT . '/storage/logs/' . $filename;
+        $path = \CMS_ROOT . '/storage/logs/' . $filename;
 
         if (!file_exists($path)) {
             Session::flash('error', 'Log file not found.');

@@ -180,7 +180,7 @@ class GalleriesController
             Response::redirect("/admin/galleries/{$galleryId}/images");
         }
 
-        $uploadDir = CMS_ROOT . '/public/uploads/media/';
+        $uploadDir = \CMS_ROOT . '/public/uploads/media/';
         if (!is_dir($uploadDir)) {
             mkdir($uploadDir, 0755, true);
         }

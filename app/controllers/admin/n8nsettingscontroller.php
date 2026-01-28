@@ -231,7 +231,7 @@ class N8nSettingsController
      */
     public function clearLog(Request $request): void
     {
-        $logFile = CMS_ROOT . '/storage/logs/n8n_connection.log';
+        $logFile = \CMS_ROOT . '/storage/logs/n8n_connection.log';
         if (file_exists($logFile)) {
             file_put_contents($logFile, '');
         }
@@ -245,7 +245,7 @@ class N8nSettingsController
      */
     private function logConnection(string $event, string $message): void
     {
-        $logDir = CMS_ROOT . '/storage/logs';
+        $logDir = \CMS_ROOT . '/storage/logs';
         if (!is_dir($logDir)) {
             mkdir($logDir, 0755, true);
         }
@@ -269,7 +269,7 @@ class N8nSettingsController
      */
     private function getConnectionLog(int $limit = 10): array
     {
-        $logFile = CMS_ROOT . '/storage/logs/n8n_connection.log';
+        $logFile = \CMS_ROOT . '/storage/logs/n8n_connection.log';
         if (!file_exists($logFile)) {
             return [];
         }

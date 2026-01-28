@@ -124,7 +124,7 @@ class AiDesignerController
         $this->db = \core\Database::connection();
         
         // Load AI settings from JSON
-        $aiSettingsPath = CMS_ROOT . '/config/ai_settings.json';
+        $aiSettingsPath = \CMS_ROOT . '/config/ai_settings.json';
         if (file_exists($aiSettingsPath)) {
             $this->aiSettings = json_decode(file_get_contents($aiSettingsPath), true) ?: [];
         }
@@ -279,7 +279,7 @@ class AiDesignerController
             return;
         }
         
-        $themePath = CMS_ROOT . '/themes/' . $slug;
+        $themePath = \CMS_ROOT . '/themes/' . $slug;
         
         if (!is_dir($themePath)) {
             echo '<p>Theme not found</p>';
@@ -313,7 +313,7 @@ class AiDesignerController
             exit;
         }
         
-        $themePath = CMS_ROOT . '/themes/' . $slug;
+        $themePath = \CMS_ROOT . '/themes/' . $slug;
         
         if (!is_dir($themePath)) {
             echo json_encode(['success' => false, 'error' => 'Theme not found']);
@@ -347,7 +347,7 @@ class AiDesignerController
     {
         header('Content-Type: application/json');
         
-        $themesPath = CMS_ROOT . '/themes';
+        $themesPath = \CMS_ROOT . '/themes';
         $themes = [];
         
         if (is_dir($themesPath)) {
@@ -400,7 +400,7 @@ class AiDesignerController
             exit;
         }
         
-        $themePath = CMS_ROOT . '/themes/' . $slug;
+        $themePath = \CMS_ROOT . '/themes/' . $slug;
         
         if (!is_dir($themePath)) {
             echo json_encode(['success' => false, 'error' => 'Theme not found']);
@@ -437,7 +437,7 @@ class AiDesignerController
             exit;
         }
         
-        $themePath = CMS_ROOT . '/themes/' . $slug;
+        $themePath = \CMS_ROOT . '/themes/' . $slug;
         $tbExportPath = $themePath . '/tb-export/theme-export.json';
         
         if (!file_exists($tbExportPath)) {

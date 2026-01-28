@@ -13,7 +13,7 @@ class ExtensionsController
 
     public function __construct()
     {
-        $this->extensionsDir = CMS_ROOT . '/extensions';
+        $this->extensionsDir = \CMS_ROOT . '/extensions';
     }
 
     public function index(Request $request): void

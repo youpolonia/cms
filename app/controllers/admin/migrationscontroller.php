@@ -13,7 +13,7 @@ class MigrationsController
 
     public function __construct()
     {
-        $this->migrationsDir = CMS_ROOT . '/database/migrations';
+        $this->migrationsDir = \CMS_ROOT . '/database/migrations';
     }
 
     public function index(Request $request): void

@@ -35,7 +35,7 @@ class SecurityDashboardController
         }
 
         // Get last scan time
-        $scanFile = CMS_ROOT . '/storage/security_last_scan.txt';
+        $scanFile = \CMS_ROOT . '/storage/security_last_scan.txt';
         $lastScan = file_exists($scanFile) ? file_get_contents($scanFile) : null;
 
         render('admin/security/index', [
@@ -58,7 +58,7 @@ class SecurityDashboardController
         $results = \SecurityAuditor::runFullAudit();
 
         // Store scan timestamp
-        $storageDir = CMS_ROOT . '/storage';
+        $storageDir = \CMS_ROOT . '/storage';
         if (!is_dir($storageDir)) {
             @mkdir($storageDir, 0755, true);
         }

@@ -15,8 +15,8 @@ class ThemeEditorController
 
     public function __construct()
     {
-        $this->themesDir = CMS_ROOT . '/themes';
-        $this->configPath = CMS_ROOT . '/config_core/theme.php';
+        $this->themesDir = \CMS_ROOT . '/themes';
+        $this->configPath = \CMS_ROOT . '/config_core/theme.php';
     }
 
     public function edit(Request $request): void
