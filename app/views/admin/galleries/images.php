@@ -1,246 +1,251 @@
 <?php
 /**
- * Gallery Images Management - Modern Dark Theme with Drag & Drop
+ * Gallery Images Management - Consistent with CMS Design System
  */
 $title = 'Gallery: ' . esc($gallery['name']);
 ob_start();
 ?>
 
-<div class="page-header">
-    <div class="page-header-content">
-        <a href="/admin/galleries" class="back-link">← Back to Galleries</a>
-        <h1>📷 <?= esc($gallery['name']) ?></h1>
-        <p class="page-subtitle">Manage images in this gallery</p>
-    </div>
-    <div class="page-header-actions">
-        <a href="/admin/galleries/<?= (int)$gallery['id'] ?>/edit" class="btn btn-secondary">✏️ Edit Gallery</a>
-    </div>
-</div>
-
-<?php if (!empty($success)): ?>
-    <div class="alert alert-success"><?= esc($success) ?></div>
-<?php endif; ?>
-
-<?php if (!empty($error)): ?>
-    <div class="alert alert-error"><?= esc($error) ?></div>
-<?php endif; ?>
-
-<!-- Upload Area -->
-<div class="card upload-card">
-    <div class="card-header">
-        <h2 class="card-title">📤 Upload Images</h2>
-    </div>
-    <div class="card-body">
-        <form id="uploadForm" action="/admin/galleries/<?= (int)$gallery['id'] ?>/upload" method="POST" enctype="multipart/form-data">
-            <?= csrf_field() ?>
-            <div class="dropzone" id="dropzone">
-                <div class="dropzone-content">
-                    <div class="dropzone-icon">📷</div>
-                    <p class="dropzone-text">Drag & drop images here</p>
-                    <p class="dropzone-hint">or click to browse files</p>
-                    <input type="file" id="fileInput" name="images[]" multiple accept="image/*" hidden>
-                </div>
-                <div class="dropzone-preview" id="preview"></div>
-            </div>
-            <div class="upload-actions" id="uploadActions" style="display: none;">
-                <span class="selected-count" id="selectedCount">0 files selected</span>
-                <button type="button" class="btn btn-secondary" id="clearBtn">Clear</button>
-                <button type="submit" class="btn btn-primary" id="uploadBtn">📤 Upload Images</button>
-            </div>
-        </form>
-    </div>
-</div>
-
-<!-- Images Grid -->
-<div class="card">
-    <div class="card-header">
-        <h2 class="card-title">🖼️ Gallery Images (<?= count($images) ?>)</h2>
-        <?php if (!empty($images)): ?>
-        <div class="header-actions">
-            <button type="button" class="btn btn-secondary btn-sm" id="toggleReorder">
-                ↕️ Reorder Mode
-            </button>
-        </div>
-        <?php endif; ?>
-    </div>
-    
-    <?php if (empty($images)): ?>
-        <div class="empty-state">
-            <div class="empty-icon">📷</div>
-            <h3>No images yet</h3>
-            <p>Upload images using the form above.</p>
-        </div>
-    <?php else: ?>
-        <div class="images-grid" id="imagesGrid">
-            <?php foreach ($images as $index => $image): ?>
-            <div class="image-card" data-id="<?= (int)$image['id'] ?>">
-                <div class="image-preview">
-                    <img src="/public/uploads/media/<?= esc($image['filename']) ?>" 
-                         alt="<?= esc($image['title'] ?? $image['original_name'] ?? '') ?>"
-                         loading="lazy">
-                    <div class="image-overlay">
-                        <a href="/public/uploads/media/<?= esc($image['filename']) ?>" 
-                           target="_blank" class="overlay-btn" title="View Full">
-                            🔍
-                        </a>
-                    </div>
-                    <div class="drag-handle" title="Drag to reorder">⋮⋮</div>
-                    <span class="image-order"><?= $index + 1 ?></span>
-                </div>
-                <div class="image-info">
-                    <input type="text" class="image-title" 
-                           value="<?= esc($image['title'] ?? $image['original_name'] ?? $image['filename']) ?>"
-                           data-id="<?= (int)$image['id'] ?>"
-                           placeholder="Image title...">
-                </div>
-                <div class="image-actions">
-                    <form method="post" 
-                          action="/admin/galleries/<?= (int)$gallery['id'] ?>/images/<?= (int)$image['id'] ?>/delete" 
-                          onsubmit="return confirm('Remove this image from gallery?');"
-                          class="inline-form">
-                        <?= csrf_field() ?>
-                        <button type="submit" class="action-btn delete" title="Remove">🗑️ Remove</button>
-                    </form>
-                </div>
-            </div>
-            <?php endforeach; ?>
-        </div>
-    <?php endif; ?>
-</div>
-
 <style>
-/* Page Header */
-.page-header {
+/* Page Header - Matches CMS standard */
+.gallery-header {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
     margin-bottom: 1.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border);
 }
-.page-header-content {
-    flex: 1;
-}
-.back-link {
-    font-size: 0.875rem;
-    color: var(--text-muted);
-    text-decoration: none;
-    display: inline-block;
-    margin-bottom: 0.5rem;
-}
-.back-link:hover {
-    color: var(--accent-color);
-}
-.page-header h1 {
+.gallery-header-content h1 {
     font-size: 1.75rem;
-    margin: 0 0 0.25rem 0;
+    font-weight: 700;
+    margin: 0 0 0.5rem 0;
+    color: var(--text-primary);
 }
-.page-subtitle {
+.gallery-header-content .subtitle {
     color: var(--text-muted);
+    font-size: 0.9rem;
     margin: 0;
 }
+.gallery-header-actions {
+    display: flex;
+    gap: 0.75rem;
+}
+.breadcrumb {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    margin-bottom: 0.75rem;
+}
+.breadcrumb a {
+    color: var(--accent);
+    text-decoration: none;
+}
+.breadcrumb a:hover {
+    text-decoration: underline;
+}
 
-/* Alerts */
-.alert {
-    padding: 1rem 1.25rem;
-    border-radius: 8px;
+/* Stats Bar */
+.stats-bar {
+    display: flex;
+    gap: 2rem;
+    padding: 1rem 1.5rem;
+    background: var(--bg-tertiary);
+    border-radius: var(--radius-lg);
     margin-bottom: 1.5rem;
-    font-weight: 500;
 }
-.alert-success {
-    background: rgba(34, 197, 94, 0.15);
-    border: 1px solid rgba(34, 197, 94, 0.3);
-    color: #22c55e;
+.stat-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
 }
-.alert-error {
-    background: rgba(239, 68, 68, 0.15);
-    border: 1px solid rgba(239, 68, 68, 0.3);
-    color: #ef4444;
+.stat-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    background: var(--accent-muted);
+}
+.stat-info {
+    display: flex;
+    flex-direction: column;
+}
+.stat-value {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+.stat-label {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
-/* Card */
+/* Tabs Navigation */
+.gallery-tabs {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 1.5rem;
+    border-bottom: 2px solid var(--border);
+}
+.gallery-tab {
+    padding: 12px 24px;
+    border: none;
+    background: transparent;
+    color: var(--text-muted);
+    font-weight: 600;
+    cursor: pointer;
+    border-radius: 8px 8px 0 0;
+    transition: all 0.2s;
+    font-size: 0.9rem;
+}
+.gallery-tab:hover {
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+}
+.gallery-tab.active {
+    background: var(--accent);
+    color: white;
+}
+
+/* Card - CMS Standard */
 .card {
-    background: var(--bg-secondary);
-    border: 1px solid var(--border-color);
-    border-radius: 12px;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
     overflow: hidden;
     margin-bottom: 1.5rem;
 }
 .card-header {
     padding: 1rem 1.5rem;
-    border-bottom: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--border);
     display: flex;
     justify-content: space-between;
     align-items: center;
+    background: var(--bg-tertiary);
 }
 .card-title {
     font-size: 1rem;
     font-weight: 600;
     margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
 }
 .card-body {
     padding: 1.5rem;
 }
 
-/* Dropzone */
-.dropzone {
-    border: 2px dashed var(--border-color);
-    border-radius: 12px;
-    padding: 2rem;
+/* Upload Zone - Enhanced */
+.upload-zone {
+    border: 2px dashed var(--border);
+    border-radius: var(--radius-lg);
+    padding: 3rem 2rem;
     text-align: center;
     cursor: pointer;
-    transition: all 0.2s;
-    background: var(--bg-primary);
+    transition: all 0.3s ease;
+    background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+    position: relative;
+    overflow: hidden;
 }
-.dropzone:hover,
-.dropzone.dragover {
-    border-color: var(--accent-color);
-    background: rgba(59, 130, 246, 0.05);
+.upload-zone::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, var(--accent) 0%, var(--primary-dark) 100%);
+    opacity: 0;
+    transition: opacity 0.3s;
 }
-.dropzone-icon {
-    font-size: 3rem;
-    margin-bottom: 1rem;
+.upload-zone:hover,
+.upload-zone.dragover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(99, 102, 241, 0.15);
 }
-.dropzone-text {
-    font-size: 1.125rem;
-    font-weight: 500;
-    margin: 0;
+.upload-zone:hover::before,
+.upload-zone.dragover::before {
+    opacity: 0.05;
+}
+.upload-zone-content {
+    position: relative;
+    z-index: 1;
+}
+.upload-icon {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 1.5rem;
+    background: var(--accent-muted);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    transition: transform 0.3s;
+}
+.upload-zone:hover .upload-icon {
+    transform: scale(1.1);
+}
+.upload-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 0 0 0.5rem 0;
     color: var(--text-primary);
 }
-.dropzone-hint {
-    font-size: 0.875rem;
+.upload-hint {
     color: var(--text-muted);
-    margin: 0.5rem 0 0 0;
+    font-size: 0.9rem;
+    margin: 0 0 1rem 0;
+}
+.upload-formats {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+.format-badge {
+    padding: 4px 10px;
+    background: var(--bg-tertiary);
+    border-radius: 20px;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    font-weight: 500;
 }
 
-/* Preview */
-.dropzone-preview {
-    display: none;
+/* Preview Grid */
+.preview-grid {
+    display: grid;
     grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
     gap: 0.75rem;
-    margin-top: 1rem;
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
 }
-.dropzone-preview.has-files {
-    display: grid;
+.preview-grid:empty {
+    display: none;
 }
 .preview-item {
     position: relative;
     aspect-ratio: 1;
-    border-radius: 8px;
+    border-radius: var(--radius);
     overflow: hidden;
-    background: var(--bg-secondary);
+    background: var(--bg-tertiary);
 }
 .preview-item img {
     width: 100%;
     height: 100%;
     object-fit: cover;
 }
-.preview-item .remove-preview {
+.preview-remove {
     position: absolute;
     top: 4px;
     right: 4px;
     width: 24px;
     height: 24px;
     border-radius: 50%;
-    background: rgba(239, 68, 68, 0.9);
+    background: var(--danger);
     color: white;
     border: none;
     cursor: pointer;
@@ -248,21 +253,182 @@ ob_start();
     display: flex;
     align-items: center;
     justify-content: center;
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+.preview-item:hover .preview-remove {
+    opacity: 1;
 }
 
 /* Upload Actions */
 .upload-actions {
     display: flex;
     align-items: center;
-    gap: 1rem;
-    margin-top: 1rem;
-    padding-top: 1rem;
-    border-top: 1px solid var(--border-color);
+    justify-content: space-between;
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
 }
-.selected-count {
+.upload-actions:empty {
+    display: none;
+}
+.file-count {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
     color: var(--text-muted);
+    font-size: 0.9rem;
+}
+.file-count strong {
+    color: var(--text-primary);
+}
+
+/* Images Grid - Enhanced */
+.images-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1.25rem;
+    padding: 1.5rem;
+}
+.image-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    transition: all 0.3s ease;
+    position: relative;
+}
+.image-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+}
+.image-card.selected {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 2px var(--accent-muted);
+}
+.image-preview {
+    position: relative;
+    aspect-ratio: 4/3;
+    background: var(--bg-tertiary);
+    overflow: hidden;
+}
+.image-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s;
+}
+.image-card:hover .image-preview img {
+    transform: scale(1.05);
+}
+.image-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 50%);
+    opacity: 0;
+    transition: opacity 0.3s;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    padding: 1rem;
+    gap: 0.5rem;
+}
+.image-card:hover .image-overlay {
+    opacity: 1;
+}
+.overlay-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius);
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(4px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+    font-size: 1.1rem;
+}
+.overlay-btn:hover {
+    background: var(--accent);
+    border-color: var(--accent);
+    transform: scale(1.1);
+}
+.image-checkbox {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    width: 24px;
+    height: 24px;
+    border-radius: 6px;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 14px;
+    opacity: 0;
+    transition: all 0.2s;
+}
+.image-card:hover .image-checkbox,
+.image-card.selected .image-checkbox {
+    opacity: 1;
+}
+.image-card.selected .image-checkbox {
+    background: var(--accent);
+    border-color: var(--accent);
+}
+.image-order {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    min-width: 28px;
+    height: 28px;
+    padding: 0 8px;
+    border-radius: 6px;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    color: white;
+    font-size: 0.75rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.image-info {
+    padding: 1rem;
+}
+.image-title-input {
+    width: 100%;
+    padding: 0.625rem 0.875rem;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--text-primary);
     font-size: 0.875rem;
-    flex: 1;
+    transition: all 0.2s;
+}
+.image-title-input:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-muted);
+}
+.image-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 0.75rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--border);
+    font-size: 0.75rem;
+    color: var(--text-muted);
 }
 
 /* Empty State */
@@ -271,239 +437,356 @@ ob_start();
     padding: 4rem 2rem;
 }
 .empty-icon {
-    font-size: 4rem;
-    margin-bottom: 1rem;
+    width: 100px;
+    height: 100px;
+    margin: 0 auto 1.5rem;
+    background: var(--bg-tertiary);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
 }
 .empty-state h3 {
+    font-size: 1.25rem;
     margin: 0 0 0.5rem 0;
+    color: var(--text-primary);
 }
 .empty-state p {
     color: var(--text-muted);
-    margin: 0;
+    margin: 0 0 1.5rem 0;
 }
 
-/* Images Grid */
-.images-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 1rem;
-    padding: 1.5rem;
-}
-
-.image-card {
+/* Bulk Actions Bar */
+.bulk-actions {
+    position: fixed;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
     background: var(--bg-primary);
-    border: 1px solid var(--border-color);
-    border-radius: 10px;
-    overflow: hidden;
-    transition: all 0.2s;
-}
-.image-card:hover {
-    border-color: var(--accent-color);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-}
-.image-card.dragging {
-    opacity: 0.5;
-    transform: scale(0.95);
-}
-
-.image-preview {
-    position: relative;
-    aspect-ratio: 1;
-    background: #1e1e2e;
-}
-.image-preview img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.image-overlay {
-    position: absolute;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 1rem 1.5rem;
     display: flex;
     align-items: center;
-    justify-content: center;
-    opacity: 0;
-    transition: opacity 0.2s;
+    gap: 1rem;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s ease;
+    z-index: 100;
 }
-.image-card:hover .image-overlay {
-    opacity: 1;
+.bulk-actions.visible {
+    transform: translateX(-50%) translateY(0);
 }
-.overlay-btn {
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.2);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.5rem;
-    text-decoration: none;
-    transition: all 0.2s;
-}
-.overlay-btn:hover {
-    background: rgba(255, 255, 255, 0.3);
-    transform: scale(1.1);
-}
-
-.drag-handle {
-    position: absolute;
-    top: 8px;
-    left: 8px;
-    width: 28px;
-    height: 28px;
-    border-radius: 6px;
-    background: rgba(0, 0, 0, 0.6);
-    color: white;
-    font-size: 14px;
-    display: none;
-    align-items: center;
-    justify-content: center;
-    cursor: grab;
-}
-.reorder-mode .drag-handle {
-    display: flex;
-}
-
-.image-order {
-    position: absolute;
-    bottom: 8px;
-    right: 8px;
-    width: 28px;
-    height: 28px;
-    border-radius: 6px;
-    background: rgba(0, 0, 0, 0.6);
-    color: white;
-    font-size: 12px;
+.bulk-count {
     font-weight: 600;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    color: var(--accent);
 }
 
-.image-info {
-    padding: 0.75rem;
-}
-.image-title {
-    width: 100%;
-    padding: 0.5rem;
-    background: var(--bg-secondary);
-    border: 1px solid var(--border-color);
-    border-radius: 6px;
-    color: var(--text-primary);
-    font-size: 0.8125rem;
-}
-.image-title:focus {
-    outline: none;
-    border-color: var(--accent-color);
-}
-
-.image-actions {
-    padding: 0 0.75rem 0.75rem;
-}
-.inline-form {
-    display: block;
-}
-.action-btn {
-    width: 100%;
-    padding: 0.5rem;
-    font-size: 0.8125rem;
-    border: 1px solid var(--border-color);
-    border-radius: 6px;
-    background: var(--bg-secondary);
-    color: var(--text-primary);
-    cursor: pointer;
-    transition: all 0.2s;
-}
-.action-btn.delete:hover {
-    background: rgba(239, 68, 68, 0.15);
-    border-color: #ef4444;
-    color: #ef4444;
-}
-
-/* Buttons */
+/* Buttons - CMS Standard */
 .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
     padding: 0.625rem 1.25rem;
-    border-radius: 8px;
+    border-radius: var(--radius);
     font-weight: 500;
+    font-size: 0.9rem;
     cursor: pointer;
     text-decoration: none;
     transition: all 0.2s;
     border: none;
 }
 .btn-primary {
-    background: var(--accent-color);
+    background: var(--accent);
     color: white;
 }
 .btn-primary:hover {
-    background: #2563eb;
+    background: var(--accent-hover);
+    transform: translateY(-1px);
 }
 .btn-secondary {
-    background: var(--bg-secondary);
+    background: var(--bg-tertiary);
     color: var(--text-primary);
-    border: 1px solid var(--border-color);
+    border: 1px solid var(--border);
 }
 .btn-secondary:hover {
     background: var(--bg-primary);
+    border-color: var(--accent);
+}
+.btn-danger {
+    background: var(--danger-bg);
+    color: var(--danger);
+    border: 1px solid var(--danger);
+}
+.btn-danger:hover {
+    background: var(--danger);
+    color: white;
 }
 .btn-sm {
-    padding: 0.375rem 0.75rem;
-    font-size: 0.875rem;
+    padding: 0.5rem 1rem;
+    font-size: 0.8rem;
+}
+.btn-icon {
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    justify-content: center;
 }
 
-/* Reorder Mode */
-.reorder-mode .image-card {
-    cursor: grab;
+/* Alerts */
+.alert {
+    padding: 1rem 1.25rem;
+    border-radius: var(--radius);
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
 }
-.reorder-mode .image-overlay {
-    display: none !important;
+.alert-success {
+    background: var(--success-bg);
+    border: 1px solid var(--success);
+    color: var(--success);
+}
+.alert-error {
+    background: var(--danger-bg);
+    border: 1px solid var(--danger);
+    color: var(--danger);
 }
 
 /* Responsive */
 @media (max-width: 768px) {
-    .page-header {
+    .gallery-header {
         flex-direction: column;
         gap: 1rem;
     }
+    .stats-bar {
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
     .images-grid {
-        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 1rem;
     }
 }
 </style>
 
+<!-- Breadcrumb -->
+<div class="breadcrumb">
+    <a href="/admin">Dashboard</a> /
+    <a href="/admin/galleries">Galleries</a> /
+    <?= esc($gallery['name']) ?>
+</div>
+
+<!-- Page Header -->
+<div class="gallery-header">
+    <div class="gallery-header-content">
+        <h1>📷 <?= esc($gallery['name']) ?></h1>
+        <p class="subtitle">Manage and organize images in this gallery</p>
+    </div>
+    <div class="gallery-header-actions">
+        <a href="/admin/galleries/<?= (int)$gallery['id'] ?>/edit" class="btn btn-secondary">
+            ✏️ Edit Gallery
+        </a>
+        <a href="/admin/galleries" class="btn btn-secondary">
+            ← Back
+        </a>
+    </div>
+</div>
+
+<?php if (!empty($success)): ?>
+    <div class="alert alert-success">✓ <?= esc($success) ?></div>
+<?php endif; ?>
+
+<?php if (!empty($error)): ?>
+    <div class="alert alert-error">⚠ <?= esc($error) ?></div>
+<?php endif; ?>
+
+<!-- Stats Bar -->
+<div class="stats-bar">
+    <div class="stat-item">
+        <div class="stat-icon">🖼️</div>
+        <div class="stat-info">
+            <span class="stat-value"><?= count($images) ?></span>
+            <span class="stat-label">Total Images</span>
+        </div>
+    </div>
+    <div class="stat-item">
+        <div class="stat-icon">📊</div>
+        <div class="stat-info">
+            <span class="stat-value"><?= $gallery['is_public'] ? 'Public' : 'Private' ?></span>
+            <span class="stat-label">Visibility</span>
+        </div>
+    </div>
+    <div class="stat-item">
+        <div class="stat-icon">📅</div>
+        <div class="stat-info">
+            <span class="stat-value"><?= date('M j, Y', strtotime($gallery['created_at'] ?? 'now')) ?></span>
+            <span class="stat-label">Created</span>
+        </div>
+    </div>
+</div>
+
+<!-- Tabs -->
+<div class="gallery-tabs">
+    <button class="gallery-tab active" onclick="showTab('upload')">📤 Upload</button>
+    <button class="gallery-tab" onclick="showTab('library')">🖼️ Images (<?= count($images) ?>)</button>
+    <button class="gallery-tab" onclick="showTab('settings')">⚙️ Settings</button>
+</div>
+
+<!-- Upload Panel -->
+<div id="tabUpload" class="tab-panel">
+    <div class="card">
+        <div class="card-header">
+            <h2 class="card-title">📤 Upload Images</h2>
+            <span style="color: var(--text-muted); font-size: 0.85rem;">Max 10MB per file</span>
+        </div>
+        <div class="card-body">
+            <form id="uploadForm" action="/admin/galleries/<?= (int)$gallery['id'] ?>/upload" method="POST" enctype="multipart/form-data">
+                <?= csrf_field() ?>
+                <div class="upload-zone" id="dropzone">
+                    <div class="upload-zone-content">
+                        <div class="upload-icon">📷</div>
+                        <h3 class="upload-title">Drag & drop images here</h3>
+                        <p class="upload-hint">or click to browse your computer</p>
+                        <div class="upload-formats">
+                            <span class="format-badge">JPG</span>
+                            <span class="format-badge">PNG</span>
+                            <span class="format-badge">GIF</span>
+                            <span class="format-badge">WebP</span>
+                            <span class="format-badge">SVG</span>
+                        </div>
+                    </div>
+                    <input type="file" id="fileInput" name="images[]" multiple accept="image/*" hidden>
+                </div>
+
+                <div class="preview-grid" id="previewGrid"></div>
+
+                <div class="upload-actions" id="uploadActions" style="display: none;">
+                    <div class="file-count">
+                        <span id="selectedCount">0</span> files selected
+                    </div>
+                    <div style="display: flex; gap: 0.75rem;">
+                        <button type="button" class="btn btn-secondary" id="clearBtn">Clear All</button>
+                        <button type="submit" class="btn btn-primary" id="uploadBtn">📤 Upload Images</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Library Panel -->
+<div id="tabLibrary" class="tab-panel" style="display: none;">
+    <div class="card">
+        <div class="card-header">
+            <h2 class="card-title">🖼️ Gallery Images</h2>
+            <?php if (!empty($images)): ?>
+            <div style="display: flex; gap: 0.5rem;">
+                <button type="button" class="btn btn-secondary btn-sm" id="selectAllBtn">☑️ Select All</button>
+                <button type="button" class="btn btn-secondary btn-sm" id="reorderBtn">↕️ Reorder</button>
+            </div>
+            <?php endif; ?>
+        </div>
+
+        <?php if (empty($images)): ?>
+            <div class="empty-state">
+                <div class="empty-icon">📷</div>
+                <h3>No images yet</h3>
+                <p>Upload some images to get started with your gallery.</p>
+                <button class="btn btn-primary" onclick="showTab('upload')">📤 Upload Images</button>
+            </div>
+        <?php else: ?>
+            <div class="images-grid" id="imagesGrid">
+                <?php foreach ($images as $index => $image): ?>
+                <div class="image-card" data-id="<?= (int)$image['id'] ?>">
+                    <div class="image-preview">
+                        <img src="/uploads/media/<?= esc($image['filename']) ?>"
+                             alt="<?= esc($image['title'] ?? '') ?>"
+                             loading="lazy">
+                        <div class="image-checkbox" onclick="toggleSelect(this)">✓</div>
+                        <span class="image-order">#<?= $index + 1 ?></span>
+                        <div class="image-overlay">
+                            <a href="/uploads/media/<?= esc($image['filename']) ?>"
+                               target="_blank" class="overlay-btn" title="View Full Size">🔍</a>
+                            <button type="button" class="overlay-btn" title="Edit"
+                                    onclick="editImage(<?= (int)$image['id'] ?>)">✏️</button>
+                            <form method="post" style="margin:0"
+                                  action="/admin/galleries/<?= (int)$gallery['id'] ?>/images/<?= (int)$image['id'] ?>/delete"
+                                  onsubmit="return confirm('Remove this image?');">
+                                <?= csrf_field() ?>
+                                <button type="submit" class="overlay-btn" title="Delete">🗑️</button>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="image-info">
+                        <input type="text" class="image-title-input"
+                               value="<?= esc($image['title'] ?? $image['original_name'] ?? '') ?>"
+                               data-id="<?= (int)$image['id'] ?>"
+                               placeholder="Image title...">
+                        <div class="image-meta">
+                            <span><?= esc($image['mime_type'] ?? 'image') ?></span>
+                            <span><?= isset($image['file_size']) ? round($image['file_size'] / 1024) . ' KB' : '' ?></span>
+                        </div>
+                    </div>
+                </div>
+                <?php endforeach; ?>
+            </div>
+        <?php endif; ?>
+    </div>
+</div>
+
+<!-- Settings Panel -->
+<div id="tabSettings" class="tab-panel" style="display: none;">
+    <div class="card">
+        <div class="card-header">
+            <h2 class="card-title">⚙️ Gallery Settings</h2>
+        </div>
+        <div class="card-body">
+            <p style="color: var(--text-muted);">
+                Configure gallery display options and behavior.
+                <a href="/admin/galleries/<?= (int)$gallery['id'] ?>/edit" style="color: var(--accent);">
+                    Edit full gallery settings →
+                </a>
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- Bulk Actions Bar -->
+<div class="bulk-actions" id="bulkActions">
+    <span><span class="bulk-count" id="bulkCount">0</span> selected</span>
+    <button class="btn btn-secondary btn-sm" onclick="deselectAll()">Deselect All</button>
+    <button class="btn btn-danger btn-sm" onclick="bulkDelete()">🗑️ Delete Selected</button>
+</div>
+
 <script>
-// Dropzone functionality
+// Tab switching
+function showTab(tab) {
+    document.querySelectorAll('.tab-panel').forEach(p => p.style.display = 'none');
+    document.querySelectorAll('.gallery-tab').forEach(t => t.classList.remove('active'));
+
+    document.getElementById('tab' + tab.charAt(0).toUpperCase() + tab.slice(1)).style.display = 'block';
+    event.target.classList.add('active');
+}
+
+// Dropzone
 const dropzone = document.getElementById('dropzone');
 const fileInput = document.getElementById('fileInput');
-const preview = document.getElementById('preview');
+const previewGrid = document.getElementById('previewGrid');
 const uploadActions = document.getElementById('uploadActions');
 const selectedCount = document.getElementById('selectedCount');
-const clearBtn = document.getElementById('clearBtn');
-const uploadForm = document.getElementById('uploadForm');
 
 let selectedFiles = [];
 
 dropzone?.addEventListener('click', () => fileInput.click());
-
-dropzone?.addEventListener('dragover', (e) => {
-    e.preventDefault();
-    dropzone.classList.add('dragover');
-});
-
-dropzone?.addEventListener('dragleave', () => {
-    dropzone.classList.remove('dragover');
-});
-
+dropzone?.addEventListener('dragover', (e) => { e.preventDefault(); dropzone.classList.add('dragover'); });
+dropzone?.addEventListener('dragleave', () => dropzone.classList.remove('dragover'));
 dropzone?.addEventListener('drop', (e) => {
     e.preventDefault();
     dropzone.classList.remove('dragover');
     handleFiles(e.dataTransfer.files);
 });
-
-fileInput?.addEventListener('change', (e) => {
-    handleFiles(e.target.files);
-});
+fileInput?.addEventListener('change', (e) => handleFiles(e.target.files));
 
 function handleFiles(files) {
     const imageFiles = Array.from(files).filter(f => f.type.startsWith('image/'));
@@ -512,180 +795,96 @@ function handleFiles(files) {
 }
 
 function updatePreview() {
-    preview.innerHTML = '';
-    
+    previewGrid.innerHTML = '';
+
     if (selectedFiles.length === 0) {
-        preview.classList.remove('has-files');
         uploadActions.style.display = 'none';
         return;
     }
-    
-    preview.classList.add('has-files');
+
     uploadActions.style.display = 'flex';
-    selectedCount.textContent = `${selectedFiles.length} file${selectedFiles.length !== 1 ? 's' : ''} selected`;
-    
+    selectedCount.textContent = selectedFiles.length;
+
     selectedFiles.forEach((file, index) => {
         const div = document.createElement('div');
         div.className = 'preview-item';
-        
-        const img = document.createElement('img');
-        img.src = URL.createObjectURL(file);
-        
-        const removeBtn = document.createElement('button');
-        removeBtn.className = 'remove-preview';
-        removeBtn.innerHTML = '×';
-        removeBtn.type = 'button';
-        removeBtn.onclick = (e) => {
-            e.stopPropagation();
-            selectedFiles.splice(index, 1);
-            updatePreview();
-        };
-        
-        div.appendChild(img);
-        div.appendChild(removeBtn);
-        preview.appendChild(div);
+        div.innerHTML = `
+            <img src="${URL.createObjectURL(file)}" alt="">
+            <button type="button" class="preview-remove" onclick="removeFile(${index})">×</button>
+        `;
+        previewGrid.appendChild(div);
     });
 }
 
-clearBtn?.addEventListener('click', () => {
+function removeFile(index) {
+    selectedFiles.splice(index, 1);
+    updatePreview();
+}
+
+document.getElementById('clearBtn')?.addEventListener('click', () => {
     selectedFiles = [];
     fileInput.value = '';
     updatePreview();
 });
 
-uploadForm?.addEventListener('submit', (e) => {
-    if (selectedFiles.length === 0) {
-        e.preventDefault();
-        alert('Please select at least one image');
-        return;
-    }
-    
-    // Create FormData with files
-    const formData = new FormData(uploadForm);
-    selectedFiles.forEach(file => {
-        formData.append('images[]', file);
-    });
-    
-    // Replace form data
-    const newForm = document.createElement('form');
-    newForm.method = 'POST';
-    newForm.action = uploadForm.action;
-    newForm.enctype = 'multipart/form-data';
-    
-    // Add CSRF
-    const csrfInput = uploadForm.querySelector('input[name="csrf_token"]');
-    if (csrfInput) {
-        newForm.appendChild(csrfInput.cloneNode());
-    }
-    
-    // Add files
-    const dt = new DataTransfer();
-    selectedFiles.forEach(file => dt.items.add(file));
-    
-    const newFileInput = document.createElement('input');
-    newFileInput.type = 'file';
-    newFileInput.name = 'images[]';
-    newFileInput.multiple = true;
-    newFileInput.files = dt.files;
-    newForm.appendChild(newFileInput);
-    
-    document.body.appendChild(newForm);
-    newForm.submit();
-    
-    e.preventDefault();
-});
+// Image selection
+let selectedImages = new Set();
 
-// Reorder mode
-const toggleReorder = document.getElementById('toggleReorder');
-const imagesGrid = document.getElementById('imagesGrid');
-let reorderMode = false;
+function toggleSelect(checkbox) {
+    const card = checkbox.closest('.image-card');
+    const id = card.dataset.id;
 
-toggleReorder?.addEventListener('click', () => {
-    reorderMode = !reorderMode;
-    imagesGrid?.classList.toggle('reorder-mode', reorderMode);
-    toggleReorder.textContent = reorderMode ? '✓ Save Order' : '↕️ Reorder Mode';
-    
-    if (!reorderMode) {
-        saveOrder();
-    }
-});
-
-// Simple drag reorder
-let draggedItem = null;
-
-imagesGrid?.addEventListener('dragstart', (e) => {
-    if (!reorderMode) return;
-    draggedItem = e.target.closest('.image-card');
-    draggedItem?.classList.add('dragging');
-});
-
-imagesGrid?.addEventListener('dragend', () => {
-    draggedItem?.classList.remove('dragging');
-    draggedItem = null;
-    updateOrderNumbers();
-});
-
-imagesGrid?.addEventListener('dragover', (e) => {
-    if (!reorderMode || !draggedItem) return;
-    e.preventDefault();
-    
-    const afterElement = getDragAfterElement(imagesGrid, e.clientY);
-    if (afterElement) {
-        imagesGrid.insertBefore(draggedItem, afterElement);
+    if (selectedImages.has(id)) {
+        selectedImages.delete(id);
+        card.classList.remove('selected');
     } else {
-        imagesGrid.appendChild(draggedItem);
+        selectedImages.add(id);
+        card.classList.add('selected');
+    }
+
+    updateBulkActions();
+}
+
+function updateBulkActions() {
+    const bulkActions = document.getElementById('bulkActions');
+    document.getElementById('bulkCount').textContent = selectedImages.size;
+    bulkActions.classList.toggle('visible', selectedImages.size > 0);
+}
+
+function deselectAll() {
+    selectedImages.clear();
+    document.querySelectorAll('.image-card').forEach(c => c.classList.remove('selected'));
+    updateBulkActions();
+}
+
+document.getElementById('selectAllBtn')?.addEventListener('click', function() {
+    const cards = document.querySelectorAll('.image-card');
+    if (selectedImages.size === cards.length) {
+        deselectAll();
+        this.textContent = '☑️ Select All';
+    } else {
+        cards.forEach(card => {
+            selectedImages.add(card.dataset.id);
+            card.classList.add('selected');
+        });
+        updateBulkActions();
+        this.textContent = '☐ Deselect All';
     }
 });
 
-function getDragAfterElement(container, y) {
-    const cards = [...container.querySelectorAll('.image-card:not(.dragging)')];
-    
-    return cards.reduce((closest, child) => {
-        const box = child.getBoundingClientRect();
-        const offset = y - box.top - box.height / 2;
-        
-        if (offset < 0 && offset > closest.offset) {
-            return { offset, element: child };
-        }
-        return closest;
-    }, { offset: Number.NEGATIVE_INFINITY }).element;
+function bulkDelete() {
+    if (!confirm(`Delete ${selectedImages.size} selected images?`)) return;
+
+    // TODO: Implement bulk delete API
+    alert('Bulk delete coming soon!');
 }
 
-function updateOrderNumbers() {
-    document.querySelectorAll('.image-card').forEach((card, index) => {
-        const orderSpan = card.querySelector('.image-order');
-        if (orderSpan) orderSpan.textContent = index + 1;
-    });
-}
-
-function saveOrder() {
-    const order = [...document.querySelectorAll('.image-card')].map(card => card.dataset.id);
-    
-    fetch('/admin/galleries/<?= (int)$gallery['id'] ?>/reorder', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-Token': document.querySelector('[name="csrf_token"]')?.value || ''
-        },
-        body: JSON.stringify({ order })
-    }).then(r => r.json()).then(data => {
-        if (data.success) {
-            console.log('Order saved');
-        }
-    }).catch(console.error);
-}
-
-// Make cards draggable
-document.querySelectorAll('.image-card').forEach(card => {
-    card.draggable = true;
-});
-
-// Auto-save title on blur
-document.querySelectorAll('.image-title').forEach(input => {
+// Auto-save titles
+document.querySelectorAll('.image-title-input').forEach(input => {
     input.addEventListener('blur', function() {
         const id = this.dataset.id;
         const title = this.value;
-        
+
         fetch('/admin/galleries/<?= (int)$gallery['id'] ?>/images/' + id + '/title', {
             method: 'POST',
             headers: {
@@ -695,6 +894,19 @@ document.querySelectorAll('.image-title').forEach(input => {
             body: JSON.stringify({ title })
         }).catch(console.error);
     });
+});
+
+// Form submit handler
+document.getElementById('uploadForm')?.addEventListener('submit', function(e) {
+    if (selectedFiles.length === 0) {
+        e.preventDefault();
+        alert('Please select at least one image');
+        return;
+    }
+
+    const dt = new DataTransfer();
+    selectedFiles.forEach(file => dt.items.add(file));
+    fileInput.files = dt.files;
 });
 </script>
 
