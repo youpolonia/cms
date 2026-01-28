@@ -237,7 +237,8 @@ class Router {
                         // Prepend Request object to arguments
                         $request = new \Core\Request();
                         $request->setParams($route['params']);
-                        array_unshift($args, $request);
+                        // Only pass Request, params are inside Request object
+                        $args = [$request];
                     }
                 }
 

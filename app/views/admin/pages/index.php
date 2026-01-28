@@ -119,7 +119,7 @@ $recentPages = count(array_filter($pages, fn($p) => strtotime($p['updated_at'] ?
                         </span>
                     </td>
                     <td>
-                        <span class="text-muted"><?= date('M j, Y', strtotime($page['updated_at'])) ?></span>
+                        <span class="text-muted"><?= date('M j, Y', strtotime($page['updated_at'] ?? 'now')) ?></span>
                     </td>
                     <td>
                         <div class="table-actions">
