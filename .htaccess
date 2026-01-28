@@ -17,6 +17,8 @@ RewriteRule ^vendor/.*\$ - [F,L]
 
 # Static assets - all served from public/assets/
 RewriteRule ^assets/(.*)$ public/assets/$1 [L]
+# Uploads served from public/uploads/
+RewriteRule ^uploads/(.*)$ public/uploads/$1 [L]
 RewriteRule ^favicon\.ico$ public/favicon.ico [L]
 RewriteRule ^robots\.txt$ public/robots.txt [L]
 
