@@ -36,6 +36,7 @@ return [
             ['label' => '🌯 SEO Assistant', 'url' => '/admin/ai-seo-assistant'],
             ['label' => '📈 SEO Dashboard', 'url' => '/admin/ai-seo-dashboard'],
             ['label' => '📋 SEO Content', 'url' => '/admin/ai-seo-content'],
+            ['label' => '✏️ Bulk SEO Editor', 'url' => '/admin/ai-seo-bulk'],
             ['label' => '🔑 Keywords', 'url' => '/admin/ai-seo-keywords'],
             ['label' => '🏆 Competitors', 'url' => '/admin/ai-seo-competitors'],
             ['label' => '🔬 Research', 'url' => '/admin/ai-seo-research'],

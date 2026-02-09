@@ -292,6 +292,7 @@ $sClass = $s === null ? 'muted' : ($s >= 80 ? 'success' : ($s >= 60 ? 'warning' 
 <a href="/admin/ai-seo-reports.php" class="tool-btn"><span class="icon">📊</span><span class="name">Reports</span></a>
 <a href="/admin/ai-seo-linking.php" class="tool-btn"><span class="icon">🔗</span><span class="name">Int Links</span></a>
 <a href="/admin/ai-seo-decay.php" class="tool-btn"><span class="icon">⏰</span><span class="name">Decay</span></a>
+<a href="/admin/ai-seo-bulk.php" class="tool-btn"><span class="icon">✏️</span><span class="name">Bulk Edit</span></a>
 <a href="/admin/seo-sitemap.php" class="tool-btn"><span class="icon">🗺️</span><span class="name">Sitemap</span></a>
 <a href="/admin/seo.php" class="tool-btn"><span class="icon">⚙️</span><span class="name">Settings</span></a>
 <a href="/admin/seo-robots.php" class="tool-btn"><span class="icon">🤖</span><span class="name">Robots</span></a>
