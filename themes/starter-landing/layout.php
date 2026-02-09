@@ -6,7 +6,7 @@
 <?= render_seo_meta(); ?>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<?= generate_theme_css_variables(); ?>
+<style><?= generate_theme_css_variables(); ?></style>
 <link rel="stylesheet" href="/themes/starter-landing/assets/css/style.css">
 </head>
 <body class="<?= get_body_class() ?>">
