@@ -82,10 +82,6 @@ RewriteRule ^admin/ai-components/?$ admin/ai-components.php [L]
 
 # Legacy SEO (6 pages)
 RewriteRule ^admin/seo/?$ admin/seo.php [L]
-RewriteRule ^admin/seo-dashboard/?$ admin/seo-dashboard.php [L]
-RewriteRule ^admin/seo-edit/?$ admin/seo-edit.php [L]
-RewriteRule ^admin/seo-metadata/?$ admin/seo-metadata.php [L]
-RewriteRule ^admin/seo-redirects/?$ admin/seo-redirects.php [L]
 RewriteRule ^admin/seo-robots/?$ admin/seo-robots.php [L]
 RewriteRule ^admin/seo-sitemap/?$ admin/seo-sitemap.php [L]
 
