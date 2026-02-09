@@ -42,6 +42,6 @@ try {
   </div>
 </section>
 
-<?php if (!empty($content) && trim(strip_tags($content)) !== ''): ?>
-<section class="page-content"><?= $content ?></section>
+<?php if (!empty($page['content']) && trim(strip_tags($page['content'])) !== ''): ?>
+<section class="page-content"><?= $page["content"] ?? "" ?></section>
 <?php endif; ?>

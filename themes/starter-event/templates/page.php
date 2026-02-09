@@ -8,6 +8,6 @@
 </section>
 <section class="page-content">
     <div class="container">
-        <div class="content-body"><?= $content ?></div>
+        <div class="content-body"><?= $page["content"] ?? "" ?></div>
     </div>
 </section>

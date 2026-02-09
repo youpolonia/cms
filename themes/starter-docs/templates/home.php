@@ -73,10 +73,10 @@
   </div>
 </div>
 
-<?php if (!empty($content) && trim(strip_tags($content)) !== ''): ?>
+<?php if (!empty($page['content']) && trim(strip_tags($page['content'])) !== ''): ?>
 <div class="topics-section">
   <div class="content-inner">
-    <?= $content ?>
+    <?= $page["content"] ?? "" ?>
   </div>
 </div>
 <?php endif; ?>

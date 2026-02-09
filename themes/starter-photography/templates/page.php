@@ -31,5 +31,5 @@ if (!empty($page['featured_image_id'])) {
 <?php endif; ?>
 
 <div class="page-content">
-    <div class="content-body"><?= $content ?></div>
+    <div class="content-body"><?= $page["content"] ?? "" ?></div>
 </div>

@@ -39,7 +39,7 @@ $_pubDate = !empty($article['published_at']) ? date('F j, Y', strtotime($article
 <?php endif; ?>
 
 <article class="article-body">
-    <?= $content ?>
+    <?= $article["content"] ?? "" ?>
 </article>
 
 <nav class="article-nav">

@@ -11,6 +11,6 @@ $pageSlug = $page['slug'] ?? '';
 <article class="page-content">
   <h1><?= esc($pageTitle) ?></h1>
   <div class="page-body">
-    <?= $content ?>
+    <?= $page["content"] ?? "" ?>
   </div>
 </article>

@@ -15,5 +15,5 @@ $title = $page['title'] ?? 'Untitled';
 <h1><?= esc($title) ?></h1>
 
 <div class="page-body">
-  <?= $content ?>
+  <?= $page["content"] ?? "" ?>
 </div>

@@ -16,7 +16,7 @@
 <section class="page-content">
     <div class="container">
         <div class="content-body">
-            <?= $content ?>
+            <?= $page["content"] ?? "" ?>
         </div>
     </div>
 </section>

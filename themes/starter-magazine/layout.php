@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<?php render_seo_meta(); ?>
+<?= render_seo_meta(); ?>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;600;700&family=Source+Sans+3:wght@300;400;600;700&display=swap" rel="stylesheet">
-<?php echo generate_theme_css_variables(); ?>
+<?= generate_theme_css_variables(); ?>
 <link rel="stylesheet" href="/themes/starter-magazine/assets/css/style.css">
 </head>
 <body class="<?= get_body_class() ?>">
@@ -25,7 +25,7 @@
       <span class="site-tagline">Independent Journalism &amp; Culture</span>
     </div>
     <nav class="main-nav">
-      <?php render_menu('header', ['wrap' => false, 'class' => 'nav-links', 'fallback_to_pages' => true]); ?>
+      <?= render_menu('header', ['wrap' => false, 'class' => 'nav-links', 'fallback_to_pages' => true]); ?>
     </nav>
     <button class="mobile-toggle" aria-label="Menu">&#9776;</button>
   </div>

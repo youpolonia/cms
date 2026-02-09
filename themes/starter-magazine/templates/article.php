@@ -36,11 +36,11 @@ try {
     <span class="meta-divider">·</span>
     <span class="meta-date"><?= date('F j, Y', strtotime($articleDate)) ?></span>
     <span class="meta-divider">·</span>
-    <span class="meta-reading"><?= max(1, round(str_word_count(strip_tags($content ?? '')) / 200)) ?> min read</span>
+    <span class="meta-reading"><?= max(1, round(str_word_count(strip_tags($article['content'] ?? '')) / 200)) ?> min read</span>
   </div>
 
   <div class="article-content">
-    <?= $content ?>
+    <?= $article["content"] ?? "" ?>
   </div>
 
   <div class="article-tags">

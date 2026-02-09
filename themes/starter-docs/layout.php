@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<?php render_seo_meta(); ?>
+<?= render_seo_meta(); ?>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-<?php echo generate_theme_css_variables(); ?>
+<?= generate_theme_css_variables(); ?>
 <link rel="stylesheet" href="/themes/starter-docs/assets/css/style.css">
 </head>
 <body class="<?= get_body_class() ?>">
@@ -32,7 +32,7 @@
     <nav class="sidebar-nav">
       <div class="sidebar-section">
         <h4 class="sidebar-heading">Navigation</h4>
-        <?php render_menu('header', ['wrap' => false, 'class' => 'sidebar-links', 'fallback_to_pages' => true]); ?>
+        <?= render_menu('header', ['wrap' => false, 'class' => 'sidebar-links', 'fallback_to_pages' => true]); ?>
       </div>
     </nav>
   </aside>

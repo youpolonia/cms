@@ -6,7 +6,7 @@
 $title = $article['title'] ?? $page['title'] ?? 'Untitled';
 $date = $article['created_at'] ?? $page['created_at'] ?? '';
 $category = $article['category'] ?? '';
-$wordCount = str_word_count(strip_tags($content));
+$wordCount = str_word_count(strip_tags($article['content'] ?? ''));
 $readTime = max(1, ceil($wordCount / 200));
 ?>
 
@@ -34,7 +34,7 @@ $readTime = max(1, ceil($wordCount / 200));
 </div>
 
 <div class="article-body content-inner">
-  <?= $content ?>
+  <?= $article["content"] ?? "" ?>
 </div>
 
 <div class="article-feedback">

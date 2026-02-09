@@ -1,15 +1,15 @@
 <section class="article-hero">
     <div class="article-hero-inner">
         <div class="article-hero-meta">
-            <?php if (!empty($page['author'])): ?><?= esc($page['author']) ?> · <?php endif; ?>
-            <?= date('F j, Y', strtotime($page['created_at'] ?? 'now')) ?>
+            <?php if (!empty($article['author'])): ?><?= esc($article['author']) ?> · <?php endif; ?>
+            <?= date('F j, Y', strtotime($article['created_at'] ?? 'now')) ?>
         </div>
-        <h1><?= esc($page['title'] ?? 'Article') ?></h1>
+        <h1><?= esc($article['title'] ?? 'Article') ?></h1>
     </div>
 </section>
 <section class="article-content">
     <div class="container">
-        <div class="content-body"><?= $content ?></div>
+        <div class="content-body"><?= $article["content"] ?? "" ?></div>
     </div>
 </section>
 
