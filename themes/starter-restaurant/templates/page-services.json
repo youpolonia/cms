@@ -1,0 +1,304 @@
+{
+    "name": "Services",
+    "content": {
+        "version": "1.0",
+        "content": [
+            {
+                "type": "section",
+                "attrs": {
+                    "_pattern": "hero",
+                    "padding": {"top": 100, "right": 0, "bottom": 100, "left": 0},
+                    "padding__phone": {"top": 80, "bottom": 80, "left": 20, "right": 20},
+                    "background_color": "#fefdf8"
+                },
+                "children": [
+                    {
+                        "type": "row",
+                        "attrs": {"columns": "1", "max_width": 800, "text_align": "center"},
+                        "children": [
+                            {
+                                "type": "column",
+                                "attrs": {"width": "1"},
+                                "children": [
+                                    {
+                                        "type": "heading",
+                                        "attrs": {"text": "Our Culinary Menu", "header_level": "h1", "font_family": "Playfair Display", "font_size": 52, "font_size__phone": 36, "font_weight": "700", "line_height": 1.1, "text_color": "#1c1917", "margin_bottom": 24},
+                                        "id": "rest_menu_hero_title"
+                                    },
+                                    {
+                                        "type": "text",
+                                        "attrs": {"content": "<p>Discover our carefully crafted dishes featuring the finest seasonal ingredients and time-honored culinary techniques.</p>", "font_family": "Inter", "font_size": 20, "line_height": 1.6, "text_color": "#78716c", "margin_bottom": 0},
+                                        "id": "rest_menu_hero_desc"
+                                    }
+                                ],
+                                "id": "rest_menu_hero_column"
+                            }
+                        ],
+                        "id": "rest_menu_hero_row"
+                    }
+                ],
+                "id": "rest_menu_hero_section"
+            },
+            {
+                "type": "section",
+                "attrs": {
+                    "_pattern": "appetizers",
+                    "padding": {"top": 100, "right": 0, "bottom": 50, "left": 0},
+                    "padding__phone": {"top": 80, "bottom": 40, "left": 20, "right": 20},
+                    "background_color": "#ffffff"
+                },
+                "children": [
+                    {
+                        "type": "row",
+                        "attrs": {"columns": "1", "max_width": 1280},
+                        "children": [
+                            {
+                                "type": "column",
+                                "attrs": {"width": "1"},
+                                "children": [
+                                    {
+                                        "type": "heading",
+                                        "attrs": {"text": "Appetizers", "header_level": "h2", "font_family": "Playfair Display", "font_size": 36, "font_size__phone": 28, "font_weight": "700", "text_color": "#1c1917", "text_align": "center", "margin_bottom": 60},
+                                        "id": "rest_appetizers_title"
+                                    },
+                                    {
+                                        "type": "row",
+                                        "attrs": {"columns": "1_2,1_2", "gap": 60},
+                                        "children": [
+                                            {
+                                                "type": "column",
+                                                "attrs": {"width": "1_2"},
+                                                "children": [
+                                                    {
+                                                        "type": "image",
+                                                        "attrs": {"src": "https://images.pexels.com/photos/18426931/pexels-photo-18426931.jpeg?auto=compress&cs=tinysrgb&h=400&w=600", "alt": "Artisanal appetizers beautifully plated", "border_radius": {"top_left": 12, "top_right": 12, "bottom_right": 12, "bottom_left": 12}},
+                                                        "id": "rest_appetizers_img"
+                                                    }
+                                                ],
+                                                "id": "rest_appetizers_col1"
+                                            },
+                                            {
+                                                "type": "column",
+                                                "attrs": {"width": "1_2", "vertical_align": "center"},
+                                                "children": [
+                                                    {
+                                                        "type": "text",
+                                                        "attrs": {"content": "<div style=\"margin-bottom:24px\"><h4 style=\"margin:0 0 8px;font-family:'Playfair Display';font-size:18px;color:#1c1917\">Burrata Caprese</h4><p style=\"margin:0 0 4px;color:#78716c;font-size:14px\">Fresh burrata, heirloom tomatoes, basil oil</p><p style=\"margin:0;color:#d97706;font-weight:600\">$18</p></div><div style=\"margin-bottom:24px\"><h4 style=\"margin:0 0 8px;font-family:'Playfair Display';font-size:18px;color:#1c1917\">Seared Scallops</h4><p style=\"margin:0 0 4px;color:#78716c;font-size:14px\">Pan-seared U10 scallops, cauliflower purée</p><p style=\"margin:0;color:#d97706;font-weight:600\">$22</p></div><div style=\"margin-bottom:24px\"><h4 style=\"margin:0 0 8px;font-family:'Playfair Display';font-size:18px;color:#1c1917\">Tuna Tartare</h4><p style=\"margin:0 0 4px;color:#78716c;font-size:14px\">Yellowfin tuna, avocado, sesame, citrus</p><p style=\"margin:0;color:#d97706;font-weight:600\">$24</p></div><div><h4 style=\"margin:0 0 8px;font-family:'Playfair Display';font-size:18px;color:#1c1917\">Charcuterie Board</h4><p style=\"margin:0 0 4px;color:#78716c;font-size:14px\">Artisanal cured meats, aged cheeses, accompaniments</p><p style=\"margin:0;color:#d97706;font-weight:600\">$28</p></div>", "font_family": "Inter", "line_height": 1.6},
+                                                        "id": "rest_appetizers_menu"
+                                                    }
+                                                ],
+                                                "id": "rest_appetizers_col2"
+                                            }
+                                        ],
+                                        "id": "rest_appetizers_row"
+                                    }
+                                ],
+                                "id": "rest_appetizers_column"
+                            }
+                        ],
+                        "id": "rest_appetizers_main_row"
+                    }
+                ],
+                "id": "rest_appetizers_section"
+            },
+            {
+                "type": "section",
+                "attrs": {
+                    "_pattern": "mains",
+                    "padding": {"top": 50, "right": 0, "bottom": 50, "left": 0},
+                    "padding__phone": {"top": 40, "bottom": 40, "left": 20, "right": 20},
+                    "background_color": "#fefdf8"
+                },
+                "children": [
+                    {
+                        "type": "row",
+                        "attrs": {"columns": "1", "max_width": 1280},
+                        "children": [
+                            {
+                                "type": "column",
+                                "attrs": {"width": "1"},
+                                "children": [
+                                    {
+                                        "type": "heading",
+                                        "attrs": {"text": "Main Courses", "header_level": "h2", "font_family": "Playfair Display", "font_size": 36, "font_size__phone": 28, "font_weight": "700", "text_color": "#1c1917", "text_align": "center", "margin_bottom": 60},
+                                        "id": "rest_mains_title"
+                                    },
+                                    {
+                                        "type": "row",
+                                        "attrs": {"columns": "1_2,1_2", "gap": 60},
+                                        "children": [
+                                            {
+                                                "type": "column",
+                                                "attrs": {"width": "1_2", "vertical_align": "center"},
+                                                "children": [
+                                                    {
+                                                        "type": "text",
+                                                        "attrs": {"content": "<div style=\"margin-bottom:24px\"><h4 style=\"margin:0 0 8px;font-family:'Playfair Display';font-size:18px;color:#1c1917\">Wagyu Beef Tenderloin</h4><p style=\"margin:0 0 4px;color:#78716c;font-size:14px\">8oz A5 Wagyu, truffle mashed potatoes, seasonal vegetables</p><p style=\"margin:0;color:#d97706;font-weight:600\">$68</p></div><div style=\"margin-bottom:24px\"><h4 style=\"margin:0 0 8px;font-family:'Playfair Display';font-size:18px;color:#1c1917\">Pan-Seared Salmon</h4><p style=\"margin:0 0 4px;color:#78716c;font-size:14px\">Atlantic salmon, quinoa pilaf, lemon herb butter</p><p style=\"margin:0;color:#d97706;font-weight:600\">$36</p></div><div style=\"margin-bottom:24px\"><h4 style=\"margin:0 0 8px;font-family:'Playfair Display';font-size:18px;color:#1c1917\">Lobster Thermidor</h4><p style=\"margin:0 0 4px;color:#78716c;font-size:14px\">Maine lobster, Gruyère cheese sauce, wild mushrooms</p><p style=\"margin:0;color:#d97706;font-weight:600\">$58</p></div><div><h4 style=\"margin:0 0 8px;font-family:'Playfair Display';font-size:18px;color:#1c1917\">Duck Breast</h4><p style=\"margin:0 0 4px;color:#78716c;font-size:14px\">Roasted duck breast, cherry gastrique, wild rice</p><p style=\"margin:0;color:#d97706;font-weight:600\">$42</p></div>", "font_family": "Inter", "line_height": 1.6},
+                                                        "id": "rest_mains_menu"
+                                                    }
+                                                ],
+                                                "id": "rest_mains_col1"
+                                            },
+                                            {
+                                                "type": "column",
+                                                "attrs": {"width": "1_2"},
+                                                "children": [
+                                                    {
+                                                        "type": "image",
+                                                        "attrs": {"src": "https://images.pexels.com/photos/3655916/pexels-photo-3655916.jpeg?auto=compress&cs=tinysrgb&h=400&w=600", "alt": "Exquisitely plated main course with artistic presentation", "border_radius": {"top_left": 12, "top_right": 12, "bottom_right": 12, "bottom_left": 12}},
+                                                        "id": "rest_mains_img"
+                                                    }
+                                                ],
+                                                "id": "rest_mains_col2"
+                                            }
+                                        ],
+                                        "id": "rest_mains_row"
+                                    }
+                                ],
+                                "id": "rest_mains_column"
+                            }
+                        ],
+                        "id": "rest_mains_main_row"
+                    }
+                ],
+                "id": "rest_mains_section"
+            },
+            {
+                "type": "section",
+                "attrs": {
+                    "_pattern": "desserts",
+                    "padding": {"top": 50, "right": 0, "bottom": 50, "left": 0},
+                    "padding__phone": {"top": 40, "bottom": 40, "left": 20, "right": 20},
+                    "background_color": "#ffffff"
+                },
+                "children": [
+                    {
+                        "type": "row",
+                        "attrs": {"columns": "1", "max_width": 1280},
+                        "children": [
+                            {
+                                "type": "column",
+                                "attrs": {"width": "1"},
+                                "children": [
+                                    {
+                                        "type": "heading",
+                                        "attrs": {"text": "Desserts", "header_level": "h2", "font_family": "Playfair Display", "font_size": 36, "font_size__phone": 28, "font_weight": "700", "text_color": "#1c1917", "text_align": "center", "margin_bottom": 60},
+                                        "id": "rest_desserts_title"
+                                    },
+                                    {
+                                        "type": "row",
+                                        "attrs": {"columns": "1_2,1_2", "gap": 60},
+                                        "children": [
+                                            {
+                                                "type": "column",
+                                                "attrs": {"width": "1_2"},
+                                                "children": [
+                                                    {
+                                                        "type": "image",
+                                                        "attrs": {"src": "https://images.pexels.com/photos/18426946/pexels-photo-18426946.jpeg?auto=compress&cs=tinysrgb&h=400&w=600", "alt": "Elegant dessert presentation with artistic flair", "border_radius": {"top_left": 12, "top_right": 12, "bottom_right": 12, "bottom_left": 12}},
+                                                        "id": "rest_desserts_img"
+                                                    }
+                                                ],
+                                                "id": "rest_desserts_col1"
+                                            },
+                                            {
+                                                "type": "column",
+                                                "attrs": {"width": "1_2", "vertical_align": "center"},
+                                                "children": [
+                                                    {
+                                                        "type": "text",
+                                                        "attrs": {"content": "<div style=\"margin-bottom:24px\"><h4 style=\"margin:0 0 8px;font-family:'Playfair Display';font-size:18px;color:#1c1917\">Chocolate Soufflé</h4><p style=\"margin:0 0 4px;color:#78716c;font-size:14px\">Valrhona chocolate, vanilla bean ice cream</p><p style=\"margin:0;color:#d97706;font-weight:600\">$16</p></div><div style=\"margin-bottom:24px\"><h4 style=\"margin:0 0 8px;font-family:'Playfair Display';font-size:18px;color:#1c1917\">Tiramisu</h4><p style=\"margin:0 0 4px;color:#78716c;font-size:14px\">House-made mascarpone, espresso, cocoa</p><p style=\"margin:0;color:#d97706;font-weight:600\">$14</p></div><div style=\"margin-bottom:24px\"><h4 style=\"margin:0 0 8px;font-family:'Playfair Display';font-size:18px;color:#1c1917\">Crème Brûlée</h4><p style=\"margin:0 0 4px;color:#78716c;font-size:14px\">Vanilla bean custard, caramelized sugar</p><p style=\"margin:0;color:#d97706;font-weight:600\">$12</p></div><div><h4 style=\"margin:0 0 8px;font-family:'Playfair Display';font-size:18px;color:#1c1917\">Seasonal Fruit Tart</h4><p style=\"margin:0 0 4px;color:#78716c;font-size:14px\">Pastry cream, fresh seasonal fruits</p><p style=\"margin:0;color:#d97706;font-weight:600\">$13</p></div>", "font_family": "Inter", "line_height": 1.6},
+                                                        "id": "rest_desserts_menu"
+                                                    }
+                                                ],
+                                                "id": "rest_desserts_col2"
+                                            }
+                                        ],
+                                        "id": "rest_desserts_row"
+                                    }
+                                ],
+                                "id": "rest_desserts_column"
+                            }
+                        ],
+                        "id": "rest_desserts_main_row"
+                    }
+                ],
+                "id": "rest_desserts_section"
+            },
+            {
+                "type": "section",
+                "attrs": {
+                    "_pattern": "drinks",
+                    "padding": {"top": 50, "right": 0, "bottom": 100, "left": 0},
+                    "padding__phone": {"top": 40, "bottom": 80, "left": 20, "right": 20},
+                    "background_color": "#fefdf8"
+                },
+                "children": [
+                    {
+                        "type": "row",
+                        "attrs": {"columns": "1", "max_width": 1280},
+                        "children": [
+                            {
+                                "type": "column",
+                                "attrs": {"width": "1"},
+                                "children": [
+                                    {
+                                        "type": "heading",
+                                        "attrs": {"text": "Wine & Beverages", "header_level": "h2", "font_family": "Playfair Display", "font_size": 36, "font_size__phone": 28, "font_weight": "700", "text_color": "#1c1917", "text_align": "center", "margin_bottom": 60},
+                                        "id": "rest_drinks_title"
+                                    },
+                                    {
+                                        "type": "row",
+                                        "attrs": {"columns": "1_3,1_3,1_3", "gap": 40},
+                                        "children": [
+                                            {
+                                                "type": "column",
+                                                "attrs": {"width": "1_3"},
+                                                "children": [
+                                                    {
+                                                        "type": "text",
+                                                        "attrs": {"content": "<h4 style=\"margin:0 0 20px;font-family:'Playfair Display';font-size:20px;color:#1c1917;text-align:center\">Red Wines</h4><div style=\"margin-bottom:16px\"><p style=\"margin:0 0 4px;font-weight:600;color:#1c1917\">Barolo DOCG 2018</p><p style=\"margin:0 0 4px;color:#78716c;font-size:14px\">Piedmont, Italy</p><p style=\"margin:0;color:#d97706;font-weight:600\">$24/glass</p></div><div style=\"margin-bottom:16px\"><p style=\"margin:0 0 4px;font-weight:600;color:#1c1917\">Cabernet Sauvignon</p><p style=\"margin:0 0 4px;color:#78716c;font-size:14px\">Napa Valley</p><p style=\"margin:0;color:#d97706;font-weight:600\">$18/glass</p></div><div><p style=\"margin:0 0 4px;font-weight:600;color:#1c1917\">Pinot Noir Reserve</p><p style=\"margin:0 0 4px;color:#78716c;font-size:14px\">Burgundy, France</p><p style=\"margin:0;color:#d97706;font-weight:600\">$22/glass</p></div>", "font_family": "Inter", "line_height": 1.6},
+                                                        "id": "rest_red_wines"
+                                                    }
+                                                ],
+                                                "id": "rest_drinks_col1"
+                                            },
+                                            {
+                                                "type": "column",
+                                                "attrs": {"width": "1_3"},
+                                                "children": [
+                                                    {
+                                                        "type": "text",
+                                                        "attrs": {"content": "<h4 style=\"margin:0 0 20px;font-family:'Playfair Display';font-size:20px;color:#1c1917;text-align:center\">White Wines</h4><div style=\"margin-bottom:16px\"><p style=\"margin:0 0 4px;font-weight:600;color:#1c1917\">Chardonnay Reserve</p><p style=\"margin:0 0 4px;color:#78716c;font-size:14px\">Sonoma Coast</p><p style=\"margin:0;color:#d97706;font-weight:600\">$16/glass</p></div><div style=\"margin-bottom:16px\"><p style=\"margin:0 0 4px;font-weight:600;color:#1c1917\">Sauvignon Blanc</p><p style=\"margin:0 0 4px;color:#78716c;font-size:14px\">Loire Valley, France</p><p style=\"margin:0;color:#d97706;font-weight:600\">$14/glass</p></div><div><p style=\"margin:0 0 4px;font-weight:600;color:#1c1917\">Riesling</p><p style=\"margin:0 0 4px;color:#78716c;font-size:14px\">Mosel, Germany</p><p style=\"margin:0;color:#d97706;font-weight:600\">$15/glass</p></div>", "font_family": "Inter", "line_height": 1.6},
+                                                        "id": "rest_white_wines"
+                                                    }
+                                                ],
+                                                "id": "rest_drinks_col2"
+                                            },
+                                            {
+                                                "type": "column",
+                                                "attrs": {"width": "1_3"},
+                                                "children": [
+                                                    {
+                                                        "type": "text",
+                                                        "attrs": {"content": "<h4 style=\"margin:0 0 20px;font-family:'Playfair Display';font-size:20px;color:#1c1917;text-align:center\">Cocktails</h4><div style=\"margin-bottom:16px\"><p style=\"margin:0 0 4px;font-weight:600;color:#1c1917\">Old Fashioned</p><p style=\"margin:0 0 4px;color:#78716c;font-size:14px\">Bourbon, bitters, orange</p><p style=\"margin:0;color:#d97706;font-weight:600\">$16</p></div><div style=\"margin-bottom:16px\"><p style=\"margin:0 0 4px;font-weight:600;color:#1c1917\">Negroni</p><p style=\"margin:0 0 4px;color:#78716c;font-size:14px\">Gin, Campari, vermouth</p><p style=\"margin:0;color:#d97706;font-weight:600\">$15</p></div><div><p style=\"margin:0 0 4px;font-weight:600;color:#1c1917\">Manhattan</p><p style=\"margin:0 0 4px;color:#78716c;font-size:14px\">Rye whiskey, vermouth</p><p style=\"margin:0;color:#d97706;font-weight:600\">$17</p></div>", "font_family": "Inter", "line_height": 1.6},
+                                                        "id": "rest_cocktails"
+                                                    }
+                                                ],
+                                                "id": "rest_drinks_col3"
+                                            }
+                                        ],
+                                        "id": "rest_drinks_row"
+                                    }
+                                ],
+                                "id": "rest_drinks_column"
+                            }
+                        ],
+                        "id": "rest_drinks_main_row"
+                    }
+                ],
+                "id": "rest_drinks_section"
+            }
+        ]
+    }
+}

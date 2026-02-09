@@ -1,0 +1,43 @@
+{
+    "name": "Starter Medical",
+    "description": "A clean, trustworthy theme perfect for healthcare providers, medical clinics, and hospitals. Features calming blue/teal colors, professional layouts, and patient-focused design elements.",
+    "version": "1.0.0",
+    "author": "Jessie CMS",
+    "category": "healthcare",
+    "preview_html": "<div style=\"background: linear-gradient(135deg, #0891b2 0%, #164e63 100%); padding: 48px; text-align: center; color: white; font-family: 'Plus Jakarta Sans', sans-serif;\"><h2 style=\"margin: 0 0 8px; font-size: 28px; font-weight: 700;\">Starter Medical</h2><p style=\"margin: 0; opacity: 0.85; font-size: 14px; font-family: Inter, sans-serif;\">Clean • Trustworthy • Professional</p></div>",
+    "supports": {
+        "theme-builder": true,
+        "custom-header": true,
+        "custom-footer": true,
+        "custom-colors": true,
+        "jtb-integration": true
+    },
+    "colors": {
+        "primary": "#0891b2",
+        "secondary": "#164e63",
+        "accent": "#06b6d4",
+        "background": "#ffffff",
+        "surface": "#f8fafc",
+        "dark": "#0f172a",
+        "text": "#1e293b",
+        "text_muted": "#64748b",
+        "border": "#e2e8f0",
+        "success": "#10b981",
+        "gradient_start": "#0891b2",
+        "gradient_end": "#164e63"
+    },
+    "typography": {
+        "fontFamily": "Inter",
+        "headingFont": "Plus Jakarta Sans",
+        "baseFontSize": "16",
+        "lineHeight": "1.6",
+        "headingWeight": "700",
+        "letterSpacing": "-0.025em"
+    },
+    "pages": [
+        {"title": "Home", "slug": "home", "meta_title": "Home — Comprehensive Healthcare Services", "meta_description": "Expert medical care with compassion. Schedule your appointment today."},
+        {"title": "About", "slug": "about", "meta_title": "About Us — Our Medical Mission", "meta_description": "Learn about our commitment to providing exceptional healthcare services to our community."},
+        {"title": "Services", "slug": "services", "meta_title": "Medical Services — Departments & Specialties", "meta_description": "Explore our comprehensive medical departments and specialized healthcare services."},
+        {"title": "Contact", "slug": "contact", "meta_title": "Contact & Appointments", "meta_description": "Schedule an appointment or contact us for medical consultations and emergency services."}
+    ]
+}

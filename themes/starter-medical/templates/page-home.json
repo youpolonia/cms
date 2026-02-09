@@ -1,0 +1,250 @@
+{
+    "name": "Home",
+    "content": {
+        "version": "1.0",
+        "content": [
+            {
+                "type": "section",
+                "attrs": {
+                    "_pattern": "hero",
+                    "padding": {"top": 120, "right": 0, "bottom": 120, "left": 0},
+                    "padding__tablet": {"top": 80, "bottom": 80},
+                    "padding__phone": {"top": 60, "bottom": 60, "left": 20, "right": 20},
+                    "background_type": "image",
+                    "background_image": "https://images.pexels.com/photos/7108332/pexels-photo-7108332.jpeg?auto=compress&cs=tinysrgb&h=650&w=940",
+                    "background_overlay": true,
+                    "background_overlay_color": "rgba(8,145,178,0.85)",
+                    "fullwidth": true
+                },
+                "children": [
+                    {
+                        "type": "row",
+                        "attrs": {"columns": "1", "max_width": 800, "text_align": "center"},
+                        "children": [
+                            {
+                                "type": "column",
+                                "attrs": {"width": "1"},
+                                "children": [
+                                    {
+                                        "type": "text",
+                                        "attrs": {"content": "<p style=\"display:inline-block;background:rgba(16,185,129,0.9);color:#ffffff;padding:8px 20px;border-radius:100px;font-size:14px;font-weight:600;margin-bottom:24px\">✓ Trusted Healthcare Provider</p>", "font_family": "Inter"},
+                                        "id": "med_hero_badge"
+                                    },
+                                    {
+                                        "type": "heading",
+                                        "attrs": {"text": "Compassionate Care for Your Health Journey", "header_level": "h1", "font_family": "Plus Jakarta Sans", "font_size": 52, "font_size__tablet": 40, "font_size__phone": 32, "font_weight": "700", "line_height": 1.1, "text_color": "#ffffff", "margin_bottom": 24},
+                                        "id": "med_hero_title"
+                                    },
+                                    {
+                                        "type": "text",
+                                        "attrs": {"content": "<p>Experience exceptional healthcare with our team of dedicated medical professionals. We combine advanced technology with personalized care to ensure the best outcomes for you and your family.</p>", "font_family": "Inter", "font_size": 18, "font_size__phone": 16, "line_height": 1.6, "text_color": "rgba(255,255,255,0.9)", "margin_bottom": 40},
+                                        "id": "med_hero_desc"
+                                    },
+                                    {
+                                        "type": "row",
+                                        "attrs": {"columns": "auto,auto", "gap": 16, "inline": true, "justify": "center"},
+                                        "children": [
+                                            {
+                                                "type": "column",
+                                                "attrs": {"width": "auto"},
+                                                "children": [
+                                                    {
+                                                        "type": "button",
+                                                        "attrs": {"text": "Book Appointment", "link_url": "#contact", "button_style": "solid", "font_size": 16, "font_weight": "600", "border_radius": {"top_left": 8, "top_right": 8, "bottom_right": 8, "bottom_left": 8}, "background_color": "#ffffff", "text_color": "#0891b2", "background_color__hover": "#f8fafc", "padding": {"top": 16, "right": 32, "bottom": 16, "left": 32}},
+                                                        "id": "med_hero_cta1"
+                                                    }
+                                                ],
+                                                "id": "med_hero_col1"
+                                            },
+                                            {
+                                                "type": "column",
+                                                "attrs": {"width": "auto"},
+                                                "children": [
+                                                    {
+                                                        "type": "button",
+                                                        "attrs": {"text": "Emergency Care", "link_url": "#emergency", "button_style": "outline", "font_size": 16, "font_weight": "600", "border_radius": {"top_left": 8, "top_right": 8, "bottom_right": 8, "bottom_left": 8}, "border_color": "#ffffff", "text_color": "#ffffff", "text_color__hover": "#0891b2", "background_color__hover": "#ffffff", "padding": {"top": 16, "right": 32, "bottom": 16, "left": 32}},
+                                                        "id": "med_hero_cta2"
+                                                    }
+                                                ],
+                                                "id": "med_hero_col2"
+                                            }
+                                        ],
+                                        "id": "med_hero_buttons"
+                                    }
+                                ],
+                                "id": "med_hero_column"
+                            }
+                        ],
+                        "id": "med_hero_row"
+                    }
+                ],
+                "id": "med_hero_section"
+            },
+            {
+                "type": "section",
+                "attrs": {
+                    "_pattern": "services",
+                    "padding": {"top": 100, "right": 0, "bottom": 100, "left": 0},
+                    "padding__phone": {"top": 80, "bottom": 80, "left": 20, "right": 20},
+                    "background_color": "#ffffff"
+                },
+                "children": [
+                    {
+                        "type": "row",
+                        "attrs": {"columns": "1", "max_width": 1280, "text_align": "center"},
+                        "children": [
+                            {
+                                "type": "column",
+                                "attrs": {"width": "1"},
+                                "children": [
+                                    {
+                                        "type": "text",
+                                        "attrs": {"content": "<p style=\"color:#0891b2;font-weight:600;font-size:14px;text-transform:uppercase;letter-spacing:1px;margin-bottom:16px\">Our Services</p>", "font_family": "Inter"},
+                                        "id": "med_services_label"
+                                    },
+                                    {
+                                        "type": "heading",
+                                        "attrs": {"text": "Comprehensive Healthcare Services", "header_level": "h2", "font_family": "Plus Jakarta Sans", "font_size": 42, "font_size__phone": 32, "font_weight": "700", "line_height": 1.2, "text_color": "#1e293b", "margin_bottom": 60},
+                                        "id": "med_services_title"
+                                    },
+                                    {
+                                        "type": "row",
+                                        "attrs": {"columns": "1_3,1_3,1_3", "gap": 40},
+                                        "children": [
+                                            {
+                                                "type": "column",
+                                                "attrs": {"width": "1_3"},
+                                                "children": [
+                                                    {
+                                                        "type": "blurb",
+                                                        "attrs": {"icon": "🏥", "title": "Emergency Care", "content": "24/7 emergency services with state-of-the-art facilities and experienced medical staff ready to handle critical situations.", "text_align": "center", "icon_size": 48},
+                                                        "id": "med_services_emergency"
+                                                    }
+                                                ],
+                                                "id": "med_services_col1"
+                                            },
+                                            {
+                                                "type": "column",
+                                                "attrs": {"width": "1_3"},
+                                                "children": [
+                                                    {
+                                                        "type": "blurb",
+                                                        "attrs": {"icon": "👨‍⚕️", "title": "Specialist Care", "content": "Expert specialists in cardiology, orthopedics, neurology, and more, providing advanced treatment options.", "text_align": "center", "icon_size": 48},
+                                                        "id": "med_services_specialist"
+                                                    }
+                                                ],
+                                                "id": "med_services_col2"
+                                            },
+                                            {
+                                                "type": "column",
+                                                "attrs": {"width": "1_3"},
+                                                "children": [
+                                                    {
+                                                        "type": "blurb",
+                                                        "attrs": {"icon": "💊", "title": "Preventive Care", "content": "Comprehensive health screenings, vaccinations, and wellness programs to keep you healthy.", "text_align": "center", "icon_size": 48},
+                                                        "id": "med_services_preventive"
+                                                    }
+                                                ],
+                                                "id": "med_services_col3"
+                                            }
+                                        ],
+                                        "id": "med_services_row"
+                                    }
+                                ],
+                                "id": "med_services_column"
+                            }
+                        ],
+                        "id": "med_services_main_row"
+                    }
+                ],
+                "id": "med_services_section"
+            },
+            {
+                "type": "section",
+                "attrs": {
+                    "_pattern": "stats",
+                    "padding": {"top": 80, "right": 0, "bottom": 80, "left": 0},
+                    "padding__phone": {"top": 60, "bottom": 60, "left": 20, "right": 20},
+                    "background_color": "#f8fafc"
+                },
+                "children": [
+                    {
+                        "type": "row",
+                        "attrs": {"columns": "1", "max_width": 1000, "text_align": "center"},
+                        "children": [
+                            {
+                                "type": "column",
+                                "attrs": {"width": "1"},
+                                "children": [
+                                    {
+                                        "type": "heading",
+                                        "attrs": {"text": "Trusted by Our Community", "header_level": "h3", "font_family": "Plus Jakarta Sans", "font_size": 28, "font_weight": "600", "text_color": "#1e293b", "margin_bottom": 40},
+                                        "id": "med_stats_title"
+                                    },
+                                    {
+                                        "type": "row",
+                                        "attrs": {"columns": "1_4,1_4,1_4,1_4", "gap": 30},
+                                        "children": [
+                                            {
+                                                "type": "column",
+                                                "attrs": {"width": "1_4"},
+                                                "children": [
+                                                    {
+                                                        "type": "number_counter",
+                                                        "attrs": {"number": "50K+", "title": "Patients Served", "description": "Happy patients", "number_color": "#0891b2", "number_size": 36},
+                                                        "id": "med_stats_patients"
+                                                    }
+                                                ],
+                                                "id": "med_stats_col1"
+                                            },
+                                            {
+                                                "type": "column",
+                                                "attrs": {"width": "1_4"},
+                                                "children": [
+                                                    {
+                                                        "type": "number_counter",
+                                                        "attrs": {"number": "25+", "title": "Specialists", "description": "Expert doctors", "number_color": "#0891b2", "number_size": 36},
+                                                        "id": "med_stats_specialists"
+                                                    }
+                                                ],
+                                                "id": "med_stats_col2"
+                                            },
+                                            {
+                                                "type": "column",
+                                                "attrs": {"width": "1_4"},
+                                                "children": [
+                                                    {
+                                                        "type": "number_counter",
+                                                        "attrs": {"number": "15", "title": "Departments", "description": "Medical specialties", "number_color": "#0891b2", "number_size": 36},
+                                                        "id": "med_stats_departments"
+                                                    }
+                                                ],
+                                                "id": "med_stats_col3"
+                                            },
+                                            {
+                                                "type": "column",
+                                                "attrs": {"width": "1_4"},
+                                                "children": [
+                                                    {
+                                                        "type": "number_counter",
+                                                        "attrs": {"number": "24/7", "title": "Emergency Care", "description": "Always available", "number_color": "#0891b2", "number_size": 36},
+                                                        "id": "med_stats_emergency"
+                                                    }
+                                                ],
+                                                "id": "med_stats_col4"
+                                            }
+                                        ],
+                                        "id": "med_stats_row"
+                                    }
+                                ],
+                                "id": "med_stats_column"
+                            }
+                        ],
+                        "id": "med_stats_main_row"
+                    }
+                ],
+                "id": "med_stats_section"
+            }
+        ]
+    }
+}

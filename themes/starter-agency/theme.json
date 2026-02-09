@@ -1,0 +1,43 @@
+{
+    "name": "Starter Agency",
+    "description": "A bold, dynamic theme perfect for creative agencies, digital studios, and design teams. Features vibrant rose colors, asymmetric layouts, and conversion-focused design elements.",
+    "version": "1.0.0",
+    "author": "Jessie CMS",
+    "category": "agency",
+    "preview_html": "<div style=\"background: linear-gradient(135deg, #f43f5e 0%, #0f172a 100%); padding: 48px; text-align: center; color: white; font-family: 'Space Grotesk', sans-serif;\"><h2 style=\"margin: 0 0 8px; font-size: 28px; font-weight: 700;\">Starter Agency</h2><p style=\"margin: 0; opacity: 0.85; font-size: 14px; font-family: Inter, sans-serif;\">Bold • Dynamic • Creative</p></div>",
+    "supports": {
+        "theme-builder": true,
+        "custom-header": true,
+        "custom-footer": true,
+        "custom-colors": true,
+        "jtb-integration": true
+    },
+    "colors": {
+        "primary": "#f43f5e",
+        "secondary": "#0f172a",
+        "accent": "#fbbf24",
+        "background": "#ffffff",
+        "surface": "#f8fafc",
+        "dark": "#030712",
+        "text": "#0f172a",
+        "text_muted": "#64748b",
+        "border": "#e2e8f0",
+        "success": "#10b981",
+        "gradient_start": "#f43f5e",
+        "gradient_end": "#0f172a"
+    },
+    "typography": {
+        "fontFamily": "Inter",
+        "headingFont": "Space Grotesk",
+        "baseFontSize": "16",
+        "lineHeight": "1.6",
+        "headingWeight": "700",
+        "letterSpacing": "-0.025em"
+    },
+    "pages": [
+        {"title": "Home", "slug": "home", "meta_title": "Home — Creative Digital Agency", "meta_description": "We craft bold digital experiences that drive results. Partner with our creative team."},
+        {"title": "About", "slug": "about", "meta_title": "About Us — Our Creative Story", "meta_description": "Learn about our agency culture, team, and approach to transformative digital design."},
+        {"title": "Services", "slug": "services", "meta_title": "Services — What We Create", "meta_description": "Explore our comprehensive design and development services for modern businesses."},
+        {"title": "Contact", "slug": "contact", "meta_title": "Start Your Project — Get In Touch", "meta_description": "Ready to create something amazing? Let's discuss your project and bring your vision to life."}
+    ]
+}

@@ -1,0 +1,370 @@
+{
+    "name": "Home",
+    "content": {
+        "version": "1.0",
+        "content": [
+            {
+                "type": "section",
+                "attrs": {
+                    "_pattern": "hero",
+                    "padding": {"top": 140, "right": 0, "bottom": 140, "left": 0},
+                    "padding__tablet": {"top": 100, "bottom": 100},
+                    "padding__phone": {"top": 80, "bottom": 80, "left": 20, "right": 20},
+                    "background_type": "image",
+                    "background_image": "https://images.pexels.com/photos/3822749/pexels-photo-3822749.jpeg?auto=compress&cs=tinysrgb&h=650&w=940",
+                    "background_overlay": true,
+                    "background_overlay_color": "rgba(28,25,23,0.7)",
+                    "fullwidth": true
+                },
+                "children": [
+                    {
+                        "type": "row",
+                        "attrs": {"columns": "1", "max_width": 800, "text_align": "center"},
+                        "children": [
+                            {
+                                "type": "column",
+                                "attrs": {"width": "1"},
+                                "children": [
+                                    {
+                                        "type": "text",
+                                        "attrs": {"content": "<p style=\"display:inline-block;background:rgba(217,119,6,0.9);padding:8px 20px;border-radius:4px;font-size:14px;font-weight:600;margin-bottom:24px\">✨ Reservations recommended</p>", "text_color": "#ffffff", "font_family": "Inter"},
+                                        "id": "rest_hero_badge"
+                                    },
+                                    {
+                                        "type": "heading",
+                                        "attrs": {"text": "Exceptional Cuisine, Unforgettable Experience", "header_level": "h1", "font_family": "Playfair Display", "font_size": 56, "font_size__tablet": 44, "font_size__phone": 36, "font_weight": "700", "line_height": 1.1, "text_color": "#ffffff", "margin_bottom": 24},
+                                        "id": "rest_hero_title"
+                                    },
+                                    {
+                                        "type": "text",
+                                        "attrs": {"content": "<p>Indulge in artfully crafted dishes made from the finest seasonal ingredients. Our chefs blend traditional techniques with modern innovation to create culinary masterpieces that will delight your senses.</p>", "font_family": "Inter", "font_size": 20, "font_size__phone": 18, "line_height": 1.6, "text_color": "rgba(255,255,255,0.9)", "margin_bottom": 40},
+                                        "id": "rest_hero_desc"
+                                    },
+                                    {
+                                        "type": "row",
+                                        "attrs": {"columns": "auto,auto", "gap": 16, "inline": true, "justify": "center"},
+                                        "children": [
+                                            {
+                                                "type": "column",
+                                                "attrs": {"width": "auto"},
+                                                "children": [
+                                                    {
+                                                        "type": "button",
+                                                        "attrs": {"text": "Reserve Your Table", "link_url": "#contact", "button_style": "solid", "font_size": 16, "font_weight": "600", "border_radius": {"top_left": 8, "top_right": 8, "bottom_right": 8, "bottom_left": 8}, "background_color": "#d97706", "text_color": "#ffffff", "background_color__hover": "#92400e", "padding": {"top": 16, "right": 32, "bottom": 16, "left": 32}},
+                                                        "id": "rest_hero_cta1"
+                                                    }
+                                                ],
+                                                "id": "rest_hero_col1"
+                                            },
+                                            {
+                                                "type": "column",
+                                                "attrs": {"width": "auto"},
+                                                "children": [
+                                                    {
+                                                        "type": "button",
+                                                        "attrs": {"text": "View Menu", "link_url": "/services", "button_style": "outline", "font_size": 16, "font_weight": "600", "border_radius": {"top_left": 8, "top_right": 8, "bottom_right": 8, "bottom_left": 8}, "border_color": "#ffffff", "text_color": "#ffffff", "text_color__hover": "#1c1917", "background_color__hover": "#ffffff", "padding": {"top": 16, "right": 32, "bottom": 16, "left": 32}},
+                                                        "id": "rest_hero_cta2"
+                                                    }
+                                                ],
+                                                "id": "rest_hero_col2"
+                                            }
+                                        ],
+                                        "id": "rest_hero_buttons"
+                                    }
+                                ],
+                                "id": "rest_hero_column"
+                            }
+                        ],
+                        "id": "rest_hero_row"
+                    }
+                ],
+                "id": "rest_hero_section"
+            },
+            {
+                "type": "section",
+                "attrs": {
+                    "_pattern": "about",
+                    "padding": {"top": 100, "right": 0, "bottom": 100, "left": 0},
+                    "padding__phone": {"top": 80, "bottom": 80, "left": 20, "right": 20},
+                    "background_color": "#fefdf8"
+                },
+                "children": [
+                    {
+                        "type": "row",
+                        "attrs": {"columns": "1_2,1_2", "max_width": 1280, "gap": 80, "vertical_align": "center"},
+                        "children": [
+                            {
+                                "type": "column",
+                                "attrs": {"width": "1_2"},
+                                "children": [
+                                    {
+                                        "type": "text",
+                                        "attrs": {"content": "<p style=\"color:#d97706;font-weight:600;font-size:14px;text-transform:uppercase;letter-spacing:1px;margin-bottom:16px\">Our Story</p>", "font_family": "Inter"},
+                                        "id": "rest_about_label"
+                                    },
+                                    {
+                                        "type": "heading",
+                                        "attrs": {"text": "A Legacy of Culinary Excellence", "header_level": "h2", "font_family": "Playfair Display", "font_size": 42, "font_size__phone": 32, "font_weight": "700", "line_height": 1.2, "text_color": "#1c1917", "margin_bottom": 24},
+                                        "id": "rest_about_title"
+                                    },
+                                    {
+                                        "type": "text",
+                                        "attrs": {"content": "<p>Founded in 1985 by Chef Antonio Rosetti, our restaurant has been a cornerstone of fine dining for over three decades. We believe in the power of exceptional ingredients, time-honored techniques, and the joy of sharing extraordinary meals with loved ones.</p><p>Every dish tells a story of passion, precision, and the pursuit of culinary perfection. From our signature handmade pasta to our locally-sourced seafood, each element is carefully chosen to create an unforgettable dining experience.</p>", "font_family": "Inter", "font_size": 16, "line_height": 1.7, "text_color": "#78716c", "margin_bottom": 32},
+                                        "id": "rest_about_desc"
+                                    },
+                                    {
+                                        "type": "button",
+                                        "attrs": {"text": "Learn More About Us", "link_url": "/about", "button_style": "solid", "font_size": 15, "font_weight": "600", "border_radius": {"top_left": 8, "top_right": 8, "bottom_right": 8, "bottom_left": 8}, "background_color": "#d97706", "text_color": "#ffffff", "background_color__hover": "#92400e", "padding": {"top": 14, "right": 28, "bottom": 14, "left": 28}},
+                                        "id": "rest_about_cta"
+                                    }
+                                ],
+                                "id": "rest_about_col1"
+                            },
+                            {
+                                "type": "column",
+                                "attrs": {"width": "1_2"},
+                                "children": [
+                                    {
+                                        "type": "image",
+                                        "attrs": {"src": "https://images.pexels.com/photos/1327393/pexels-photo-1327393.jpeg?auto=compress&cs=tinysrgb&h=650&w=940", "alt": "Exquisitely plated gourmet dish", "border_radius": {"top_left": 12, "top_right": 12, "bottom_right": 12, "bottom_left": 12}},
+                                        "id": "rest_about_img"
+                                    }
+                                ],
+                                "id": "rest_about_col2"
+                            }
+                        ],
+                        "id": "rest_about_row"
+                    }
+                ],
+                "id": "rest_about_section"
+            },
+            {
+                "type": "section",
+                "attrs": {
+                    "_pattern": "menu_highlights",
+                    "padding": {"top": 100, "right": 0, "bottom": 100, "left": 0},
+                    "padding__phone": {"top": 80, "bottom": 80, "left": 20, "right": 20},
+                    "background_color": "#ffffff"
+                },
+                "children": [
+                    {
+                        "type": "row",
+                        "attrs": {"columns": "1", "max_width": 1280, "text_align": "center"},
+                        "children": [
+                            {
+                                "type": "column",
+                                "attrs": {"width": "1"},
+                                "children": [
+                                    {
+                                        "type": "text",
+                                        "attrs": {"content": "<p style=\"color:#d97706;font-weight:600;font-size:14px;text-transform:uppercase;letter-spacing:1px;margin-bottom:16px\">Today's Specials</p>", "font_family": "Inter"},
+                                        "id": "rest_menu_label"
+                                    },
+                                    {
+                                        "type": "heading",
+                                        "attrs": {"text": "Chef's Recommended Selections", "header_level": "h2", "font_family": "Playfair Display", "font_size": 42, "font_size__phone": 32, "font_weight": "700", "line_height": 1.2, "text_color": "#1c1917", "margin_bottom": 60},
+                                        "id": "rest_menu_title"
+                                    },
+                                    {
+                                        "type": "pricing_table",
+                                        "attrs": {
+                                            "columns": 3,
+                                            "items": [
+                                                {
+                                                    "title": "Pan-Seared Sea Bass",
+                                                    "price": "$42",
+                                                    "description": "Wild-caught sea bass with saffron risotto, seasonal vegetables, and lemon herb butter",
+                                                    "features": ["Wild-caught sustainable fish", "House-made saffron risotto", "Organic seasonal vegetables"],
+                                                    "image": "https://images.pexels.com/photos/3655916/pexels-photo-3655916.jpeg?auto=compress&cs=tinysrgb&h=350",
+                                                    "popular": false
+                                                },
+                                                {
+                                                    "title": "Wagyu Beef Tenderloin",
+                                                    "price": "$68",
+                                                    "description": "Premium A5 Wagyu with truffle mashed potatoes, grilled asparagus, and red wine reduction",
+                                                    "features": ["Grade A5 Wagyu beef", "Black truffle mashed potatoes", "House-made red wine reduction"],
+                                                    "image": "https://images.pexels.com/photos/18426931/pexels-photo-18426931.jpeg?auto=compress&cs=tinysrgb&h=350",
+                                                    "popular": true
+                                                },
+                                                {
+                                                    "title": "Lobster Thermidor",
+                                                    "price": "$58",
+                                                    "description": "Fresh Maine lobster with gruyère cheese sauce, wild mushrooms, and herbs de Provence",
+                                                    "features": ["Fresh Maine lobster", "Imported Gruyère cheese", "Wild foraged mushrooms"],
+                                                    "image": "https://images.pexels.com/photos/18426946/pexels-photo-18426946.jpeg?auto=compress&cs=tinysrgb&h=350",
+                                                    "popular": false
+                                                }
+                                            ],
+                                            "card_style": "elegant",
+                                            "show_images": true,
+                                            "text_align": "center"
+                                        },
+                                        "id": "rest_menu_pricing"
+                                    }
+                                ],
+                                "id": "rest_menu_column"
+                            }
+                        ],
+                        "id": "rest_menu_row"
+                    }
+                ],
+                "id": "rest_menu_section"
+            },
+            {
+                "type": "section",
+                "attrs": {
+                    "_pattern": "gallery",
+                    "padding": {"top": 100, "right": 0, "bottom": 100, "left": 0},
+                    "padding__phone": {"top": 80, "bottom": 80, "left": 20, "right": 20},
+                    "background_color": "#fefdf8"
+                },
+                "children": [
+                    {
+                        "type": "row",
+                        "attrs": {"columns": "1", "max_width": 1280, "text_align": "center"},
+                        "children": [
+                            {
+                                "type": "column",
+                                "attrs": {"width": "1"},
+                                "children": [
+                                    {
+                                        "type": "heading",
+                                        "attrs": {"text": "Experience Our Ambiance", "header_level": "h2", "font_family": "Playfair Display", "font_size": 42, "font_size__phone": 32, "font_weight": "700", "text_color": "#1c1917", "margin_bottom": 60},
+                                        "id": "rest_gallery_title"
+                                    },
+                                    {
+                                        "type": "gallery",
+                                        "attrs": {
+                                            "images": [
+                                                {"src": "https://images.pexels.com/photos/31956458/pexels-photo-31956458.jpeg?auto=compress&cs=tinysrgb&h=350", "alt": "Elegant dining room interior"},
+                                                {"src": "https://images.pexels.com/photos/262047/pexels-photo-262047.jpeg?auto=compress&cs=tinysrgb&h=350", "alt": "Sophisticated table setting"},
+                                                {"src": "https://images.pexels.com/photos/54455/cook-food-kitchen-eat-54455.jpeg?auto=compress&cs=tinysrgb&h=350", "alt": "Artful food presentation"},
+                                                {"src": "https://images.pexels.com/photos/18404554/pexels-photo-18404554.jpeg?auto=compress&cs=tinysrgb&h=350", "alt": "Cozy vintage ambiance"}
+                                            ],
+                                            "columns": 2,
+                                            "gap": 20,
+                                            "border_radius": 12,
+                                            "lightbox": true
+                                        },
+                                        "id": "rest_gallery_images"
+                                    }
+                                ],
+                                "id": "rest_gallery_column"
+                            }
+                        ],
+                        "id": "rest_gallery_row"
+                    }
+                ],
+                "id": "rest_gallery_section"
+            },
+            {
+                "type": "section",
+                "attrs": {
+                    "_pattern": "testimonials",
+                    "padding": {"top": 100, "right": 0, "bottom": 100, "left": 0},
+                    "padding__phone": {"top": 80, "bottom": 80, "left": 20, "right": 20},
+                    "background_color": "#1c1917"
+                },
+                "children": [
+                    {
+                        "type": "row",
+                        "attrs": {"columns": "1", "max_width": 1000, "text_align": "center"},
+                        "children": [
+                            {
+                                "type": "column",
+                                "attrs": {"width": "1"},
+                                "children": [
+                                    {
+                                        "type": "heading",
+                                        "attrs": {"text": "What Our Guests Say", "header_level": "h2", "font_family": "Playfair Display", "font_size": 42, "font_size__phone": 32, "font_weight": "700", "text_color": "#ffffff", "margin_bottom": 60},
+                                        "id": "rest_test_title"
+                                    },
+                                    {
+                                        "type": "row",
+                                        "attrs": {"columns": "1_2,1_2", "gap": 40},
+                                        "children": [
+                                            {
+                                                "type": "column",
+                                                "attrs": {"width": "1_2"},
+                                                "children": [
+                                                    {
+                                                        "type": "testimonial",
+                                                        "attrs": {"quote": "An absolutely phenomenal dining experience. Every course was perfectly executed, and the service was impeccable. This is what fine dining should be.", "author": "Sarah Mitchell", "position": "Food Critic, Culinary Review", "avatar": "", "stars": 5, "text_color": "#ffffff", "quote_color": "#a8a29e"},
+                                                        "id": "rest_test1"
+                                                    }
+                                                ],
+                                                "id": "rest_test_col1"
+                                            },
+                                            {
+                                                "type": "column",
+                                                "attrs": {"width": "1_2"},
+                                                "children": [
+                                                    {
+                                                        "type": "testimonial",
+                                                        "attrs": {"quote": "The attention to detail is extraordinary. From the warm welcome to the final bite, everything exceeded our expectations. A true culinary journey.", "author": "Michael Chen", "position": "Michelin Guide Inspector", "avatar": "", "stars": 5, "text_color": "#ffffff", "quote_color": "#a8a29e"},
+                                                        "id": "rest_test2"
+                                                    }
+                                                ],
+                                                "id": "rest_test_col2"
+                                            }
+                                        ],
+                                        "id": "rest_test_row"
+                                    }
+                                ],
+                                "id": "rest_test_column"
+                            }
+                        ],
+                        "id": "rest_test_main_row"
+                    }
+                ],
+                "id": "rest_test_section"
+            },
+            {
+                "type": "section",
+                "attrs": {
+                    "_pattern": "cta",
+                    "padding": {"top": 100, "right": 0, "bottom": 100, "left": 0},
+                    "padding__phone": {"top": 80, "bottom": 80, "left": 20, "right": 20},
+                    "background_type": "gradient",
+                    "background_gradient_type": "linear",
+                    "background_gradient_direction": 135,
+                    "background_gradient_start": "#d97706",
+                    "background_gradient_end": "#92400e",
+                    "fullwidth": true
+                },
+                "children": [
+                    {
+                        "type": "row",
+                        "attrs": {"columns": "1", "max_width": 800, "text_align": "center"},
+                        "children": [
+                            {
+                                "type": "column",
+                                "attrs": {"width": "1"},
+                                "children": [
+                                    {
+                                        "type": "heading",
+                                        "attrs": {"text": "Ready for an Unforgettable Evening?", "header_level": "h2", "font_family": "Playfair Display", "font_size": 42, "font_size__phone": 32, "font_weight": "700", "line_height": 1.2, "text_color": "#ffffff", "margin_bottom": 24},
+                                        "id": "rest_cta_title"
+                                    },
+                                    {
+                                        "type": "text",
+                                        "attrs": {"content": "<p>Reserve your table today and embark on a culinary journey that will delight your senses. Our team is ready to create an exceptional dining experience just for you.</p>", "font_family": "Inter", "font_size": 18, "line_height": 1.6, "text_color": "rgba(255,255,255,0.9)", "margin_bottom": 40},
+                                        "id": "rest_cta_desc"
+                                    },
+                                    {
+                                        "type": "button",
+                                        "attrs": {"text": "Make a Reservation", "link_url": "#contact", "button_style": "solid", "font_size": 18, "font_weight": "600", "border_radius": {"top_left": 8, "top_right": 8, "bottom_right": 8, "bottom_left": 8}, "background_color": "#ffffff", "text_color": "#1c1917", "background_color__hover": "#fefdf8", "padding": {"top": 16, "right": 32, "bottom": 16, "left": 32}},
+                                        "id": "rest_cta_button"
+                                    }
+                                ],
+                                "id": "rest_cta_column"
+                            }
+                        ],
+                        "id": "rest_cta_row"
+                    }
+                ],
+                "id": "rest_cta_section"
+            }
+        ]
+    }
+}

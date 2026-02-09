@@ -1,0 +1,43 @@
+{
+    "name": "Starter Restaurant",
+    "description": "A warm, elegant theme perfect for restaurants, cafés, and food businesses. Features rich amber colors, appetizing food imagery, and conversion-focused layouts for reservations and menu display.",
+    "version": "1.0.0",
+    "author": "Jessie CMS",
+    "category": "food",
+    "preview_html": "<div style=\"background: linear-gradient(135deg, #d97706 0%, #92400e 100%); padding: 48px; text-align: center; color: white; font-family: 'Playfair Display', serif;\"><h2 style=\"margin: 0 0 8px; font-size: 28px; font-weight: 700;\">Starter Restaurant</h2><p style=\"margin: 0; opacity: 0.85; font-size: 14px; font-family: Inter, sans-serif;\">Warm • Elegant • Food-Focused</p></div>",
+    "supports": {
+        "theme-builder": true,
+        "custom-header": true,
+        "custom-footer": true,
+        "custom-colors": true,
+        "jtb-integration": true
+    },
+    "colors": {
+        "primary": "#d97706",
+        "secondary": "#92400e", 
+        "accent": "#f59e0b",
+        "background": "#ffffff",
+        "surface": "#fefdf8",
+        "dark": "#1c1917",
+        "text": "#1c1917",
+        "text_muted": "#78716c",
+        "border": "#e7e5e4",
+        "success": "#10b981",
+        "gradient_start": "#d97706",
+        "gradient_end": "#92400e"
+    },
+    "typography": {
+        "fontFamily": "Inter",
+        "headingFont": "Playfair Display",
+        "baseFontSize": "16",
+        "lineHeight": "1.6", 
+        "headingWeight": "700",
+        "letterSpacing": "-0.025em"
+    },
+    "pages": [
+        {"title": "Home", "slug": "home", "meta_title": "Home — Fine Dining Experience", "meta_description": "Experience exceptional cuisine in an elegant atmosphere. Reserve your table today."},
+        {"title": "About", "slug": "about", "meta_title": "About Us — Our Story", "meta_description": "Learn about our culinary philosophy, heritage, and passion for exceptional food."},
+        {"title": "Services", "slug": "services", "meta_title": "Menu — Culinary Offerings", "meta_description": "Discover our carefully crafted menu featuring seasonal ingredients and artisanal preparations."},
+        {"title": "Contact", "slug": "contact", "meta_title": "Reservations & Contact", "meta_description": "Make a reservation or contact us for private dining, events, and catering services."}
+    ]
+}

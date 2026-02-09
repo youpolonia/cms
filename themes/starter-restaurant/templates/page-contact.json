@@ -1,0 +1,240 @@
+{
+    "name": "Contact",
+    "content": {
+        "version": "1.0",
+        "content": [
+            {
+                "type": "section",
+                "attrs": {
+                    "_pattern": "hero",
+                    "padding": {"top": 100, "right": 0, "bottom": 100, "left": 0},
+                    "padding__phone": {"top": 80, "bottom": 80, "left": 20, "right": 20},
+                    "background_color": "#fefdf8"
+                },
+                "children": [
+                    {
+                        "type": "row",
+                        "attrs": {"columns": "1", "max_width": 800, "text_align": "center"},
+                        "children": [
+                            {
+                                "type": "column",
+                                "attrs": {"width": "1"},
+                                "children": [
+                                    {
+                                        "type": "heading",
+                                        "attrs": {"text": "Reservations & Contact", "header_level": "h1", "font_family": "Playfair Display", "font_size": 52, "font_size__phone": 36, "font_weight": "700", "line_height": 1.1, "text_color": "#1c1917", "margin_bottom": 24},
+                                        "id": "rest_contact_hero_title"
+                                    },
+                                    {
+                                        "type": "text",
+                                        "attrs": {"content": "<p>Ready to experience exceptional cuisine? Reserve your table or contact us for private events and special occasions.</p>", "font_family": "Inter", "font_size": 20, "line_height": 1.6, "text_color": "#78716c", "margin_bottom": 0},
+                                        "id": "rest_contact_hero_desc"
+                                    }
+                                ],
+                                "id": "rest_contact_hero_column"
+                            }
+                        ],
+                        "id": "rest_contact_hero_row"
+                    }
+                ],
+                "id": "rest_contact_hero_section"
+            },
+            {
+                "type": "section",
+                "attrs": {
+                    "_pattern": "reservation",
+                    "padding": {"top": 100, "right": 0, "bottom": 100, "left": 0},
+                    "padding__phone": {"top": 80, "bottom": 80, "left": 20, "right": 20},
+                    "background_color": "#ffffff"
+                },
+                "children": [
+                    {
+                        "type": "row",
+                        "attrs": {"columns": "1_2,1_2", "max_width": 1280, "gap": 80},
+                        "children": [
+                            {
+                                "type": "column",
+                                "attrs": {"width": "1_2"},
+                                "children": [
+                                    {
+                                        "type": "text",
+                                        "attrs": {"content": "<p style=\"color:#d97706;font-weight:600;font-size:14px;text-transform:uppercase;letter-spacing:1px;margin-bottom:16px\">Make a Reservation</p>", "font_family": "Inter"},
+                                        "id": "rest_contact_label"
+                                    },
+                                    {
+                                        "type": "heading",
+                                        "attrs": {"text": "Reserve Your Table", "header_level": "h2", "font_family": "Playfair Display", "font_size": 36, "font_size__phone": 28, "font_weight": "700", "line_height": 1.2, "text_color": "#1c1917", "margin_bottom": 24},
+                                        "id": "rest_contact_title"
+                                    },
+                                    {
+                                        "type": "text",
+                                        "attrs": {"content": "<p>Join us for an unforgettable dining experience. We recommend reservations, especially for dinner service and weekends. For parties of 8 or more, please call directly.</p>", "font_family": "Inter", "font_size": 16, "line_height": 1.7, "text_color": "#78716c", "margin_bottom": 32},
+                                        "id": "rest_contact_desc"
+                                    },
+                                    {
+                                        "type": "contact_form",
+                                        "attrs": {
+                                            "fields": [
+                                                {"name": "name", "label": "Full Name", "type": "text", "required": true, "width": "full"},
+                                                {"name": "email", "label": "Email Address", "type": "email", "required": true, "width": "half"},
+                                                {"name": "phone", "label": "Phone Number", "type": "tel", "required": true, "width": "half"},
+                                                {"name": "date", "label": "Preferred Date", "type": "date", "required": true, "width": "half"},
+                                                {"name": "time", "label": "Preferred Time", "type": "select", "options": ["5:00 PM", "5:30 PM", "6:00 PM", "6:30 PM", "7:00 PM", "7:30 PM", "8:00 PM", "8:30 PM", "9:00 PM"], "required": true, "width": "half"},
+                                                {"name": "guests", "label": "Number of Guests", "type": "select", "options": ["1", "2", "3", "4", "5", "6", "7", "8+"], "required": true, "width": "half"},
+                                                {"name": "occasion", "label": "Special Occasion", "type": "select", "options": ["Regular Dinner", "Birthday", "Anniversary", "Business Meeting", "Date Night", "Other"], "required": false, "width": "half"},
+                                                {"name": "requests", "label": "Special Requests or Dietary Restrictions", "type": "textarea", "required": false, "width": "full"}
+                                            ],
+                                            "submit_text": "Request Reservation",
+                                            "button_style": "solid",
+                                            "button_color": "#d97706",
+                                            "success_message": "Thank you! We'll confirm your reservation within 24 hours."
+                                        },
+                                        "id": "rest_contact_form"
+                                    }
+                                ],
+                                "id": "rest_contact_col1"
+                            },
+                            {
+                                "type": "column",
+                                "attrs": {"width": "1_2"},
+                                "children": [
+                                    {
+                                        "type": "text",
+                                        "attrs": {"content": "<p style=\"color:#d97706;font-weight:600;font-size:14px;text-transform:uppercase;letter-spacing:1px;margin-bottom:16px\">Contact Information</p>", "font_family": "Inter"},
+                                        "id": "rest_info_label"
+                                    },
+                                    {
+                                        "type": "heading",
+                                        "attrs": {"text": "Visit or Call Us", "header_level": "h2", "font_family": "Playfair Display", "font_size": 36, "font_size__phone": 28, "font_weight": "700", "line_height": 1.2, "text_color": "#1c1917", "margin_bottom": 32},
+                                        "id": "rest_info_title"
+                                    },
+                                    {
+                                        "type": "text",
+                                        "attrs": {"content": "<div style=\"margin-bottom:32px\"><h4 style=\"margin:0 0 8px;font-family:'Playfair Display';font-size:18px;color:#1c1917\">📍 Address</h4><p style=\"margin:0;color:#78716c;line-height:1.6\">123 Culinary Street<br>Downtown District<br>New York, NY 10001</p></div><div style=\"margin-bottom:32px\"><h4 style=\"margin:0 0 8px;font-family:'Playfair Display';font-size:18px;color:#1c1917\">📞 Reservations</h4><p style=\"margin:0;color:#78716c;line-height:1.6\"><strong>(555) 123-FOOD</strong><br>Available daily 10 AM - 10 PM</p></div><div style=\"margin-bottom:32px\"><h4 style=\"margin:0 0 8px;font-family:'Playfair Display';font-size:18px;color:#1c1917\">✉️ Email</h4><p style=\"margin:0;color:#78716c;line-height:1.6\"><a href=\"mailto:reservations@restaurant.com\" style=\"color:#d97706;text-decoration:none\">reservations@restaurant.com</a><br><a href=\"mailto:info@restaurant.com\" style=\"color:#d97706;text-decoration:none\">info@restaurant.com</a></p></div>", "font_family": "Inter", "font_size": 16},
+                                        "id": "rest_contact_info"
+                                    },
+                                    {
+                                        "type": "text",
+                                        "attrs": {"content": "<div style=\"background:#fefdf8;padding:24px;border-radius:8px;border-left:4px solid #d97706\"><h4 style=\"margin:0 0 12px;font-family:'Playfair Display';font-size:18px;color:#1c1917\">⚠️ Emergency Contact</h4><p style=\"margin:0;color:#78716c;font-size:14px;line-height:1.6\">For same-day reservations or urgent matters:<br><strong>(555) 123-9999</strong></p></div>", "font_family": "Inter"},
+                                        "id": "rest_emergency_contact"
+                                    }
+                                ],
+                                "id": "rest_contact_col2"
+                            }
+                        ],
+                        "id": "rest_contact_row"
+                    }
+                ],
+                "id": "rest_contact_section"
+            },
+            {
+                "type": "section",
+                "attrs": {
+                    "_pattern": "hours",
+                    "padding": {"top": 100, "right": 0, "bottom": 100, "left": 0},
+                    "padding__phone": {"top": 80, "bottom": 80, "left": 20, "right": 20},
+                    "background_color": "#fefdf8"
+                },
+                "children": [
+                    {
+                        "type": "row",
+                        "attrs": {"columns": "1", "max_width": 1000, "text_align": "center"},
+                        "children": [
+                            {
+                                "type": "column",
+                                "attrs": {"width": "1"},
+                                "children": [
+                                    {
+                                        "type": "heading",
+                                        "attrs": {"text": "Hours of Operation", "header_level": "h2", "font_family": "Playfair Display", "font_size": 36, "font_size__phone": 28, "font_weight": "700", "text_color": "#1c1917", "margin_bottom": 60},
+                                        "id": "rest_hours_title"
+                                    },
+                                    {
+                                        "type": "row",
+                                        "attrs": {"columns": "1_2,1_2", "gap": 60},
+                                        "children": [
+                                            {
+                                                "type": "column",
+                                                "attrs": {"width": "1_2"},
+                                                "children": [
+                                                    {
+                                                        "type": "text",
+                                                        "attrs": {"content": "<div style=\"background:#ffffff;padding:32px;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,0.1)\"><h3 style=\"margin:0 0 24px;font-family:'Playfair Display';font-size:24px;color:#1c1917;text-align:center\">Dinner Service</h3><div style=\"margin-bottom:16px\"><p style=\"margin:0;display:flex;justify-content:space-between;font-weight:600;color:#1c1917\"><span>Monday - Thursday</span><span>5:00 PM - 10:00 PM</span></p></div><div style=\"margin-bottom:16px\"><p style=\"margin:0;display:flex;justify-content:space-between;font-weight:600;color:#1c1917\"><span>Friday - Saturday</span><span>5:00 PM - 11:00 PM</span></p></div><div><p style=\"margin:0;display:flex;justify-content:space-between;font-weight:600;color:#1c1917\"><span>Sunday</span><span>4:00 PM - 9:00 PM</span></p></div></div>", "font_family": "Inter", "font_size": 16},
+                                                        "id": "rest_dinner_hours"
+                                                    }
+                                                ],
+                                                "id": "rest_hours_col1"
+                                            },
+                                            {
+                                                "type": "column",
+                                                "attrs": {"width": "1_2"},
+                                                "children": [
+                                                    {
+                                                        "type": "text",
+                                                        "attrs": {"content": "<div style=\"background:#ffffff;padding:32px;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,0.1)\"><h3 style=\"margin:0 0 24px;font-family:'Playfair Display';font-size:24px;color:#1c1917;text-align:center\">Bar Hours</h3><div style=\"margin-bottom:16px\"><p style=\"margin:0;display:flex;justify-content:space-between;font-weight:600;color:#1c1917\"><span>Monday - Thursday</span><span>4:30 PM - 11:00 PM</span></p></div><div style=\"margin-bottom:16px\"><p style=\"margin:0;display:flex;justify-content:space-between;font-weight:600;color:#1c1917\"><span>Friday - Saturday</span><span>4:30 PM - 12:00 AM</span></p></div><div><p style=\"margin:0;display:flex;justify-content:space-between;font-weight:600;color:#1c1917\"><span>Sunday</span><span>3:30 PM - 10:00 PM</span></p></div></div>", "font_family": "Inter", "font_size": 16},
+                                                        "id": "rest_bar_hours"
+                                                    }
+                                                ],
+                                                "id": "rest_hours_col2"
+                                            }
+                                        ],
+                                        "id": "rest_hours_row"
+                                    },
+                                    {
+                                        "type": "text",
+                                        "attrs": {"content": "<p style=\"margin:32px 0 0;color:#78716c;font-style:italic\">*Last seating is 30 minutes before closing. Private events and special hours available upon request.</p>", "font_family": "Inter", "font_size": 14, "text_align": "center"},
+                                        "id": "rest_hours_note"
+                                    }
+                                ],
+                                "id": "rest_hours_column"
+                            }
+                        ],
+                        "id": "rest_hours_main_row"
+                    }
+                ],
+                "id": "rest_hours_section"
+            },
+            {
+                "type": "section",
+                "attrs": {
+                    "_pattern": "map",
+                    "padding": {"top": 100, "right": 0, "bottom": 100, "left": 0},
+                    "padding__phone": {"top": 80, "bottom": 80, "left": 20, "right": 20},
+                    "background_color": "#ffffff"
+                },
+                "children": [
+                    {
+                        "type": "row",
+                        "attrs": {"columns": "1", "max_width": 1280},
+                        "children": [
+                            {
+                                "type": "column",
+                                "attrs": {"width": "1"},
+                                "children": [
+                                    {
+                                        "type": "heading",
+                                        "attrs": {"text": "Find Us", "header_level": "h2", "font_family": "Playfair Display", "font_size": 36, "font_size__phone": 28, "font_weight": "700", "text_color": "#1c1917", "text_align": "center", "margin_bottom": 40},
+                                        "id": "rest_map_title"
+                                    },
+                                    {
+                                        "type": "text",
+                                        "attrs": {"content": "<p style=\"text-align:center;color:#78716c;margin-bottom:40px\">Located in the heart of Downtown District, easily accessible by public transport with valet parking available.</p>", "font_family": "Inter", "font_size": 16},
+                                        "id": "rest_map_desc"
+                                    },
+                                    {
+                                        "type": "map",
+                                        "attrs": {"address": "123 Culinary Street, Downtown District, New York, NY 10001", "height": 400, "zoom": 15, "marker": true, "border_radius": 12},
+                                        "id": "rest_location_map"
+                                    }
+                                ],
+                                "id": "rest_map_column"
+                            }
+                        ],
+                        "id": "rest_map_row"
+                    }
+                ],
+                "id": "rest_map_section"
+            }
+        ]
+    }
+}
