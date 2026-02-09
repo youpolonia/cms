@@ -128,7 +128,7 @@ require_once CMS_ROOT . '/admin/includes/page_header.php';
 <?php if ($brief && $brief['ok']): ?>
 <div class="card">
 <div class="card-head success">
-<span class="card-title"><span>✅</span> Brief: <?= esc($brief['keyword']) ?></span>
+<span class="card-title"><span>✅</span> Brief: <?= esc($brief['keyword']) ?> <?php if (!empty($brief['ai_powered'])): ?><span class="tag" style="background:rgba(137,180,250,.2);color:var(--accent);margin-left:8px">🤖 AI-Powered</span><?php else: ?><span class="tag" style="background:var(--bg3);color:var(--muted);margin-left:8px">📋 Template</span><?php endif; ?></span>
 <a href="?export=markdown&keyword=<?= urlencode($keyword) ?>&content_type=<?= urlencode($contentType) ?>&audience=<?= urlencode($audience) ?>" class="btn btn-secondary">📥 Export MD</a>
 </div>
 <div class="card-body">
@@ -157,6 +157,7 @@ require_once CMS_ROOT . '/admin/includes/page_header.php';
 <div class="section-title"><span>🎯</span> Keywords</div>
 <div><strong style="font-size:11px;color:var(--muted)">PRIMARY:</strong> <?php foreach (($brief['keywords']['primary'] ?? []) as $k): ?><span class="tag primary"><?= esc($k) ?></span><?php endforeach; ?></div>
 <div style="margin-top:8px"><strong style="font-size:11px;color:var(--muted)">SECONDARY:</strong> <?php foreach (($brief['keywords']['secondary'] ?? []) as $k): ?><span class="tag secondary"><?= esc($k) ?></span><?php endforeach; ?></div>
+<div style="margin-top:8px"><strong style="font-size:11px;color:var(--muted)">LSI / RELATED:</strong> <?php foreach (($brief['keywords']['lsi'] ?? []) as $k): ?><span class="tag secondary"><?= esc($k) ?></span><?php endforeach; ?></div>
 </div>
 <?php endif; ?>
 
