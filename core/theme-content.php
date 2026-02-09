@@ -127,6 +127,47 @@ function theme_install_demo_content(string $themeName, array $options = []): arr
             }
         }
         
+        // Install galleries
+        if (!empty($demo['galleries'])) {
+            foreach ($demo['galleries'] as $gallery) {
+                $galSlug = $gallery['slug'] ?? $themeName . '-gallery';
+                
+                // Check if gallery exists
+                $stmt = $pdo->prepare("SELECT id FROM galleries WHERE slug = ?");
+                $stmt->execute([$galSlug]);
+                $galId = $stmt->fetchColumn();
+                
+                if ($galId) {
+                    // Update existing gallery
+                    $stmt = $pdo->prepare("UPDATE galleries SET name = ?, description = ?, display_template = ?, is_public = 1, updated_at = NOW() WHERE id = ?");
+                    $stmt->execute([$gallery['name'], $gallery['description'] ?? '', $gallery['display_template'] ?? 'grid', $galId]);
+                    // Clear old images
+                    $stmt = $pdo->prepare("DELETE FROM gallery_images WHERE gallery_id = ?");
+                    $stmt->execute([$galId]);
+                } else {
+                    // Create new gallery
+                    $stmt = $pdo->prepare("INSERT INTO galleries (name, slug, description, is_public, display_template, sort_order, created_at, updated_at) VALUES (?, ?, ?, 1, ?, 0, NOW(), NOW())");
+                    $stmt->execute([$gallery['name'], $galSlug, $gallery['description'] ?? '', $gallery['display_template'] ?? 'grid']);
+                    $galId = (int)$pdo->lastInsertId();
+                }
+                
+                // Insert images
+                if (!empty($gallery['images'])) {
+                    foreach ($gallery['images'] as $idx => $img) {
+                        $stmt = $pdo->prepare("INSERT INTO gallery_images (gallery_id, filename, original_name, title, caption, sort_order, created_at) VALUES (?, ?, ?, ?, ?, ?, NOW())");
+                        $stmt->execute([
+                            $galId,
+                            $img['filename'],
+                            $img['original_name'] ?? $img['filename'],
+                            $img['title'] ?? 'Photo ' . ($idx + 1),
+                            $img['caption'] ?? '',
+                            $idx
+                        ]);
+                    }
+                }
+            }
+        }
+        
         // Install menu
         if ($installMenu && !empty($demo['menu'])) {
             // Create or update header menu
@@ -229,6 +270,7 @@ function theme_get_demo_info(string $themeName): ?array {
     return [
         'pages' => count($demo['pages'] ?? []),
         'articles' => count($demo['articles'] ?? []),
+        'galleries' => count($demo['galleries'] ?? []),
         'has_menu' => !empty($demo['menu']),
         'page_list' => array_map(fn($p) => $p['title'], $demo['pages'] ?? []),
     ];
@@ -248,6 +290,16 @@ function theme_remove_demo_content(string $themeName): array {
         
         $stmt = $pdo->prepare("DELETE FROM pages WHERE meta_description LIKE ?");
         $stmt->execute(['%[demo:' . $themeName . ']%']);
+        
+        // Remove demo galleries
+        $galSlug = $themeName . '-gallery';
+        $stmt = $pdo->prepare("SELECT id FROM galleries WHERE slug = ?");
+        $stmt->execute([$galSlug]);
+        $galId = $stmt->fetchColumn();
+        if ($galId) {
+            $pdo->prepare("DELETE FROM gallery_images WHERE gallery_id = ?")->execute([$galId]);
+            $pdo->prepare("DELETE FROM galleries WHERE id = ?")->execute([$galId]);
+        }
         
         return ['success' => true, 'pages_removed' => $count];
     } catch (\Throwable $e) {
