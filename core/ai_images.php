@@ -478,7 +478,7 @@ function ai_images_save_to_gallery(string $aiImagePath, string $title = '', stri
     }
 
     // Add to database
-    require_once CMS_ROOT . '/db.php';
+    // db.php removed — use \core\Database::connection() directly
     if (file_exists(CMS_ROOT . '/core/models/mediamodel.php')) { require_once CMS_ROOT . '/core/models/mediamodel.php'; }
 
     try {
