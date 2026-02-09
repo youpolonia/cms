@@ -162,7 +162,7 @@ $themeCssVariables = generate_theme_css_variables($themeConfig);
                     <?php if ($siteLogo): ?><img src="<?= esc($siteLogo) ?>" alt="<?= esc($siteName) ?>"><?php endif; ?>
                     <span><?= esc($siteName) ?></span>
                 </a>
-                <?= render_menu('header', ['class' => 'nav-menu', 'link_class' => 'nav-link']) ?>
+                <?= render_menu('header', ['class' => 'nav-menu', 'link_class' => 'nav-link', 'wrap' => false]) ?>
             </div>
         </header>
     <?php endif; ?>
@@ -184,7 +184,7 @@ $themeCssVariables = generate_theme_css_variables($themeConfig);
     <?php else: ?>
         <!-- Fallback Footer -->
         <footer class="site-footer-fallback">
-            <?= render_menu('footer', ['class' => 'nav-menu', 'link_class' => 'nav-link']) ?>
+            <?= render_menu('footer', ['class' => 'nav-menu', 'link_class' => 'nav-link', 'wrap' => false]) ?>
             <p>&copy; <?= date('Y') ?> <?= esc($siteName) ?>. All rights reserved.</p>
         </footer>
     <?php endif; ?>

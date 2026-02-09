@@ -1,0 +1,65 @@
+{
+    "name": "Starter Blog",
+    "description": "Modern blog and magazine theme with beautiful reading experience",
+    "version": "1.0.0",
+    "author": "Jessie CMS",
+    "supports": {
+        "theme-builder": true,
+        "custom-header": true,
+        "custom-footer": true,
+        "custom-colors": true
+    },
+    "options": {
+        "show_header": true,
+        "show_footer": true,
+        "preload_fonts": true,
+        "body_background": "#0c0a09"
+    },
+    "colors": {
+        "primary": "#f43f5e",
+        "secondary": "#e11d48",
+        "accent": "#f97316",
+        "background": "#0c0a09",
+        "surface": "#1c1917",
+        "text": "#fafaf9",
+        "text_muted": "#a8a29e",
+        "border": "#292524",
+        "success": "#10b981",
+        "warning": "#f59e0b",
+        "error": "#ef4444"
+    },
+    "typography": {
+        "fontFamily": "Inter",
+        "headingFont": "Merriweather",
+        "baseFontSize": "17",
+        "lineHeight": "1.8",
+        "h1Size": "2.75",
+        "h2Size": "2",
+        "h3Size": "1.5",
+        "fontWeight": "400",
+        "headingWeight": "700"
+    },
+    "header": {
+        "background": "transparent",
+        "sticky": true,
+        "blur": true,
+        "height": "64"
+    },
+    "buttons": {
+        "borderRadius": "8",
+        "paddingX": "24",
+        "paddingY": "12",
+        "fontWeight": "600",
+        "shadow": false
+    },
+    "layout": {
+        "containerWidth": "1100",
+        "sectionSpacing": "80",
+        "borderRadius": "12"
+    },
+    "effects": {
+        "shadowStrength": "15",
+        "hoverScale": "1.02",
+        "transitionSpeed": "200"
+    }
+}

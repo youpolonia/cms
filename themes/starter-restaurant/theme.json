@@ -1,43 +1,67 @@
 {
     "name": "Starter Restaurant",
-    "description": "A warm, elegant theme perfect for restaurants, cafés, and food businesses. Features rich amber colors, appetizing food imagery, and conversion-focused layouts for reservations and menu display.",
+    "description": "Elegant restaurant theme with warm gold tones, serif typography, and refined dining aesthetics",
     "version": "1.0.0",
-    "author": "Jessie CMS",
-    "category": "food",
-    "preview_html": "<div style=\"background: linear-gradient(135deg, #d97706 0%, #92400e 100%); padding: 48px; text-align: center; color: white; font-family: 'Playfair Display', serif;\"><h2 style=\"margin: 0 0 8px; font-size: 28px; font-weight: 700;\">Starter Restaurant</h2><p style=\"margin: 0; opacity: 0.85; font-size: 14px; font-family: Inter, sans-serif;\">Warm • Elegant • Food-Focused</p></div>",
+    "author": "CMS Team",
     "supports": {
         "theme-builder": true,
         "custom-header": true,
         "custom-footer": true,
-        "custom-colors": true,
-        "jtb-integration": true
+        "custom-colors": true
+    },
+    "options": {
+        "show_header": true,
+        "show_footer": true,
+        "body_background": "#1a1410",
+        "preload_fonts": true
     },
     "colors": {
-        "primary": "#d97706",
-        "secondary": "#92400e", 
-        "accent": "#f59e0b",
-        "background": "#ffffff",
-        "surface": "#fefdf8",
-        "dark": "#1c1917",
-        "text": "#1c1917",
-        "text_muted": "#78716c",
-        "border": "#e7e5e4",
-        "success": "#10b981",
-        "gradient_start": "#d97706",
-        "gradient_end": "#92400e"
+        "primary": "#d4a574",
+        "secondary": "#b8860b",
+        "accent": "#fef3c7",
+        "background": "#1a1410",
+        "surface": "#241c14",
+        "text": "#faf5ef",
+        "text_muted": "#c4a882",
+        "border": "#3d2e1e",
+        "success": "#6b8f71",
+        "warning": "#d4a574",
+        "error": "#c45e4c"
     },
     "typography": {
         "fontFamily": "Inter",
         "headingFont": "Playfair Display",
         "baseFontSize": "16",
-        "lineHeight": "1.6", 
-        "headingWeight": "700",
-        "letterSpacing": "-0.025em"
+        "lineHeight": "1.7",
+        "h1Size": "3.5",
+        "h2Size": "2.5",
+        "h3Size": "1.75",
+        "fontWeight": "400",
+        "headingWeight": "700"
     },
-    "pages": [
-        {"title": "Home", "slug": "home", "meta_title": "Home — Fine Dining Experience", "meta_description": "Experience exceptional cuisine in an elegant atmosphere. Reserve your table today."},
-        {"title": "About", "slug": "about", "meta_title": "About Us — Our Story", "meta_description": "Learn about our culinary philosophy, heritage, and passion for exceptional food."},
-        {"title": "Services", "slug": "services", "meta_title": "Menu — Culinary Offerings", "meta_description": "Discover our carefully crafted menu featuring seasonal ingredients and artisanal preparations."},
-        {"title": "Contact", "slug": "contact", "meta_title": "Reservations & Contact", "meta_description": "Make a reservation or contact us for private dining, events, and catering services."}
-    ]
+    "header": {
+        "background": "transparent",
+        "sticky": true,
+        "blur": true,
+        "height": "80",
+        "logoSize": "36"
+    },
+    "buttons": {
+        "borderRadius": "4",
+        "paddingX": "32",
+        "paddingY": "14",
+        "fontWeight": "600",
+        "uppercase": true,
+        "shadow": true
+    },
+    "layout": {
+        "containerWidth": "1200",
+        "sectionSpacing": "120",
+        "borderRadius": "8"
+    },
+    "effects": {
+        "shadowStrength": "15",
+        "hoverScale": "1.03",
+        "transitionSpeed": "300"
+    }
 }

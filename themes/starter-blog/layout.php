@@ -1,0 +1,128 @@
+<?php
+/**
+ * Starter Blog Theme — Layout
+ * Reading-focused design with serif headings and warm tones
+ */
+
+if (!defined('CMS_ROOT')) {
+    define('CMS_ROOT', dirname(__DIR__, 2));
+}
+if (!defined('CMS_APP')) {
+    define('CMS_APP', CMS_ROOT . '/app');
+}
+
+require_once CMS_APP . '/helpers/functions.php';
+
+if (file_exists(CMS_ROOT . '/includes/helpers/menu.php')) {
+    require_once CMS_ROOT . '/includes/helpers/menu.php';
+}
+
+$jtbBootPath = CMS_ROOT . '/plugins/jessie-theme-builder/includes/jtb-frontend-boot.php';
+if (file_exists($jtbBootPath)) {
+    require_once $jtbBootPath;
+}
+
+$themeConfig = get_theme_config();
+$themeOptions = $themeConfig['options'] ?? [];
+$showHeader = $themeOptions['show_header'] ?? true;
+$showFooter = $themeOptions['show_footer'] ?? true;
+$siteName = get_site_name();
+$siteLogo = get_site_logo();
+$isTbPage = !empty($page['is_tb_page']);
+
+$pageData = $page ?? [];
+if (!empty($title) && empty($pageData['title'])) {
+    $pageData['title'] = $title;
+}
+
+$themeCssVariables = generate_theme_css_variables($themeConfig);
+$themeDir = '/themes/starter-blog';
+?><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <?= render_seo_meta($pageData) ?>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Merriweather:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/fontawesome.min.css">
+    <link rel="stylesheet" href="/assets/css/tb-frontend.css">
+    <link rel="stylesheet" href="<?= $themeDir ?>/assets/css/style.css">
+    <style><?= $themeCssVariables ?></style>
+</head>
+<body class="starter-blog <?= esc(get_body_class() ?? '') ?><?= $isTbPage ? ' tb-page' : '' ?>">
+
+<!-- Reading Progress Bar -->
+<div class="reading-progress" id="reading-progress"></div>
+
+<?php if ($showHeader): ?>
+<header class="site-header" id="site-header">
+    <div class="container">
+        <div class="header-inner">
+            <a href="/" class="logo">
+                <?php if ($siteLogo): ?>
+                    <img src="<?= esc($siteLogo) ?>" alt="<?= esc($siteName) ?>" class="logo-img">
+                <?php endif; ?>
+                <span class="logo-text"><?= esc($siteName) ?></span>
+            </a>
+
+            <nav class="nav-main" id="nav-main">
+                <?= render_menu('header', ['class' => 'nav-links', 'link_class' => 'nav-link', 'wrap' => false]) ?>
+            </nav>
+
+            <div class="header-actions">
+                <button class="search-toggle" aria-label="Search"><i class="fas fa-search"></i></button>
+                <button class="mobile-toggle" id="mobile-toggle" aria-label="Menu"><i class="fas fa-bars"></i></button>
+            </div>
+        </div>
+    </div>
+</header>
+<?php endif; ?>
+
+<?php if ($isTbPage): ?>
+    <?= $content ?? '' ?>
+<?php else: ?>
+    <main class="main-content">
+        <?= $content ?? '' ?>
+    </main>
+<?php endif; ?>
+
+<?php if ($showFooter): ?>
+<footer class="site-footer">
+    <div class="container">
+        <div class="footer-grid">
+            <div class="footer-brand">
+                <a href="/" class="logo">
+                    <span class="logo-text"><?= esc($siteName) ?></span>
+                </a>
+                <p>Stories, ideas, and insights for the curious mind. Subscribe to stay updated with our latest posts.</p>
+            </div>
+            <div class="footer-column">
+                <h4>Navigate</h4>
+                <?= render_menu('footer', ['class' => 'footer-links', 'link_class' => 'footer-link', 'wrap' => false]) ?>
+            </div>
+            <div class="footer-column">
+                <h4>Subscribe</h4>
+                <p class="footer-desc">Get the best articles delivered to your inbox weekly.</p>
+                <form class="footer-newsletter" onsubmit="return false;">
+                    <input type="email" placeholder="your@email.com" aria-label="Email">
+                    <button type="submit" class="btn btn-primary btn-sm">Subscribe</button>
+                </form>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; <?= date('Y') ?> <?= esc($siteName) ?>. All rights reserved.</p>
+            <div class="footer-social">
+                <a href="#" aria-label="Twitter"><i class="fab fa-x-twitter"></i></a>
+                <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                <a href="#" aria-label="RSS"><i class="fas fa-rss"></i></a>
+            </div>
+        </div>
+    </div>
+</footer>
+<?php endif; ?>
+
+<script src="<?= $themeDir ?>/assets/js/main.js"></script>
+</body>
+</html>

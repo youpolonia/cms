@@ -340,7 +340,8 @@ if (class_exists(router::class) && method_exists(router::class, 'dispatch')) {
     try {
         router::dispatch();
     } catch (\Throwable $e) {
-        error_log('[CMS] Dispatch error: ' . $e->getMessage());
+        error_log("[CMS] Dispatch error: " . $e->getMessage() . " in " . $e->getFile() . ":" . $e->getLine() . "
+" . $e->getTraceAsString());
         http_response_code(500);
     }
 } else {

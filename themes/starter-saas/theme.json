@@ -1,43 +1,65 @@
 {
     "name": "Starter SaaS",
-    "description": "A modern, conversion-focused theme perfect for SaaS products, tech startups, and digital agencies. Features bold gradients, clean typography, and persuasive layouts.",
+    "description": "Modern SaaS landing page theme with glassmorphism and gradient accents",
     "version": "1.0.0",
     "author": "Jessie CMS",
-    "category": "tech",
-    "preview_html": "<div style=\"background: linear-gradient(135deg, #6366f1 0%, #0ea5e9 100%); padding: 48px; text-align: center; color: white; font-family: Inter, sans-serif;\"><h2 style=\"margin: 0 0 8px; font-size: 28px; font-weight: 800; letter-spacing: -0.5px;\">Starter SaaS</h2><p style=\"margin: 0; opacity: 0.85; font-size: 14px;\">Modern • Gradient • Conversion-Focused</p></div>",
     "supports": {
         "theme-builder": true,
         "custom-header": true,
         "custom-footer": true,
-        "custom-colors": true,
-        "jtb-integration": true
+        "custom-colors": true
+    },
+    "options": {
+        "show_header": true,
+        "show_footer": true,
+        "preload_fonts": true,
+        "body_background": "#0a0a0f"
     },
     "colors": {
         "primary": "#6366f1",
-        "secondary": "#0ea5e9",
-        "accent": "#f59e0b",
-        "background": "#ffffff",
-        "surface": "#f8fafc",
-        "dark": "#0f172a",
-        "text": "#1e293b",
-        "text_muted": "#64748b",
-        "border": "#e2e8f0",
+        "secondary": "#818cf8",
+        "accent": "#06b6d4",
+        "background": "#0a0a0f",
+        "surface": "#131320",
+        "text": "#f1f5f9",
+        "text_muted": "#94a3b8",
+        "border": "#1e1e35",
         "success": "#10b981",
-        "gradient_start": "#6366f1",
-        "gradient_end": "#0ea5e9"
+        "warning": "#f59e0b",
+        "error": "#ef4444"
     },
     "typography": {
         "fontFamily": "Inter",
         "headingFont": "Inter",
         "baseFontSize": "16",
         "lineHeight": "1.6",
-        "headingWeight": "700",
-        "letterSpacing": "-0.025em"
+        "h1Size": "3.5",
+        "h2Size": "2.5",
+        "h3Size": "1.75",
+        "fontWeight": "400",
+        "headingWeight": "700"
     },
-    "pages": [
-        {"title": "Home", "slug": "home", "meta_title": "Home — Modern SaaS Solution", "meta_description": "Transform your business with our AI-powered platform. Built for teams that move fast."},
-        {"title": "About", "slug": "about", "meta_title": "About Us — Our Story", "meta_description": "Learn about our mission to empower businesses with cutting-edge technology."},
-        {"title": "Services", "slug": "services", "meta_title": "Services — What We Offer", "meta_description": "Explore our comprehensive suite of services designed to accelerate your growth."},
-        {"title": "Contact", "slug": "contact", "meta_title": "Contact Us — Get In Touch", "meta_description": "Ready to get started? Contact our team for a free consultation."}
-    ]
+    "header": {
+        "background": "transparent",
+        "sticky": true,
+        "blur": true,
+        "height": "72"
+    },
+    "buttons": {
+        "borderRadius": "12",
+        "paddingX": "28",
+        "paddingY": "14",
+        "fontWeight": "600",
+        "shadow": true
+    },
+    "layout": {
+        "containerWidth": "1200",
+        "sectionSpacing": "100",
+        "borderRadius": "16"
+    },
+    "effects": {
+        "shadowStrength": "25",
+        "hoverScale": "1.03",
+        "transitionSpeed": "200"
+    }
 }

@@ -139,8 +139,9 @@ class Router {
             }
             self::handleNotFound();
         } catch (Throwable $e) {
-            ob_end_clean();
-            error_log("Router dispatch failed: " . $e->getMessage());
+            @ob_end_clean();
+            error_log("ROUTER CATCH: " . $e->getMessage() . " | " . $e->getFile() . ":" . $e->getLine());
+            error_log("Router dispatch failed: " . $e->getMessage() . " in " . $e->getFile() . ":" . $e->getLine());
             http_response_code(500);
             echo '500 Internal Server Error';
         }
@@ -253,6 +254,29 @@ class Router {
     }
 
     private static function handleNotFound(): void {
+        // Try matching URI as a page slug before returning 404
+        $path = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?? '/';
+        $slug = trim($path, '/');
+        
+        if ($slug !== '' && $_SERVER['REQUEST_METHOD'] === 'GET' && !str_contains($slug, '/')) {
+            // Single-segment URI — check if it's a page slug
+            try {
+                $pdo = \core\Database::connection();
+                $stmt = $pdo->prepare("SELECT id FROM pages WHERE slug = ? AND status = 'published' LIMIT 1");
+                $stmt->execute([$slug]);
+                if ($stmt->fetch()) {
+                    http_response_code(200);
+                    $request = new \Core\Request();
+                    $request->setParams(['slug' => $slug]);
+                    $controller = new \App\Controllers\Front\PageController();
+                    $controller->show($request);
+                    return;
+                }
+            } catch (\Throwable $e) {
+                // DB error — fall through to 404
+            }
+        }
+
         http_response_code(404);
         if (self::$notFoundHandler) {
             $handler = self::$notFoundHandler;

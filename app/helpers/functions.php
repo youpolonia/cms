@@ -615,7 +615,7 @@ if (!function_exists('cms_get_menu')) {
                   AND m.is_active = 1 
                 LIMIT 1
             ");
-            $stmt->execute(['location' => $location]);
+            $stmt->execute(['loc1' => $location, 'loc2' => $location]);
             $menu = $stmt->fetch(\PDO::FETCH_ASSOC);
             
             if ($menu) {
@@ -1174,7 +1174,7 @@ if (!function_exists('render_menu')) {
      * @param array $options Rendering options
      * @return string HTML nav element
      */
-    function theme_render_menu(string $location, array $options = []): string
+    function render_menu(string $location, array $options = []): string
     {
         $defaults = [
             'container_class' => 'site-nav',
@@ -1184,14 +1184,23 @@ if (!function_exists('render_menu')) {
             'show_home' => false,
             'home_text' => 'Home',
             'depth' => 2,
+            'wrap' => true,
             'fallback_to_pages' => true
         ];
+
+        // Accept 'class' as alias for 'menu_class'
+        if (isset($options['class']) && !isset($options['menu_class'])) {
+            $options['menu_class'] = $options['class'];
+        }
 
         $options = array_merge($defaults, $options);
         $items = get_menu_items_for_render($location, $options['fallback_to_pages']);
         $currentPath = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH);
 
-        $html = '<nav class="' . esc($options['container_class']) . '">';
+        $html = '';
+        if ($options['wrap']) {
+            $html .= '<nav class="' . esc($options['container_class']) . '">';
+        }
         $html .= '<ul class="' . esc($options['menu_class']) . '">';
 
         if ($options['show_home']) {
@@ -1203,7 +1212,10 @@ if (!function_exists('render_menu')) {
         }
 
         $html .= render_menu_items_recursive($items, $options, $currentPath, 1);
-        $html .= '</ul></nav>';
+        $html .= '</ul>';
+        if ($options['wrap']) {
+            $html .= '</nav>';
+        }
 
         return $html;
     }
@@ -1218,8 +1230,8 @@ if (!function_exists('get_menu_items_for_render')) {
         try {
             $pdo = db();
 
-            $stmt = $pdo->prepare("SELECT id, name, slug FROM menus WHERE location = :location OR slug = :location LIMIT 1");
-            $stmt->execute(['location' => $location]);
+            $stmt = $pdo->prepare("SELECT id, name, slug FROM menus WHERE location = :loc1 OR slug = :loc2 LIMIT 1");
+            $stmt->execute(['loc1' => $location, 'loc2' => $location]);
             $menu = $stmt->fetch(\PDO::FETCH_ASSOC);
 
             if ($menu) {

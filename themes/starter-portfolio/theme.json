@@ -1,1 +1,54 @@
-{"name":"Starter Portfolio","description":"A minimal, sophisticated theme perfect for personal portfolios, freelancers, and creative professionals. Features clean typography, generous whitespace, and elegant layouts.","version":"1.0.0","author":"Jessie CMS","category":"portfolio","preview_html":"<div style=\"background: #fafafa; padding: 48px; text-align: center; color: #171717; font-family: 'Outfit', sans-serif; border-left: 4px solid #6366f1;\"><h2 style=\"margin: 0 0 8px; font-size: 28px; font-weight: 600;\">Starter Portfolio</h2><p style=\"margin: 0; opacity: 0.7; font-size: 14px; font-family: Inter, sans-serif;\">Minimal • Editorial • Sophisticated</p></div>","supports":{"theme-builder":true,"custom-header":true,"custom-footer":true,"custom-colors":true,"jtb-integration":true},"colors":{"primary":"#171717","secondary":"#525252","accent":"#6366f1","background":"#ffffff","surface":"#fafafa","dark":"#0a0a0a","text":"#171717","text_muted":"#737373","border":"#e5e5e5","success":"#10b981","gradient_start":"#171717","gradient_end":"#525252"},"typography":{"fontFamily":"Inter","headingFont":"Outfit","baseFontSize":"16","lineHeight":"1.6","headingWeight":"600","letterSpacing":"-0.025em"},"pages":[{"title":"Home","slug":"home","meta_title":"Portfolio — Creative Professional","meta_description":"Minimal portfolio showcasing creative work and professional expertise."},{"title":"About","slug":"about","meta_title":"About — Creative Journey","meta_description":"Learn about my background, experience, and creative approach to design and development."},{"title":"Services","slug":"services","meta_title":"Services — What I Do","meta_description":"Discover my creative services and process for bringing projects to life."},{"title":"Contact","slug":"contact","meta_title":"Contact — Let's Work Together","meta_description":"Get in touch to discuss your project and explore collaboration opportunities."}]}
+{
+    "name": "Starter Portfolio",
+    "slug": "starter-portfolio",
+    "version": "1.0.0",
+    "description": "A bold, creative portfolio theme with asymmetric layouts, large typography, and stunning animations. Designed for creatives, developers, and designers.",
+    "author": "CMS Themes",
+    "supports": {
+        "theme_builder": true,
+        "menus": [
+            "header",
+            "footer"
+        ],
+        "custom_css": true,
+        "custom_js": true,
+        "seo": true,
+        "responsive": true
+    },
+    "colors": {
+        "primary": "#10b981",
+        "accent": "#84cc16",
+        "background": "#0c0c0c",
+        "surface": "#141414",
+        "surface_hover": "#1a1a1a",
+        "text": "#f0f0f0",
+        "text_muted": "#888888",
+        "border": "#222222",
+        "secondary": "#065f46",
+        "success": "#10b981",
+        "warning": "#f59e0b",
+        "error": "#ef4444"
+    },
+    "typography": {
+        "fontFamily": "Inter",
+        "headingFont": "Space Grotesk",
+        "baseFontSize": "16",
+        "lineHeight": "1.6",
+        "h1Size": "3.5",
+        "h2Size": "2.5",
+        "h3Size": "1.75",
+        "fontWeight": "400",
+        "headingWeight": "700"
+    },
+    "options": {
+        "show_cursor_effect": true,
+        "show_scroll_animations": true,
+        "header_style": "minimal",
+        "footer_text": "All rights reserved.",
+        "social_github": "",
+        "social_twitter": "",
+        "social_linkedin": "",
+        "social_dribbble": "",
+        "social_email": ""
+    }
+}

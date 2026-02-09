@@ -26,12 +26,12 @@ final class ControllerRegistry
     public static function validateController(string $className, string $methodName): bool
     {
         if (!class_exists($className)) {
-            error_log("ControllerRegistry: class not found: {$className}");
+            // error_log("ControllerRegistry: class not found: {$className}");
             return false;
         }
 
         if (!method_exists($className, $methodName)) {
-            error_log("ControllerRegistry: method not found: {$className}::{$methodName}");
+            // error_log("ControllerRegistry: method not found: {$className}::{$methodName}");
             return false;
         }
 
@@ -45,6 +45,6 @@ final class ControllerRegistry
      */
     public static function logUsage(string $className, string $methodName): void
     {
-        error_log("ControllerRegistry: registered {$className}::{$methodName}");
+        // error_log("ControllerRegistry: registered {$className}::{$methodName}");
     }
 }

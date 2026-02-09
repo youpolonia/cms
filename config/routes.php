@@ -249,6 +249,8 @@ return [
     'POST /admin/themes/upload' => ['Admin\\ThemesController', 'upload', ['auth' => true, 'csrf' => true]],
     'GET /admin/themes/{slug}/customize' => ['Admin\\ThemesController', 'customize', ['auth' => true]],
     'POST /admin/themes/{slug}/customize' => ['Admin\\ThemesController', 'saveCustomize', ['auth' => true, 'csrf' => true]],
+    'POST /admin/themes/install-demo' => ['Admin\\ThemesController', 'installDemo', ['auth' => true, 'csrf' => true]],
+    'POST /admin/themes/remove-demo' => ['Admin\\ThemesController', 'removeDemo', ['auth' => true, 'csrf' => true]],
 
     // Theme Editor (Visual Customizer)
     'GET /admin/theme-editor/{name}' => ['Admin\\ThemeEditorController', 'edit', ['auth' => true]],
@@ -347,6 +349,5 @@ return [
     // Features page
     'GET /features' => ['Front\\FeaturesController', 'index'],
     
-    // Theme Builder preview
-    // Legacy TB preview routes — REMOVED 2026-02-08
+    // Page slug catch-all handled by PageController via router notFound handler
 ];

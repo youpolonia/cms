@@ -91,12 +91,26 @@ ob_start();
         <div class="theme-footer">
             <?php if ($isActive): ?>
             <button class="btn btn-secondary btn-sm" disabled>Active Theme</button>
+            <?php if (function_exists('theme_has_demo_content') && theme_has_demo_content($theme['slug'])): ?>
+            <form method="POST" action="/admin/themes/install-demo" style="margin: 4px 0 0; display: inline;">
+                <?= csrf_field() ?>
+                <input type="hidden" name="theme" value="<?= esc($theme['slug']) ?>">
+                <button type="submit" class="btn btn-success btn-sm" onclick="return confirm('Install demo content (pages, articles, menu) for this theme?')">📦 Demo Content</button>
+            </form>
+            <?php endif; ?>
             <?php else: ?>
             <form method="POST" action="/admin/themes/activate" style="margin: 0; display: inline;">
                 <?= csrf_field() ?>
                 <input type="hidden" name="theme" value="<?= esc($theme['slug']) ?>">
                 <button type="submit" class="btn btn-primary btn-sm">Activate</button>
             </form>
+            <?php if (function_exists('theme_has_demo_content') && theme_has_demo_content($theme['slug'])): ?>
+            <form method="POST" action="/admin/themes/install-demo" style="margin: 0; display: inline;">
+                <?= csrf_field() ?>
+                <input type="hidden" name="theme" value="<?= esc($theme['slug']) ?>">
+                <button type="submit" class="btn btn-success btn-sm" onclick="return confirm('Install demo content (pages, articles, menu) for this theme?')">📦 Demo Content</button>
+            </form>
+            <?php endif; ?>
             <?php if (!in_array($theme['slug'], $protectedThemes)): ?>
             <form method="POST" action="/admin/themes/delete" style="margin: 0; display: inline;" onsubmit="return confirm('Are you sure you want to delete theme \'<?= esc($theme['slug']) ?>\'? This cannot be undone.');">
                 <?= csrf_field() ?>
@@ -264,6 +278,15 @@ ob_start();
     background: #ef4444 !important;
     color: #fff !important;
     border: none;
+}
+.btn-success {
+    background: #10b981;
+    color: #fff;
+    border: 1px solid #10b981;
+}
+.btn-success:hover {
+    background: #059669;
+    border-color: #059669;
 }
 .btn-danger:hover {
     background: #dc2626 !important;

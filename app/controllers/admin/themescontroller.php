@@ -5,6 +5,7 @@ namespace App\Controllers\Admin;
 
 require_once CMS_ROOT . '/models/settingsmodel.php';
 require_once CMS_ROOT . '/core/theme-installer.php';
+require_once CMS_ROOT . '/core/theme-content.php';
 require_once CMS_ROOT . '/core/cache.php';
 
 use Core\Request;
@@ -287,6 +288,84 @@ class ThemesController
     private function getActiveTheme(): string
     {
         return \SettingsModel::getActiveTheme();
+    }
+
+
+    /**
+     * Install demo content for a theme
+     */
+    public function installDemo(Request $request): void
+    {
+        $slug = $request->post('theme', '');
+        
+        if (empty($slug) || !preg_match('/^[A-Za-z0-9_-]+$/', $slug)) {
+            if ($this->isAjax()) {
+                Response::json(['success' => false, 'error' => 'Invalid theme name']);
+                return;
+            }
+            Session::flash('error', 'Invalid theme name.');
+            Response::redirect('/admin/themes');
+            return;
+        }
+        
+        if (!theme_has_demo_content($slug)) {
+            if ($this->isAjax()) {
+                Response::json(['success' => false, 'error' => 'No demo content available for this theme']);
+                return;
+            }
+            Session::flash('error', 'No demo content available for this theme.');
+            Response::redirect('/admin/themes');
+            return;
+        }
+        
+        $clearExisting = !empty($request->post('clear_existing', ''));
+        $result = theme_install_demo_content($slug, [
+            'clear_existing' => $clearExisting,
+            'install_menu' => true
+        ]);
+        
+        if ($this->isAjax()) {
+            Response::json($result);
+            return;
+        }
+        
+        if ($result['success']) {
+            Session::flash('success', $result['message']);
+        } else {
+            Session::flash('error', $result['message']);
+        }
+        Response::redirect('/admin/themes');
+    }
+    
+    /**
+     * Remove demo content for a theme
+     */
+    public function removeDemo(Request $request): void
+    {
+        $slug = $request->post('theme', '');
+        
+        if (empty($slug)) {
+            Session::flash('error', 'Invalid theme name.');
+            Response::redirect('/admin/themes');
+            return;
+        }
+        
+        $result = theme_remove_demo_content($slug);
+        
+        if ($result['success']) {
+            Session::flash('success', "Removed {$result['pages_removed']} demo pages.");
+        } else {
+            Session::flash('error', $result['message'] ?? 'Failed to remove demo content.');
+        }
+        Response::redirect('/admin/themes');
+    }
+    
+    private function isAjax(): bool
+    {
+        $contentType = $_SERVER['CONTENT_TYPE'] ?? '';
+        $xhrHeader = $_SERVER['HTTP_X_REQUESTED_WITH'] ?? '';
+        return stripos($contentType, 'application/json') !== false
+            || strtolower($xhrHeader) === 'xmlhttprequest';
     }
 
     private function setActiveTheme(string $slug): bool

@@ -1,0 +1,88 @@
+{
+    "name": "Starter Business",
+    "slug": "starter-business",
+    "version": "1.0.0",
+    "author": "CMS Themes",
+    "description": "A premium corporate business theme with modern design, built for professional companies and agencies. Features hero sections, service grids, testimonials, and newsletter CTAs.",
+    "thumbnail": "screenshot.png",
+    "colors": {
+        "primary": "#2563eb",
+        "primary_hover": "#1d4ed8",
+        "secondary": "#0ea5e9",
+        "secondary_hover": "#0284c7",
+        "accent": "#0ea5e9",
+        "background": "#ffffff",
+        "surface": "#f8fafc",
+        "surface_alt": "#f1f5f9",
+        "text": "#1e293b",
+        "text_light": "#64748b",
+        "text_muted": "#94a3b8",
+        "heading": "#0f172a",
+        "border": "#e2e8f0",
+        "border_light": "#f1f5f9",
+        "dark_bg": "#0f172a",
+        "dark_surface": "#1e293b",
+        "dark_text": "#f8fafc",
+        "dark_text_muted": "#94a3b8",
+        "white": "#ffffff",
+        "success": "#22c55e",
+        "warning": "#f59e0b",
+        "error": "#ef4444"
+    },
+    "typography": {
+        "font_family": "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+        "font_family_heading": "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+        "font_size_base": "16px",
+        "font_size_sm": "14px",
+        "font_size_lg": "18px",
+        "font_size_xl": "20px",
+        "font_weight_normal": "400",
+        "font_weight_medium": "500",
+        "font_weight_semibold": "600",
+        "font_weight_bold": "700",
+        "line_height_base": "1.7",
+        "line_height_heading": "1.2",
+        "h1_size": "3.5rem",
+        "h2_size": "2.5rem",
+        "h3_size": "1.75rem",
+        "h4_size": "1.375rem",
+        "h5_size": "1.125rem",
+        "h6_size": "1rem"
+    },
+    "supports": {
+        "theme_builder": true,
+        "custom_header": true,
+        "custom_footer": true,
+        "custom_colors": true,
+        "custom_fonts": true,
+        "seo": true,
+        "responsive": true,
+        "dark_mode": false
+    },
+    "options": {
+        "show_header_cta": true,
+        "header_cta_text": "Get Started",
+        "header_cta_url": "/contact",
+        "footer_about_text": "We deliver innovative business solutions that drive growth and transform organizations for the digital age.",
+        "footer_email": "hello@company.com",
+        "footer_phone": "+1 (555) 123-4567",
+        "footer_address": "123 Business Ave, Suite 100\nNew York, NY 10001",
+        "social_linkedin": "#",
+        "social_twitter": "#",
+        "social_facebook": "#"
+    },
+    "templates": {
+        "home": {
+            "name": "Home",
+            "file": "home.php"
+        },
+        "page": {
+            "name": "Page",
+            "file": "page.php"
+        },
+        "404": {
+            "name": "404 Not Found",
+            "file": "404.php"
+        }
+    }
+}
