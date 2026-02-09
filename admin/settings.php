@@ -14,7 +14,7 @@ csrf_boot('admin');
 require_once __DIR__ . '/includes/permissions.php';
 cms_require_admin_role();
 require_once CMS_ROOT . '/core/settings_general.php';
-require_once CMS_ROOT . '/admin/models/settingsmodel.php';
+require_once CMS_ROOT . '/models/settingsmodel.php';
 
 function esc($s) { return htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8'); }
 

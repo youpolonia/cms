@@ -8,7 +8,7 @@ if (!defined('CMS_ROOT')) {
     define('CMS_ROOT', realpath(__DIR__ . '/../..'));
 }
 
-require_once CMS_ROOT . '/core/Database.php';
+require_once CMS_ROOT . '/core/database.php';
 
 try {
     $db = \core\Database::connection();

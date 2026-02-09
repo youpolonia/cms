@@ -13,7 +13,7 @@ class AnalyticsController
 
     public function __construct()
     {
-        require_once CMS_ROOT . '/services/analyticsservice.php';
+        if (file_exists(CMS_ROOT . '/services/analyticsservice.php')) { require_once CMS_ROOT . '/services/analyticsservice.php'; }
         $pdo = db();
         $tenantId = Session::get('tenant_id');
         $this->service = new \AnalyticsService($pdo, $tenantId ? (int)$tenantId : null);
