@@ -156,14 +156,14 @@ class Router {
         }
 
         // Debug output
-        error_log("Router::findRoute - Method: $method, Path: $path");
-        error_log("Available routes for $method: " . json_encode(array_keys(self::$routes[$method] ?? [])));
+        // error_log("Router::findRoute - Method: $method, Path: $path");
+        // error_log("Available routes for $method: " . json_encode(array_keys(self::$routes[$method] ?? [])));
 
         foreach (self::$routes[$method] ?? [] as $routePath => $route) {
-            error_log("Trying to match route: $routePath");
+            // error_log("Trying to match route: $routePath");
             $params = self::matchPath($routePath, $path, $route['paramTypes']);
             if ($params !== null) {
-                error_log("Route matched: $routePath");
+                // error_log("Route matched: $routePath");
                 $route['params'] = $params;
                 
                 if (self::$cacheEnabled) {
@@ -174,23 +174,23 @@ class Router {
             }
         }
 
-        error_log("No route found for $method $path");
+        // error_log("No route found for $method $path");
         return null;
     }
 
     private static function matchPath(string $routePath, string $path, array $paramTypes): ?array {
         // For exact match of root path
         if ($routePath === '/' && $path === '/') {
-            error_log("Exact match for root path");
+            // error_log("Exact match for root path");
             return [];
         }
         
         $pattern = '#^' . preg_replace('/\{([^}]+)\}/', '(?<$1>[^/]+)', $routePath) . '$#';
         
-        error_log("Matching path: '$path' against pattern: '$pattern'");
+        // error_log("Matching path: '$path' against pattern: '$pattern'");
         
         if (preg_match($pattern, $path, $matches)) {
-            error_log("Match found! Matches: " . json_encode($matches));
+            // error_log("Match found! Matches: " . json_encode($matches));
             $params = [];
             foreach ($matches as $key => $value) {
                 if (is_string($key) && isset($paramTypes[$key])) {
@@ -203,7 +203,7 @@ class Router {
             return $params;
         }
 
-        error_log("No match found for pattern: $pattern");
+        // error_log("No match found for pattern: $pattern");
         return null;
     }
 

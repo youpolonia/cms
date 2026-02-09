@@ -9,14 +9,16 @@ use Core\Session;
 
 class AnalyticsController
 {
-    private \AnalyticsService $service;
+    private ?\AnalyticsService $service = null;
 
     public function __construct()
     {
-        if (file_exists(CMS_ROOT . '/services/analyticsservice.php')) { require_once CMS_ROOT . '/services/analyticsservice.php'; }
-        $pdo = db();
-        $tenantId = Session::get('tenant_id');
-        $this->service = new \AnalyticsService($pdo, $tenantId ? (int)$tenantId : null);
+        if (file_exists(CMS_ROOT . '/services/analyticsservice.php')) {
+            require_once CMS_ROOT . '/services/analyticsservice.php';
+            $pdo = db();
+            $tenantId = Session::get('tenant_id');
+            $this->service = new \AnalyticsService($pdo, $tenantId ? (int)$tenantId : null);
+        }
     }
 
     public function index(Request $request): void
@@ -28,7 +30,7 @@ class AnalyticsController
             $period = '7d';
         }
 
-        $data = $this->service->getDashboardData($period);
+        $data = $this->service ? $this->service->getDashboardData($period) : ['pageviews'=>[],'top_pages'=>[],'summary'=>['total_views'=>0,'unique_visitors'=>0,'total_sessions'=>0,'avg_duration'=>0]];
 
         render('admin/analytics/index', [
             'period' => $period,
@@ -44,7 +46,7 @@ class AnalyticsController
         header('Content-Type: application/json');
 
         try {
-            $stats = $this->service->getRealTimeStats();
+            $stats = $this->service ? $this->service->getRealTimeStats() : [];
             echo json_encode(['success' => true, 'data' => $stats]);
         } catch (\Exception $e) {
             http_response_code(500);
@@ -65,7 +67,7 @@ class AnalyticsController
             $endDate = date('Y-m-d');
         }
 
-        $report = $this->service->generateReport($startDate, $endDate);
+        $report = $this->service ? $this->service->generateReport($startDate, $endDate) : ['summary'=>['total_views'=>0,'unique_visitors'=>0,'total_sessions'=>0,'avg_duration'=>0],'top_pages'=>[]];
 
         header('Content-Type: text/csv; charset=utf-8');
         header('Content-Disposition: attachment; filename="analytics_' . $startDate . '_' . $endDate . '.csv"');

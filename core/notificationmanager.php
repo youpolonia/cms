@@ -77,4 +77,55 @@ class NotificationManager {
             return false;
         }
     }
+
+    /**
+     * Get queued notifications (all for current admin user)
+     */
+    public static function getQueuedNotifications(): array {
+        $userId = (int)($_SESSION["admin_id"] ?? 0);
+        if (!$userId) return [];
+        
+        $all = self::getAll($userId);
+        // Add type/read/timestamp fields expected by controller
+        return array_map(function($n) {
+            return [
+                "id" => $n["id"],
+                "type" => $n["type"] ?? "info",
+                "message" => $n["message"] ?? "",
+                "read" => !empty($n["is_read"]),
+                "timestamp" => strtotime($n["created_at"] ?? "now"),
+                "created_at" => $n["created_at"] ?? null,
+            ];
+        }, $all);
+    }
+
+    /**
+     * Mark all notifications as read for current admin
+     */
+    public static function markAllAsRead(): bool {
+        self::initDB();
+        $userId = (int)($_SESSION["admin_id"] ?? 0);
+        if (!$userId) return false;
+        try {
+            $stmt = self::$db->prepare("UPDATE notifications SET is_read = 1, updated_at = NOW() WHERE user_id = ? AND is_read = 0");
+            return $stmt->execute([$userId]);
+        } catch (\PDOException $e) {
+            error_log("markAllAsRead failed: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Delete a notification by id
+     */
+    public static function deleteNotification(string $id): bool {
+        self::initDB();
+        try {
+            $stmt = self::$db->prepare("DELETE FROM notifications WHERE id = ?");
+            return $stmt->execute([(int)$id]);
+        } catch (\PDOException $e) {
+            error_log("deleteNotification failed: " . $e->getMessage());
+            return false;
+        }
+    }
 }
