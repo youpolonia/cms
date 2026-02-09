@@ -1,0 +1,162 @@
+{
+    "settings": {
+        "site_name": "Lens & Light"
+    },
+    "pages": [
+        {
+            "slug": "home",
+            "title": "Home",
+            "template": "default",
+            "content": "",
+            "meta_title": "Lens & Light — Fine Art & Commercial Photography",
+            "meta_description": "Fine art and commercial photography by award-winning photographer. Available for commissions worldwide."
+        },
+        {
+            "slug": "about",
+            "title": "About",
+            "content": "<h2>About</h2><p>I'm a photographer based in Brooklyn, New York. My work explores the intersection of light, form, and human emotion. Over the past decade, I've had the privilege of working with editorial clients, galleries, and private collectors worldwide.</p><p>My approach is patient and observational. I believe the best photographs aren't taken — they're discovered. Whether working in the studio or on location, I seek moments of authentic beauty and quiet power.</p><p>My work has been featured in The New York Times, Vogue, National Geographic, and exhibited at galleries in New York, London, Paris, and Tokyo.</p>",
+            "meta_title": "About — Lens & Light"
+        },
+        {
+            "slug": "work",
+            "title": "Work",
+            "content": "<h2>Selected Work</h2><p>A curated selection of recent projects spanning portraiture, landscape, architecture, and still life. Each series represents months of careful observation and refinement.</p>",
+            "meta_title": "Work — Lens & Light"
+        },
+        {
+            "slug": "gallery",
+            "title": "Gallery",
+            "template": "gallery",
+            "content": "",
+            "meta_title": "Gallery — Lens & Light"
+        },
+        {
+            "slug": "journal",
+            "title": "Journal",
+            "content": "<p>Thoughts on photography, process, and the creative life.</p>",
+            "meta_title": "Journal — Lens & Light"
+        },
+        {
+            "slug": "prints",
+            "title": "Prints",
+            "content": "<h2>Fine Art Prints</h2><p>Limited edition archival prints are available for select works. Each print is produced on museum-grade paper, hand-signed and numbered.</p><p><strong>Sizes:</strong> 16×20\", 24×30\", 40×50\"<br><strong>Editions:</strong> Limited to 25 per image<br><strong>Pricing:</strong> From $800</p><p>For inquiries about prints and commissions, please contact the studio.</p>",
+            "meta_title": "Prints — Lens & Light"
+        },
+        {
+            "slug": "contact",
+            "title": "Contact",
+            "content": "<h2>Let's Work Together</h2><p>Available for editorial, commercial, and fine art commissions worldwide.</p><p><strong>Studio:</strong> 142 North 6th Street, Brooklyn, NY 11249<br><strong>Email:</strong> hello@lensandlight.co<br><strong>Instagram:</strong> @lensandlight</p><p>For booking and availability, please reach out at least 4 weeks in advance.</p>",
+            "meta_title": "Contact — Lens & Light"
+        }
+    ],
+    "articles": [
+        {
+            "slug": "chiaroscuro-portraits",
+            "title": "Chiaroscuro: A Portrait Series",
+            "content": "<p>This series explores the dramatic interplay of light and shadow in portraiture, inspired by the Old Masters. Shot entirely with natural window light over six months in my Brooklyn studio.</p><p>Each subject was asked to sit in silence for ten minutes before we began. The resulting images capture something beyond expression — a quality of presence that only emerges in stillness.</p>",
+            "excerpt": "Exploring the dramatic interplay of light and shadow in natural-light portraiture."
+        },
+        {
+            "slug": "between-tides",
+            "title": "Between Tides: Seascapes at Dawn",
+            "content": "<p>For this series, I spent three months on the coast of Maine, rising before dawn each morning to photograph the ocean in its most intimate moments. The resulting images blur the line between photography and painting.</p>",
+            "excerpt": "Three months on the Maine coast, capturing the ocean at its most intimate."
+        },
+        {
+            "slug": "still-interiors",
+            "title": "Still: Empty Interiors",
+            "content": "<p>Abandoned spaces hold a particular kind of beauty. This ongoing series documents empty interiors — churches, theaters, homes — capturing the traces of human presence that linger after departure.</p>",
+            "excerpt": "Documenting the haunting beauty of abandoned interiors and the traces they hold."
+        },
+        {
+            "slug": "form-and-function",
+            "title": "Form & Function: Architecture in Abstract",
+            "content": "<p>By isolating geometric elements of modern architecture — a curve, a line, a shadow — this series transforms buildings into abstract compositions that exist somewhere between photography and minimalist art.</p>",
+            "excerpt": "Transforming modern architecture into abstract minimalist compositions."
+        }
+    ],
+    "menu": [
+        {
+            "title": "Home",
+            "page_slug": "home"
+        },
+        {
+            "title": "About",
+            "page_slug": "about"
+        },
+        {
+            "title": "Work",
+            "page_slug": "work"
+        },
+        {
+            "title": "Gallery",
+            "page_slug": "gallery"
+        },
+        {
+            "title": "Journal",
+            "page_slug": "journal"
+        },
+        {
+            "title": "Contact",
+            "page_slug": "contact"
+        }
+    ],
+    "galleries": [
+        {
+            "name": "Selected Works",
+            "slug": "starter-photography-gallery",
+            "description": "A curated selection of fine art and commercial photography",
+            "display_template": "justified",
+            "images": [
+                {
+                    "filename": "demo_starter-photography_1.jpg",
+                    "original_name": "demo_starter-photography_1.jpg",
+                    "title": "Artistic portrait of a man with a glitter-covered face and shoulders, emphasizing texture and light.",
+                    "caption": "Photo by atelier Moss"
+                },
+                {
+                    "filename": "demo_starter-photography_2.jpg",
+                    "original_name": "demo_starter-photography_2.jpg",
+                    "title": "Artistic black and white portrait focusing on tribal face paint and accessories.",
+                    "caption": "Photo by atelier Moss"
+                },
+                {
+                    "filename": "demo_starter-photography_3.jpg",
+                    "original_name": "demo_starter-photography_3.jpg",
+                    "title": "A tranquil sunset over the ocean with silhouetted rocks against a vivid sky.",
+                    "caption": "Photo by Peter Xie"
+                },
+                {
+                    "filename": "demo_starter-photography_4.jpg",
+                    "original_name": "demo_starter-photography_4.jpg",
+                    "title": "Peaceful sunset over a tranquil beach with dramatic clouds and calm sea waves.",
+                    "caption": "Photo by Peter Xie"
+                },
+                {
+                    "filename": "demo_starter-photography_5.jpg",
+                    "original_name": "demo_starter-photography_5.jpg",
+                    "title": "Minimalist interior featuring a white chair, wooden ladder, and snake plant by a window.",
+                    "caption": "Photo by Andrew Neel"
+                },
+                {
+                    "filename": "demo_starter-photography_6.jpg",
+                    "original_name": "demo_starter-photography_6.jpg",
+                    "title": "Sleek modern building facade with minimalist geometric design in Basel, Switzerland.",
+                    "caption": "Photo by Tarik Haiga"
+                },
+                {
+                    "filename": "demo_starter-photography_7.jpg",
+                    "original_name": "demo_starter-photography_7.jpg",
+                    "title": "A rustic Chiapas breakfast setting with artisanal ceramics and globe.",
+                    "caption": "Photo by Sergio Arreola"
+                },
+                {
+                    "filename": "demo_starter-photography_8.jpg",
+                    "original_name": "demo_starter-photography_8.jpg",
+                    "title": "Rustic handcrafted pottery set with a decorated cake on a vintage table setting, Chiapas, Mexico.",
+                    "caption": "Photo by Sergio Arreola"
+                }
+            ]
+        }
+    ]
+}

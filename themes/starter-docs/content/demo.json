@@ -1,0 +1,162 @@
+{
+    "settings": {
+        "site_name": "KnowledgeBase"
+    },
+    "pages": [
+        {
+            "slug": "home",
+            "title": "Home",
+            "template": "default",
+            "content": "",
+            "meta_title": "KnowledgeBase — Documentation & Guides",
+            "meta_description": "Comprehensive documentation, guides, and tutorials for our platform."
+        },
+        {
+            "slug": "about",
+            "title": "About",
+            "content": "<h2>About KnowledgeBase</h2><p>KnowledgeBase is the documentation platform for modern software teams. We provide comprehensive guides, API references, and tutorials to help developers build amazing products.</p><p>Our documentation is written by engineers, for engineers. Every guide includes working code examples, common pitfalls, and best practices drawn from real-world experience.</p>",
+            "meta_title": "About — KnowledgeBase"
+        },
+        {
+            "slug": "getting-started",
+            "title": "Getting Started",
+            "content": "<h2>Quick Start Guide</h2><p>Get up and running in under 5 minutes with this step-by-step guide.</p><h3>Step 1: Installation</h3><p>Install the CLI tool using npm:</p><pre><code>npm install -g knowledgebase-cli</code></pre><h3>Step 2: Initialize</h3><p>Create a new project in your working directory:</p><pre><code>kb init my-docs\\ncd my-docs</code></pre><h3>Step 3: Configure</h3><p>Edit the <code>kb.config.json</code> file with your project details.</p><h3>Step 4: Deploy</h3><p>Push to production with a single command:</p><pre><code>kb deploy --production</code></pre><p>That's it! Your documentation is now live.</p>",
+            "meta_title": "Getting Started — KnowledgeBase"
+        },
+        {
+            "slug": "api-reference",
+            "title": "API Reference",
+            "content": "<h2>REST API Reference</h2><p>Our REST API allows you to programmatically manage your documentation, users, and integrations.</p><h3>Authentication</h3><p>All API requests require a Bearer token:</p><pre><code>Authorization: Bearer YOUR_API_KEY</code></pre><h3>Base URL</h3><pre><code>https://api.knowledgebase.dev/v2</code></pre><h3>Endpoints</h3><p><strong>GET /docs</strong> — List all documents<br><strong>POST /docs</strong> — Create a document<br><strong>GET /docs/:id</strong> — Get a document<br><strong>PUT /docs/:id</strong> — Update a document<br><strong>DELETE /docs/:id</strong> — Delete a document</p><h3>Rate Limits</h3><p>Free tier: 100 requests/minute. Pro: 1,000 requests/minute. Enterprise: Custom.</p>",
+            "meta_title": "API Reference — KnowledgeBase"
+        },
+        {
+            "slug": "gallery",
+            "title": "Resources",
+            "template": "gallery",
+            "content": "",
+            "meta_title": "Resources — KnowledgeBase"
+        },
+        {
+            "slug": "faq",
+            "title": "FAQ",
+            "content": "<h2>Frequently Asked Questions</h2><h3>Is KnowledgeBase free?</h3><p>Yes! Our free tier includes unlimited public docs, 3 team members, and community support.</p><h3>Can I use my own domain?</h3><p>Absolutely. Custom domains are available on Pro and Enterprise plans.</p><h3>What about versioning?</h3><p>We support full document versioning with diff tracking, branching, and rollback capabilities.</p><h3>Is there an API?</h3><p>Yes, our REST API gives you full programmatic access. See our <a href=\"/api-reference\">API Reference</a>.</p><h3>How do I migrate from other platforms?</h3><p>We offer one-click importers for GitBook, Notion, Confluence, and Markdown files. Contact support for custom migrations.</p>",
+            "meta_title": "FAQ — KnowledgeBase"
+        },
+        {
+            "slug": "contact",
+            "title": "Support",
+            "content": "<h2>Get Help</h2><p>Our support team is available Monday through Friday, 9am–6pm EST.</p><p><strong>Email:</strong> support@knowledgebase.dev<br><strong>Discord:</strong> discord.gg/knowledgebase<br><strong>GitHub:</strong> github.com/knowledgebase</p><p><strong>Enterprise Support:</strong> Priority support with 4-hour response SLA. Contact sales@knowledgebase.dev.</p>",
+            "meta_title": "Support — KnowledgeBase"
+        }
+    ],
+    "articles": [
+        {
+            "slug": "building-great-documentation",
+            "title": "Building Great Documentation: A Practical Guide",
+            "content": "<p>Great documentation doesn't happen by accident. It requires the same rigor and intentionality as great code. Here's our framework for building docs that developers actually want to read.</p><p>Start with empathy: understand what your users are trying to accomplish, not what your product does. Structure your docs around user goals, not feature lists.</p>",
+            "excerpt": "A practical framework for building documentation that developers actually want to read."
+        },
+        {
+            "slug": "api-design-best-practices",
+            "title": "API Design Best Practices for 2026",
+            "content": "<p>REST vs GraphQL vs tRPC — the debate continues. But the truth is, great API design transcends protocol choice. Here are the universal principles that make APIs a joy to work with.</p>",
+            "excerpt": "Universal principles for designing APIs that developers love, regardless of protocol choice."
+        },
+        {
+            "slug": "docs-as-code-workflow",
+            "title": "The Docs-as-Code Workflow: A Complete Guide",
+            "content": "<p>Treating documentation like code — with version control, CI/CD, and review processes — has transformed how teams maintain technical content. Here's how to implement it.</p>",
+            "excerpt": "How to implement a docs-as-code workflow with Git, CI/CD, and automated testing."
+        },
+        {
+            "slug": "search-optimization-docs",
+            "title": "Making Your Docs Searchable: SEO and Internal Search",
+            "content": "<p>If your users can't find it, it doesn't exist. Learn how to optimize your documentation for both search engines and internal search functionality.</p>",
+            "excerpt": "Optimize documentation for both Google and internal search to help users find answers fast."
+        }
+    ],
+    "menu": [
+        {
+            "title": "Home",
+            "page_slug": "home"
+        },
+        {
+            "title": "Getting Started",
+            "page_slug": "getting-started"
+        },
+        {
+            "title": "API Reference",
+            "page_slug": "api-reference"
+        },
+        {
+            "title": "FAQ",
+            "page_slug": "faq"
+        },
+        {
+            "title": "Resources",
+            "page_slug": "gallery"
+        },
+        {
+            "title": "Support",
+            "page_slug": "contact"
+        }
+    ],
+    "galleries": [
+        {
+            "name": "Platform Overview",
+            "slug": "starter-docs-gallery",
+            "description": "Visual guide to our platform features and interface",
+            "display_template": "grid",
+            "images": [
+                {
+                    "filename": "demo_starter-docs_1.jpg",
+                    "original_name": "demo_starter-docs_1.jpg",
+                    "title": "Close-up of a computer screen displaying programming code in a dark environment.",
+                    "caption": "Photo by luis gomes"
+                },
+                {
+                    "filename": "demo_starter-docs_2.jpg",
+                    "original_name": "demo_starter-docs_2.jpg",
+                    "title": "A developer writing code on a laptop, displaying programming scripts in an office environment.",
+                    "caption": "Photo by Mikhail Nilov"
+                },
+                {
+                    "filename": "demo_starter-docs_3.jpg",
+                    "original_name": "demo_starter-docs_3.jpg",
+                    "title": "A diverse group of professionals in a creative workspace discussing ideas and planning on a whiteboard.",
+                    "caption": "Photo by Moe Magners"
+                },
+                {
+                    "filename": "demo_starter-docs_4.jpg",
+                    "original_name": "demo_starter-docs_4.jpg",
+                    "title": "Diverse team of professionals in a collaborative workspace discussing creative ideas with visual references.",
+                    "caption": "Photo by cottonbro studio"
+                },
+                {
+                    "filename": "demo_starter-docs_5.jpg",
+                    "original_name": "demo_starter-docs_5.jpg",
+                    "title": "Abstract visualization of data analytics with graphs and charts showing dynamic growth.",
+                    "caption": "Photo by Negative Space"
+                },
+                {
+                    "filename": "demo_starter-docs_6.jpg",
+                    "original_name": "demo_starter-docs_6.jpg",
+                    "title": "A close-up of a hand with a pen analyzing data on colorful bar and line charts on paper.",
+                    "caption": "Photo by Lukas Blazek"
+                },
+                {
+                    "filename": "demo_starter-docs_7.jpg",
+                    "original_name": "demo_starter-docs_7.jpg",
+                    "title": "A clean and modern desk setup featuring a computer, clock, and accessories in a home office.",
+                    "caption": "Photo by Mateusz Haberny"
+                },
+                {
+                    "filename": "demo_starter-docs_8.jpg",
+                    "original_name": "demo_starter-docs_8.jpg",
+                    "title": "Rear view of a modern height adjustable standing desk with monitor and cable management.",
+                    "caption": "Photo by Pavel Danilyuk"
+                }
+            ]
+        }
+    ]
+}

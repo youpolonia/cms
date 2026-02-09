@@ -1,0 +1,174 @@
+{
+    "settings": {
+        "site_name": "The Daily Muse"
+    },
+    "pages": [
+        {
+            "slug": "home",
+            "title": "Home",
+            "template": "default",
+            "content": "<p>Welcome to The Daily Muse — independent journalism covering technology, culture, science, and the arts.</p>",
+            "meta_title": "The Daily Muse — Independent Journalism",
+            "meta_description": "Award-winning independent journalism covering technology, culture, science, and the arts."
+        },
+        {
+            "slug": "about",
+            "title": "About Us",
+            "content": "<h2>Our Story</h2><p>Founded in 2020, The Daily Muse is an independent digital publication committed to thoughtful, in-depth journalism. We believe in stories that matter — pieces that inform, challenge, and inspire our readers.</p><h2>Our Mission</h2><p>In an era of information overload, we focus on quality over quantity. Every article we publish undergoes rigorous editorial review, fact-checking, and thoughtful editing. We don't chase clicks — we chase truth.</p><h2>Editorial Standards</h2><p>We maintain strict editorial independence. Our journalists follow a comprehensive code of ethics, and we clearly label opinion content, sponsored posts, and partnerships. Transparency is the foundation of trust.</p>",
+            "meta_title": "About Us — The Daily Muse"
+        },
+        {
+            "slug": "editorial-team",
+            "title": "Editorial Team",
+            "content": "<h2>Meet Our Team</h2><p>Our editorial team brings together experienced journalists from leading publications worldwide. With expertise spanning technology, science, culture, and the arts, we deliver comprehensive coverage that connects the dots between disciplines.</p><p><strong>Editor-in-Chief:</strong> Alexandra Reed — 15 years in investigative journalism, formerly at The Guardian and Wired.</p><p><strong>Tech Editor:</strong> James Liu — Former senior writer at TechCrunch, specializing in AI and emerging technologies.</p><p><strong>Culture Editor:</strong> Sofia Hernandez — Award-winning arts critic and cultural commentator.</p><p><strong>Science Editor:</strong> Dr. Michael Torres — PhD in Physics, science communicator and author.</p>",
+            "meta_title": "Our Editorial Team"
+        },
+        {
+            "slug": "opinion",
+            "title": "Opinion",
+            "content": "<h2>Opinion & Analysis</h2><p>Our opinion section features thought-provoking perspectives from leading voices across industries. While our news coverage maintains strict neutrality, our opinion pieces are clearly labeled and represent the views of their individual authors.</p><p>We welcome diverse viewpoints and encourage constructive debate. If you'd like to contribute, reach out to our editorial team.</p>",
+            "meta_title": "Opinion — The Daily Muse"
+        },
+        {
+            "slug": "gallery",
+            "title": "Photo Stories",
+            "template": "gallery",
+            "content": "",
+            "meta_title": "Photo Stories — The Daily Muse"
+        },
+        {
+            "slug": "subscribe",
+            "title": "Subscribe",
+            "content": "<h2>Stay Informed</h2><p>Get the best of The Daily Muse delivered directly to your inbox. Our weekly newsletter curates the most important stories, exclusive interviews, and editorial picks you won't find anywhere else.</p><h2>What You'll Get</h2><p>📰 Weekly digest of top stories<br>🎯 Exclusive interviews and deep dives<br>📊 Data-driven analysis and infographics<br>🎨 Cultural picks and reviews</p><p>No spam, no fluff. Just quality journalism, once a week.</p>",
+            "meta_title": "Subscribe — The Daily Muse"
+        },
+        {
+            "slug": "contact",
+            "title": "Contact",
+            "content": "<h2>Get In Touch</h2><p>We'd love to hear from you. Whether you have a news tip, feedback, or a story pitch, our editorial team is always listening.</p><p><strong>General Inquiries:</strong> hello@thedailymuse.com<br><strong>News Tips:</strong> tips@thedailymuse.com<br><strong>Advertising:</strong> ads@thedailymuse.com</p><p><strong>Office:</strong> 42 Fleet Street, London EC4Y 1BT, United Kingdom</p>",
+            "meta_title": "Contact — The Daily Muse"
+        }
+    ],
+    "articles": [
+        {
+            "slug": "ai-revolution-creative-industries",
+            "title": "The AI Revolution Is Reshaping Creative Industries — And Artists Are Fighting Back",
+            "content": "<p>As artificial intelligence tools become increasingly sophisticated, creative professionals face an existential reckoning. From illustration to music composition, AI-generated content is flooding the market, raising urgent questions about authorship, copyright, and the very definition of creativity.</p><p>The tension between technological progress and artistic integrity has reached a tipping point. Major studios are quietly adopting AI tools while artists organize protests and legal challenges. The outcome will define the creative landscape for decades to come.</p><p>\"We're not anti-technology,\" says Maria Santos, president of the Illustrators Guild. \"We're pro-human. There's a difference between a tool that assists creativity and one that replaces it.\"</p>",
+            "excerpt": "As AI tools flood the creative market, artists are organizing to protect human artistry and redefine the boundaries of copyright."
+        },
+        {
+            "slug": "quantum-computing-breakthrough-2026",
+            "title": "Scientists Achieve Room-Temperature Quantum Computing Breakthrough",
+            "content": "<p>In a development that could reshape the technology landscape, researchers at MIT have demonstrated a quantum processor that operates reliably at room temperature — a milestone long considered decades away.</p><p>The breakthrough, published this week in Nature, eliminates one of the biggest obstacles to practical quantum computing: the need for extreme cooling to near absolute zero. The implications for drug discovery, cryptography, and artificial intelligence are staggering.</p><p>\"This changes everything,\" said Dr. Elena Vasquez, lead researcher. \"We've moved quantum computing from the realm of specialized laboratories into potentially everyday applications.\"</p>",
+            "excerpt": "MIT researchers demonstrate a quantum processor that works at room temperature, potentially revolutionizing computing as we know it."
+        },
+        {
+            "slug": "remote-work-cities-transformation",
+            "title": "How Remote Work Is Quietly Transforming Small-Town America",
+            "content": "<p>Three years into the remote work revolution, the real story isn't about Silicon Valley emptying out — it's about what's filling in. Small towns across America are experiencing an unexpected renaissance as knowledge workers trade cramped apartments for spacious homes in communities hungry for economic revitalization.</p><p>In Bentonville, Arkansas, the population of remote tech workers has tripled since 2023. Local restaurants are booming, housing starts are up 40%, and the school system just hired 15 new teachers.</p><p>\"We went from losing young people to attracting them,\" says Mayor Lisa Thompson. \"The fiber internet investment we made five years ago turned out to be the best economic development decision in our history.\"</p>",
+            "excerpt": "Small towns across America are experiencing an economic renaissance as remote workers trade big cities for community-rich living."
+        },
+        {
+            "slug": "ocean-plastic-cleanup-technology",
+            "title": "New Autonomous Drone Fleet Could Clean 90% of Ocean Plastic by 2030",
+            "content": "<p>A Dutch engineering startup has unveiled a fleet of solar-powered autonomous drones capable of collecting ocean plastic at an unprecedented scale. The OceanSweep system, which deploys 500 coordinated drones across a designated zone, can process 50 tons of plastic waste per day.</p><p>Early tests in the Great Pacific Garbage Patch showed remarkable results: a single fleet cleared 12 square kilometers in just 48 hours, collecting everything from microplastics to abandoned fishing nets.</p>",
+            "excerpt": "Solar-powered autonomous drones demonstrate the ability to collect 50 tons of ocean plastic per day in early trials."
+        },
+        {
+            "slug": "revival-vinyl-records-gen-z",
+            "title": "The Unexpected Revival: Why Gen Z Is Driving Vinyl Record Sales to Record Highs",
+            "content": "<p>For the third consecutive year, vinyl record sales have set new records — and the driving force isn't nostalgic baby boomers. It's Gen Z. Listeners born after 2000 now account for 42% of all vinyl purchases, according to new industry data.</p><p>The appeal goes beyond audio quality. For a generation raised on ephemeral digital streams, physical media offers something tangible — an object to hold, art to display, and an experience to share.</p>",
+            "excerpt": "Gen Z now accounts for 42% of vinyl record purchases as young listeners seek tangible alternatives to digital streaming."
+        },
+        {
+            "slug": "urban-farming-vertical-revolution",
+            "title": "Inside the Vertical Farms Feeding 10,000 Families in Downtown Detroit",
+            "content": "<p>In a converted automotive factory on Michigan Avenue, rows of leafy greens stretch upward through 14 stories of LED-lit growing racks. This is FreshStack Detroit, the largest urban vertical farm in North America, and it's changing how a city thinks about food.</p><p>Since opening 18 months ago, FreshStack has produced over 2 million pounds of produce — all within city limits, using 95% less water than traditional farming and zero pesticides.</p>",
+            "excerpt": "A converted auto factory in Detroit is now North America's largest vertical farm, producing 2 million pounds of pesticide-free produce."
+        }
+    ],
+    "menu": [
+        {
+            "title": "Home",
+            "page_slug": "home"
+        },
+        {
+            "title": "About",
+            "page_slug": "about"
+        },
+        {
+            "title": "Opinion",
+            "page_slug": "opinion"
+        },
+        {
+            "title": "Gallery",
+            "page_slug": "gallery"
+        },
+        {
+            "title": "Subscribe",
+            "page_slug": "subscribe"
+        },
+        {
+            "title": "Contact",
+            "page_slug": "contact"
+        }
+    ],
+    "galleries": [
+        {
+            "name": "Photo Stories",
+            "slug": "starter-magazine-gallery",
+            "description": "Compelling visual stories from our editorial team",
+            "display_template": "masonry",
+            "images": [
+                {
+                    "filename": "demo_starter-magazine_1.jpg",
+                    "original_name": "demo_starter-magazine_1.jpg",
+                    "title": "A close-up image of folded newspapers, perfect for news or journalism themes.",
+                    "caption": "Photo by Pixabay"
+                },
+                {
+                    "filename": "demo_starter-magazine_2.jpg",
+                    "original_name": "demo_starter-magazine_2.jpg",
+                    "title": "A detailed close-up view of stacked newspapers, highlighting textures and layers.",
+                    "caption": "Photo by Mike van Schoonderwalt"
+                },
+                {
+                    "filename": "demo_starter-magazine_3.jpg",
+                    "original_name": "demo_starter-magazine_3.jpg",
+                    "title": "Classic orange hatchback car parked outdoors on a wet street in Tokyo, Japan.",
+                    "caption": "Photo by yuki kiki"
+                },
+                {
+                    "filename": "demo_starter-magazine_4.jpg",
+                    "original_name": "demo_starter-magazine_4.jpg",
+                    "title": "A vibrant cityscape of Yerevan, Armenia, showcasing its bustling streets and urban architecture.",
+                    "caption": "Photo by Van Mailian"
+                },
+                {
+                    "filename": "demo_starter-magazine_5.jpg",
+                    "original_name": "demo_starter-magazine_5.jpg",
+                    "title": "Elegant portrait of a woman with dramatic makeup and red hair, captured indoors.",
+                    "caption": "Photo by Beatrice Rossi Prudente"
+                },
+                {
+                    "filename": "demo_starter-magazine_6.jpg",
+                    "original_name": "demo_starter-magazine_6.jpg",
+                    "title": "A woman elegantly poses in traditional attire at Siwa Oasis, Egypt.",
+                    "caption": "Photo by Amr Osman"
+                },
+                {
+                    "filename": "demo_starter-magazine_7.jpg",
+                    "original_name": "demo_starter-magazine_7.jpg",
+                    "title": "A picturesque narrow street lined with shops and a motorcyclist in an urban setting.",
+                    "caption": "Photo by Alex Ravvas"
+                },
+                {
+                    "filename": "demo_starter-magazine_8.jpg",
+                    "original_name": "demo_starter-magazine_8.jpg",
+                    "title": "Black and white photo of pigeons on a rooftop in Buenos Aires, creating a moody city atmosphere.",
+                    "caption": "Photo by Alex Dos Santos"
+                }
+            ]
+        }
+    ]
+}

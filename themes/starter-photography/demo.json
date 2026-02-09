@@ -1,0 +1,153 @@
+{
+    "pages": [
+        {
+            "title": "Home",
+            "slug": "home",
+            "template": "home",
+            "is_homepage": true,
+            "content": "",
+            "seo_title": "Lens & Light — Photography Portfolio",
+            "seo_description": "Fine art and documentary photography exploring the space between darkness and illumination."
+        },
+        {
+            "title": "About",
+            "slug": "about",
+            "template": "page",
+            "content": "<h2>The Photographer</h2><p>With over a decade behind the lens, I've dedicated my career to finding beauty in the overlooked — the interplay of shadow and light, the quiet drama of everyday moments, and the raw emotion of human connection.</p><p>My work spans editorial portraiture, fine art landscapes, and documentary projects across five continents. Each frame is guided by a simple philosophy: <em>show the world as it deserves to be seen.</em></p><h2>Approach</h2><p>I work primarily with natural light, preferring the honesty it brings to every subject. Whether it's a portrait session in a dimly lit studio or a landscape shoot at golden hour, I chase the moments that feel both fleeting and eternal.</p><p>Every project begins with a conversation — understanding your vision, your story, the emotion you want to convey. From there, I disappear behind the camera and let the magic happen.</p><h2>Recognition</h2><p>Featured in The Guardian, National Geographic Traveller, British Journal of Photography, and Vogue Italia. Winner of the Sony World Photography Award (Open Category, 2023).</p>",
+            "seo_title": "About — Lens & Light",
+            "seo_description": "Learn about the photographer behind Lens & Light — a decade of capturing shadow and light."
+        },
+        {
+            "title": "Work",
+            "slug": "work",
+            "template": "articles",
+            "content": "",
+            "seo_title": "Work — Lens & Light",
+            "seo_description": "Selected photography projects and visual stories."
+        },
+        {
+            "title": "Gallery",
+            "slug": "gallery",
+            "template": "gallery",
+            "content": "<p>A curated selection of work spanning portraiture, landscapes, architecture, and still life.</p>",
+            "seo_title": "Gallery — Lens & Light",
+            "seo_description": "Browse the full photography gallery — fine art, editorial, and commercial work."
+        },
+        {
+            "title": "Journal",
+            "slug": "journal",
+            "template": "articles",
+            "content": "",
+            "seo_title": "Journal — Lens & Light",
+            "seo_description": "Photo journal — behind the scenes, stories, and thoughts on photography."
+        },
+        {
+            "title": "Prints",
+            "slug": "prints",
+            "template": "page",
+            "content": "<h2>Limited Edition Prints</h2><p>Selected works are available as museum-quality fine art prints. Each piece is printed on archival Hahnemühle Photo Rag paper using pigment inks rated for 100+ years of lightfastness.</p><p>All prints are hand-signed, numbered, and ship worldwide in protective packaging.</p><h2>Available Sizes</h2><p><strong>Small</strong> — 30 × 40 cm, edition of 25<br><strong>Medium</strong> — 60 × 80 cm, edition of 15<br><strong>Large</strong> — 90 × 120 cm, edition of 5</p><h2>Enquire</h2><p>For pricing and availability, please <a href=\"/contact\">get in touch</a>. Custom sizes and framing options are available upon request.</p>",
+            "seo_title": "Prints — Lens & Light",
+            "seo_description": "Limited edition fine art photography prints — hand-signed, museum-quality."
+        },
+        {
+            "title": "Contact",
+            "slug": "contact",
+            "template": "page",
+            "content": "<h2>Get in Touch</h2><p>Available for commissions, collaborations, editorial assignments, and print enquiries.</p><p>Whether you have a specific project in mind or just want to say hello, I'd love to hear from you.</p><p><strong>Email:</strong> hello@lensandlight.com<br><strong>Instagram:</strong> @lensandlight<br><strong>Based in:</strong> London, UK — Available worldwide</p><p>For print orders, please include the work title and desired size in your message.</p>",
+            "seo_title": "Contact — Lens & Light",
+            "seo_description": "Get in touch for photography commissions, collaborations, and print enquiries."
+        }
+    ],
+    "articles": [
+        {
+            "title": "Chiaroscuro — A Portrait Series",
+            "slug": "chiaroscuro-portrait-series",
+            "content": "<p>This series explores the Renaissance technique of chiaroscuro — the dramatic interplay of light and dark — applied to contemporary portraiture.</p><p>Shot over six months in a converted warehouse studio, each subject was lit using a single source: sometimes a bare bulb, sometimes filtered daylight through industrial windows. The goal was to strip away everything except the essential relationship between the human face and light itself.</p><p>The results speak to something timeless. Without colour, without context, what remains is expression — the architecture of a face revealed through shadow.</p><blockquote>\"In darkness, we find what light alone cannot reveal.\"</blockquote><p>The series was exhibited at The Photographers' Gallery, London, and published in the British Journal of Photography's annual edition.</p>",
+            "featured_image": "demo_starter-photography_1.jpg",
+            "seo_title": "Chiaroscuro — A Portrait Series | Lens & Light",
+            "seo_description": "Exploring the dramatic interplay of light and dark in contemporary portraiture."
+        },
+        {
+            "title": "Between Tides — Seascape Studies",
+            "slug": "between-tides-seascape-studies",
+            "content": "<p>The coast at dusk holds a particular kind of silence. It's not the absence of sound — the waves are always there — but a quieting of the mind that comes from watching the horizon dissolve into colour.</p><p>This ongoing project documents the coastlines of Portugal, Iceland, and western Scotland during the golden and blue hours. Using long exposures and minimal post-processing, these images aim to capture the meditative quality of the sea at its most still.</p><p>Each frame required patience: sometimes hours of waiting for the right cloud formation, the right swell, the right quality of light. Photography as meditation.</p><blockquote>\"The sea is everything. It covers seven-tenths of the terrestrial globe.\"</blockquote><p>Selected images from this series are available as limited edition prints.</p>",
+            "featured_image": "demo_starter-photography_3.jpg",
+            "seo_title": "Between Tides — Seascape Studies | Lens & Light",
+            "seo_description": "Long-exposure seascape studies from the coastlines of Portugal, Iceland, and Scotland."
+        },
+        {
+            "title": "Still — Minimal Interiors",
+            "slug": "still-minimal-interiors",
+            "content": "<p>There's a quiet beauty in the spaces we inhabit. This series turns the lens inward — literally — documenting interiors stripped to their essence. A chair by a window. A plant reaching toward light. The geometry of a staircase.</p><p>Shot in homes, studios, and galleries across Scandinavia and Japan, these images celebrate the philosophy of 'less as more.' Every object in frame is there for a reason; every negative space serves the composition.</p><p>The palette is deliberately restrained: whites, creams, pale wood, the occasional dark accent. It's photography that whispers rather than shouts.</p><p>Inspired by the Japanese concept of <em>ma</em> (間) — the meaningful space between things — this work invites the viewer to slow down and find beauty in simplicity.</p>",
+            "featured_image": "demo_starter-photography_5.jpg",
+            "seo_title": "Still — Minimal Interiors | Lens & Light",
+            "seo_description": "Minimal interior photography celebrating quiet beauty and the spaces between things."
+        },
+        {
+            "title": "Form & Function — Architectural Studies",
+            "slug": "form-function-architectural-studies",
+            "content": "<p>Architecture is frozen music, and photographing it is about finding the rhythm. This project examines modernist and contemporary buildings through an abstract lens — reducing structures to their fundamental elements of line, form, light, and shadow.</p><p>From the brutalist concrete of London's Barbican to the sleek glass of Basel's Novartis campus, each image isolates a detail that reveals something about the building's character. A corner. A reflection. The way light falls across a facade at a specific time of day.</p><p>These aren't architectural photographs in the traditional sense — there are no establishing shots, no context. Instead, they're meditations on geometry and the human impulse to impose order on space.</p><blockquote>\"Architecture is the learned game, correct and magnificent, of forms assembled in the light.\"<br>— Le Corbusier</blockquote><p>Commissioned by Architectural Digest and exhibited at the Swiss Architecture Museum, Basel.</p>",
+            "featured_image": "demo_starter-photography_6.jpg",
+            "seo_title": "Form & Function — Architectural Studies | Lens & Light",
+            "seo_description": "Abstract architectural photography — modernist buildings reduced to line, form, and light."
+        }
+    ],
+    "menu": [
+        {"label": "Work", "url": "/work", "sort_order": 1},
+        {"label": "Gallery", "url": "/gallery", "sort_order": 2},
+        {"label": "Journal", "url": "/journal", "sort_order": 3},
+        {"label": "Prints", "url": "/prints", "sort_order": 4},
+        {"label": "About", "url": "/about", "sort_order": 5},
+        {"label": "Contact", "url": "/contact", "sort_order": 6}
+    ],
+    "galleries": [
+        {
+            "name": "Selected Works",
+            "slug": "selected-works",
+            "description": "A curated selection of fine art and commercial photography",
+            "display_template": "justified",
+            "images": [
+                {
+                    "filename": "demo_starter-photography_1.jpg",
+                    "title": "Artistic portrait with glitter-covered face — light and texture study",
+                    "caption": "Photo by atelier Moss"
+                },
+                {
+                    "filename": "demo_starter-photography_2.jpg",
+                    "title": "Tribal face paint portrait — black and white editorial",
+                    "caption": "Photo by atelier Moss"
+                },
+                {
+                    "filename": "demo_starter-photography_3.jpg",
+                    "title": "Sunset over ocean — silhouetted rocks against vivid sky",
+                    "caption": "Photo by Peter Xie"
+                },
+                {
+                    "filename": "demo_starter-photography_4.jpg",
+                    "title": "Peaceful sunset — dramatic clouds and calm sea waves",
+                    "caption": "Photo by Peter Xie"
+                },
+                {
+                    "filename": "demo_starter-photography_5.jpg",
+                    "title": "Minimalist interior — white chair, wooden ladder, snake plant",
+                    "caption": "Photo by Andrew Neel"
+                },
+                {
+                    "filename": "demo_starter-photography_6.jpg",
+                    "title": "Modern building facade — minimalist geometric design, Basel",
+                    "caption": "Photo by Tarik Haiga"
+                },
+                {
+                    "filename": "demo_starter-photography_7.jpg",
+                    "title": "Rustic Chiapas breakfast — artisanal ceramics and globe",
+                    "caption": "Photo by Sergio Arreola"
+                },
+                {
+                    "filename": "demo_starter-photography_8.jpg",
+                    "title": "Handcrafted pottery — decorated cake on vintage table, Chiapas",
+                    "caption": "Photo by Sergio Arreola"
+                }
+            ]
+        }
+    ]
+}

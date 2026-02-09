@@ -1,0 +1,23 @@
+{
+    "name": "The Daily Muse",
+    "slug": "starter-magazine",
+    "version": "1.0.0",
+    "author": "Jessie CMS",
+    "description": "Magazine and news theme with sidebar layout",
+    "colors": {
+        "primary": "#1a1a2e",
+        "secondary": "#e63946",
+        "accent": "#e63946",
+        "background": "#faf7f2",
+        "text": "#1a1a2e"
+    },
+    "fonts": {
+        "heading": "Crimson Pro",
+        "body": "Source Sans 3"
+    },
+    "options": {
+        "sidebar": true,
+        "topbar": true
+    },
+    "thumbnail": "screenshot.png"
+}

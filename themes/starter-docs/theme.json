@@ -1,0 +1,24 @@
+{
+  "name": "KnowledgeBase",
+  "slug": "starter-docs",
+  "version": "1.0.0",
+  "author": "Jessie CMS",
+  "description": "Documentation and knowledge base theme with sidebar navigation",
+  "colors": {
+    "primary": "#3b82f6",
+    "secondary": "#0f172a",
+    "accent": "#3b82f6",
+    "background": "#ffffff",
+    "text": "#334155"
+  },
+  "fonts": {
+    "heading": "IBM Plex Sans",
+    "body": "IBM Plex Sans",
+    "code": "JetBrains Mono"
+  },
+  "options": {
+    "sidebar": "left",
+    "search": true
+  },
+  "thumbnail": "screenshot.png"
+}

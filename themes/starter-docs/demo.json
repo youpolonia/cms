@@ -1,0 +1,152 @@
+{
+  "pages": [
+    {
+      "title": "Home",
+      "slug": "home",
+      "template": "home",
+      "is_homepage": true,
+      "content": "<p>Welcome to our documentation. Find guides, API references, and tutorials to help you build amazing things.</p>",
+      "seo_title": "Documentation — Knowledge Base",
+      "seo_description": "Comprehensive documentation, guides, and API reference for developers."
+    },
+    {
+      "title": "About",
+      "slug": "about",
+      "template": "page",
+      "content": "<h2>About This Documentation</h2><p>This knowledge base is designed to help developers and users find the information they need quickly. Our documentation covers everything from getting started guides to advanced API references.</p><h2>Our Mission</h2><p>We believe great documentation is the foundation of great software. Every feature, endpoint, and configuration option is documented with clear examples and explanations.</p><h2>Contributing</h2><p>Found an error or want to suggest an improvement? We welcome contributions from the community. Check our contribution guidelines to get started.</p>",
+      "seo_title": "About — Knowledge Base",
+      "seo_description": "Learn about our documentation and knowledge base."
+    },
+    {
+      "title": "Getting Started",
+      "slug": "getting-started",
+      "template": "page",
+      "content": "<h2>Quick Start</h2><p>Get up and running in just a few minutes. This guide covers the essential steps to set up your development environment.</p><h3>Prerequisites</h3><ul><li>PHP 8.1 or higher</li><li>Composer package manager</li><li>A supported database (MySQL, PostgreSQL, or SQLite)</li></ul><h3>Installation</h3><p>Install via Composer:</p><pre><code>composer create-project jessie/cms my-project\ncd my-project\nphp jessie serve</code></pre><h3>Configuration</h3><p>Copy the example configuration file and update your database credentials:</p><pre><code>cp config.example.php config.php</code></pre><blockquote><p><strong>Note:</strong> Make sure your web server has write permissions to the <code>uploads/</code> and <code>cache/</code> directories.</p></blockquote><h2>Next Steps</h2><p>Once installed, explore the <a href=\"/api-reference\">API Reference</a> or follow our <a href=\"/articles\">step-by-step tutorials</a>.</p>",
+      "seo_title": "Getting Started — Knowledge Base",
+      "seo_description": "Quick start guide for setting up and configuring your project."
+    },
+    {
+      "title": "API Reference",
+      "slug": "api-reference",
+      "template": "page",
+      "content": "<h2>REST API Overview</h2><p>Our API follows REST conventions and returns JSON responses. All endpoints require authentication via API key or OAuth token.</p><h3>Base URL</h3><pre><code>https://api.example.com/v1/</code></pre><h3>Authentication</h3><p>Include your API key in the request header:</p><pre><code>Authorization: Bearer YOUR_API_KEY</code></pre><h3>Endpoints</h3><table><thead><tr><th>Method</th><th>Endpoint</th><th>Description</th></tr></thead><tbody><tr><td><code>GET</code></td><td><code>/pages</code></td><td>List all pages</td></tr><tr><td><code>GET</code></td><td><code>/pages/:slug</code></td><td>Get a single page</td></tr><tr><td><code>POST</code></td><td><code>/pages</code></td><td>Create a new page</td></tr><tr><td><code>PUT</code></td><td><code>/pages/:id</code></td><td>Update a page</td></tr><tr><td><code>DELETE</code></td><td><code>/pages/:id</code></td><td>Delete a page</td></tr></tbody></table><h3>Rate Limits</h3><p>API requests are limited to <strong>100 requests per minute</strong> per API key. Rate limit headers are included in every response.</p><blockquote><p>Need higher limits? Contact our team for enterprise plans.</p></blockquote>",
+      "seo_title": "API Reference — Knowledge Base",
+      "seo_description": "Complete API reference with endpoints, authentication, and examples."
+    },
+    {
+      "title": "Resources",
+      "slug": "gallery",
+      "template": "gallery",
+      "content": "<h2>Visual Resources</h2><p>Browse our collection of screenshots, diagrams, and media assets that supplement our documentation.</p>",
+      "seo_title": "Resources — Knowledge Base",
+      "seo_description": "Visual resources, screenshots, and media assets."
+    },
+    {
+      "title": "FAQ",
+      "slug": "faq",
+      "template": "page",
+      "content": "<h2>Frequently Asked Questions</h2><h3>What are the system requirements?</h3><p>You need PHP 8.1+, a web server (Apache or Nginx), and a database. SQLite works great for small sites and development.</p><h3>How do I update to the latest version?</h3><p>Run <code>composer update</code> in your project directory. Always back up your database before updating.</p><h3>Can I use a custom domain?</h3><p>Yes! Point your domain's DNS to your server and update the configuration file with your domain name.</p><h3>How do I create custom templates?</h3><p>Create a new PHP file in your theme's <code>templates/</code> directory. The filename (without extension) becomes the template name available in the admin panel.</p><h3>Is there an API?</h3><p>Yes, we provide a full REST API. See the <a href=\"/api-reference\">API Reference</a> for complete documentation.</p><h3>Where can I get support?</h3><p>Visit our <a href=\"/contact\">Support page</a> or join our community forum for help from the team and other users.</p>",
+      "seo_title": "FAQ — Knowledge Base",
+      "seo_description": "Answers to frequently asked questions."
+    },
+    {
+      "title": "Contact & Support",
+      "slug": "contact",
+      "template": "page",
+      "content": "<h2>Get Help</h2><p>Need assistance? We're here to help. Choose the best way to reach us based on your needs.</p><h3>Community Forum</h3><p>Join thousands of developers in our community forum. Ask questions, share knowledge, and get help from experienced users.</p><h3>Documentation Issues</h3><p>Found an error in the docs? Open an issue on our GitHub repository and we'll fix it promptly.</p><h3>Enterprise Support</h3><p>For business-critical issues, our enterprise support team offers guaranteed response times and dedicated assistance.</p><blockquote><p>Before reaching out, check our <a href=\"/faq\">FAQ</a> — your question may already be answered.</p></blockquote>",
+      "seo_title": "Contact & Support — Knowledge Base",
+      "seo_description": "Get help and support for your project."
+    }
+  ],
+  "articles": [
+    {
+      "title": "Building Your First Page",
+      "slug": "building-your-first-page",
+      "category": "Getting Started",
+      "excerpt": "Learn how to create, edit, and publish your first page using the admin panel and template system.",
+      "content": "<p>In this tutorial, you'll learn how to create your first page from scratch. We'll cover the admin panel basics, content editing, and template selection.</p><h2>Step 1: Access the Admin Panel</h2><p>Navigate to <code>/admin</code> and log in with your credentials. You'll see the dashboard with quick links to common tasks.</p><h2>Step 2: Create a New Page</h2><p>Click <strong>Pages → New Page</strong> in the sidebar. Fill in the title and slug — the slug becomes the URL path for your page.</p><h2>Step 3: Add Content</h2><p>Use the content editor to add text, images, and media. The editor supports rich text formatting and raw HTML.</p><pre><code># Markdown-style content\nYou can write content using the visual editor\nor switch to HTML mode for full control.</code></pre><h2>Step 4: Choose a Template</h2><p>Select a template from the dropdown. Different templates provide different layouts and features.</p><blockquote><p><strong>Tip:</strong> Preview your page before publishing to see how it looks with the selected template.</p></blockquote><h2>Step 5: Publish</h2><p>Click <strong>Save & Publish</strong> to make your page live. You can always edit or unpublish it later.</p>"
+    },
+    {
+      "title": "Working with the REST API",
+      "slug": "working-with-rest-api",
+      "category": "API",
+      "excerpt": "A practical guide to authenticating, making requests, and handling responses from the REST API.",
+      "content": "<p>This guide walks you through making your first API request, from authentication to handling responses.</p><h2>Getting Your API Key</h2><p>Generate an API key from the admin panel under <strong>Settings → API Keys</strong>. Keep your key secure and never expose it in client-side code.</p><h2>Making Your First Request</h2><pre><code>curl -H \"Authorization: Bearer YOUR_KEY\" \\\n  https://api.example.com/v1/pages</code></pre><h2>Response Format</h2><p>All responses are JSON. Successful requests return a <code>data</code> field:</p><pre><code>{\n  \"status\": \"success\",\n  \"data\": [\n    { \"id\": 1, \"title\": \"Home\", \"slug\": \"home\" },\n    { \"id\": 2, \"title\": \"About\", \"slug\": \"about\" }\n  ]\n}</code></pre><h2>Error Handling</h2><p>Error responses include a <code>message</code> field with a human-readable description:</p><pre><code>{\n  \"status\": \"error\",\n  \"message\": \"Invalid API key\",\n  \"code\": 401\n}</code></pre><blockquote><p>Always check the HTTP status code first, then parse the response body for details.</p></blockquote>"
+    },
+    {
+      "title": "Customizing Themes",
+      "slug": "customizing-themes",
+      "category": "Themes",
+      "excerpt": "Learn how to modify existing themes or create your own from scratch with custom templates and styles.",
+      "content": "<p>Themes control the entire look and feel of your site. This guide covers theme structure, customization, and creation.</p><h2>Theme Structure</h2><p>Every theme follows the same directory structure:</p><pre><code>themes/your-theme/\n├── theme.json          # Theme metadata\n├── layout.php          # Main layout wrapper\n├── assets/\n│   ├── css/style.css   # Theme styles\n│   └── js/main.js      # Theme scripts\n├── templates/\n│   ├── home.php        # Home page template\n│   ├── page.php        # Default page template\n│   ├── article.php     # Single article\n│   └── articles.php    # Article listing\n└── demo.json           # Demo content</code></pre><h2>Customizing Colors</h2><p>Edit <code>theme.json</code> to change the color palette. CSS variables are automatically generated from these values.</p><h2>Creating Templates</h2><p>Add new PHP files to the <code>templates/</code> directory. Each template receives <code>$page</code>, <code>$content</code>, and other variables from the CMS.</p><blockquote><p>Templates are automatically discovered — no registration required.</p></blockquote>"
+    },
+    {
+      "title": "Deployment Guide",
+      "slug": "deployment-guide",
+      "category": "DevOps",
+      "excerpt": "Step-by-step instructions for deploying to production, including server configuration and optimization.",
+      "content": "<p>Ready to go live? This guide covers everything you need for a production deployment.</p><h2>Server Requirements</h2><ul><li>PHP 8.1+ with common extensions (mbstring, pdo, json)</li><li>Web server: Apache with mod_rewrite or Nginx</li><li>SSL certificate (Let's Encrypt recommended)</li><li>At least 512MB RAM</li></ul><h2>Apache Configuration</h2><pre><code>&lt;VirtualHost *:443&gt;\n  ServerName docs.example.com\n  DocumentRoot /var/www/cms/public\n  \n  &lt;Directory /var/www/cms/public&gt;\n    AllowOverride All\n    Require all granted\n  &lt;/Directory&gt;\n&lt;/VirtualHost&gt;</code></pre><h2>Performance Tips</h2><ul><li>Enable OPcache for PHP</li><li>Configure browser caching for static assets</li><li>Use a CDN for media files</li><li>Enable gzip compression</li></ul><h2>Monitoring</h2><p>Set up error logging and uptime monitoring. Check logs regularly at <code>/var/log/</code> for any issues.</p><blockquote><p><strong>Important:</strong> Always test your deployment on a staging server before going live.</p></blockquote>"
+    }
+  ],
+  "menu": [
+    { "title": "Home", "url": "/", "position": 0 },
+    { "title": "Getting Started", "url": "/getting-started", "position": 1 },
+    { "title": "API Reference", "url": "/api-reference", "position": 2 },
+    { "title": "Guides", "url": "/articles", "position": 3 },
+    { "title": "Resources", "url": "/gallery", "position": 4 },
+    { "title": "FAQ", "url": "/faq", "position": 5 },
+    { "title": "About", "url": "/about", "position": 6 },
+    { "title": "Support", "url": "/contact", "position": 7 }
+  ],
+  "galleries": [
+    {
+      "name": "Platform Overview",
+      "slug": "platform-overview",
+      "description": "Visual guide to our platform features and interface",
+      "display_template": "grid",
+      "is_public": true,
+      "images": [
+        {
+          "filename": "demo_starter-docs_1.jpg",
+          "title": "Close-up of a computer screen displaying programming code in a dark environment.",
+          "caption": "Photo by luis gomes"
+        },
+        {
+          "filename": "demo_starter-docs_2.jpg",
+          "title": "A developer writing code on a laptop, displaying programming scripts in an office environment.",
+          "caption": "Photo by Mikhail Nilov"
+        },
+        {
+          "filename": "demo_starter-docs_3.jpg",
+          "title": "A diverse group of professionals in a creative workspace discussing ideas and planning on a whiteboard.",
+          "caption": "Photo by Moe Magners"
+        },
+        {
+          "filename": "demo_starter-docs_4.jpg",
+          "title": "Diverse team of professionals in a collaborative workspace discussing creative ideas with visual references.",
+          "caption": "Photo by cottonbro studio"
+        },
+        {
+          "filename": "demo_starter-docs_5.jpg",
+          "title": "Abstract visualization of data analytics with graphs and charts showing dynamic growth.",
+          "caption": "Photo by Negative Space"
+        },
+        {
+          "filename": "demo_starter-docs_6.jpg",
+          "title": "A close-up of a hand with a pen analyzing data on colorful bar and line charts on paper.",
+          "caption": "Photo by Lukas Blazek"
+        },
+        {
+          "filename": "demo_starter-docs_7.jpg",
+          "title": "A clean and modern desk setup featuring a computer, clock, and accessories in a home office.",
+          "caption": "Photo by Mateusz Haberny"
+        },
+        {
+          "filename": "demo_starter-docs_8.jpg",
+          "title": "Rear view of a modern height adjustable standing desk with monitor and cable management.",
+          "caption": "Photo by Pavel Danilyuk"
+        }
+      ]
+    }
+  ]
+}

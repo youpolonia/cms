@@ -1,0 +1,108 @@
+{
+    "pages": [
+        {
+            "title": "Home",
+            "slug": "home",
+            "template": "home",
+            "is_homepage": true,
+            "content": "",
+            "meta_description": "Summit 2026 — The premier tech conference bringing together innovators, creators, and leaders. June 15–17, London."
+        },
+        {
+            "title": "About",
+            "slug": "about",
+            "template": "page",
+            "content": "<h2>About Summit 2026</h2><p>Summit 2026 is the premier technology conference bringing together the brightest minds in software engineering, artificial intelligence, design, and leadership. Now in its fifth year, Summit has grown from a small meetup into a world-class event attracting over 5,000 attendees from 60+ countries.</p><h3>Our Mission</h3><p>We believe the best ideas emerge when diverse perspectives collide. Summit creates the space for engineers, designers, researchers, and entrepreneurs to share knowledge, challenge assumptions, and build the future together.</p><h3>What to Expect</h3><p>Three days packed with keynotes from industry leaders, hands-on workshops, lightning talks, and unparalleled networking opportunities. Whether you're a seasoned CTO or a junior developer, there's something here for you.</p><ul><li>50+ speakers from leading tech companies</li><li>24 hands-on workshops with limited seating</li><li>Dedicated networking lounges and after-parties</li><li>Exhibition hall with 80+ sponsors and startups</li><li>Live-streamed sessions for remote attendees</li></ul><h3>Past Highlights</h3><p>Last year's Summit featured groundbreaking talks on quantum computing, ethical AI, and the future of remote work. Our workshops on Rust, WebAssembly, and distributed systems were sold out weeks in advance. Join us in 2026 for an even bigger and bolder experience.</p>",
+            "meta_description": "Learn about Summit 2026 — our mission, what to expect, and why 5,000+ attendees choose Summit every year."
+        },
+        {
+            "title": "Speakers",
+            "slug": "speakers",
+            "template": "page",
+            "content": "<h2>Our Speakers</h2><p>Summit 2026 brings together an extraordinary lineup of thought leaders, practitioners, and innovators who are shaping the future of technology.</p><h3>Keynote Speakers</h3><p><strong>Elena Vasquez</strong> — CEO of Future Labs Inc. and one of Forbes' Top 50 Women in Tech. Elena has spent 20 years building companies at the intersection of AI and healthcare. Her opening keynote, \"The Future Is Now,\" will explore how emerging technologies are transforming every industry.</p><p><strong>Marcus Chen</strong> — Head of AI Research at NovaTech and author of \"Machines That Think.\" Marcus leads a team of 200 researchers pushing the boundaries of large language models and computer vision. He'll share real-world lessons from deploying AI at scale.</p><h3>Featured Speakers</h3><p><strong>Aisha Patel</strong> — VP of Engineering at CloudScale, where she oversees infrastructure serving 100M+ daily active users. Her talk on building resilient systems draws from two decades of experience at Google, Netflix, and CloudScale.</p><p><strong>James O'Brien</strong> — Design Director at Pixel & Co. and former Apple HCI researcher. James will present his vision for the next decade of user experience, from spatial computing to AI-powered interfaces.</p><p>More speakers to be announced! Follow us on social media for the latest updates.</p>",
+            "meta_description": "Meet the speakers of Summit 2026 — industry leaders in AI, engineering, design, and innovation."
+        },
+        {
+            "title": "Schedule",
+            "slug": "schedule",
+            "template": "page",
+            "content": "<h2>Event Schedule</h2><p>Three action-packed days of keynotes, workshops, panels, and networking.</p><h3>Day 1 — June 15 (Monday)</h3><ul><li><strong>8:00 AM</strong> — Registration & Welcome Coffee</li><li><strong>9:00 AM</strong> — Opening Keynote: The Future Is Now (Elena Vasquez)</li><li><strong>10:30 AM</strong> — Coffee Break & Networking</li><li><strong>11:00 AM</strong> — AI in Production: Lessons Learned (Marcus Chen)</li><li><strong>12:30 PM</strong> — Lunch & Exhibition Hall</li><li><strong>2:00 PM</strong> — Building Resilient Systems (Aisha Patel)</li><li><strong>3:30 PM</strong> — Lightning Talks (5 speakers, 10 min each)</li><li><strong>5:00 PM</strong> — Day 1 Wrap-up</li><li><strong>7:00 PM</strong> — Welcome Reception & Mixer</li></ul><h3>Day 2 — June 16 (Tuesday)</h3><ul><li><strong>9:00 AM</strong> — Morning Workshops (4 tracks)</li><li><strong>10:00 AM</strong> — Design for the Next Decade (James O'Brien)</li><li><strong>12:00 PM</strong> — Lunch & Sponsor Demos</li><li><strong>2:00 PM</strong> — Hands-on Workshop: LLMs in Practice</li><li><strong>4:00 PM</strong> — Panel: Ethics in AI</li><li><strong>5:30 PM</strong> — Unconference Sessions</li><li><strong>8:00 PM</strong> — Summit Party 🎉</li></ul><h3>Day 3 — June 17 (Wednesday)</h3><ul><li><strong>9:00 AM</strong> — Community Talks Track</li><li><strong>11:00 AM</strong> — Startup Pitch Competition</li><li><strong>1:00 PM</strong> — Lunch & Last Networking</li><li><strong>2:30 PM</strong> — Workshop: Building with WebAssembly</li><li><strong>4:00 PM</strong> — Closing Panel: What's Next?</li><li><strong>5:30 PM</strong> — Closing Ceremony & Awards</li></ul>",
+            "meta_description": "Full schedule for Summit 2026 — three days of keynotes, workshops, panels, and networking events."
+        },
+        {
+            "title": "Gallery",
+            "slug": "gallery",
+            "template": "gallery",
+            "content": "<p>Relive the energy and excitement from our previous events. From packed auditoriums to intimate networking sessions, these moments capture the spirit of Summit.</p>",
+            "meta_description": "Photos and highlights from past Summit conferences and events."
+        },
+        {
+            "title": "Venue",
+            "slug": "venue",
+            "template": "page",
+            "content": "<h2>The Crystal Hall, ExCeL London</h2><p>Summit 2026 takes place at one of London's most iconic event spaces. The Crystal Hall at ExCeL London offers a stunning modern venue with state-of-the-art facilities, perfectly suited for our growing community.</p><h3>Location</h3><p>Royal Victoria Dock, 1 Western Gateway, London E16 1XL, United Kingdom. The venue is located in the Royal Docks, one of London's most exciting regeneration areas, with spectacular waterfront views.</p><h3>Getting There</h3><ul><li><strong>DLR:</strong> Custom House station (2 min walk) — direct from Bank, Tower Gateway, and Stratford</li><li><strong>Elizabeth Line:</strong> Custom House station (2 min walk) — fast connections from Heathrow, Paddington, and Liverpool Street</li><li><strong>London City Airport:</strong> 5 minutes by DLR</li><li><strong>By Car:</strong> Accessible via A1020, with on-site parking available (pre-booking recommended)</li></ul><h3>Facilities</h3><p>The venue features a 5,000-seat main auditorium, 12 breakout rooms for workshops, a 3,000 sqm exhibition hall, dedicated networking lounges, and multiple dining options. Free high-speed WiFi throughout.</p><h3>Accommodation</h3><p>Several hotels are within walking distance, including the Aloft London ExCeL, Good Hotel London, and Sunborn London Yacht Hotel. We've secured discounted rates for Summit attendees — details will be emailed with your ticket confirmation.</p>",
+            "meta_description": "Venue information for Summit 2026 at The Crystal Hall, ExCeL London. Getting there, facilities, and accommodation."
+        },
+        {
+            "title": "Contact",
+            "slug": "contact",
+            "template": "page",
+            "content": "<h2>Get in Touch</h2><p>Have questions about Summit 2026? We're here to help. Whether you're interested in attending, speaking, sponsoring, or volunteering, we'd love to hear from you.</p><h3>General Inquiries</h3><p>Email: <a href=\"mailto:hello@summit2026.dev\">hello@summit2026.dev</a></p><h3>Tickets & Registration</h3><p>Email: <a href=\"mailto:tickets@summit2026.dev\">tickets@summit2026.dev</a></p><p>Early bird tickets are available now at a 30% discount. Group discounts (5+ tickets) and student pricing are also available — just reach out!</p><h3>Speaking Opportunities</h3><p>Our CFP (Call for Proposals) is open until March 31, 2026. We welcome talks on software engineering, AI/ML, design, DevOps, security, and leadership. Submit your proposal at summit2026.dev/cfp.</p><h3>Sponsorship</h3><p>Email: <a href=\"mailto:sponsors@summit2026.dev\">sponsors@summit2026.dev</a></p><p>Partner with Summit to reach 5,000+ tech professionals. Sponsorship packages range from booth space to keynote naming rights. Download our prospectus for details.</p><h3>Follow Us</h3><p>Stay up to date with speaker announcements, schedule reveals, and event news. Follow us on Twitter/X, LinkedIn, and join our Discord community.</p>",
+            "meta_description": "Contact Summit 2026 — tickets, speaking proposals, sponsorship inquiries, and general questions."
+        }
+    ],
+    "articles": [
+        {
+            "title": "Early Bird Tickets Now Available — Save 30%",
+            "slug": "early-bird-tickets-2026",
+            "content": "<p>We're thrilled to announce that early bird tickets for Summit 2026 are officially on sale! For a limited time, you can grab your ticket at a 30% discount.</p><h2>What's Included</h2><p>Every Summit ticket includes full access to all three days of keynotes, workshops, and panels. You'll also get access to the exhibition hall, networking lounges, and all social events including the famous Summit Party on Day 2.</p><h2>Ticket Tiers</h2><p><strong>General Admission (Early Bird):</strong> £349 (regular £499) — Full conference access, meals, and social events.</p><p><strong>VIP (Early Bird):</strong> £699 (regular £999) — Everything in General plus front-row seating, speaker dinner, and exclusive workshop access.</p><p><strong>Student:</strong> £149 — We believe in making tech education accessible. Valid student ID required.</p><h2>Group Discounts</h2><p>Bringing your team? Groups of 5+ receive an additional 15% off. Contact tickets@summit2026.dev for details.</p><p>Early bird pricing ends April 30, 2026 — don't wait!</p>",
+            "meta_description": "Early bird tickets for Summit 2026 are on sale now. Save 30% on general admission and VIP passes."
+        },
+        {
+            "title": "Announcing Our 2026 Keynote Speakers",
+            "slug": "keynote-speakers-announced",
+            "content": "<p>The wait is over! We're excited to reveal the keynote lineup for Summit 2026. This year's speakers represent the cutting edge of technology, design, and leadership.</p><h2>Elena Vasquez — Opening Keynote</h2><p>Elena Vasquez, CEO of Future Labs Inc., will deliver our opening keynote \"The Future Is Now.\" Named one of Forbes' Top 50 Women in Tech, Elena has spent two decades building companies at the intersection of AI and healthcare. Her talk will explore how emerging technologies are already transforming industries in ways we're only beginning to understand.</p><h2>Marcus Chen — AI Deep Dive</h2><p>Head of AI Research at NovaTech and bestselling author of \"Machines That Think,\" Marcus will share hard-won lessons from deploying AI systems at massive scale. Expect honest, practical insights rather than hype.</p><h2>More to Come</h2><p>We'll be announcing additional speakers over the coming weeks, including featured talks from Aisha Patel (VP Engineering, CloudScale) and James O'Brien (Design Director, Pixel & Co.). Follow us on social media for real-time announcements.</p>",
+            "meta_description": "Meet the keynote speakers for Summit 2026: Elena Vasquez, Marcus Chen, and more industry leaders."
+        },
+        {
+            "title": "What's New at Summit 2026: Workshops, Tracks, and More",
+            "slug": "whats-new-summit-2026",
+            "content": "<p>Every year, we work to make Summit bigger, bolder, and more valuable for our community. Here's what's new for 2026.</p><h2>Expanded Workshop Program</h2><p>We're doubling our workshop capacity with 24 hands-on sessions across four tracks: AI/ML, Systems Engineering, Design, and Leadership. Each workshop is limited to 40 participants for an intimate, hands-on experience. Notable additions include \"Building with LLMs\" led by Marcus Chen and \"WebAssembly in Production\" by the Bytecode Alliance team.</p><h2>New: Startup Pitch Competition</h2><p>For the first time, Summit will host a startup pitch competition on Day 3. Ten pre-selected startups will present to a panel of VCs and industry leaders. The winner receives £50,000 in cloud credits and a mentorship package.</p><h2>Unconference Track</h2><p>Back by popular demand, our unconference sessions let attendees propose and vote on topics in real-time. Some of the best discussions at Summit happen in these spontaneous, participant-driven sessions.</p><h2>Enhanced Networking</h2><p>We've redesigned the networking experience with themed lounges, facilitated introductions, and a new Summit app that helps you connect with attendees who share your interests. The legendary Summit Party returns on Day 2 with live music and surprises.</p>",
+            "meta_description": "Discover what's new at Summit 2026 — expanded workshops, startup pitch competition, and enhanced networking."
+        },
+        {
+            "title": "Summit 2025 Recap: A Record-Breaking Year",
+            "slug": "summit-2025-recap",
+            "content": "<p>Summit 2025 was our biggest and best event yet. Here's a look back at the numbers, highlights, and moments that made it unforgettable.</p><h2>By the Numbers</h2><p>4,200 attendees from 58 countries. 42 speakers across 3 stages. 18 hands-on workshops. 65 sponsor booths. And over 10,000 cups of coffee consumed.</p><h2>Standout Moments</h2><p>The opening keynote on quantum computing drew a standing ovation. Our first-ever live coding challenge saw 200 developers competing in real-time. And the workshop on Rust systems programming was so oversubscribed that we had to add a second session.</p><h2>Community Impact</h2><p>Through our scholarship program, we welcomed 150 students and early-career developers who otherwise couldn't attend. 92% of scholarship recipients said Summit helped them take their next career step.</p><h2>Looking Forward</h2><p>Summit 2026 will be even bigger. We're moving to a larger venue, expanding the workshop program, and introducing new formats designed to maximize the value of your time. We can't wait to see you there.</p><p>Check out the <a href=\"/gallery\">photo gallery</a> from Summit 2025!</p>",
+            "meta_description": "Relive the best moments of Summit 2025 — 4,200 attendees, 42 speakers, and record-breaking workshops."
+        }
+    ],
+    "menu": [
+        {"title": "About", "url": "/about", "position": 1},
+        {"title": "Speakers", "url": "/speakers", "position": 2},
+        {"title": "Schedule", "url": "/schedule", "position": 3},
+        {"title": "Gallery", "url": "/gallery", "position": 4},
+        {"title": "Venue", "url": "/venue", "position": 5},
+        {"title": "Blog", "url": "/articles", "position": 6},
+        {"title": "Contact", "url": "/contact", "position": 7}
+    ],
+    "galleries": [
+        {
+            "name": "Past Events",
+            "slug": "past-events",
+            "description": "Highlights from our previous conferences and meetups",
+            "display_template": "mosaic",
+            "is_public": true,
+            "images": [
+                {"filename": "demo_starter-event_1.jpg", "title": "Energetic speaker delivering a talk at a corporate event"},
+                {"filename": "demo_starter-event_2.jpg", "title": "Vibrant crowd at a conference with a focus on an attentive participant"},
+                {"filename": "demo_starter-event_3.jpg", "title": "Business professionals in suits attending an outdoor event"},
+                {"filename": "demo_starter-event_4.jpg", "title": "A bustling indoor business expo with professionals networking"},
+                {"filename": "demo_starter-event_5.jpg", "title": "Business seminar with a diverse group in a modern conference room"},
+                {"filename": "demo_starter-event_6.jpg", "title": "A speaker addressing an attentive audience in a conference setting"},
+                {"filename": "demo_starter-event_7.jpg", "title": "Dynamic live concert with band on stage and lighting effects"},
+                {"filename": "demo_starter-event_8.jpg", "title": "A lively outdoor concert with a large audience and confetti effects"}
+            ]
+        }
+    ]
+}

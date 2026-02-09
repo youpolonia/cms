@@ -1,0 +1,166 @@
+{
+    "settings": {
+        "site_name": "Summit 2026"
+    },
+    "pages": [
+        {
+            "slug": "home",
+            "title": "Home",
+            "template": "default",
+            "content": "",
+            "meta_title": "Summit 2026 — Where Innovation Meets Inspiration",
+            "meta_description": "Join 2,000+ tech leaders for three days of talks, workshops, and networking in San Francisco."
+        },
+        {
+            "slug": "about",
+            "title": "About",
+            "content": "<h2>About Summit</h2><p>Summit is the premier technology conference bringing together innovators, creators, and leaders from around the world. Now in its fifth year, Summit has grown from a 200-person meetup to a 2,000+ attendee experience spanning three days of keynotes, workshops, and networking.</p><h2>What to Expect</h2><p>🎤 50+ sessions across 4 tracks<br>🛠️ 12 hands-on workshops<br>🤝 Dedicated networking lounges and events<br>🎉 Opening reception and closing party</p>",
+            "meta_title": "About — Summit 2026"
+        },
+        {
+            "slug": "speakers",
+            "title": "Speakers",
+            "content": "<h2>Our Speakers</h2><p>Summit 2026 features an incredible lineup of industry leaders, researchers, and practitioners.</p><p><strong>Sarah Chen</strong> — VP of Engineering, TechCorp. Leading teams building the next generation of cloud infrastructure.</p><p><strong>Marcus Johnson</strong> — CTO & Co-founder, LaunchPad AI. Pioneer in applied machine learning for enterprise.</p><p><strong>Elena Rodriguez</strong> — Head of Design, DesignLab. Award-winning designer reshaping how we think about user experience.</p><p><strong>Dr. James Park</strong> — Research Director, Quantum Labs. Making quantum computing accessible to the developer community.</p>",
+            "meta_title": "Speakers — Summit 2026"
+        },
+        {
+            "slug": "schedule",
+            "title": "Schedule",
+            "content": "<h2>Conference Schedule</h2><p>Three days of cutting-edge content, hands-on workshops, and meaningful connections.</p><p><strong>Day 1 — Foundations</strong><br>Opening keynote, core technology talks, and welcome reception.</p><p><strong>Day 2 — Deep Dives</strong><br>Workshops, breakout sessions, and the Innovation Showcase.</p><p><strong>Day 3 — Future Forward</strong><br>Advanced talks, panel discussions, and closing ceremony.</p>",
+            "meta_title": "Schedule — Summit 2026"
+        },
+        {
+            "slug": "gallery",
+            "title": "Gallery",
+            "template": "gallery",
+            "content": "",
+            "meta_title": "Gallery — Summit 2026"
+        },
+        {
+            "slug": "venue",
+            "title": "Venue",
+            "content": "<h2>The Moscone Center</h2><p>Located in the heart of San Francisco's SoMa district, the Moscone Center offers world-class facilities and is easily accessible from all major Bay Area locations.</p><p><strong>Address:</strong> 747 Howard Street, San Francisco, CA 94103<br><strong>Nearest BART:</strong> Powell St Station (10 min walk)<br><strong>Airport:</strong> SFO (20 min by BART)</p><h2>Partner Hotels</h2><p>We've negotiated special rates at hotels within walking distance. Use code SUMMIT26 when booking.</p>",
+            "meta_title": "Venue — Summit 2026"
+        },
+        {
+            "slug": "contact",
+            "title": "Register",
+            "content": "<h2>Get Your Tickets</h2><p>Early bird pricing is available for a limited time.</p><p><strong>General Admission:</strong> $599 (early bird $399)<br><strong>Workshop Pass:</strong> $899 (early bird $699)<br><strong>VIP All-Access:</strong> $1,499 (early bird $1,199)</p><p>All passes include keynotes, sessions, meals, and the networking reception.</p><p><strong>Questions?</strong> tickets@summit2026.com</p>",
+            "meta_title": "Register — Summit 2026"
+        }
+    ],
+    "articles": [
+        {
+            "slug": "summit-2026-speaker-lineup",
+            "title": "Announcing Our 2026 Speaker Lineup",
+            "content": "<p>We're thrilled to reveal the full speaker lineup for Summit 2026. This year features 50+ speakers from leading companies including Google, Apple, Microsoft, and innovative startups changing the game.</p>",
+            "excerpt": "Meet the 50+ industry leaders speaking at this year's conference."
+        },
+        {
+            "slug": "workshop-quantum-computing",
+            "title": "New Workshop: Introduction to Quantum Computing",
+            "content": "<p>By popular demand, we're adding a hands-on quantum computing workshop led by Dr. James Park. Participants will program actual quantum circuits using IBM's Qiskit framework.</p>",
+            "excerpt": "Hands-on quantum computing with IBM Qiskit — no physics degree required."
+        },
+        {
+            "slug": "early-bird-tickets-available",
+            "title": "Early Bird Tickets Now Available — Save 33%",
+            "content": "<p>Early bird tickets for Summit 2026 are now on sale. For a limited time, save up to 33% on all pass types. Last year, early bird tickets sold out in 48 hours.</p>",
+            "excerpt": "Save up to 33% on Summit 2026 passes — but act fast, they sell out quickly."
+        },
+        {
+            "slug": "summit-2025-highlights",
+            "title": "Summit 2025: A Look Back at an Incredible Year",
+            "content": "<p>Last year's Summit brought together 1,800 attendees from 30 countries for three unforgettable days. From the opening keynote on AI ethics to the closing hackathon, every moment was packed with inspiration.</p>",
+            "excerpt": "1,800 attendees, 30 countries, 3 days — relive the highlights of Summit 2025."
+        }
+    ],
+    "menu": [
+        {
+            "title": "Home",
+            "page_slug": "home"
+        },
+        {
+            "title": "About",
+            "page_slug": "about"
+        },
+        {
+            "title": "Speakers",
+            "page_slug": "speakers"
+        },
+        {
+            "title": "Schedule",
+            "page_slug": "schedule"
+        },
+        {
+            "title": "Venue",
+            "page_slug": "venue"
+        },
+        {
+            "title": "Gallery",
+            "page_slug": "gallery"
+        },
+        {
+            "title": "Register",
+            "page_slug": "contact"
+        }
+    ],
+    "galleries": [
+        {
+            "name": "Past Events",
+            "slug": "starter-event-gallery",
+            "description": "Highlights from our previous conferences and meetups",
+            "display_template": "mosaic",
+            "images": [
+                {
+                    "filename": "demo_starter-event_1.jpg",
+                    "original_name": "demo_starter-event_1.jpg",
+                    "title": "Energetic speaker delivering a talk at a corporate event",
+                    "caption": "Photo by Matheus Bertelli"
+                },
+                {
+                    "filename": "demo_starter-event_2.jpg",
+                    "original_name": "demo_starter-event_2.jpg",
+                    "title": "Vibrant crowd at a conference with a focus on an attentive participant.",
+                    "caption": "Photo by Luis Quintero"
+                },
+                {
+                    "filename": "demo_starter-event_3.jpg",
+                    "original_name": "demo_starter-event_3.jpg",
+                    "title": "Business professionals in suits attending an outdoor event. Focus on formal attire and networking.",
+                    "caption": "Photo by Rene Terp"
+                },
+                {
+                    "filename": "demo_starter-event_4.jpg",
+                    "original_name": "demo_starter-event_4.jpg",
+                    "title": "A bustling indoor business expo with professionals networking and engaging at various booths.",
+                    "caption": "Photo by Julian V"
+                },
+                {
+                    "filename": "demo_starter-event_5.jpg",
+                    "original_name": "demo_starter-event_5.jpg",
+                    "title": "Business seminar with a diverse group, featuring a speaker in a modern conference room.",
+                    "caption": "Photo by Pavel Danilyuk"
+                },
+                {
+                    "filename": "demo_starter-event_6.jpg",
+                    "original_name": "demo_starter-event_6.jpg",
+                    "title": "A business seminar with a speaker addressing an attentive audience in a modern conference setting.",
+                    "caption": "Photo by Matheus Bertelli"
+                },
+                {
+                    "filename": "demo_starter-event_7.jpg",
+                    "original_name": "demo_starter-event_7.jpg",
+                    "title": "Dynamic live concert with band on stage, lighting effects, and enthusiastic crowd at night.",
+                    "caption": "Photo by Thibault Trillet"
+                },
+                {
+                    "filename": "demo_starter-event_8.jpg",
+                    "original_name": "demo_starter-event_8.jpg",
+                    "title": "A lively outdoor concert with a large audience enjoying the show and confetti effects.",
+                    "caption": "Photo by Maor Attias"
+                }
+            ]
+        }
+    ]
+}

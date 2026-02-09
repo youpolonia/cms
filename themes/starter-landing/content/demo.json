@@ -1,0 +1,162 @@
+{
+    "settings": {
+        "site_name": "AppFlow"
+    },
+    "pages": [
+        {
+            "slug": "home",
+            "title": "Home",
+            "template": "default",
+            "content": "",
+            "meta_title": "AppFlow — The Smarter Way to Manage Your Workflow",
+            "meta_description": "Boost productivity with AppFlow. Streamline your workflow, collaborate seamlessly, and deliver results faster."
+        },
+        {
+            "slug": "about",
+            "title": "About",
+            "content": "<h2>About AppFlow</h2><p>AppFlow was born from a simple observation: teams spend more time managing work than doing work. Founded in 2024 by a team of productivity researchers and engineers, we set out to build the tool we always wished existed.</p><p>Today, AppFlow powers over 10,000 teams across 50 countries, from startups to Fortune 500 companies. Our mission remains the same: make work feel effortless.</p>",
+            "meta_title": "About AppFlow"
+        },
+        {
+            "slug": "features",
+            "title": "Features",
+            "content": "<h2>Everything You Need</h2><p>AppFlow combines project management, team collaboration, and workflow automation in one seamless platform.</p><p><strong>⚡ Smart Automation:</strong> Automate repetitive tasks with AI-powered workflows that learn from your patterns.</p><p><strong>🎯 Focus Mode:</strong> Block distractions and prioritize what matters with intelligent task scheduling.</p><p><strong>🔒 Enterprise Security:</strong> SOC 2 Type II certified, end-to-end encryption, and role-based access controls.</p><p><strong>📊 Real-time Analytics:</strong> Track team performance, identify bottlenecks, and optimize workflows with actionable insights.</p>",
+            "meta_title": "Features — AppFlow"
+        },
+        {
+            "slug": "pricing",
+            "title": "Pricing",
+            "content": "<h2>Simple, Transparent Pricing</h2><p>No hidden fees. No contracts. Start free, upgrade when you're ready.</p><p><strong>Free:</strong> Up to 5 users, basic features, 1GB storage — $0/month</p><p><strong>Pro:</strong> Unlimited users, advanced features, 100GB storage — $12/user/month</p><p><strong>Enterprise:</strong> Custom limits, SSO, dedicated support, SLA — Custom pricing</p>",
+            "meta_title": "Pricing — AppFlow"
+        },
+        {
+            "slug": "gallery",
+            "title": "Gallery",
+            "template": "gallery",
+            "content": "",
+            "meta_title": "Product Gallery — AppFlow"
+        },
+        {
+            "slug": "blog",
+            "title": "Blog",
+            "content": "<p>Insights, tutorials, and product updates from the AppFlow team.</p>",
+            "meta_title": "Blog — AppFlow"
+        },
+        {
+            "slug": "contact",
+            "title": "Contact",
+            "content": "<h2>Let's Talk</h2><p>Have questions? Our team is here to help.</p><p><strong>Sales:</strong> sales@appflow.io<br><strong>Support:</strong> support@appflow.io<br><strong>Press:</strong> press@appflow.io</p><p>Or book a free demo — we'll show you how AppFlow can transform your team's workflow in 15 minutes.</p>",
+            "meta_title": "Contact — AppFlow"
+        }
+    ],
+    "articles": [
+        {
+            "slug": "announcing-appflow-3",
+            "title": "Announcing AppFlow 3.0: AI-Powered Workflow Automation",
+            "content": "<p>Today we're thrilled to launch AppFlow 3.0, our biggest update ever. At its core: an AI engine that learns how your team works and automates the repetitive stuff so you can focus on what matters.</p><p>New features include Smart Scheduling, Auto-Assign, and Predictive Deadlines. Early beta users report a 40% reduction in time spent on project management tasks.</p>",
+            "excerpt": "Our biggest update introduces AI-powered automation that learns your workflow patterns."
+        },
+        {
+            "slug": "remote-team-productivity-guide",
+            "title": "10 Proven Strategies for Remote Team Productivity",
+            "content": "<p>Managing a distributed team doesn't have to mean sacrificing productivity. Based on our analysis of 5,000+ remote teams using AppFlow, here are the strategies that consistently lead to better outcomes.</p><p>The data is clear: asynchronous communication, clear documentation, and regular check-ins (not check-ups) are the foundations of high-performing remote teams.</p>",
+            "excerpt": "Data-driven strategies from 5,000+ remote teams that consistently deliver better results."
+        },
+        {
+            "slug": "workflow-automation-roi",
+            "title": "The ROI of Workflow Automation: Real Numbers from Real Teams",
+            "content": "<p>We surveyed 200 AppFlow Enterprise customers about the impact of workflow automation on their bottom line. The results surprised even us.</p><p>On average, teams saved 12 hours per employee per month after implementing automation. At a loaded cost of $75/hour, that's $10,800 per employee per year in recovered productivity.</p>",
+            "excerpt": "Enterprise customers report saving 12 hours per employee per month through workflow automation."
+        },
+        {
+            "slug": "appflow-soc2-certification",
+            "title": "AppFlow Achieves SOC 2 Type II Certification",
+            "content": "<p>Security has always been foundational to AppFlow, and today we're proud to announce our SOC 2 Type II certification. This independently audited certification validates our commitment to protecting your data.</p>",
+            "excerpt": "Our SOC 2 Type II certification validates enterprise-grade security practices."
+        }
+    ],
+    "menu": [
+        {
+            "title": "Home",
+            "page_slug": "home"
+        },
+        {
+            "title": "Features",
+            "page_slug": "features"
+        },
+        {
+            "title": "Pricing",
+            "page_slug": "pricing"
+        },
+        {
+            "title": "Blog",
+            "page_slug": "blog"
+        },
+        {
+            "title": "Gallery",
+            "page_slug": "gallery"
+        },
+        {
+            "title": "Contact",
+            "page_slug": "contact"
+        }
+    ],
+    "galleries": [
+        {
+            "name": "Product Showcase",
+            "slug": "starter-landing-gallery",
+            "description": "See our product in action across different platforms",
+            "display_template": "grid",
+            "images": [
+                {
+                    "filename": "demo_starter-landing_1.jpg",
+                    "original_name": "demo_starter-landing_1.jpg",
+                    "title": "A close-up view of hands holding a smartphone with a blank screen, ideal for digital display mockups.",
+                    "caption": "Photo by MART  PRODUCTION"
+                },
+                {
+                    "filename": "demo_starter-landing_2.jpg",
+                    "original_name": "demo_starter-landing_2.jpg",
+                    "title": "Detailed image of a person holding and pointing at a smartphone with a blank screen, perfect for mockup use.",
+                    "caption": "Photo by MART  PRODUCTION"
+                },
+                {
+                    "filename": "demo_starter-landing_3.jpg",
+                    "original_name": "demo_starter-landing_3.jpg",
+                    "title": "Close-up of two smartphones with camera focus on a textured wooden surface.",
+                    "caption": "Photo by Andrey Matveev"
+                },
+                {
+                    "filename": "demo_starter-landing_4.jpg",
+                    "original_name": "demo_starter-landing_4.jpg",
+                    "title": "Close-up of a modern smartphone with a sleek design on a wooden surface.",
+                    "caption": "Photo by Andrey Matveev"
+                },
+                {
+                    "filename": "demo_starter-landing_5.jpg",
+                    "original_name": "demo_starter-landing_5.jpg",
+                    "title": "Top-down view of a clean workspace featuring a keyboard, mouse, stylish glasses, and an open notebook.",
+                    "caption": "Photo by Porapak Apichodilok"
+                },
+                {
+                    "filename": "demo_starter-landing_6.jpg",
+                    "original_name": "demo_starter-landing_6.jpg",
+                    "title": "A clean, organized workspace featuring a MacBook, smartphone, and notebook.",
+                    "caption": "Photo by Parth Shah"
+                },
+                {
+                    "filename": "demo_starter-landing_7.jpg",
+                    "original_name": "demo_starter-landing_7.jpg",
+                    "title": "Laptop displaying Google Analytics in a modern workspace, highlighting digital analytics and technology.",
+                    "caption": "Photo by Negative Space"
+                },
+                {
+                    "filename": "demo_starter-landing_8.jpg",
+                    "original_name": "demo_starter-landing_8.jpg",
+                    "title": "A digital tablet showing a web analytics dashboard with graphs and charts.",
+                    "caption": "Photo by weCare Media"
+                }
+            ]
+        }
+    ]
+}
