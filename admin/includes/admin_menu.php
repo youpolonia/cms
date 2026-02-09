@@ -35,8 +35,7 @@ return [
         'items' => [
             ['label' => '🌯 SEO Assistant', 'url' => '/admin/ai-seo-assistant'],
             ['label' => '📈 SEO Dashboard', 'url' => '/admin/ai-seo-dashboard'],
-            ['label' => '🔄 SEOPages', 'url' => '/admin/ai-seo-pages'],
-            ['label' => '📝 SEO Articles', 'url' => '/admin/ai-seo-articles'],
+            ['label' => '📋 SEO Content', 'url' => '/admin/ai-seo-content'],
             ['label' => '🔑 Keywords', 'url' => '/admin/ai-seo-keywords'],
             ['label' => '🏆 Competitors', 'url' => '/admin/ai-seo-competitors'],
             ['label' => '🔬 Research', 'url' => '/admin/ai-seo-research'],

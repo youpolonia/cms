@@ -103,7 +103,7 @@ $actions = [];
 if ($criticalDecay > 0) $actions[] = ['p'=>'critical','t'=>"Refresh {$criticalDecay} outdated pages",'l'=>'/admin/ai-seo-decay.php'];
 if ($orphans > 0) $actions[] = ['p'=>'high','t'=>"Fix {$orphans} orphan pages",'l'=>'/admin/ai-seo-linking.php'];
 if ($cannib > 0) $actions[] = ['p'=>'high','t'=>"Resolve {$cannib} cannibalization issues",'l'=>'/admin/ai-seo-keywords.php?cannib=1'];
-if ($scoreDist['poor'] > 0) $actions[] = ['p'=>'medium','t'=>"Improve {$scoreDist['poor']} poor-scoring pages",'l'=>'/admin/ai-seo-pages.php?status=high'];
+if ($scoreDist['poor'] > 0) $actions[] = ['p'=>'medium','t'=>"Improve {$scoreDist['poor']} poor-scoring pages",'l'=>'/admin/ai-seo-content.php?status=high'];
 
 $recent = array_slice($reports, 0, 5);
 ?>
@@ -287,11 +287,14 @@ $sClass = $s === null ? 'muted' : ($s >= 80 ? 'success' : ($s >= 60 ? 'warning' 
 <div class="card-body">
 <div class="tool-grid">
 <a href="/admin/ai-seo-assistant.php" class="tool-btn"><span class="icon">🔍</span><span class="name">Assistant</span></a>
-<a href="/admin/ai-seo-pages.php" class="tool-btn"><span class="icon">📄</span><span class="name">Pages</span></a>
+<a href="/admin/ai-seo-content.php" class="tool-btn"><span class="icon">📋</span><span class="name">Content</span></a>
 <a href="/admin/ai-seo-keywords.php" class="tool-btn"><span class="icon">🎯</span><span class="name">Keywords</span></a>
 <a href="/admin/ai-seo-reports.php" class="tool-btn"><span class="icon">📊</span><span class="name">Reports</span></a>
 <a href="/admin/ai-seo-linking.php" class="tool-btn"><span class="icon">🔗</span><span class="name">Int Links</span></a>
 <a href="/admin/ai-seo-decay.php" class="tool-btn"><span class="icon">⏰</span><span class="name">Decay</span></a>
+<a href="/admin/seo-sitemap.php" class="tool-btn"><span class="icon">🗺️</span><span class="name">Sitemap</span></a>
+<a href="/admin/seo.php" class="tool-btn"><span class="icon">⚙️</span><span class="name">Settings</span></a>
+<a href="/admin/seo-robots.php" class="tool-btn"><span class="icon">🤖</span><span class="name">Robots</span></a>
 </div>
 </div>
 </div>

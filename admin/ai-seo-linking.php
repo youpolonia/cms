@@ -446,7 +446,7 @@ No incoming: <strong><?= $analysis['statistics']['pages_with_no_incoming'] ?></s
 
 <div style="display:flex;gap:12px;margin-top:20px">
 <a href="/admin/ai-seo-dashboard.php" class="btn btn-secondary">📊 Dashboard</a>
-<a href="/admin/ai-seo-pages.php" class="btn btn-secondary">📄 Pages</a>
+<a href="/admin/ai-seo-content.php?type=pages" class="btn btn-secondary">📄 Pages</a>
 <a href="/admin/ai-seo-assistant.php" class="btn btn-primary">🔍 New Analysis</a>
 </div>
 </div>

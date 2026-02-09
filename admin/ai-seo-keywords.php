@@ -312,7 +312,7 @@ $sevClass = match($cm['severity']) { 'critical'=>'danger', 'high'=>'warning', de
 
 <div style="display:flex;gap:12px;margin-top:20px">
 <a href="/admin/ai-seo-reports.php" class="btn btn-secondary">📊 All Reports</a>
-<a href="/admin/ai-seo-pages.php" class="btn btn-secondary">📄 Pages Overview</a>
+<a href="/admin/ai-seo-content.php?type=pages" class="btn btn-secondary">📄 Pages Overview</a>
 <a href="/admin/ai-seo-assistant.php" class="btn btn-primary">🔍 New Analysis</a>
 </div>
 </div>
