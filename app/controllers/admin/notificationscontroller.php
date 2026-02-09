@@ -11,7 +11,7 @@ class NotificationsController
 {
     public function __construct()
     {
-        require_once CMS_ROOT . '/includes/system/notificationmanager.php';
+        require_once CMS_ROOT . '/core/notificationmanager.php';
     }
 
     public function index(Request $request): void

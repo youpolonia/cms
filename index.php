@@ -2,7 +2,7 @@
 
 /**
  * CMS Main Entry Point
- * Handles both legacy routes and MVC admin routes
+ * Main entry point — MVC routing via config/routes.php
  */
 
 
@@ -129,7 +129,7 @@ if (session_status() === PHP_SESSION_NONE) {
 // ============================================================
 // ROUTE REGISTRATION
 // ============================================================
-// Define helper functions for routes.php
+// Helper functions for route definitions
 if (!function_exists('get')) {
     function get(string $path, callable $handler): void {
         \Core\Router::get($path, $handler);
@@ -141,21 +141,9 @@ if (!function_exists('router_get')) {
     }
 }
 
-// Load legacy routes from routes.php FIRST (lower priority)
-$routeFile = __DIR__ . '/routes.php';
-if (file_exists($routeFile)) {
-    $routes = require $routeFile;
-    if (is_array($routes)) {
-        foreach ($routes as $path => $handler) {
-            if (is_callable($handler)) {
-                \Core\Router::get($path, $handler);
-            }
-        }
-    }
-}
 
 
-// Load MVC admin routes from config/routes.php LAST (higher priority - overwrites legacy)
+// Load routes from config/routes.php
 $mvcRoutesFile = CMS_CONFIG . '/routes.php';
 if (file_exists($mvcRoutesFile)) {
     $mvcRoutes = require $mvcRoutesFile;
@@ -344,9 +332,6 @@ if (preg_match('#^/preview/website/?$#', $uri)) {
     exit;
 }
 
-// AI Theme Builder 5.0 Routes — REMOVED (legacy TB5)
-// require_once CMS_ROOT . '/app/routes/aitb5.php';
-// END JTB ROUTES
 
 
 
