@@ -412,6 +412,106 @@ textarea.form-control {
     margin: 0;
     line-height: 1.4;
 }
+
+/* Template Picker */
+.template-picker {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 0.75rem;
+}
+@media (max-width: 1200px) { .template-picker { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 640px) { .template-picker { grid-template-columns: repeat(2, 1fr); } }
+
+.template-option {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1rem 0.75rem;
+    background: var(--bg-tertiary);
+    border: 2px solid var(--border);
+    border-radius: var(--radius-lg);
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+}
+.template-option:hover {
+    border-color: var(--accent);
+    background: var(--accent-muted);
+}
+.template-option.active {
+    border-color: var(--accent);
+    background: var(--accent-muted);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+}
+.template-option input { display: none; }
+
+/* Mini preview blocks */
+.template-preview {
+    width: 100%;
+    height: 56px;
+    border-radius: 6px;
+    overflow: hidden;
+    background: var(--bg-primary);
+    padding: 4px;
+}
+.tp-blocks {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    gap: 2px;
+}
+/* Grid preview */
+.template-preview-grid .tp-blocks {
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+}
+.template-preview-grid .tp-blocks::before,
+.template-preview-grid .tp-blocks::after { content: ''; }
+.template-preview-grid .tp-blocks,
+.template-preview-grid .tp-blocks::before,
+.template-preview-grid .tp-blocks::after { background: var(--accent); border-radius: 2px; opacity: 0.6; }
+/* hacky but visual: use box shadows for grid squares */
+.template-preview-grid .tp-blocks {
+    background: none;
+}
+.template-preview-grid .tp-blocks::before { display: none; }
+.template-preview-grid .tp-blocks::after { display: none; }
+
+/* Masonry preview */
+.template-preview-masonry .tp-blocks {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2px;
+}
+/* Mosaic preview */
+.template-preview-mosaic .tp-blocks {
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+}
+/* Carousel preview */
+.template-preview-carousel .tp-blocks {
+    display: flex;
+    gap: 3px;
+    overflow: hidden;
+}
+/* Justified preview */
+.template-preview-justified .tp-blocks {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2px;
+}
+
+.template-name {
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: var(--text-primary);
+}
+.template-desc {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    line-height: 1.3;
+}
 </style>
 
 <!-- Breadcrumb -->
@@ -479,6 +579,40 @@ textarea.form-control {
                 </div>
             </div>
 
+            <!-- Display Template -->
+            <div class="card" style="margin-bottom: 1.5rem;">
+                <div class="card-header">
+                    <h2 class="card-title">🎨 Gallery Template</h2>
+                </div>
+                <div class="card-body">
+                    <div class="form-group">
+                        <label>Layout Style</label>
+                        <p class="form-hint" style="margin-top:0;margin-bottom:1rem">Choose how images are displayed on the gallery page.</p>
+                        <div class="template-picker">
+                            <?php
+                            $currentTemplate = $gallery['display_template'] ?? 'grid';
+                            $templates = [
+                                'grid' => ['icon' => '⊞', 'name' => 'Grid', 'desc' => 'Uniform grid with equal-sized images'],
+                                'masonry' => ['icon' => '▥', 'name' => 'Masonry', 'desc' => 'Pinterest-style staggered layout'],
+                                'mosaic' => ['icon' => '◫', 'name' => 'Mosaic', 'desc' => 'Featured large + mixed sizes'],
+                                'carousel' => ['icon' => '◁▷', 'name' => 'Carousel', 'desc' => 'Horizontal scrolling slider'],
+                                'justified' => ['icon' => '☰', 'name' => 'Justified', 'desc' => 'Flickr-style equal-height rows'],
+                            ];
+                            foreach ($templates as $key => $tpl): ?>
+                            <label class="template-option <?= $currentTemplate === $key ? 'active' : '' ?>">
+                                <input type="radio" name="display_template" value="<?= $key ?>" <?= $currentTemplate === $key ? 'checked' : '' ?>>
+                                <div class="template-preview template-preview-<?= $key ?>">
+                                    <div class="tp-blocks"></div>
+                                </div>
+                                <span class="template-name"><?= $tpl['name'] ?></span>
+                                <span class="template-desc"><?= $tpl['desc'] ?></span>
+                            </label>
+                            <?php endforeach; ?>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- Display Settings -->
             <div class="card" style="margin-bottom: 1.5rem;">
                 <div class="card-header">
@@ -494,17 +628,7 @@ textarea.form-control {
                                    class="form-control">
                             <p class="form-hint">Lower numbers appear first in gallery list.</p>
                         </div>
-
-                        <div class="form-group">
-                            <label for="columns">Grid Columns</label>
-                            <select id="columns" name="columns" class="form-control">
-                                <option value="2" <?= ($gallery['columns'] ?? 3) == 2 ? 'selected' : '' ?>>2 Columns</option>
-                                <option value="3" <?= ($gallery['columns'] ?? 3) == 3 ? 'selected' : '' ?>>3 Columns</option>
-                                <option value="4" <?= ($gallery['columns'] ?? 3) == 4 ? 'selected' : '' ?>>4 Columns</option>
-                                <option value="5" <?= ($gallery['columns'] ?? 3) == 5 ? 'selected' : '' ?>>5 Columns</option>
-                            </select>
-                            <p class="form-hint">Number of columns on desktop view.</p>
-                        </div>
+                        <div class="form-group"></div>
                     </div>
 
                     <div class="form-group">
@@ -681,6 +805,62 @@ document.querySelectorAll('.toggle-option input').forEach(input => {
 });
 
 // Delete confirmation
+
+// Template picker
+document.querySelectorAll('.template-option input').forEach(input => {
+    input.addEventListener('change', function() {
+        document.querySelectorAll('.template-option').forEach(opt => opt.classList.remove('active'));
+        this.closest('.template-option').classList.add('active');
+    });
+});
+
+// Draw mini preview blocks
+document.querySelectorAll('.template-preview').forEach(preview => {
+    const blocks = preview.querySelector('.tp-blocks');
+    const type = preview.className.replace('template-preview ', '').replace('template-preview-', '');
+
+    // Generate colored blocks for visual preview
+    const colors = ['#89b4fa', '#a6e3a1', '#f9e2af', '#f38ba8', '#cba6f7', '#89dceb'];
+
+    if (type.includes('grid')) {
+        for (let i = 0; i < 6; i++) {
+            const b = document.createElement('div');
+            b.style.cssText = 'background:' + colors[i] + ';border-radius:2px;opacity:0.7';
+            blocks.appendChild(b);
+        }
+    } else if (type.includes('masonry')) {
+        const heights = [24, 18, 30, 16, 26, 20];
+        for (let i = 0; i < 6; i++) {
+            const b = document.createElement('div');
+            b.style.cssText = 'width:30%;height:' + heights[i] + 'px;background:' + colors[i] + ';border-radius:2px;opacity:0.7;flex-shrink:0';
+            blocks.appendChild(b);
+        }
+    } else if (type.includes('mosaic')) {
+        // Big + small blocks
+        const b1 = document.createElement('div');
+        b1.style.cssText = 'grid-column:span 2;grid-row:span 2;background:' + colors[0] + ';border-radius:2px;opacity:0.7';
+        blocks.appendChild(b1);
+        for (let i = 1; i < 4; i++) {
+            const b = document.createElement('div');
+            b.style.cssText = 'background:' + colors[i] + ';border-radius:2px;opacity:0.7';
+            blocks.appendChild(b);
+        }
+    } else if (type.includes('carousel')) {
+        for (let i = 0; i < 4; i++) {
+            const b = document.createElement('div');
+            b.style.cssText = 'min-width:35%;height:100%;background:' + colors[i] + ';border-radius:3px;opacity:0.7;flex-shrink:0';
+            blocks.appendChild(b);
+        }
+    } else if (type.includes('justified')) {
+        const widths = [40, 25, 35, 30, 35, 35];
+        for (let i = 0; i < 6; i++) {
+            const b = document.createElement('div');
+            b.style.cssText = 'width:' + widths[i] + '%;height:22px;background:' + colors[i] + ';border-radius:2px;opacity:0.7;flex-shrink:0;flex-grow:1';
+            blocks.appendChild(b);
+        }
+    }
+});
+
 function confirmDelete() {
     if (confirm('Are you sure you want to delete this gallery? This cannot be undone.')) {
         document.getElementById('deleteForm').submit();

@@ -92,6 +92,10 @@ $totalImages = array_sum(array_column($galleries, 'image_count'));
                 </span>
             </div>
             <code class="gallery-slug">/gallery/<?= esc($gallery['slug']) ?></code>
+            <span class="gallery-template-badge"><?php
+                $tplIcons = ['grid'=>'⊞ Grid', 'masonry'=>'▥ Masonry', 'mosaic'=>'◫ Mosaic', 'carousel'=>'◁▷ Carousel', 'justified'=>'☰ Justified'];
+                echo $tplIcons[$gallery['display_template'] ?? 'grid'] ?? '⊞ Grid';
+            ?></span>
             <?php if (!empty($gallery['description'])): ?>
                 <p class="gallery-desc"><?= esc($gallery['description']) ?></p>
             <?php endif; ?>
@@ -319,6 +323,17 @@ $totalImages = array_sum(array_column($galleries, 'image_count'));
 .gallery-status.private {
     background: rgba(107, 114, 128, 0.15);
     color: #9ca3af;
+}
+
+.gallery-template-badge {
+    display: inline-block;
+    font-size: 0.7rem;
+    padding: 0.125rem 0.5rem;
+    border-radius: 4px;
+    background: rgba(203, 166, 247, 0.15);
+    color: #cba6f7;
+    margin-left: 0.5rem;
+    vertical-align: middle;
 }
 .gallery-slug {
     font-size: 0.75rem;

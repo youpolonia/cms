@@ -56,8 +56,14 @@ class GalleriesController
             Response::redirect('/admin/galleries/create');
         }
 
-        $stmt = $pdo->prepare("INSERT INTO galleries (name, slug, description, is_public, created_at) VALUES (?, ?, ?, ?, NOW())");
-        $stmt->execute([$name, $slug, $description, $isPublic]);
+        $displayTemplate = trim($request->post('display_template', 'grid'));
+        $validTemplates = ['grid', 'masonry', 'mosaic', 'carousel', 'justified'];
+        if (!in_array($displayTemplate, $validTemplates)) {
+            $displayTemplate = 'grid';
+        }
+
+        $stmt = $pdo->prepare("INSERT INTO galleries (name, slug, description, is_public, display_template, created_at) VALUES (?, ?, ?, ?, ?, NOW())");
+        $stmt->execute([$name, $slug, $description, $isPublic, $displayTemplate]);
 
         $galleryId = $pdo->lastInsertId();
 
@@ -110,8 +116,14 @@ class GalleriesController
             Response::redirect("/admin/galleries/{$id}/edit");
         }
 
-        $stmt = $pdo->prepare("UPDATE galleries SET name = ?, slug = ?, description = ?, is_public = ? WHERE id = ?");
-        $stmt->execute([$name, $slug, $description, $isPublic, $id]);
+        $displayTemplate = trim($request->post('display_template', 'grid'));
+        $validTemplates = ['grid', 'masonry', 'mosaic', 'carousel', 'justified'];
+        if (!in_array($displayTemplate, $validTemplates)) {
+            $displayTemplate = 'grid';
+        }
+
+        $stmt = $pdo->prepare("UPDATE galleries SET name = ?, slug = ?, description = ?, is_public = ?, display_template = ? WHERE id = ?");
+        $stmt->execute([$name, $slug, $description, $isPublic, $displayTemplate, $id]);
 
         Session::flash('success', 'Gallery updated successfully.');
         Response::redirect('/admin/galleries');
