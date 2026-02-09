@@ -14,6 +14,7 @@ require_once CMS_ROOT . '/core/csrf.php';
 require_once CMS_ROOT . '/admin/includes/auth.php';
 require_once CMS_ROOT . '/admin/includes/permissions.php';
 require_once CMS_ROOT . '/core/database.php';
+require_once CMS_ROOT . '/core/content_renderer.php';
 
 cms_session_start('admin');
 csrf_boot('admin');
@@ -151,7 +152,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
 $csrf = $_SESSION['csrf_token'] ?? '';
 $score = $report ? (int)($report['health_score'] ?? 0) : 0;
 $scoreClass = $score >= 80 ? 'success' : ($score >= 60 ? 'warning' : 'danger');
-$wordCount = str_word_count(strip_tags($form['content_html']));
+$wordCount = str_word_count(ContentRenderer::toText($form['content_html'] ?? ''));
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -960,7 +961,7 @@ require_once CMS_ROOT . '/admin/includes/page_header.php';
             <span class="tag purple">🎯 <?= esc($form['focus_keyword']) ?></span>
             <span class="tag">🌐 <?= strtoupper($form['language']) ?></span>
             <span class="tag">📄 <?= ucfirst(str_replace('_', ' ', $form['content_type'])) ?></span>
-            <?php $wc = str_word_count(strip_tags($form['content_html'])); ?>
+            <?php $wc = str_word_count(ContentRenderer::toText($form['content_html'] ?? '')); ?>
             <span class="tag">📝 <?= number_format($wc) ?> words</span>
         </div>
     </div>

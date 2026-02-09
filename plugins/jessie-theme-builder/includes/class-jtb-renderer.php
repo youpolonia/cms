@@ -479,6 +479,243 @@ class JTB_Renderer
      * @param string $id Module unique ID
      * @return string Wrapped HTML
      */
+
+    /**
+     * Render JTB content to clean semantic HTML (no builder wrappers, no CSS, no JS)
+     * Used by ContentRenderer for SEO analysis, AI tools, text extraction.
+     *
+     * @param array $content JTB content structure (decoded JSON)
+     * @return string Clean semantic HTML
+     */
+    public static function renderClean(array $content): string
+    {
+        $sections = $content['content'] ?? $content['sections'] ?? [];
+        if (empty($sections)) {
+            return '';
+        }
+        
+        $html = '';
+        foreach ($sections as $section) {
+            $html .= self::renderSectionClean($section);
+        }
+        
+        return trim($html);
+    }
+    
+    /**
+     * Render a section to clean HTML (strip wrappers, keep semantic content)
+     */
+    private static function renderSectionClean(array $section): string
+    {
+        $html = '';
+        $rows = $section['rows'] ?? [];
+        
+        foreach ($rows as $row) {
+            $columns = $row['columns'] ?? [];
+            foreach ($columns as $column) {
+                $modules = $column['modules'] ?? [];
+                foreach ($modules as $module) {
+                    $html .= self::renderModuleClean($module);
+                }
+            }
+        }
+        
+        return $html;
+    }
+    
+    /**
+     * Render a module to clean semantic HTML
+     * Extracts meaningful content, strips builder chrome
+     */
+    private static function renderModuleClean(array $moduleData): string
+    {
+        $type = $moduleData['type'] ?? '';
+        $attrs = $moduleData['attrs'] ?? [];
+        
+        switch ($type) {
+            // Text content modules
+            case 'heading':
+                $level = $attrs['level'] ?? 'h2';
+                $text = $attrs['text'] ?? $attrs['content'] ?? '';
+                if (empty($text)) return '';
+                return "<{$level}>{$text}</{$level}>\n";
+                
+            case 'text':
+            case 'rich-text':
+                $text = $attrs['content'] ?? $attrs['text'] ?? '';
+                if (empty($text)) return '';
+                // If already wrapped in tags, return as-is
+                if (preg_match('/^<[a-z]/i', trim($text))) return $text . "\n";
+                return "<p>{$text}</p>\n";
+                
+            case 'paragraph':
+                $text = $attrs['content'] ?? $attrs['text'] ?? '';
+                if (empty($text)) return '';
+                return "<p>{$text}</p>\n";
+                
+            // List modules
+            case 'list':
+            case 'icon-list':
+                $items = $attrs['items'] ?? [];
+                if (empty($items)) return '';
+                $listType = ($attrs['list_type'] ?? 'ul') === 'ol' ? 'ol' : 'ul';
+                $html = "<{$listType}>\n";
+                foreach ($items as $item) {
+                    $text = is_array($item) ? ($item['text'] ?? $item['content'] ?? '') : $item;
+                    if (!empty($text)) $html .= "  <li>{$text}</li>\n";
+                }
+                $html .= "</{$listType}>\n";
+                return $html;
+                
+            // Image modules
+            case 'image':
+                $src = $attrs['image_url'] ?? $attrs['src'] ?? $attrs['url'] ?? '';
+                $alt = $attrs['alt'] ?? $attrs['alt_text'] ?? '';
+                if (empty($src)) return '';
+                return "<img src=\"{$src}\" alt=\"{$alt}\">\n";
+                
+            case 'gallery':
+                $images = $attrs['images'] ?? [];
+                if (empty($images)) return '';
+                $html = '';
+                foreach ($images as $img) {
+                    $src = is_array($img) ? ($img['url'] ?? $img['src'] ?? '') : $img;
+                    $alt = is_array($img) ? ($img['alt'] ?? '') : '';
+                    if (!empty($src)) $html .= "<img src=\"{$src}\" alt=\"{$alt}\">\n";
+                }
+                return $html;
+                
+            // Link/button modules
+            case 'button':
+            case 'cta':
+                $text = $attrs['text'] ?? $attrs['label'] ?? $attrs['button_text'] ?? '';
+                $url = $attrs['url'] ?? $attrs['link'] ?? '#';
+                if (empty($text)) return '';
+                return "<a href=\"{$url}\">{$text}</a>\n";
+                
+            // Quote/testimonial
+            case 'blockquote':
+            case 'testimonial':
+                $text = $attrs['content'] ?? $attrs['text'] ?? $attrs['quote'] ?? '';
+                $author = $attrs['author'] ?? $attrs['name'] ?? '';
+                if (empty($text)) return '';
+                $html = "<blockquote>{$text}";
+                if (!empty($author)) $html .= "\n<cite>{$author}</cite>";
+                $html .= "</blockquote>\n";
+                return $html;
+                
+            // Video
+            case 'video':
+                $url = $attrs['video_url'] ?? $attrs['url'] ?? '';
+                $title = $attrs['title'] ?? '';
+                if (empty($url)) return '';
+                return "<a href=\"{$url}\">{$title}</a>\n";
+                
+            // Accordion/FAQ
+            case 'accordion':
+            case 'faq':
+                $items = $attrs['items'] ?? [];
+                if (empty($items)) return '';
+                $html = '';
+                foreach ($items as $item) {
+                    $q = is_array($item) ? ($item['title'] ?? $item['question'] ?? '') : '';
+                    $a = is_array($item) ? ($item['content'] ?? $item['answer'] ?? '') : '';
+                    if (!empty($q)) $html .= "<h3>{$q}</h3>\n";
+                    if (!empty($a)) $html .= "<p>{$a}</p>\n";
+                }
+                return $html;
+                
+            // Tabs
+            case 'tabs':
+                $items = $attrs['tabs'] ?? $attrs['items'] ?? [];
+                if (empty($items)) return '';
+                $html = '';
+                foreach ($items as $tab) {
+                    $title = is_array($tab) ? ($tab['title'] ?? $tab['label'] ?? '') : '';
+                    $content = is_array($tab) ? ($tab['content'] ?? '') : '';
+                    if (!empty($title)) $html .= "<h3>{$title}</h3>\n";
+                    if (!empty($content)) $html .= "<p>{$content}</p>\n";
+                }
+                return $html;
+                
+            // Table
+            case 'table':
+            case 'pricing-table':
+                $rows = $attrs['rows'] ?? $attrs['items'] ?? [];
+                if (empty($rows)) return '';
+                $html = "<table>\n";
+                foreach ($rows as $row) {
+                    $html .= "<tr>";
+                    $cells = is_array($row) ? ($row['cells'] ?? $row) : [$row];
+                    foreach ($cells as $cell) {
+                        $val = is_array($cell) ? ($cell['value'] ?? $cell['text'] ?? '') : $cell;
+                        $html .= "<td>{$val}</td>";
+                    }
+                    $html .= "</tr>\n";
+                }
+                $html .= "</table>\n";
+                return $html;
+
+            // Social/contact — extract meaningful info
+            case 'social-icons':
+            case 'social-links':
+                return ''; // No text content
+                
+            // Spacer, divider, map — no text content  
+            case 'spacer':
+            case 'divider':
+            case 'map':
+            case 'google-map':
+            case 'separator':
+            case 'icon':
+                return '';
+                
+            // Form modules — extract labels
+            case 'form':
+            case 'contact-form':
+                $title = $attrs['title'] ?? $attrs['form_title'] ?? '';
+                return !empty($title) ? "<h3>{$title}</h3>\n" : '';
+                
+            // Counter/stats
+            case 'counter':
+            case 'stats':
+                $items = $attrs['items'] ?? [];
+                if (empty($items)) {
+                    $number = $attrs['number'] ?? $attrs['value'] ?? '';
+                    $label = $attrs['label'] ?? $attrs['title'] ?? '';
+                    return !empty($label) ? "<p><strong>{$number}</strong> {$label}</p>\n" : '';
+                }
+                $html = '';
+                foreach ($items as $item) {
+                    $num = is_array($item) ? ($item['number'] ?? $item['value'] ?? '') : '';
+                    $label = is_array($item) ? ($item['label'] ?? $item['title'] ?? '') : '';
+                    if (!empty($label)) $html .= "<p><strong>{$num}</strong> {$label}</p>\n";
+                }
+                return $html;
+                
+            // Blog/posts
+            case 'blog-posts':
+            case 'latest-posts':
+                return ''; // Dynamic content, skip
+                
+            // Catch-all: try to extract any text content
+            default:
+                $text = $attrs['content'] ?? $attrs['text'] ?? $attrs['title'] ?? '';
+                if (!empty($text)) {
+                    return "<p>{$text}</p>\n";
+                }
+                // Try children
+                if (!empty($moduleData['children'])) {
+                    $html = '';
+                    foreach ($moduleData['children'] as $child) {
+                        $html .= self::renderModuleClean($child);
+                    }
+                    return $html;
+                }
+                return '';
+        }
+    }
+
     private static function wrapForCanvasPreview(string $html, string $type, string $id): string
     {
         return '<div class="jtb-module-editor" data-id="' . htmlspecialchars($id, ENT_QUOTES, 'UTF-8') . '" data-type="' . htmlspecialchars($type, ENT_QUOTES, 'UTF-8') . '">'

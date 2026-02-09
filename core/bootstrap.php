@@ -75,6 +75,9 @@ ini_set('display_errors', '1');
 ini_set('log_errors', '1');
 ini_set('error_log', __DIR__ . '/../logs/php_errors.log');
 
+// Content rendering (plugin-agnostic)
+require_once __DIR__ . '/content_renderer.php';
+
 // Database connection helper
 require_once __DIR__ . '/database.php';
 $db = \core\Database::connection();

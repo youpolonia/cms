@@ -50,3 +50,33 @@ foreach (['structure', 'content', 'interactive', 'media', 'forms', 'blog', 'full
         }
     }
 }
+
+// Register JTB as a ContentRenderer (if available)
+if (class_exists("ContentRenderer")) {
+    ContentRenderer::register("jtb",
+        function(string $content): bool {
+            // Detect JTB content: either JSON structure or jtb- CSS classes
+            if (str_contains($content, "jtb-section") || str_contains($content, "jtb-module")) {
+                return true;
+            }
+            // Try JSON decode — JTB stores content as JSON
+            $decoded = @json_decode($content, true);
+            return is_array($decoded) && (isset($decoded["content"]) || isset($decoded["sections"]));
+        },
+        function(string $content): string {
+            // Try JSON decode first (JTB native format)
+            $decoded = @json_decode($content, true);
+            if (is_array($decoded)) {
+                return \JessieThemeBuilder\JTB_Renderer::renderClean($decoded);
+            }
+            // Fallback: strip JTB wrapper markup from HTML
+            $content = preg_replace("/<[^>]*class=\"[^\"]*jtb-(section|row|column|module|content)[^\"]*\"[^>]*>/i", "", $content);
+            $content = preg_replace("/\s+class=\"[^\"]*jtb-[^\"]*\"/i", "", $content);
+            $content = preg_replace("/\s+data-jtb-[a-z-]+=\"[^\"]*\"/i", "", $content);
+            $content = preg_replace("/\s+id=\"jtb-[^\"]*\"/i", "", $content);
+            $content = preg_replace("/<div\s*>\s*<\/div>/i", "", $content);
+            return trim($content);
+        },
+        5 // Higher priority than legacy-tb
+    );
+}

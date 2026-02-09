@@ -20,6 +20,7 @@ cms_require_admin_role();
 
 require_once CMS_ROOT . '/core/ai_seo_assistant.php';
 require_once CMS_ROOT . '/core/database.php';
+require_once CMS_ROOT . '/core/content_renderer.php';
 
 function esc($str) { return htmlspecialchars((string)$str, ENT_QUOTES, 'UTF-8'); }
 
@@ -55,7 +56,7 @@ foreach ($pages as $page) {
     
     $status = $score === null ? 'unknown' : ($score >= 80 ? 'ok' : ($score >= 60 ? 'medium' : 'high'));
     
-    $contentText = strip_tags($page['content'] ?? '');
+    $contentText = ContentRenderer::toText($page['content'] ?? '');
     $wordCount = $contentText ? count(preg_split('/\s+/u', trim($contentText), -1, PREG_SPLIT_NO_EMPTY)) : 0;
     $recWords = $latest['recommended_word_count'] ?? 0;
     

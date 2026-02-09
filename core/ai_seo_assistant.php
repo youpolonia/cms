@@ -102,6 +102,10 @@ function ai_seo_assistant_analyze(array $spec): array
         $focusKeyword = trim((string)($spec['focus_keyword'] ?? ''));
         $secondaryKeywords = trim((string)($spec['secondary_keywords'] ?? ''));
         $contentHtml = trim((string)($spec['content_html'] ?? ''));
+        // Clean builder markup for AI analysis
+        if (class_exists('ContentRenderer')) {
+            $contentHtml = ContentRenderer::render($contentHtml);
+        }
         $contentType = trim((string)($spec['content_type'] ?? ''));
         $language = trim((string)($spec['language'] ?? ''));
         $notes = trim((string)($spec['notes'] ?? ''));

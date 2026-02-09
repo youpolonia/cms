@@ -41,6 +41,7 @@ $tests = [
     'AiConfigTest.php',
     'EventBusTest.php',
     'MvcControllersTest.php',
+    'ContentRendererTest.php',
 ];
 
 $totalPassed = 0;
