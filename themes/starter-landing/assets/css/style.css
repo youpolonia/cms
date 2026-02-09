@@ -57,6 +57,10 @@ h1, h2, h3, h4, h5, h6 { font-family: 'Sora', sans-serif; font-weight: 700; line
     transform: translateY(0);
 }
 
+/* ── Main content offset for fixed header ── */
+.site-main { padding-top: 72px; }
+.site-main > .hero:first-child { margin-top: -72px; padding-top: 120px; }
+
 /* ── Header ── */
 .site-header {
     position: fixed;
