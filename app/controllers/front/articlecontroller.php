@@ -30,6 +30,9 @@ class ArticleController
         // Increment views
         $pdo->prepare("UPDATE articles SET views = views + 1 WHERE id = ?")->execute([$article['id']]);
 
-        render('front/article', ['article' => $article]);
+        render('front/article', [
+            'article' => $article,
+            '_toolbar_context' => ['page_id' => $article['id'] ?? null, 'page_title' => $article['title'] ?? '', 'type' => 'article']
+        ]);
     }
 }

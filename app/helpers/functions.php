@@ -316,6 +316,12 @@ if (!function_exists('resolve_front_template')) {
     }
 }
 
+
+// Admin toolbar for front-end
+if (file_exists(CMS_ROOT . '/core/admin-toolbar.php')) {
+    require_once CMS_ROOT . '/core/admin-toolbar.php';
+}
+
 if (!function_exists('render')) {
     /**
      * Render a view and exit
@@ -330,6 +336,28 @@ if (!function_exists('render')) {
         
         echo view($template, $data);
         exit;
+    }
+}
+
+
+if (!function_exists('cms_inject_admin_toolbar')) {
+    /**
+     * Inject admin toolbar into HTML output (after <body> tag)
+     */
+    function cms_inject_admin_toolbar(string $html, array $context = []): string {
+        if (!function_exists('cms_admin_toolbar') || !function_exists('cms_is_admin_logged_in')) {
+            return $html;
+        }
+        if (!cms_is_admin_logged_in()) {
+            return $html;
+        }
+        $toolbar = cms_admin_toolbar($context);
+        if (empty($toolbar)) {
+            return $html;
+        }
+        // Inject after <body> tag (with optional attributes)
+        $html = preg_replace('/(<body[^>]*>)/i', '$1' . "\n" . $toolbar, $html, 1);
+        return $html;
     }
 }
 
@@ -407,7 +435,10 @@ if (!function_exists('render_with_theme')) {
             $data['content'] = $content;
             extract($data);
 
+            ob_start();
             require $layoutPath;
+            $output = ob_get_clean();
+            echo cms_inject_admin_toolbar($output, $data['_toolbar_context'] ?? []);
             exit;
         }
 
@@ -423,7 +454,10 @@ if (!function_exists('render_with_theme')) {
             // Wrap in theme layout
             $data['content'] = $content;
             extract($data);
+            ob_start();
             require $layoutPath;
+            $output = ob_get_clean();
+            echo cms_inject_admin_toolbar($output, $data['_toolbar_context'] ?? []);
             exit;
         }
 
@@ -438,7 +472,10 @@ if (!function_exists('render_with_theme')) {
 
             $data['content'] = $content;
             extract($data);
+            ob_start();
             require $layoutPath;
+            $output = ob_get_clean();
+            echo cms_inject_admin_toolbar($output, []);
             exit;
         }
 

@@ -48,6 +48,14 @@ class PageController
                 'title' => $page['title'] ?? '',
                 'description' => $page['meta_description'] ?? ''
             ]);
+            // Inject admin toolbar if logged in
+            if (function_exists('cms_inject_admin_toolbar')) {
+                $output = cms_inject_admin_toolbar($output, [
+                    'page_id' => $page['id'] ?? null,
+                    'page_title' => $page['title'] ?? '',
+                    'type' => 'page'
+                ]);
+            }
             echo $output;
             return;
         }
@@ -68,7 +76,12 @@ class PageController
             $viewFile = 'front/page';
         }
 
-        render($viewFile, ['page' => $page, 'template' => $template, 'isPreview' => $isPreview]);
+        render($viewFile, [
+            'page' => $page, 
+            'template' => $template, 
+            'isPreview' => $isPreview,
+            '_toolbar_context' => ['page_id' => $page['id'] ?? null, 'page_title' => $page['title'] ?? '', 'type' => 'page']
+        ]);
     }
     
     /**

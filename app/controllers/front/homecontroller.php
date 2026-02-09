@@ -29,6 +29,10 @@ class HomeController
         ");
         $articles = $stmt->fetchAll(\PDO::FETCH_ASSOC);
 
-        render('front/home', ['pages' => $pages, 'articles' => $articles]);
+        render('front/home', [
+            'pages' => $pages, 
+            'articles' => $articles,
+            '_toolbar_context' => ['type' => 'home']
+        ]);
     }
 }
