@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/../../models/versionmodel.php';
+// versionmodel.php removed (unused)
 
 class ThemeStorageHandler {
     private static $storagePath = __DIR__ . '/../../themes/';

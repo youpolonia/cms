@@ -62,7 +62,7 @@ $pageHeader = [
     'icon' => '🤖',
     'title' => 'Robots.txt Preview',
     'description' => 'Generated dynamically from your SEO settings',
-    'back_url' => '/admin/seo-dashboard',
+    'back_url' => '/admin/seo',
     'back_text' => 'SEO Dashboard',
     'gradient' => 'var(--accent-color), var(--success-color)',
 ];

@@ -80,7 +80,7 @@ $pageHeader = [
     'icon' => '🗺️',
     'title' => 'Sitemap Preview',
     'description' => 'Dynamic sitemap generator preview',
-    'back_url' => '/admin/seo-dashboard',
+    'back_url' => '/admin/seo',
     'back_text' => 'SEO Dashboard',
     'gradient' => 'var(--success-color), var(--accent-color)',
 ];

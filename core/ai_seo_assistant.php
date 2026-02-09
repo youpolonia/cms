@@ -1,10 +1,10 @@
 <?php
 
 require_once __DIR__ . '/ai_content.php';
-require_once __DIR__ . '/ai_readability.php';
-require_once __DIR__ . '/ai_image_seo.php';
-require_once __DIR__ . '/ai_eeat_scorer.php';
-require_once __DIR__ . '/ai_featured_snippets.php';
+if (file_exists(__DIR__ . '/ai_readability.php')) { require_once __DIR__ . '/ai_readability.php'; }
+if (file_exists(__DIR__ . '/ai_image_seo.php')) { require_once __DIR__ . '/ai_image_seo.php'; }
+if (file_exists(__DIR__ . '/ai_eeat_scorer.php')) { require_once __DIR__ . '/ai_eeat_scorer.php'; }
+if (file_exists(__DIR__ . '/ai_featured_snippets.php')) { require_once __DIR__ . '/ai_featured_snippets.php'; }
 
 /**
  * AI SEO Log file path
@@ -595,28 +595,29 @@ function ai_seo_assistant_analyze(array $spec): array
         ai_seo_log_complete($logStartTime, true, $healthScore, $wasCached);
 
         // Add readability analysis
-        $readabilityData = ai_readability_analyze($contentHtml);
+        $readabilityData = function_exists("ai_readability_analyze") ? ai_readability_analyze($contentHtml) : ["ok" => false];
         if ($readabilityData['ok']) {
             $data['readability'] = $readabilityData;
         }
 
         // Add image SEO analysis
-        $imageSeoData = ai_image_analyze_content($contentHtml, $focusKeyword);
+        $imageSeoData = function_exists("ai_image_analyze_content") ? ai_image_analyze_content($contentHtml, $focusKeyword) : ["ok" => false];
         if ($imageSeoData['ok']) {
             $data['image_seo'] = $imageSeoData;
         }
 
         // Add E-E-A-T analysis
-        $eeatData = ai_eeat_score($contentHtml, [
+        $eeatData = function_exists("ai_eeat_score") ? ai_eeat_score($contentHtml, [
             'author' => $author ?? '',
             'updated_at' => $updatedAt ?? '',
-        ]);
+        ]
+        ) : [];
         if (!empty($eeatData)) {
             $data['eeat'] = $eeatData;
         }
 
         // Add Featured Snippets analysis
-        $snippetsData = ai_snippets_analyze($contentHtml, $focusKeyword);
+        $snippetsData = function_exists("ai_snippets_analyze") ? ai_snippets_analyze($contentHtml, $focusKeyword) : ["ok" => false];
         if ($snippetsData['ok']) {
             $data['featured_snippets'] = $snippetsData;
         }

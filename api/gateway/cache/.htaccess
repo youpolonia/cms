@@ -1,8 +1,0 @@
-# Prevent directory listing
-Options -Indexes
-
-# Deny access to all files
-<FilesMatch "\.(cache)$">
-    Order deny,allow
-    Deny from all
-</FilesMatch>

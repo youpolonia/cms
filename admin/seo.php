@@ -112,7 +112,7 @@ $pageHeader = [
     'icon' => '⚙️',
     'title' => 'SEO Settings',
     'description' => 'Configure default SEO settings for your site',
-    'back_url' => '/admin/seo-dashboard',
+    'back_url' => '/admin/seo',
     'back_text' => 'SEO Dashboard',
     'gradient' => 'var(--accent-color), var(--purple)',
 ];
