@@ -19,9 +19,7 @@
       <kbd>⌘K</kbd>
     </div>
     <nav class="header-nav">
-      <a href="/articles">Guides</a>
-      <a href="/gallery">Resources</a>
-      <a href="/contact">Support</a>
+      <?= render_menu('header', ['wrap' => false, 'class' => 'header-links', 'fallback_to_pages' => true]); ?>
     </nav>
     <button class="mobile-toggle" aria-label="Menu">☰</button>
   </div>
