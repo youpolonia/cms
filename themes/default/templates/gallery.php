@@ -4,6 +4,9 @@
  * Renders public galleries with per-gallery display templates:
  * grid | masonry | mosaic | carousel | justified
  * 
+ * Shows only galleries matching the active theme.
+ * Falls back to all public galleries if none match (user-created galleries).
+ * 
  * Available: $page (array), $content (string)
  */
 
@@ -11,11 +14,15 @@
 $_galleries = [];
 try {
     $_pdo = \core\Database::connection();
-    $_galStmt = $_pdo->query("
+    $_activeTheme = function_exists('get_active_theme') ? get_active_theme() : 'default';
+    
+    // First try galleries for this theme + galleries without a theme (user-created)
+    $_galStmt = $_pdo->prepare("
         SELECT * FROM galleries 
-        WHERE is_public = 1 
+        WHERE is_public = 1 AND (theme = ? OR theme IS NULL OR theme = '')
         ORDER BY sort_order ASC, name ASC
     ");
+    $_galStmt->execute([$_activeTheme]);
     $_galleries = $_galStmt->fetchAll(PDO::FETCH_ASSOC);
     
     foreach ($_galleries as &$_gal) {

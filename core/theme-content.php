@@ -139,15 +139,15 @@ function theme_install_demo_content(string $themeName, array $options = []): arr
                 
                 if ($galId) {
                     // Update existing gallery
-                    $stmt = $pdo->prepare("UPDATE galleries SET name = ?, description = ?, display_template = ?, is_public = 1, updated_at = NOW() WHERE id = ?");
-                    $stmt->execute([$gallery['name'], $gallery['description'] ?? '', $gallery['display_template'] ?? 'grid', $galId]);
+                    $stmt = $pdo->prepare("UPDATE galleries SET name = ?, description = ?, display_template = ?, theme = ?, is_public = 1, updated_at = NOW() WHERE id = ?");
+                    $stmt->execute([$gallery['name'], $gallery['description'] ?? '', $gallery['display_template'] ?? 'grid', $themeName, $galId]);
                     // Clear old images
                     $stmt = $pdo->prepare("DELETE FROM gallery_images WHERE gallery_id = ?");
                     $stmt->execute([$galId]);
                 } else {
                     // Create new gallery
-                    $stmt = $pdo->prepare("INSERT INTO galleries (name, slug, description, is_public, display_template, sort_order, created_at, updated_at) VALUES (?, ?, ?, 1, ?, 0, NOW(), NOW())");
-                    $stmt->execute([$gallery['name'], $galSlug, $gallery['description'] ?? '', $gallery['display_template'] ?? 'grid']);
+                    $stmt = $pdo->prepare("INSERT INTO galleries (name, slug, description, is_public, display_template, theme, sort_order, created_at, updated_at) VALUES (?, ?, ?, 1, ?, ?, 0, NOW(), NOW())");
+                    $stmt->execute([$gallery['name'], $galSlug, $gallery['description'] ?? '', $gallery['display_template'] ?? 'grid', $themeName]);
                     $galId = (int)$pdo->lastInsertId();
                 }
                 
