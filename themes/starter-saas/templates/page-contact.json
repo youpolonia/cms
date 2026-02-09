@@ -1,0 +1,65 @@
+{
+    "name": "Contact",
+    "content": {
+        "version": "1.0",
+        "content": [
+            {
+                "type": "section",
+                "attrs": {"_pattern": "page_hero", "padding": {"top": 100, "bottom": 80}, "padding__phone": {"top": 60, "bottom": 48, "left": 20, "right": 20}, "background_color": "#f8fafc", "fullwidth": true},
+                "children": [{"type": "row", "attrs": {"columns": "1", "max_width": 700}, "children": [{"type": "column", "attrs": {"width": "1", "horizontal_align": "center"}, "children": [
+                    {"type": "text", "attrs": {"content": "<p>GET IN TOUCH</p>", "text_align": "center", "font_size": 13, "font_weight": "700", "letter_spacing": 2, "text_color": "#6366f1", "margin_bottom": 12}, "id": "contact_label"},
+                    {"type": "heading", "attrs": {"text": "We'd love to hear from you", "header_level": "h1", "text_align": "center", "font_family": "Inter", "font_size": 48, "font_size__phone": 32, "font_weight": "800", "line_height": 1.15, "letter_spacing": -1.5, "text_color": "#0f172a", "margin_bottom": 20}, "id": "contact_title"},
+                    {"type": "text", "attrs": {"content": "<p>Have a question, feedback, or want to schedule a demo? Reach out and we'll get back to you within 24 hours.</p>", "text_align": "center", "font_size": 18, "line_height": 1.7, "text_color": "#64748b"}, "id": "contact_subtitle"}
+                ], "id": "contact_header_col"}], "id": "contact_header_row"}],
+                "id": "contact_hero"
+            },
+            {
+                "type": "section",
+                "attrs": {"_pattern": "contact_form", "padding": {"top": 60, "bottom": 80}, "padding__phone": {"top": 32, "bottom": 48, "left": 20, "right": 20}, "background_color": "#ffffff", "fullwidth": true},
+                "children": [{"type": "row", "attrs": {"columns": "3_5,2_5", "max_width": 1100, "gap": 48, "vertical_align": "top"}, "children": [
+                    {"type": "column", "attrs": {"width": "3_5"}, "children": [
+                        {"type": "contact_form", "attrs": {
+                            "form_title": "Send us a message",
+                            "fields": [
+                                {"type": "text", "label": "Full Name", "placeholder": "John Doe", "required": true},
+                                {"type": "email", "label": "Email Address", "placeholder": "john@company.com", "required": true},
+                                {"type": "select", "label": "Subject", "options": ["General Inquiry", "Sales & Pricing", "Technical Support", "Partnership", "Other"], "required": true},
+                                {"type": "textarea", "label": "Message", "placeholder": "Tell us how we can help...", "required": true, "rows": 5}
+                            ],
+                            "submit_text": "Send Message →",
+                            "submit_background": "#6366f1",
+                            "submit_color": "#ffffff",
+                            "submit_border_radius": 10,
+                            "label_color": "#374151",
+                            "input_background": "#f9fafb",
+                            "input_border": "#e5e7eb",
+                            "input_border_radius": 10,
+                            "input_padding": 14,
+                            "success_message": "Thank you! We'll get back to you within 24 hours.",
+                            "background_color": "#ffffff",
+                            "padding": {"top": 32, "right": 32, "bottom": 32, "left": 32},
+                            "border_radius": {"top_left": 16, "top_right": 16, "bottom_right": 16, "bottom_left": 16},
+                            "border": "1px solid #e2e8f0",
+                            "box_shadow": "0 4px 16px rgba(0,0,0,0.04)"
+                        }, "id": "contact_form"}
+                    ], "id": "contact_form_col"},
+                    {"type": "column", "attrs": {"width": "2_5"}, "children": [
+                        {"type": "blurb", "attrs": {"title": "Email Us", "content": "<p><a href=\"mailto:hello@company.com\" style=\"color:#6366f1;text-decoration:none\">hello@company.com</a></p>", "icon": "📧", "icon_size": 36, "title_font_size": 17, "title_font_weight": "700", "title_color": "#0f172a", "content_font_size": 15, "background_color": "#f8fafc", "padding": {"top": 24, "right": 24, "bottom": 24, "left": 24}, "border_radius": {"top_left": 14, "top_right": 14, "bottom_right": 14, "bottom_left": 14}, "margin_bottom": 16}, "id": "info_email"},
+                        {"type": "blurb", "attrs": {"title": "Call Us", "content": "<p><a href=\"tel:+1234567890\" style=\"color:#6366f1;text-decoration:none\">+1 (234) 567-890</a></p><p style=\"font-size:13px;color:#94a3b8;margin-top:4px\">Mon-Fri, 9AM-6PM EST</p>", "icon": "📞", "icon_size": 36, "title_font_size": 17, "title_font_weight": "700", "title_color": "#0f172a", "content_font_size": 15, "background_color": "#f8fafc", "padding": {"top": 24, "right": 24, "bottom": 24, "left": 24}, "border_radius": {"top_left": 14, "top_right": 14, "bottom_right": 14, "bottom_left": 14}, "margin_bottom": 16}, "id": "info_phone"},
+                        {"type": "blurb", "attrs": {"title": "Visit Us", "content": "<p style=\"color:#475569\">123 Innovation Drive<br>San Francisco, CA 94105<br>United States</p>", "icon": "📍", "icon_size": 36, "title_font_size": 17, "title_font_weight": "700", "title_color": "#0f172a", "content_font_size": 15, "background_color": "#f8fafc", "padding": {"top": 24, "right": 24, "bottom": 24, "left": 24}, "border_radius": {"top_left": 14, "top_right": 14, "bottom_right": 14, "bottom_left": 14}, "margin_bottom": 16}, "id": "info_location"},
+                        {"type": "blurb", "attrs": {"title": "Follow Us", "content": "<p style=\"display:flex;gap:12px;margin-top:4px\"><a href=\"#\" style=\"color:#6366f1;text-decoration:none;font-size:14px\">Twitter</a> <a href=\"#\" style=\"color:#6366f1;text-decoration:none;font-size:14px\">LinkedIn</a> <a href=\"#\" style=\"color:#6366f1;text-decoration:none;font-size:14px\">GitHub</a></p>", "icon": "🌐", "icon_size": 36, "title_font_size": 17, "title_font_weight": "700", "title_color": "#0f172a", "content_font_size": 15, "background_color": "#f8fafc", "padding": {"top": 24, "right": 24, "bottom": 24, "left": 24}, "border_radius": {"top_left": 14, "top_right": 14, "bottom_right": 14, "bottom_left": 14}}, "id": "info_social"}
+                    ], "id": "contact_info_col"}
+                ], "id": "contact_row"}],
+                "id": "contact_form_section"
+            },
+            {
+                "type": "section",
+                "attrs": {"_pattern": "map", "padding": {"top": 0, "bottom": 0}, "fullwidth": true},
+                "children": [{"type": "row", "attrs": {"columns": "1", "max_width": "100%", "no_padding": true}, "children": [{"type": "column", "attrs": {"width": "1"}, "children": [
+                    {"type": "map", "attrs": {"address": "San Francisco, CA", "height": 400, "zoom": 14, "style": "grayscale", "border_radius": {"top_left": 0, "top_right": 0, "bottom_right": 0, "bottom_left": 0}}, "id": "contact_map"}
+                ], "id": "map_col"}], "id": "map_row"}],
+                "id": "map_section"
+            }
+        ]
+    }
+}

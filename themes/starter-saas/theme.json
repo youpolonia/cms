@@ -1,0 +1,43 @@
+{
+    "name": "Starter SaaS",
+    "description": "A modern, conversion-focused theme perfect for SaaS products, tech startups, and digital agencies. Features bold gradients, clean typography, and persuasive layouts.",
+    "version": "1.0.0",
+    "author": "Jessie CMS",
+    "category": "tech",
+    "preview_html": "<div style=\"background: linear-gradient(135deg, #6366f1 0%, #0ea5e9 100%); padding: 48px; text-align: center; color: white; font-family: Inter, sans-serif;\"><h2 style=\"margin: 0 0 8px; font-size: 28px; font-weight: 800; letter-spacing: -0.5px;\">Starter SaaS</h2><p style=\"margin: 0; opacity: 0.85; font-size: 14px;\">Modern • Gradient • Conversion-Focused</p></div>",
+    "supports": {
+        "theme-builder": true,
+        "custom-header": true,
+        "custom-footer": true,
+        "custom-colors": true,
+        "jtb-integration": true
+    },
+    "colors": {
+        "primary": "#6366f1",
+        "secondary": "#0ea5e9",
+        "accent": "#f59e0b",
+        "background": "#ffffff",
+        "surface": "#f8fafc",
+        "dark": "#0f172a",
+        "text": "#1e293b",
+        "text_muted": "#64748b",
+        "border": "#e2e8f0",
+        "success": "#10b981",
+        "gradient_start": "#6366f1",
+        "gradient_end": "#0ea5e9"
+    },
+    "typography": {
+        "fontFamily": "Inter",
+        "headingFont": "Inter",
+        "baseFontSize": "16",
+        "lineHeight": "1.6",
+        "headingWeight": "700",
+        "letterSpacing": "-0.025em"
+    },
+    "pages": [
+        {"title": "Home", "slug": "home", "meta_title": "Home — Modern SaaS Solution", "meta_description": "Transform your business with our AI-powered platform. Built for teams that move fast."},
+        {"title": "About", "slug": "about", "meta_title": "About Us — Our Story", "meta_description": "Learn about our mission to empower businesses with cutting-edge technology."},
+        {"title": "Services", "slug": "services", "meta_title": "Services — What We Offer", "meta_description": "Explore our comprehensive suite of services designed to accelerate your growth."},
+        {"title": "Contact", "slug": "contact", "meta_title": "Contact Us — Get In Touch", "meta_description": "Ready to get started? Contact our team for a free consultation."}
+    ]
+}

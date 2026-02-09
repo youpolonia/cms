@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Controllers\Admin;
 
 require_once CMS_ROOT . '/models/settingsmodel.php';
+require_once CMS_ROOT . '/core/theme-installer.php';
 require_once CMS_ROOT . '/core/cache.php';
 
 use Core\Request;
@@ -53,6 +54,15 @@ class ThemesController
         }
 
         if ($this->setActiveTheme($slug)) {
+            // Import JTB templates if theme has them
+            $templatesDir = $themePath . '/templates';
+            if (is_dir($templatesDir)) {
+                $pdo = db();
+                $importResult = jtb_install_theme($slug, $pdo);
+                if ($importResult['success']) {
+                    \Cache::clear('jtb_templates');
+                }
+            }
             \Cache::clear('system_settings');
             \Cache::clear('active_theme');
             \Cache::clear('theme_config');
