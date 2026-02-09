@@ -1,16 +1,10 @@
 <?php
-file_put_contents('/tmp/jtb_root.log', 'ROOT: ' . ($_SERVER['REQUEST_URI'] ?? 'none') . "\n", FILE_APPEND);
 
 /**
  * CMS Main Entry Point
  * Handles both legacy routes and MVC admin routes
  */
 
-// DEBUG: Log all requests to index.php
-$_debug_uri = $_SERVER['REQUEST_URI'] ?? 'unknown';
-$_debug_method = $_SERVER['REQUEST_METHOD'] ?? 'unknown';
-$_debug_session = session_status() === PHP_SESSION_ACTIVE ? 'ACTIVE' : (session_status() === PHP_SESSION_NONE ? 'NONE' : 'DISABLED');
-$_debug_cookie = isset($_COOKIE['CMSSESSID_ADMIN']) ? 'SET' : 'MISSING';
 
 use Core\Router as router;
 
@@ -130,12 +124,7 @@ if (session_status() === PHP_SESSION_NONE) {
     \Core\Session::start();
 }
 
-// DEBUG: Log session status after start
-$_debug_logged_in = \Core\Session::isLoggedIn() ? 'YES' : 'NO';
-$_debug_admin_id = $_SESSION['admin_id'] ?? 'null';
-$_debug_admin_role = $_SESSION['admin_role'] ?? 'null';
 
-// DEBUG DEEP
 
 // ============================================================
 // ROUTE REGISTRATION
@@ -165,7 +154,6 @@ if (file_exists($routeFile)) {
     }
 }
 
-// DEBUG DEEP
 
 // Load MVC admin routes from config/routes.php LAST (higher priority - overwrites legacy)
 $mvcRoutesFile = CMS_CONFIG . '/routes.php';
@@ -251,7 +239,6 @@ if (file_exists($mvcRoutesFile)) {
     }
 }
 
-// DEBUG DEEP
 
 // Guarded optional load of custom web routes (DEV only)
 if (defined('DEV_MODE') && DEV_MODE === true) {
@@ -270,7 +257,6 @@ if ($qpos !== false) { $uri = substr($uri, 0, $qpos); }
 if ($uri === '' || $uri === '/index.php') { $uri = '/'; }
 $validation_ok = $validator->validate($method, $uri);
 if (!$validation_ok) { http_response_code(400); }
-// DEBUG JTB
 
 
 
