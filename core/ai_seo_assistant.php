@@ -709,6 +709,9 @@ function ai_seo_assistant_save_report(array $payload, array $context = []): ?str
             return null;
         }
 
+        // Track score history in DB
+        ai_seo_track_score($record);
+
         return $filename;
 
     } catch (\Throwable $e) {
@@ -1055,5 +1058,132 @@ function ai_seo_assistant_generate_content(array $analysis, array $context = [])
             'content' => '',
             'error' => 'An unexpected error occurred while generating the article draft.'
         ];
+    }
+}
+
+/**
+ * Track SEO score in history table (called after each report save)
+ */
+function ai_seo_track_score(array $record): void
+{
+    try {
+        $ctx = $record['context'] ?? [];
+        $data = $record['data'] ?? [];
+        
+        $entityType = null;
+        $entityId = null;
+        
+        if (!empty($ctx['page_id'])) {
+            $entityType = 'page';
+            $entityId = (int)$ctx['page_id'];
+        } elseif (!empty($ctx['article_id'])) {
+            $entityType = 'article';
+            $entityId = (int)$ctx['article_id'];
+        }
+        
+        if (!$entityType || !$entityId) return;
+        
+        $pdo = \core\Database::connection();
+        
+        // Insert score history
+        $seoScore = $data['health_score'] ?? $data['seo_score'] ?? null;
+        $contentScore = $data['content_score'] ?? null;
+        $wordCount = $data['word_count'] ?? $data['content_length'] ?? 0;
+        $keyword = $ctx['keyword'] ?? null;
+        
+        $stmt = $pdo->prepare("INSERT INTO seo_score_history 
+            (entity_type, entity_id, seo_score, content_score, word_count, focus_keyword, report_id, analyzed_at)
+            VALUES (?, ?, ?, ?, ?, ?, ?, NOW())");
+        $stmt->execute([$entityType, $entityId, $seoScore, $contentScore, $wordCount, $keyword, $record['id'] ?? null]);
+        
+        // Track keyword if present
+        if ($keyword) {
+            $difficulty = null;
+            if (!empty($data['keyword_difficulty'])) {
+                $kd = is_array($data['keyword_difficulty']) ? ($data['keyword_difficulty'][0] ?? null) : null;
+                $difficulty = is_array($kd) ? ($kd['difficulty'] ?? null) : null;
+            }
+            
+            $stmt = $pdo->prepare("INSERT INTO seo_keyword_tracking 
+                (keyword, entity_type, entity_id, score, difficulty, tracked_at)
+                VALUES (?, ?, ?, ?, ?, NOW())");
+            $stmt->execute([$keyword, $entityType, $entityId, $seoScore, $difficulty]);
+        }
+    } catch (\Throwable $e) {
+        // Don't break report saving if tracking fails
+        error_log('ai_seo_track_score: ' . $e->getMessage());
+    }
+}
+
+/**
+ * Get score history for an entity
+ */
+function ai_seo_get_score_history(string $entityType, int $entityId, int $limit = 50): array
+{
+    try {
+        $pdo = \core\Database::connection();
+        $stmt = $pdo->prepare("SELECT * FROM seo_score_history 
+            WHERE entity_type = ? AND entity_id = ? 
+            ORDER BY analyzed_at DESC LIMIT ?");
+        $stmt->execute([$entityType, $entityId, $limit]);
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    } catch (\Throwable $e) {
+        return [];
+    }
+}
+
+/**
+ * Get keyword tracking data
+ */
+function ai_seo_get_keyword_history(string $keyword, int $limit = 100): array
+{
+    try {
+        $pdo = \core\Database::connection();
+        $stmt = $pdo->prepare("SELECT * FROM seo_keyword_tracking 
+            WHERE keyword = ? ORDER BY tracked_at DESC LIMIT ?");
+        $stmt->execute([$keyword, $limit]);
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    } catch (\Throwable $e) {
+        return [];
+    }
+}
+
+/**
+ * Get all tracked keywords with latest scores
+ */
+function ai_seo_get_tracked_keywords(): array
+{
+    try {
+        $pdo = \core\Database::connection();
+        return $pdo->query("SELECT keyword, entity_type, entity_id, score, difficulty, 
+            MAX(tracked_at) as last_tracked, COUNT(*) as track_count
+            FROM seo_keyword_tracking 
+            GROUP BY keyword, entity_type, entity_id
+            ORDER BY last_tracked DESC")->fetchAll(\PDO::FETCH_ASSOC);
+    } catch (\Throwable $e) {
+        return [];
+    }
+}
+
+/**
+ * Get global score averages over time (for dashboard chart)
+ */
+function ai_seo_get_score_timeline(int $days = 90): array
+{
+    try {
+        $pdo = \core\Database::connection();
+        $stmt = $pdo->prepare("SELECT DATE(analyzed_at) as date, 
+            AVG(seo_score) as avg_score, 
+            COUNT(*) as analyses,
+            MIN(seo_score) as min_score,
+            MAX(seo_score) as max_score
+            FROM seo_score_history 
+            WHERE analyzed_at >= DATE_SUB(NOW(), INTERVAL ? DAY)
+            GROUP BY DATE(analyzed_at) 
+            ORDER BY date ASC");
+        $stmt->execute([$days]);
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    } catch (\Throwable $e) {
+        return [];
     }
 }
