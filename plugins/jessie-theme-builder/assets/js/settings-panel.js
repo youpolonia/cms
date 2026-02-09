@@ -24,7 +24,10 @@
     // ========================================
 
     JTB.Settings.render = function(moduleConfig, moduleData) {
-        const panel = document.querySelector('.jtb-settings-panel');
+        // For Template Editor, render to #moduleSettings to preserve #conditionsPanel
+        // For Page Builder, render to .jtb-settings-panel
+        const moduleSettingsContainer = document.getElementById('moduleSettings');
+        const panel = moduleSettingsContainer || document.querySelector('.jtb-settings-panel');
         if (!panel) return;
 
         // Debug logging
@@ -1007,11 +1010,18 @@
                         credentials: 'include',
                         body: formData
                     })
-                    .then(response => response.json())
+                    .then(response => {
+                        if (!response.ok) throw new Error('HTTP ' + response.status);
+                        return response.json();
+                    })
                     .then(data => {
                         if (data.success) {
                             JTB.Settings.addImageToGallery(wrapper, data.data.url);
                         }
+                    })
+                    .catch(error => {
+                        console.error('[JTB] Upload failed:', error.message);
+                        JTB.notify && JTB.notify('Upload failed: ' + error.message, 'error');
                     });
                 });
             };
@@ -1046,73 +1056,17 @@
         JTB.Settings.updateGalleryValue(wrapper);
     };
 
+    /**
+     * Gradient events are now handled by fields.js
+     * This is a compatibility wrapper that delegates to the fields.js implementation
+     * @deprecated Use JTB.Fields.initGradientField() instead
+     */
     JTB.Settings.bindGradientEvents = function(wrapper, name) {
-        const hiddenInput = wrapper.querySelector('input[type="hidden"]');
-        const preview = wrapper.querySelector('.jtb-gradient-preview');
-        const typeSelect = wrapper.querySelector('.jtb-gradient-type');
-        const angleInput = wrapper.querySelector('.jtb-gradient-angle');
-        const angleValue = wrapper.querySelector('.jtb-gradient-angle-value');
-        const stopsContainer = wrapper.querySelector('.jtb-gradient-stops');
-        const addStopBtn = wrapper.querySelector('.jtb-gradient-add-stop');
-
-        const updateGradient = () => {
-            const type = typeSelect.value;
-            const angle = angleInput.value;
-            const stops = [];
-
-            stopsContainer.querySelectorAll('.jtb-gradient-stop').forEach(stop => {
-                const color = stop.querySelector('input[type="color"]').value;
-                const position = stop.dataset.position;
-                stops.push(`${color} ${position}%`);
-            });
-
-            let gradient;
-            if (type === 'radial') {
-                gradient = `radial-gradient(circle, ${stops.join(', ')})`;
-            } else {
-                gradient = `linear-gradient(${angle}deg, ${stops.join(', ')})`;
-            }
-
-            preview.style.background = gradient;
-            hiddenInput.value = gradient;
-            JTB.Settings.setValue(name, gradient);
-        };
-
-        typeSelect.addEventListener('change', updateGradient);
-
-        angleInput.addEventListener('input', () => {
-            angleValue.textContent = angleInput.value + '°';
-            updateGradient();
-        });
-
-        stopsContainer.querySelectorAll('.jtb-gradient-stop input[type="color"]').forEach(input => {
-            input.addEventListener('input', updateGradient);
-        });
-
-        if (addStopBtn) {
-            addStopBtn.addEventListener('click', () => {
-                const position = 50; // Default middle position
-                // Use Feather icon for remove
-                const removeIcon = typeof JTB.getFeatherIcon === 'function' ? JTB.getFeatherIcon('x', 12) : '×';
-
-                const stopHtml = `
-                    <div class="jtb-gradient-stop" data-position="${position}">
-                        <input type="color" value="#888888">
-                        <span>${position}%</span>
-                        <button type="button" class="jtb-gradient-stop-remove">${removeIcon}</button>
-                    </div>
-                `;
-                stopsContainer.insertAdjacentHTML('beforeend', stopHtml);
-
-                const newStop = stopsContainer.lastElementChild;
-                newStop.querySelector('input[type="color"]').addEventListener('input', updateGradient);
-                newStop.querySelector('.jtb-gradient-stop-remove').addEventListener('click', () => {
-                    newStop.remove();
-                    updateGradient();
-                });
-
-                updateGradient();
-            });
+        // Delegate to fields.js implementation to avoid duplicate code
+        if (typeof JTB.Fields !== 'undefined' && typeof JTB.Fields.initGradientField === 'function') {
+            JTB.Fields.initGradientField(wrapper);
+        } else {
+            console.warn('[JTB Settings] JTB.Fields.initGradientField not available, gradient field may not work');
         }
     };
 
@@ -1213,22 +1167,49 @@
         };
 
         const updateBorder = () => {
+            const widthVal = parseInt(controls.width.value) || 0;
+            const styleVal = controls.style.value || 'solid';
+            const colorVal = controls.color.value || '#000000';
+            const radiusVal = parseInt(controls.radius.value) || 0;
+
+            // Combined object for JS compatibility
             const values = {
-                width: parseInt(controls.width.value) || 0,
-                style: controls.style.value || 'solid',
-                color: controls.color.value || '#000000',
-                radius: parseInt(controls.radius.value) || 0
+                width: widthVal,
+                style: styleVal,
+                color: colorVal,
+                radius: radiusVal
             };
 
             if (preview) {
-                preview.style.border = `${values.width}px ${values.style} ${values.color}`;
-                preview.style.borderRadius = `${values.radius}px`;
+                preview.style.border = `${widthVal}px ${styleVal} ${colorVal}`;
+                preview.style.borderRadius = `${radiusVal}px`;
             }
 
             if (hiddenInput) {
                 hiddenInput.value = JSON.stringify(values);
             }
+
+            // FIX 2026-02-03: Set BOTH combined object AND separate PHP fields
+            // This ensures compatibility with PHP generateBorderCss()
             JTB.Settings.setValue(name, values);
+
+            // Also set separate fields for PHP compatibility
+            // border_width as array for 4-sided support
+            JTB.Settings.setValue('border_width', {
+                top: widthVal,
+                right: widthVal,
+                bottom: widthVal,
+                left: widthVal
+            });
+            JTB.Settings.setValue('border_style', styleVal);
+            JTB.Settings.setValue('border_color', colorVal);
+            // border_radius as array for 4-corner support
+            JTB.Settings.setValue('border_radius', {
+                top_left: radiusVal,
+                top_right: radiusVal,
+                bottom_right: radiusVal,
+                bottom_left: radiusVal
+            });
         };
 
         // Width slider sync
@@ -1970,7 +1951,10 @@
             JTB.log('Settings panel events cleaned up');
         }
 
-        const panel = document.querySelector('.jtb-settings-panel');
+        // For Template Editor, render to #moduleSettings to preserve #conditionsPanel
+        // For Page Builder, render to .jtb-settings-panel
+        const moduleSettingsContainer = document.getElementById('moduleSettings');
+        const panel = moduleSettingsContainer || document.querySelector('.jtb-settings-panel');
         if (!panel) return;
 
         JTB.Settings.currentModule = null;

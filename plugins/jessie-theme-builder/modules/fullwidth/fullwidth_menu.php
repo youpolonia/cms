@@ -25,6 +25,49 @@ class JTB_Module_FullwidthMenu extends JTB_Element
     public bool $use_position = false;
     public bool $use_filters = false;
 
+    // === UNIFIED THEME SYSTEM ===
+    protected string $module_prefix = 'fullwidth_menu';
+
+    /**
+     * Declarative style configuration
+     */
+    protected array $style_config = [
+        'menu_link_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-menu-item > a',
+            'hover' => true
+        ],
+        'active_link_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-current-menu-item > a'
+        ],
+        'dropdown_menu_bg_color' => [
+            'property' => 'background',
+            'selector' => '.jtb-sub-menu'
+        ],
+        'dropdown_menu_text_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-sub-menu .jtb-menu-item > a'
+        ],
+        'dropdown_menu_line_color' => [
+            'property' => 'border-color',
+            'selector' => '.jtb-sub-menu, .jtb-sub-menu .jtb-menu-item > a'
+        ],
+        'mobile_menu_bg_color' => [
+            'property' => 'background',
+            'selector' => '.jtb-menu-nav'
+        ],
+        'mobile_menu_text_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-menu-nav .jtb-menu-item > a'
+        ],
+        'logo_max_height' => [
+            'property' => 'max-height',
+            'selector' => '.jtb-menu-logo img',
+            'unit' => 'px'
+        ]
+    ];
+
     public function getSlug(): string
     {
         return 'fullwidth_menu';
@@ -126,6 +169,9 @@ class JTB_Module_FullwidthMenu extends JTB_Element
 
     public function render(array $attrs, string $content = ''): string
     {
+        // Apply default styles from design system
+        $attrs = JTB_Default_Styles::mergeWithDefaults($this->getSlug(), $attrs);
+
         $menuStyle = $attrs['menu_style'] ?? 'left';
         $logo = $attrs['logo'] ?? '';
 
@@ -191,6 +237,9 @@ class JTB_Module_FullwidthMenu extends JTB_Element
     public function generateCss(array $attrs, string $selector): string
     {
         $css = '';
+
+        // Use declarative style_config system
+        $css .= $this->generateStyleConfigCss($attrs, $selector);
 
         $menuStyle = $attrs['menu_style'] ?? 'left';
         $linkColor = $attrs['menu_link_color'] ?? '#666666';

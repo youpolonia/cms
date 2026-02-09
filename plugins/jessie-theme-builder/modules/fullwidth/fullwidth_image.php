@@ -25,6 +25,23 @@ class JTB_Module_FullwidthImage extends JTB_Element
     public bool $use_position = false;
     public bool $use_filters = true;
 
+    // === UNIFIED THEME SYSTEM ===
+    protected string $module_prefix = 'fullwidth_image';
+
+    /**
+     * Declarative style configuration
+     */
+    protected array $style_config = [
+        'overlay_color' => [
+            'property' => 'background',
+            'selector' => '.jtb-image-overlay'
+        ],
+        'overlay_icon_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-overlay-icon'
+        ]
+    ];
+
     public function getSlug(): string
     {
         return 'fullwidth_image';
@@ -50,11 +67,11 @@ class JTB_Module_FullwidthImage extends JTB_Element
                 'label' => 'Image Title',
                 'type' => 'text'
             ],
-            'url' => [
+            'link_url' => [
                 'label' => 'Link URL',
                 'type' => 'text'
             ],
-            'url_new_window' => [
+            'link_target' => [
                 'label' => 'Open in New Tab',
                 'type' => 'toggle',
                 'default' => false
@@ -92,11 +109,14 @@ class JTB_Module_FullwidthImage extends JTB_Element
 
     public function render(array $attrs, string $content = ''): string
     {
+        // Apply default styles from design system
+        $attrs = JTB_Default_Styles::mergeWithDefaults($this->getSlug(), $attrs);
+
         $src = $attrs['src'] ?? '';
         $alt = $this->esc($attrs['alt'] ?? '');
         $titleText = $this->esc($attrs['title_text'] ?? '');
-        $url = $attrs['url'] ?? '';
-        $newWindow = !empty($attrs['url_new_window']) ? ' target="_blank" rel="noopener"' : '';
+        $url = $attrs['link_url'] ?? '';
+        $newWindow = !empty($attrs['link_target']) ? ' target="_blank" rel="noopener"' : '';
         $lightbox = !empty($attrs['show_in_lightbox']);
         $useOverlay = !empty($attrs['use_overlay']);
 
@@ -137,6 +157,9 @@ class JTB_Module_FullwidthImage extends JTB_Element
     public function generateCss(array $attrs, string $selector): string
     {
         $css = '';
+
+        // Use declarative style_config system
+        $css .= $this->generateStyleConfigCss($attrs, $selector);
 
         $useOverlay = !empty($attrs['use_overlay']);
         $overlayColor = $attrs['overlay_color'] ?? 'rgba(0,0,0,0.3)';

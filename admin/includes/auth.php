@@ -1,67 +1,48 @@
 <?php
-// Admin Authentication v1.0
-// Handles session-based authentication for admin area
+// Admin Authentication v2.0
+// Session-based authentication for admin area
+// Uses session keys set by admin/login.php: admin_id, admin_role, admin_username
 
 class AdminAuth {
-    const SESSION_KEY = 'admin_auth';
     const IDLE_TIMEOUT = 1800; // 30 minutes
 
-    public static function authenticate($username, $password) {
-        $user = self::validateCredentials($username, $password);
-        if ($user) {
-            $_SESSION[self::SESSION_KEY] = [
-                'user_id' => $user['id'],
-                'username' => $user['username'],
-                'roles' => $user['roles'],
-                'last_activity' => time()
-            ];
-            return true;
-        }
-        return false;
-    }
-
-    public static function isAuthenticated() {
-        if (!isset($_SESSION[self::SESSION_KEY])) {
+    public static function isAuthenticated(): bool {
+        if (!isset($_SESSION['admin_id'])) {
             return false;
         }
 
-        $auth = $_SESSION[self::SESSION_KEY];
-        
-        // Check idle timeout
-        if (time() - $auth['last_activity'] > self::IDLE_TIMEOUT) {
-            self::logout();
-            return false;
+        // Check idle timeout via last_regeneration (set by login.php)
+        if (isset($_SESSION['last_regeneration'])) {
+            if (time() - $_SESSION['last_regeneration'] > self::IDLE_TIMEOUT) {
+                self::logout();
+                return false;
+            }
+            $_SESSION['last_regeneration'] = time();
         }
 
-        // Update last activity
-        $_SESSION[self::SESSION_KEY]['last_activity'] = time();
         return true;
     }
 
-    public static function logout() {
-        unset($_SESSION[self::SESSION_KEY]);
+    public static function logout(): void {
+        unset($_SESSION['admin_id'], $_SESSION['admin_role'], $_SESSION['admin_username']);
+        unset($_SESSION['admin_authenticated'], $_SESSION['admin_user_id']);
     }
 
-    public static function hasRole($role) {
+    public static function hasRole(string $role): bool {
         if (!self::isAuthenticated()) {
             return false;
         }
-        return in_array($role, $_SESSION[self::SESSION_KEY]['roles']);
+        return ($_SESSION['admin_role'] ?? '') === $role;
     }
 
-    private static function validateCredentials($username, $password) {
-        // Get user from database
-        $user = DB::queryFirstRow("SELECT * FROM admin_users WHERE username = %s", $username);
-        
-        if (!$user || !password_verify($password, $user['password_hash'])) {
-            return false;
+    public static function getCurrentAdmin(): ?array {
+        if (!self::isAuthenticated()) {
+            return null;
         }
-
         return [
-            'id' => $user['id'],
-            'username' => $user['username'],
-            'roles' => json_decode($user['roles'], true),
-            'last_login' => $user['last_login']
+            'id' => $_SESSION['admin_id'] ?? null,
+            'username' => $_SESSION['admin_username'] ?? null,
+            'role' => $_SESSION['admin_role'] ?? null,
         ];
     }
 }

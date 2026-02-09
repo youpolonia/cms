@@ -1114,7 +1114,7 @@ require_once CMS_ROOT . '/admin/includes/page_header.php';
         <div style="margin-bottom:20px;padding:20px;background:linear-gradient(135deg, var(--accent) 0%, #7c3aed 100%);border-radius:12px;border:2px solid var(--accent)">
             <h4 style="font-size:16px;margin-bottom:8px;color:white;display:flex;align-items:center;gap:8px">🎯 Perfect Content <span style="font-size:11px;background:rgba(255,255,255,0.2);padding:2px 8px;border-radius:10px">RECOMMENDED</span></h4>
             <p style="font-size:12px;color:rgba(255,255,255,0.9);margin-bottom:12px">All-in-one: Fix AI detection patterns + improve readability + boost engagement. One click solution.</p>
-            <button class="btn btn-sm" id="perfectBtn" style="background:white;color:var(--accent);font-weight:600" <?= !$aiConfigured ? 'disabled' : '' ?>>🎯 Perfect My Content</button>
+            <button class="btn btn-sm" id="perfectBtn" style="background:var(--accent);color:var(--bg);font-weight:600" <?= !$aiConfigured ? 'disabled' : '' ?>>🎯 Perfect My Content</button>
         </div>
         
         <p style="font-size:11px;color:var(--text2);margin-bottom:16px;text-align:center">— or use individual tools below —</p>

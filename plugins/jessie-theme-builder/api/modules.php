@@ -25,6 +25,9 @@ if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
 $modules = [];
 
 foreach (JTB_Registry::getInstances() as $slug => $module) {
+    // Get default styles for this module type
+    $defaultAttrs = JTB_Default_Styles::getDefaults($slug);
+
     $modules[$slug] = [
         'slug' => $module->getSlug(),
         'name' => $module->getName(),
@@ -32,6 +35,7 @@ foreach (JTB_Registry::getInstances() as $slug => $module) {
         'category' => $module->category,
         'is_child' => $module->is_child,
         'child_slug' => $module->child_slug,
+        'defaults' => $defaultAttrs,
         'fields' => [
             'content' => $module->getContentFields(),
             'design' => $module->getDesignFields(),

@@ -27,6 +27,24 @@ class JTB_Module_Section extends JTB_Element
     public bool $use_sizing = true;
     public bool $use_dividers = true;
 
+    // === UNIFIED THEME SYSTEM ===
+    protected string $module_prefix = 'section';
+
+    protected array $style_config = [
+        'inner_width' => [
+            'property' => 'max-width',
+            'selector' => '.jtb-section-inner',
+            'unit' => 'px',
+            'responsive' => true
+        ],
+        'min_height' => [
+            'property' => 'min-height',
+            'selector' => '',
+            'unit' => 'px',
+            'responsive' => true
+        ]
+    ];
+
     public function getSlug(): string
     {
         return 'section';
@@ -86,6 +104,9 @@ class JTB_Module_Section extends JTB_Element
 
     public function render(array $attrs, string $content = ''): string
     {
+        // Apply default styles from design system
+        $attrs = JTB_Default_Styles::mergeWithDefaults($this->getSlug(), $attrs);
+
         $id = $attrs['_id'] ?? $this->generateId();
         $fullwidth = !empty($attrs['fullwidth']);
         $bgType = $attrs['background_type'] ?? 'none';
@@ -195,9 +216,15 @@ class JTB_Module_Section extends JTB_Element
             $innerRules[] = 'max-width: ' . (int) $attrs['inner_width'] . 'px';
         }
 
-        // Minimum height
+        // Minimum height (supports px, vh, %, auto)
         if (!empty($attrs['min_height'])) {
-            $rules[] = 'min-height: ' . (int) $attrs['min_height'] . 'px';
+            $minHeight = $attrs['min_height'];
+            // If it's a string with unit (vh, %, auto), use as-is; otherwise assume px
+            if (is_string($minHeight) && preg_match('/^[\d.]+\s*(vh|%|px|em|rem|auto)$/i', $minHeight)) {
+                $rules[] = 'min-height: ' . $minHeight;
+            } else {
+                $rules[] = 'min-height: ' . (int) $minHeight . 'px';
+            }
         }
 
         // Vertical alignment

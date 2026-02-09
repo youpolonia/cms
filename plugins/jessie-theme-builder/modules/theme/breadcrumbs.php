@@ -15,13 +15,40 @@ class JTB_Module_Breadcrumbs extends JTB_Element
     public string $slug = 'breadcrumbs';
     public string $name = 'Breadcrumbs';
     public string $icon = 'chevrons-right';
-    public string $category = 'theme';
+    public string $category = 'dynamic';
 
     public bool $use_background = true;
     public bool $use_spacing = true;
     public bool $use_border = true;
     public bool $use_box_shadow = true;
     public bool $use_animation = true;
+    public bool $use_typography = true;
+
+    protected string $module_prefix = 'breadcrumbs';
+
+    protected array $style_config = [
+        'text_color' => [
+            'property' => 'color'
+        ],
+        'link_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-bc-link',
+            'hover' => true
+        ],
+        'separator_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-bc-separator, .jtb-bc-sep-text, .jtb-bc-sep-icon'
+        ],
+        'current_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-bc-current-text'
+        ],
+        'font_size' => [
+            'property' => 'font-size',
+            'unit' => 'px',
+            'responsive' => true
+        ]
+    ];
 
     public function getSlug(): string
     {
@@ -129,12 +156,34 @@ class JTB_Module_Breadcrumbs extends JTB_Element
 
     public function render(array $attrs, string $content = ''): string
     {
+        // Apply default styles from design system
+        $attrs = JTB_Default_Styles::mergeWithDefaults($this->getSlug(), $attrs);
+
         $id = $attrs['id'] ?? 'breadcrumbs_' . uniqid();
         $homeText = $attrs['home_text'] ?? 'Home';
         $homeIcon = $attrs['home_icon'] ?? true;
         $separator = $attrs['separator'] ?? 'chevron';
         $showCurrent = $attrs['show_current'] ?? true;
+        $linkCurrent = $attrs['link_current'] ?? false;
         $schema = $attrs['schema_markup'] ?? true;
+
+        // Get dynamic breadcrumbs
+        $isPreview = JTB_Dynamic_Context::isPreviewMode();
+        $crumbs = JTB_Dynamic_Context::getBreadcrumbs();
+
+        // Fallback for preview mode
+        if (empty($crumbs) || $isPreview) {
+            $crumbs = [
+                ['label' => 'Home', 'url' => '/'],
+                ['label' => 'Category', 'url' => '/category/example'],
+                ['label' => 'Current Page Title', 'url' => '']
+            ];
+        }
+
+        // Override home text
+        if (!empty($crumbs[0])) {
+            $crumbs[0]['label'] = $homeText;
+        }
 
         // SVG icons
         $chevronIcon = '<svg class="jtb-bc-sep-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>';
@@ -153,43 +202,53 @@ class JTB_Module_Breadcrumbs extends JTB_Element
         $html = '<nav id="' . $this->esc($id) . '" class="jtb-breadcrumbs"' . $wrapperAttrs . '>';
         $html .= '<ol class="jtb-bc-list">';
 
-        // Home
-        $itemAttrs = $schema ? ' itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem"' : '';
-        $html .= '<li class="jtb-bc-item"' . $itemAttrs . '>';
-        $html .= '<a href="#" class="jtb-bc-link"' . ($schema ? ' itemprop="item"' : '') . '>';
-        if ($homeIcon) {
-            $html .= $homeIconSvg;
-        }
-        $html .= '<span' . ($schema ? ' itemprop="name"' : '') . '>' . $this->esc($homeText) . '</span>';
-        $html .= '</a>';
-        if ($schema) {
-            $html .= '<meta itemprop="position" content="1" />';
-        }
-        $html .= '</li>';
+        $position = 0;
+        $lastIndex = count($crumbs) - 1;
 
-        // Separator
-        $html .= $sepHtml;
+        foreach ($crumbs as $index => $crumb) {
+            $position++;
+            $isLast = ($index === $lastIndex);
+            $isCurrent = $isLast && $showCurrent;
+            $itemAttrs = $schema ? ' itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem"' : '';
 
-        // Category
-        $html .= '<li class="jtb-bc-item"' . $itemAttrs . '>';
-        $html .= '<a href="#" class="jtb-bc-link"' . ($schema ? ' itemprop="item"' : '') . '>';
-        $html .= '<span' . ($schema ? ' itemprop="name"' : '') . '>Category</span>';
-        $html .= '</a>';
-        if ($schema) {
-            $html .= '<meta itemprop="position" content="2" />';
-        }
-        $html .= '</li>';
-
-        // Separator
-        $html .= $sepHtml;
-
-        // Current page
-        if ($showCurrent) {
-            $html .= '<li class="jtb-bc-item jtb-bc-current"' . $itemAttrs . '>';
-            $html .= '<span class="jtb-bc-current-text"' . ($schema ? ' itemprop="name"' : '') . '>Current Page Title</span>';
-            if ($schema) {
-                $html .= '<meta itemprop="position" content="3" />';
+            // Add separator before items (except first)
+            if ($index > 0) {
+                $html .= $sepHtml;
             }
+
+            // Skip last item if showCurrent is false
+            if ($isLast && !$showCurrent) {
+                continue;
+            }
+
+            $html .= '<li class="jtb-bc-item' . ($isCurrent ? ' jtb-bc-current' : '') . '"' . $itemAttrs . '>';
+
+            // Render as link or text
+            $hasUrl = !empty($crumb['url']) && (!$isCurrent || $linkCurrent);
+
+            if ($hasUrl) {
+                $html .= '<a href="' . $this->esc($crumb['url']) . '" class="jtb-bc-link"' . ($schema ? ' itemprop="item"' : '') . '>';
+            }
+
+            // Home icon (only for first item)
+            if ($index === 0 && $homeIcon) {
+                $html .= $homeIconSvg;
+            }
+
+            if ($isCurrent && !$hasUrl) {
+                $html .= '<span class="jtb-bc-current-text"' . ($schema ? ' itemprop="name"' : '') . '>' . $this->esc($crumb['label']) . '</span>';
+            } else {
+                $html .= '<span' . ($schema ? ' itemprop="name"' : '') . '>' . $this->esc($crumb['label']) . '</span>';
+            }
+
+            if ($hasUrl) {
+                $html .= '</a>';
+            }
+
+            if ($schema) {
+                $html .= '<meta itemprop="position" content="' . $position . '" />';
+            }
+
             $html .= '</li>';
         }
 
@@ -202,6 +261,7 @@ class JTB_Module_Breadcrumbs extends JTB_Element
     public function generateCss(array $attrs, string $selector): string
     {
         $css = parent::generateCss($attrs, $selector);
+        $css .= $this->generateStyleConfigCss($attrs, $selector);
 
         $textColor = $attrs['text_color'] ?? '#6b7280';
         $linkColor = $attrs['link_color'] ?? '#7c3aed';

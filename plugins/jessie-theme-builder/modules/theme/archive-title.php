@@ -15,13 +15,56 @@ class JTB_Module_Archive_Title extends JTB_Element
     public string $slug = 'archive_title';
     public string $name = 'Archive Title';
     public string $icon = 'archive';
-    public string $category = 'theme';
+    public string $category = 'dynamic';
 
     public bool $use_background = true;
     public bool $use_spacing = true;
     public bool $use_border = true;
     public bool $use_box_shadow = true;
     public bool $use_animation = true;
+    public bool $use_typography = true;
+
+    protected string $module_prefix = 'archive_title';
+
+    protected array $style_config = [
+        'title_size' => [
+            'property' => 'font-size',
+            'selector' => '.jtb-archive-heading',
+            'unit' => 'px',
+            'responsive' => true
+        ],
+        'prefix_size' => [
+            'property' => 'font-size',
+            'selector' => '.jtb-archive-prefix',
+            'unit' => 'px',
+            'responsive' => true
+        ],
+        'title_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-archive-heading'
+        ],
+        'prefix_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-archive-prefix'
+        ],
+        'description_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-archive-description'
+        ],
+        'count_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-archive-count'
+        ],
+        'text_alignment' => [
+            'property' => 'text-align',
+            'responsive' => true
+        ],
+        'description_max_width' => [
+            'property' => 'max-width',
+            'selector' => '.jtb-archive-description',
+            'unit' => 'px'
+        ]
+    ];
 
     public function getSlug(): string
     {
@@ -153,12 +196,21 @@ class JTB_Module_Archive_Title extends JTB_Element
 
     public function render(array $attrs, string $content = ''): string
     {
+        // Apply default styles from design system
+        $attrs = JTB_Default_Styles::mergeWithDefaults($this->getSlug(), $attrs);
+
         $id = $attrs['id'] ?? 'archive_title_' . uniqid();
         $showPrefix = $attrs['show_prefix'] ?? true;
-        $prefixCategory = $attrs['prefix_category'] ?? 'Category:';
         $showDescription = $attrs['show_description'] ?? true;
         $showCount = $attrs['show_count'] ?? false;
         $titleLevel = $attrs['title_level'] ?? 'h1';
+
+        // Get prefix settings
+        $prefixCategory = $attrs['prefix_category'] ?? 'Category:';
+        $prefixTag = $attrs['prefix_tag'] ?? 'Tag:';
+        $prefixAuthor = $attrs['prefix_author'] ?? 'Posts by:';
+        $prefixSearch = $attrs['prefix_search'] ?? 'Search Results for:';
+        $prefixDate = $attrs['prefix_date'] ?? 'Archives:';
 
         // Validate title level
         $allowedLevels = ['h1', 'h2', 'h3'];
@@ -166,24 +218,81 @@ class JTB_Module_Archive_Title extends JTB_Element
             $titleLevel = 'h1';
         }
 
+        // Check preview mode
+        $isPreview = JTB_Dynamic_Context::isPreviewMode();
+
+        // Get dynamic data
+        $prefix = '';
+        $title = '';
+        $description = '';
+        $postCount = 0;
+
+        if ($isPreview) {
+            // Show placeholder in preview/builder
+            $prefix = 'Category:';
+            $title = 'Sample Archive';
+            $description = 'This is where the archive description will appear. Categories and tags can have descriptions that provide context about the content they contain.';
+            $postCount = 12;
+        } else {
+            // Get real archive data
+            $archive = JTB_Dynamic_Context::getArchive();
+            $archiveType = $archive['type'] ?? '';
+
+            switch ($archiveType) {
+                case 'category':
+                    $prefix = $prefixCategory;
+                    $title = $archive['title'] ?? 'Category';
+                    $description = $archive['description'] ?? '';
+                    $postCount = $archive['count'] ?? 0;
+                    break;
+                case 'tag':
+                    $prefix = $prefixTag;
+                    $title = $archive['title'] ?? 'Tag';
+                    $description = $archive['description'] ?? '';
+                    $postCount = $archive['count'] ?? 0;
+                    break;
+                case 'author':
+                    $prefix = $prefixAuthor;
+                    $author = JTB_Dynamic_Context::getAuthor();
+                    $title = $author['name'] ?? 'Author';
+                    $description = $author['bio'] ?? '';
+                    break;
+                case 'search':
+                    $prefix = $prefixSearch;
+                    $title = $_GET['q'] ?? $_GET['s'] ?? 'Search';
+                    break;
+                case 'date':
+                    $prefix = $prefixDate;
+                    $title = $archive['title'] ?? 'Archives';
+                    break;
+                case 'blog':
+                    $prefix = '';
+                    $title = 'Blog';
+                    break;
+                default:
+                    $title = JTB_Dynamic_Context::getArchiveTitle();
+                    break;
+            }
+        }
+
         $classes = ['jtb-archive-title'];
 
         $html = '<div id="' . $this->esc($id) . '" class="' . implode(' ', $classes) . '">';
 
-        if ($showPrefix) {
-            $html .= '<span class="jtb-archive-prefix">' . $this->esc($prefixCategory) . '</span>';
+        if ($showPrefix && !empty($prefix)) {
+            $html .= '<span class="jtb-archive-prefix">' . $this->esc($prefix) . '</span>';
         }
 
         $html .= '<' . $titleLevel . ' class="jtb-archive-heading">';
-        $html .= 'Archive Title';
-        if ($showCount) {
-            $html .= ' <span class="jtb-archive-count">(12 posts)</span>';
+        $html .= $this->esc($title);
+        if ($showCount && $postCount > 0) {
+            $html .= ' <span class="jtb-archive-count">(' . intval($postCount) . ' posts)</span>';
         }
         $html .= '</' . $titleLevel . '>';
 
-        if ($showDescription) {
+        if ($showDescription && !empty($description)) {
             $html .= '<p class="jtb-archive-description">';
-            $html .= 'This is where the archive description will appear. Categories and tags can have descriptions that provide context about the content they contain.';
+            $html .= $this->esc($description);
             $html .= '</p>';
         }
 
@@ -195,6 +304,7 @@ class JTB_Module_Archive_Title extends JTB_Element
     public function generateCss(array $attrs, string $selector): string
     {
         $css = parent::generateCss($attrs, $selector);
+        $css .= $this->generateStyleConfigCss($attrs, $selector);
 
         $titleSize = $attrs['title_size'] ?? 42;
         $prefixSize = $attrs['prefix_size'] ?? 16;

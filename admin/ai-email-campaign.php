@@ -19,12 +19,6 @@ csrf_boot('admin');
 require_once CMS_ROOT . '/admin/includes/permissions.php';
 cms_require_admin_role();
 
-// DEV_MODE gate
-if (!defined('DEV_MODE') || DEV_MODE !== true) {
-    http_response_code(403);
-    echo '403 Forbidden - This page is only accessible in development mode.';
-    exit;
-}
 
 require_once CMS_ROOT . '/core/error_handler.php';
 require_once CMS_ROOT . '/core/ai_hf.php';
@@ -117,7 +111,7 @@ require_once CMS_ROOT . '/admin/includes/navigation.php';
         </p>
 
         <?php if (!$anyProviderAvailable): ?>
-            <div class="alert alert-warning" style="padding: 12px; margin: 16px 0; border-radius: 4px; background-color: #fff3cd; border: 1px solid #ffeeba; color: #856404;">
+            <div class="alert alert-warning" style="padding: 12px; margin: 16px 0; border-radius: 4px; background-color: var(--bg3); border: 1px solid var(--warning); color: var(--warning);">
                 <strong>Warning:</strong> No AI providers configured. Please configure at least one provider in AI Settings.
             </div>
         <?php endif; ?>
@@ -128,7 +122,7 @@ require_once CMS_ROOT . '/admin/includes/navigation.php';
             </div>
         <?php endif; ?>
 
-        <div class="config-info" style="padding: 16px; margin: 16px 0; background-color: #f8f9fa; border: 1px solid #dee2e6; border-radius: 4px;">
+        <div class="config-info" style="padding: 16px; margin: 16px 0; background-color: var(--bg3, #313244); border: 1px solid var(--border, #313244); border-radius: 4px;">
             <h3>Campaign Specification Form</h3>
             <p style="margin: 8px 0; color: #6c757d;">
                 Provide details about the email campaign you want to generate. The more specific you are, the better the results.
@@ -158,7 +152,7 @@ require_once CMS_ROOT . '/admin/includes/navigation.php';
                     value="<?php echo esc($form['name']); ?>"
                     placeholder="e.g. Onboarding sequence for CMS trial users"
                     required
-                    style="width: 100%; padding: 8px; border: 1px solid #ced4da; border-radius: 4px;"
+                    style="width: 100%; padding: 8px; border: 1px solid var(--border, #313244); border-radius: 4px;"
                 >
             </div>
 
@@ -172,7 +166,7 @@ require_once CMS_ROOT . '/admin/includes/navigation.php';
                     name="audience"
                     value="<?php echo esc($form['audience']); ?>"
                     placeholder="e.g. small business owners in the UK"
-                    style="width: 100%; padding: 8px; border: 1px solid #ced4da; border-radius: 4px;"
+                    style="width: 100%; padding: 8px; border: 1px solid var(--border, #313244); border-radius: 4px;"
                 >
             </div>
 
@@ -186,7 +180,7 @@ require_once CMS_ROOT . '/admin/includes/navigation.php';
                     name="offer"
                     value="<?php echo esc($form['offer']); ?>"
                     placeholder="e.g. your pure-PHP CMS on shared hosting"
-                    style="width: 100%; padding: 8px; border: 1px solid #ced4da; border-radius: 4px;"
+                    style="width: 100%; padding: 8px; border: 1px solid var(--border, #313244); border-radius: 4px;"
                 >
             </div>
 
@@ -201,7 +195,7 @@ require_once CMS_ROOT . '/admin/includes/navigation.php';
                     value="<?php echo esc($form['goal']); ?>"
                     placeholder="e.g. convert free trials to paid plans"
                     required
-                    style="width: 100%; padding: 8px; border: 1px solid #ced4da; border-radius: 4px;"
+                    style="width: 100%; padding: 8px; border: 1px solid var(--border, #313244); border-radius: 4px;"
                 >
             </div>
 
@@ -216,7 +210,7 @@ require_once CMS_ROOT . '/admin/includes/navigation.php';
                     min="1"
                     max="10"
                     value="<?php echo esc($form['emails_count']); ?>"
-                    style="width: 100%; padding: 8px; border: 1px solid #ced4da; border-radius: 4px;"
+                    style="width: 100%; padding: 8px; border: 1px solid var(--border, #313244); border-radius: 4px;"
                 >
                 <small style="color: #6c757d;">Enter a number between 1 and 10.</small>
             </div>
@@ -231,7 +225,7 @@ require_once CMS_ROOT . '/admin/includes/navigation.php';
                     name="tone"
                     value="<?php echo esc($form['tone']); ?>"
                     placeholder="e.g. friendly, professional"
-                    style="width: 100%; padding: 8px; border: 1px solid #ced4da; border-radius: 4px;"
+                    style="width: 100%; padding: 8px; border: 1px solid var(--border, #313244); border-radius: 4px;"
                 >
             </div>
 
@@ -242,7 +236,7 @@ require_once CMS_ROOT . '/admin/includes/navigation.php';
                 <select
                     id="language"
                     name="language"
-                    style="width: 100%; padding: 8px; border: 1px solid #ced4da; border-radius: 4px;"
+                    style="width: 100%; padding: 8px; border: 1px solid var(--border, #313244); border-radius: 4px;"
                 >
                     <option value="en" <?php echo $form['language'] === 'en' ? 'selected' : ''; ?>>English</option>
                     <option value="pl" <?php echo $form['language'] === 'pl' ? 'selected' : ''; ?>>Polski</option>
@@ -261,14 +255,14 @@ require_once CMS_ROOT . '/admin/includes/navigation.php';
                     name="notes"
                     rows="4"
                     placeholder="e.g. no hard-sell, focus on education"
-                    style="width: 100%; padding: 8px; border: 1px solid #ced4da; border-radius: 4px;"
+                    style="width: 100%; padding: 8px; border: 1px solid var(--border, #313244); border-radius: 4px;"
                 ><?php echo esc($form['notes']); ?></textarea>
             </div>
 
             <div class="form-group" style="margin-bottom: 20px;">
                 <button
                     type="submit"
-                    style="padding: 12px 24px; background-color: #007bff; color: white; border: none; border-radius: 4px; font-size: 16px; font-weight: bold; cursor: pointer;<?php if (!$anyProviderAvailable) echo ' opacity: 0.5;'; ?>"
+                    style="padding: 12px 24px; background-color: var(--accent); color: var(--bg); border: none; border-radius: 4px; font-size: 16px; font-weight: bold; cursor: pointer;<?php if (!$anyProviderAvailable) echo ' opacity: 0.5;'; ?>"
                     <?php if (!$anyProviderAvailable) echo ' disabled="disabled"'; ?>
                 >
                     Generate Campaign
@@ -309,7 +303,7 @@ require_once CMS_ROOT . '/admin/includes/navigation.php';
                 <textarea
                     readonly
                     rows="16"
-                    style="width: 100%; padding: 12px; border: 1px solid #ced4da; border-radius: 4px; font-family: monospace; font-size: 12px; background-color: #f8f9fa;"
+                    style="width: 100%; padding: 12px; border: 1px solid var(--border, #313244); border-radius: 4px; font-family: monospace; font-size: 12px; background-color: var(--bg3, #313244);"
                     onclick="this.select();"
                 ><?php echo esc($generatedJson); ?></textarea>
             </div>
@@ -321,7 +315,7 @@ require_once CMS_ROOT . '/admin/includes/navigation.php';
                 </p>
 
                 <?php foreach ($campaign['emails'] as $idx => $email): ?>
-                    <div class="email-card" style="margin-bottom: 24px; padding: 20px; border: 1px solid #dee2e6; border-radius: 4px; background-color: #ffffff;">
+                    <div class="email-card" style="margin-bottom: 24px; padding: 20px; border: 1px solid var(--border); border-radius: 8px; background-color: var(--bg2);">
                         <h3 style="margin: 0 0 12px 0; color: #007bff;">
                             Email #<?php echo (int)($email['index'] ?? ($idx + 1)); ?>
                         </h3>
@@ -338,7 +332,7 @@ require_once CMS_ROOT . '/admin/includes/navigation.php';
 
                         <div style="margin-bottom: 16px;">
                             <strong>HTML Body Preview:</strong>
-                            <div class="email-html-preview" style="margin-top: 8px; padding: 16px; border: 1px solid #ced4da; border-radius: 4px; background-color: #f8f9fa; overflow-x: auto;">
+                            <div class="email-html-preview" style="margin-top: 8px; padding: 16px; border: 1px solid var(--border, #313244); border-radius: 4px; background-color: var(--bg3, #313244); overflow-x: auto;">
                                 <?php
                                 // Intentionally not escaped for HTML preview (trusted admin content)
                                 $htmlBody = isset($email['html_body']) ? (string)$email['html_body'] : '';
@@ -350,7 +344,7 @@ require_once CMS_ROOT . '/admin/includes/navigation.php';
                         <?php if (isset($email['text_body']) && trim($email['text_body']) !== ''): ?>
                             <div>
                                 <strong>Plain Text Body:</strong>
-                                <pre class="email-text-preview" style="margin-top: 8px; padding: 12px; border: 1px solid #ced4da; border-radius: 4px; background-color: #f8f9fa; white-space: pre-wrap; font-family: monospace; font-size: 12px; overflow-x: auto;"><?php echo esc($email['text_body']); ?></pre>
+                                <pre class="email-text-preview" style="margin-top: 8px; padding: 12px; border: 1px solid var(--border, #313244); border-radius: 4px; background-color: var(--bg3, #313244); white-space: pre-wrap; font-family: monospace; font-size: 12px; overflow-x: auto;"><?php echo esc($email['text_body']); ?></pre>
                             </div>
                         <?php endif; ?>
                     </div>

@@ -4,12 +4,10 @@
  * Supports Theme Builder custom headers with Display Conditions
  */
 
-// Load Theme Builder functions for dynamic header
-if (!function_exists('tb_render_site_template')) {
-    $tbDatabasePath = dirname(__DIR__, 4) . '/core/theme-builder/database.php';
-    if (file_exists($tbDatabasePath)) {
-        require_once $tbDatabasePath;
-    }
+// Load JTB (Jessie Theme Builder) for dynamic header/footer
+$jtbBootPath = dirname(__DIR__, 4) . '/plugins/jessie-theme-builder/includes/jtb-frontend-boot.php';
+if (file_exists($jtbBootPath)) {
+    require_once $jtbBootPath;
 }
 
 $currentPath = $_SERVER['REQUEST_URI'] ?? '/';
@@ -32,10 +30,13 @@ $pageContext = [
     'category' => $pageCategory ?? ''
 ];
 
-// Try to get TB Header matching current page conditions
+// Try to get JTB Header matching current page conditions
 $tbHeader = null;
-if (function_exists('tb_render_site_template')) {
-    $tbHeader = tb_render_site_template('header', $pageContext);
+if (class_exists('\\JessieThemeBuilder\\JTB_Theme_Integration')) {
+    $jtbHeader = \JessieThemeBuilder\JTB_Theme_Integration::renderHeader();
+    if (!empty($jtbHeader)) {
+        $tbHeader = $jtbHeader;
+    }
 }
 
 // Load active theme colors from theme.json
@@ -250,6 +251,18 @@ if (function_exists('get_theme_config')) {
         .tb-section-overlay { z-index: 1 !important; }
         .tb-section-inner { z-index: 2 !important; }
     </style>
+    <?php
+    // Output JTB frontend CSS + template CSS
+    if (class_exists('\\JessieThemeBuilder\\JTB_Theme_Integration')) {
+        $jtbCss = \JessieThemeBuilder\JTB_Theme_Integration::getCombinedCss();
+        if (!empty($jtbCss)) {
+            echo '<style id="jtb-templates-css">' . $jtbCss . '</style>';
+        }
+    }
+    ?>
+    <link rel="stylesheet" href="/plugins/jessie-theme-builder/assets/css/frontend.css">
+    <link rel="stylesheet" href="/plugins/jessie-theme-builder/assets/css/jtb-base-modules.css">
+    <link rel="stylesheet" href="/plugins/jessie-theme-builder/assets/css/animations.css">
 </head>
 <?php $isTbPage = !empty($page["is_tb_page"]) || !empty($isTbPage); ?>
 <body<?= $isTbPage ? " class=\"tb-page\"" : "" ?>>

@@ -15,13 +15,65 @@ class JTB_Module_Search_Form extends JTB_Element
     public string $slug = 'search_form';
     public string $name = 'Search';
     public string $icon = 'search';
-    public string $category = 'theme';
+    public string $category = 'header';
 
     public bool $use_background = true;
     public bool $use_spacing = true;
     public bool $use_border = true;
     public bool $use_box_shadow = true;
     public bool $use_animation = true;
+    public bool $use_typography = true;
+
+    protected string $module_prefix = 'search_form';
+
+    protected array $style_config = [
+        'button_bg_color' => [
+            'property' => 'background',
+            'selector' => '.jtb-search-button',
+            'hover' => true
+        ],
+        'button_text_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-search-button'
+        ],
+        'input_bg_color' => [
+            'property' => 'background',
+            'selector' => '.jtb-search-input'
+        ],
+        'input_text_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-search-input'
+        ],
+        'input_border_color' => [
+            'property' => 'border-color',
+            'selector' => '.jtb-search-input'
+        ],
+        'input_focus_border_color' => [
+            'property' => 'border-color',
+            'selector' => '.jtb-search-input:focus'
+        ],
+        'border_radius' => [
+            'property' => 'border-radius',
+            'selector' => '.jtb-search-input',
+            'unit' => 'px'
+        ],
+        'input_height' => [
+            'property' => 'height',
+            'selector' => '.jtb-search-input',
+            'unit' => 'px'
+        ],
+        'form_width' => [
+            'property' => 'width',
+            'selector' => '.jtb-search-inner',
+            'unit' => 'px',
+            'responsive' => true
+        ],
+        'icon_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-search-toggle',
+            'hover' => true
+        ]
+    ];
 
     public function getSlug(): string
     {
@@ -141,6 +193,9 @@ class JTB_Module_Search_Form extends JTB_Element
 
     public function render(array $attrs, string $content = ''): string
     {
+        // Apply default styles from design system
+        $attrs = JTB_Default_Styles::mergeWithDefaults($this->getSlug(), $attrs);
+
         $id = $attrs['id'] ?? 'search_' . uniqid();
         $displayType = $attrs['display_type'] ?? 'full_form';
         $placeholder = $attrs['placeholder'] ?? 'Search...';
@@ -153,6 +208,9 @@ class JTB_Module_Search_Form extends JTB_Element
 
         $classes = ['jtb-search-form', 'jtb-search-' . $this->esc($displayType)];
 
+        // Get dynamic search URL (default: /search)
+        $searchUrl = JTB_Dynamic_Context::getSearchUrl();
+
         $html = '<div id="' . $this->esc($id) . '" class="' . implode(' ', $classes) . '">';
 
         if ($displayType === 'icon_only') {
@@ -160,7 +218,7 @@ class JTB_Module_Search_Form extends JTB_Element
         }
 
         $formClass = $displayType === 'icon_only' ? 'jtb-search-inner jtb-search-expandable' : 'jtb-search-inner';
-        $html .= '<form action="/search" method="get" class="' . $formClass . '">';
+        $html .= '<form action="' . $this->esc($searchUrl) . '" method="get" class="' . $formClass . '">';
         $html .= '<input type="search" name="q" placeholder="' . $this->esc($placeholder) . '" class="jtb-search-input" aria-label="Search">';
 
         if ($showButton) {
@@ -183,6 +241,7 @@ class JTB_Module_Search_Form extends JTB_Element
     public function generateCss(array $attrs, string $selector): string
     {
         $css = parent::generateCss($attrs, $selector);
+        $css .= $this->generateStyleConfigCss($attrs, $selector);
 
         $displayType = $attrs['display_type'] ?? 'full_form';
         $inputBg = $attrs['input_bg_color'] ?? '#f5f5f5';

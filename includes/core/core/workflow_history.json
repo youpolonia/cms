@@ -1,8 +1,0 @@
-[
-    {
-        "timestamp": "2025-05-21T14:02:58+00:00",
-        "workflow_id": "test1",
-        "from_state": "draft",
-        "to_state": "published"
-    }
-]

@@ -15,13 +15,61 @@ class JTB_Module_Author_Box extends JTB_Element
     public string $slug = 'author_box';
     public string $name = 'Author Box';
     public string $icon = 'user';
-    public string $category = 'theme';
+    public string $category = 'dynamic';
 
     public bool $use_background = true;
     public bool $use_spacing = true;
     public bool $use_border = true;
     public bool $use_box_shadow = true;
     public bool $use_animation = true;
+    public bool $use_typography = true;
+
+    protected string $module_prefix = 'author_box';
+
+    protected array $style_config = [
+        'avatar_size' => [
+            'property' => 'width',
+            'selector' => '.jtb-avatar-img',
+            'unit' => 'px',
+            'responsive' => true
+        ],
+        'name_size' => [
+            'property' => 'font-size',
+            'selector' => '.jtb-author-name',
+            'unit' => 'px'
+        ],
+        'name_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-author-name'
+        ],
+        'role_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-author-role'
+        ],
+        'bio_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-author-bio'
+        ],
+        'link_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-author-posts-link, .jtb-social-link',
+            'hover' => true
+        ],
+        'box_background' => [
+            'property' => 'background'
+        ],
+        'box_border_color' => [
+            'property' => 'border-color'
+        ],
+        'box_border_radius' => [
+            'property' => 'border-radius',
+            'unit' => 'px'
+        ],
+        'box_padding' => [
+            'property' => 'padding',
+            'unit' => 'px'
+        ]
+    ];
 
     public function getSlug(): string
     {
@@ -163,6 +211,9 @@ class JTB_Module_Author_Box extends JTB_Element
 
     public function render(array $attrs, string $content = ''): string
     {
+        // Apply default styles from design system
+        $attrs = JTB_Default_Styles::mergeWithDefaults($this->getSlug(), $attrs);
+
         $id = $attrs['id'] ?? 'author_box_' . uniqid();
         $showAvatar = $attrs['show_avatar'] ?? true;
         $avatarSize = $attrs['avatar_size'] ?? 100;
@@ -174,6 +225,29 @@ class JTB_Module_Author_Box extends JTB_Element
         $showPostsLink = $attrs['show_posts_link'] ?? true;
         $layout = $attrs['layout'] ?? 'horizontal';
 
+        // Get dynamic author data
+        $isPreview = JTB_Dynamic_Context::isPreviewMode();
+        $authorName = JTB_Dynamic_Context::getAuthorName();
+        $authorBio = JTB_Dynamic_Context::getAuthorBio();
+        $authorAvatar = JTB_Dynamic_Context::getAuthorAvatar();
+        $authorUrl = JTB_Dynamic_Context::getAuthorUrl();
+        $authorRole = JTB_Dynamic_Context::getAuthorRole();
+        $authorSocial = JTB_Dynamic_Context::getAuthorSocial();
+
+        // Fallback to placeholders in preview mode
+        if (empty($authorName) || $isPreview) {
+            $authorName = JTB_Dynamic_Context::getPlaceholder('author');
+        }
+        if (empty($authorBio) || $isPreview) {
+            $authorBio = 'This is where the author bio will be displayed. It provides a brief introduction about the author, their expertise, and background.';
+        }
+        if (empty($authorRole) || $isPreview) {
+            $authorRole = 'Content Writer';
+        }
+        if (empty($authorUrl)) {
+            $authorUrl = '#';
+        }
+
         $classes = ['jtb-author-box', 'jtb-author-layout-' . $this->esc($layout)];
 
         // Social icons SVG
@@ -182,9 +256,13 @@ class JTB_Module_Author_Box extends JTB_Element
         $linkedinIcon = '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>';
         $instagramIcon = '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>';
 
-        // Avatar placeholder SVG
+        // Avatar - use dynamic or placeholder
         $avatarRadius = $avatarStyle === 'circle' ? '50' : ($avatarStyle === 'rounded' ? '8' : '0');
         $avatarSvg = '<svg xmlns="http://www.w3.org/2000/svg" width="' . $avatarSize . '" height="' . $avatarSize . '" viewBox="0 0 100 100"><rect fill="#e5e7eb" width="100" height="100" rx="' . $avatarRadius . '"/><circle fill="#9ca3af" cx="50" cy="38" r="18"/><ellipse fill="#9ca3af" cx="50" cy="82" rx="30" ry="22"/></svg>';
+
+        $avatarSrc = !empty($authorAvatar) && !$isPreview
+            ? $authorAvatar
+            : 'data:image/svg+xml,' . rawurlencode($avatarSvg);
 
         $html = '<div id="' . $this->esc($id) . '" class="' . implode(' ', $classes) . '">';
         $html .= '<div class="jtb-author-inner">';
@@ -192,7 +270,7 @@ class JTB_Module_Author_Box extends JTB_Element
         // Avatar
         if ($showAvatar) {
             $html .= '<div class="jtb-author-avatar">';
-            $html .= '<img src="data:image/svg+xml,' . rawurlencode($avatarSvg) . '" alt="Author" class="jtb-avatar-img" />';
+            $html .= '<img src="' . $this->esc($avatarSrc) . '" alt="' . $this->esc($authorName) . '" class="jtb-avatar-img" />';
             $html .= '</div>';
         }
 
@@ -200,28 +278,45 @@ class JTB_Module_Author_Box extends JTB_Element
         $html .= '<div class="jtb-author-content">';
 
         if ($showName) {
-            $html .= '<h4 class="jtb-author-name">Author Name</h4>';
+            $html .= '<h4 class="jtb-author-name">' . $this->esc($authorName) . '</h4>';
         }
 
         if ($showRole) {
-            $html .= '<p class="jtb-author-role">Content Writer</p>';
+            $html .= '<p class="jtb-author-role">' . $this->esc($authorRole) . '</p>';
         }
 
         if ($showBio) {
-            $html .= '<p class="jtb-author-bio">This is where the author bio will be displayed. It provides a brief introduction about the author, their expertise, and background.</p>';
+            $html .= '<p class="jtb-author-bio">' . $this->esc($authorBio) . '</p>';
         }
 
         if ($showSocial) {
             $html .= '<div class="jtb-author-social">';
-            $html .= '<a href="#" class="jtb-social-link" title="Twitter">' . $twitterIcon . '</a>';
-            $html .= '<a href="#" class="jtb-social-link" title="Facebook">' . $facebookIcon . '</a>';
-            $html .= '<a href="#" class="jtb-social-link" title="LinkedIn">' . $linkedinIcon . '</a>';
-            $html .= '<a href="#" class="jtb-social-link" title="Instagram">' . $instagramIcon . '</a>';
+            // Use dynamic social links if available
+            if (!empty($authorSocial) && !$isPreview) {
+                if (!empty($authorSocial['twitter'])) {
+                    $html .= '<a href="' . $this->esc($authorSocial['twitter']) . '" class="jtb-social-link" title="Twitter" target="_blank" rel="noopener">' . $twitterIcon . '</a>';
+                }
+                if (!empty($authorSocial['facebook'])) {
+                    $html .= '<a href="' . $this->esc($authorSocial['facebook']) . '" class="jtb-social-link" title="Facebook" target="_blank" rel="noopener">' . $facebookIcon . '</a>';
+                }
+                if (!empty($authorSocial['linkedin'])) {
+                    $html .= '<a href="' . $this->esc($authorSocial['linkedin']) . '" class="jtb-social-link" title="LinkedIn" target="_blank" rel="noopener">' . $linkedinIcon . '</a>';
+                }
+                if (!empty($authorSocial['instagram'])) {
+                    $html .= '<a href="' . $this->esc($authorSocial['instagram']) . '" class="jtb-social-link" title="Instagram" target="_blank" rel="noopener">' . $instagramIcon . '</a>';
+                }
+            } else {
+                // Placeholder social links
+                $html .= '<a href="#" class="jtb-social-link" title="Twitter">' . $twitterIcon . '</a>';
+                $html .= '<a href="#" class="jtb-social-link" title="Facebook">' . $facebookIcon . '</a>';
+                $html .= '<a href="#" class="jtb-social-link" title="LinkedIn">' . $linkedinIcon . '</a>';
+                $html .= '<a href="#" class="jtb-social-link" title="Instagram">' . $instagramIcon . '</a>';
+            }
             $html .= '</div>';
         }
 
         if ($showPostsLink) {
-            $html .= '<a href="#" class="jtb-author-posts-link">View all posts by Author <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></a>';
+            $html .= '<a href="' . $this->esc($authorUrl) . '" class="jtb-author-posts-link">View all posts by ' . $this->esc($authorName) . ' <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></a>';
         }
 
         $html .= '</div>'; // content
@@ -234,6 +329,7 @@ class JTB_Module_Author_Box extends JTB_Element
     public function generateCss(array $attrs, string $selector): string
     {
         $css = parent::generateCss($attrs, $selector);
+        $css .= $this->generateStyleConfigCss($attrs, $selector);
 
         $avatarSize = $attrs['avatar_size'] ?? 100;
         $avatarStyle = $attrs['avatar_style'] ?? 'circle';

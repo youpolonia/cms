@@ -26,6 +26,14 @@ class JTB_Module_VideoSliderItem extends JTB_Element
     public bool $use_position = false;
     public bool $use_filters = false;
 
+    // === UNIFIED THEME SYSTEM ===
+    protected string $module_prefix = 'video_slider_item';
+
+    /**
+     * Declarative style configuration
+     */
+    protected array $style_config = [];
+
     public function getSlug(): string
     {
         return 'video_slider_item';
@@ -62,6 +70,9 @@ class JTB_Module_VideoSliderItem extends JTB_Element
 
     public function render(array $attrs, string $content = ''): string
     {
+        // Apply default styles from design system
+        $attrs = JTB_Default_Styles::mergeWithDefaults($this->getSlug(), $attrs);
+
         $src = $attrs['src'] ?? '';
         $webm = $attrs['src_webm'] ?? '';
         $thumbnail = $attrs['image_src'] ?? '';
@@ -108,9 +119,16 @@ class JTB_Module_VideoSliderItem extends JTB_Element
         return $html;
     }
 
+    /**
+     * Generate CSS for Video Slider Item module
+     * Base styles are in jtb-base-modules.css
+     */
     public function generateCss(array $attrs, string $selector): string
     {
         $css = '';
+
+        // Use declarative style_config system
+        $css .= $this->generateStyleConfigCss($attrs, $selector);
 
         $css .= $selector . ' .jtb-video-slide-wrap { position: relative; padding-bottom: 56.25%; height: 0; }' . "\n";
         $css .= $selector . ' .jtb-video-thumbnail { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-size: cover; background-position: center; cursor: pointer; }' . "\n";

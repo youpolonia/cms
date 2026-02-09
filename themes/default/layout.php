@@ -20,10 +20,10 @@ if (file_exists(CMS_ROOT . '/includes/helpers/menu.php')) {
     require_once CMS_ROOT . '/includes/helpers/menu.php';
 }
 
-// Load TB database functions for custom headers/footers
-$tbDatabasePath = CMS_ROOT . '/core/theme-builder/database.php';
-if (file_exists($tbDatabasePath)) {
-    require_once $tbDatabasePath;
+// Load JTB for custom headers/footers
+$jtbBootPath = CMS_ROOT . '/plugins/jessie-theme-builder/includes/jtb-frontend-boot.php';
+if (file_exists($jtbBootPath)) {
+    require_once $jtbBootPath;
 }
 
 // Get theme config

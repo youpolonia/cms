@@ -15,13 +15,46 @@ class JTB_Module_Related_Posts extends JTB_Element
     public string $slug = 'related_posts';
     public string $name = 'Related Posts';
     public string $icon = 'grid';
-    public string $category = 'theme';
+    public string $category = 'dynamic';
 
     public bool $use_background = true;
     public bool $use_spacing = true;
     public bool $use_border = true;
     public bool $use_box_shadow = true;
     public bool $use_animation = true;
+    public bool $use_typography = true;
+
+    protected string $module_prefix = 'related_posts';
+
+    protected array $style_config = [
+        'gap' => [
+            'property' => 'gap',
+            'selector' => '.jtb-related-grid',
+            'unit' => 'px'
+        ],
+        'title_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-related-post-title a',
+            'hover' => true
+        ],
+        'category_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-related-category'
+        ],
+        'meta_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-related-date, .jtb-related-excerpt'
+        ],
+        'card_background' => [
+            'property' => 'background',
+            'selector' => '.jtb-related-card'
+        ],
+        'card_border_radius' => [
+            'property' => 'border-radius',
+            'selector' => '.jtb-related-card',
+            'unit' => 'px'
+        ]
+    ];
 
     public function getSlug(): string
     {
@@ -166,6 +199,9 @@ class JTB_Module_Related_Posts extends JTB_Element
 
     public function render(array $attrs, string $content = ''): string
     {
+        // Apply default styles from design system
+        $attrs = JTB_Default_Styles::mergeWithDefaults($this->getSlug(), $attrs);
+
         $id = $attrs['id'] ?? 'related_posts_' . uniqid();
         $title = $attrs['title'] ?? 'Related Posts';
         $showTitle = $attrs['show_title'] ?? true;
@@ -175,6 +211,11 @@ class JTB_Module_Related_Posts extends JTB_Element
         $showCategory = $attrs['show_category'] ?? true;
         $showDate = $attrs['show_date'] ?? true;
         $showExcerpt = $attrs['show_excerpt'] ?? false;
+        $excerptLength = $attrs['excerpt_length'] ?? 20;
+
+        // Get dynamic related posts
+        $isPreview = JTB_Dynamic_Context::isPreviewMode();
+        $relatedPosts = JTB_Dynamic_Context::getRelatedPosts($postsCount);
 
         $classes = ['jtb-related-posts'];
 
@@ -189,34 +230,71 @@ class JTB_Module_Related_Posts extends JTB_Element
 
         $html .= '<div class="jtb-related-grid">';
 
-        // Render placeholder posts
-        for ($i = 0; $i < $postsCount; $i++) {
-            $html .= '<article class="jtb-related-card">';
+        // Use real posts if available, otherwise show placeholders
+        if (!empty($relatedPosts) && !$isPreview) {
+            foreach ($relatedPosts as $post) {
+                $html .= '<article class="jtb-related-card">';
 
-            if ($showImage) {
-                $html .= '<div class="jtb-related-image" style="aspect-ratio: ' . $this->esc($imageAspect) . ';">';
-                $html .= '<a href="#"><img src="data:image/svg+xml,' . rawurlencode($imgSvg) . '" alt="" /></a>';
+                if ($showImage) {
+                    $html .= '<div class="jtb-related-image" style="aspect-ratio: ' . $this->esc($imageAspect) . ';">';
+                    $imgSrc = !empty($post['featured_image'])
+                        ? $post['featured_image']
+                        : 'data:image/svg+xml,' . rawurlencode($imgSvg);
+                    $html .= '<a href="' . $this->esc($post['url'] ?? '#') . '"><img src="' . $this->esc($imgSrc) . '" alt="' . $this->esc($post['title'] ?? '') . '" /></a>';
+                    $html .= '</div>';
+                }
+
+                $html .= '<div class="jtb-related-content">';
+
+                if ($showCategory && !empty($post['category'])) {
+                    $catSlug = strtolower(str_replace(' ', '-', $post['category']));
+                    $html .= '<a href="/category/' . $this->esc($catSlug) . '" class="jtb-related-category">' . $this->esc($post['category']) . '</a>';
+                }
+
+                $html .= '<h4 class="jtb-related-post-title"><a href="' . $this->esc($post['url'] ?? '#') . '">' . $this->esc($post['title'] ?? 'Untitled') . '</a></h4>';
+
+                if ($showDate && !empty($post['date'])) {
+                    $html .= '<span class="jtb-related-date">' . $this->esc($post['date']) . '</span>';
+                }
+
+                if ($showExcerpt && !empty($post['excerpt'])) {
+                    $excerpt = substr(strip_tags($post['excerpt']), 0, $excerptLength * 6) . '...';
+                    $html .= '<p class="jtb-related-excerpt">' . $this->esc($excerpt) . '</p>';
+                }
+
                 $html .= '</div>';
+                $html .= '</article>';
             }
+        } else {
+            // Render placeholder posts for preview
+            for ($i = 0; $i < $postsCount; $i++) {
+                $html .= '<article class="jtb-related-card">';
 
-            $html .= '<div class="jtb-related-content">';
+                if ($showImage) {
+                    $html .= '<div class="jtb-related-image" style="aspect-ratio: ' . $this->esc($imageAspect) . ';">';
+                    $html .= '<a href="#"><img src="data:image/svg+xml,' . rawurlencode($imgSvg) . '" alt="" /></a>';
+                    $html .= '</div>';
+                }
 
-            if ($showCategory) {
-                $html .= '<a href="#" class="jtb-related-category">Category</a>';
+                $html .= '<div class="jtb-related-content">';
+
+                if ($showCategory) {
+                    $html .= '<a href="#" class="jtb-related-category">Category</a>';
+                }
+
+                $html .= '<h4 class="jtb-related-post-title"><a href="#">Related Post Title ' . ($i + 1) . '</a></h4>';
+
+                if ($showDate) {
+                    $html .= '<span class="jtb-related-date">' . date('M j, Y') . '</span>';
+                }
+
+                if ($showExcerpt) {
+                    $html .= '<p class="jtb-related-excerpt">A brief excerpt from this related post will appear here...</p>';
+                }
+
+                $html .= '</div>';
+                $html .= '</article>';
             }
-
-            $html .= '<h4 class="jtb-related-post-title"><a href="#">Related Post Title ' . ($i + 1) . '</a></h4>';
-
-            if ($showDate) {
-                $html .= '<span class="jtb-related-date">' . date('M j, Y') . '</span>';
-            }
-
-            if ($showExcerpt) {
-                $html .= '<p class="jtb-related-excerpt">A brief excerpt from this related post will appear here...</p>';
-            }
-
-            $html .= '</div>';
-            $html .= '</article>';
         }
 
         $html .= '</div>';
@@ -228,6 +306,7 @@ class JTB_Module_Related_Posts extends JTB_Element
     public function generateCss(array $attrs, string $selector): string
     {
         $css = parent::generateCss($attrs, $selector);
+        $css .= $this->generateStyleConfigCss($attrs, $selector);
 
         $columns = $attrs['columns'] ?? '3';
         $gap = $attrs['gap'] ?? 24;

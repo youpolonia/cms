@@ -25,6 +25,79 @@ class JTB_Module_Blurb extends JTB_Element
     public bool $use_position = false;
     public bool $use_filters = true;
 
+    // === UNIFIED THEME SYSTEM ===
+    protected string $module_prefix = 'blurb';
+
+    /**
+     * Declarative style configuration
+     * Maps attribute names to CSS properties and selectors
+     */
+    protected array $style_config = [
+        // Text alignment
+        'text_orientation' => [
+            'property' => 'text-align',
+            'selector' => '.jtb-blurb-container',
+            'responsive' => true
+        ],
+        // Icon styling
+        'icon_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-blurb-image .jtb-icon',
+            'hover' => true
+        ],
+        'icon_font_size' => [
+            'property' => 'font-size',
+            'selector' => '.jtb-blurb-image .jtb-icon',
+            'unit' => 'px',
+            'responsive' => true
+        ],
+        // Circle icon
+        'circle_color' => [
+            'property' => 'background-color',
+            'selector' => '.jtb-blurb-icon-circle',
+            'hover' => true
+        ],
+        'circle_border_color' => [
+            'property' => 'border-color',
+            'selector' => '.jtb-blurb-icon-circle',
+            'hover' => true
+        ],
+        // Image
+        'image_max_width' => [
+            'property' => 'max-width',
+            'selector' => '.jtb-blurb-image img',
+            'unit' => 'px',
+            'responsive' => true
+        ],
+        // Content
+        'content_max_width' => [
+            'property' => 'max-width',
+            'selector' => '.jtb-blurb-content',
+            'unit' => 'px',
+            'responsive' => true
+        ],
+        // Typography
+        'title_font_size' => [
+            'property' => 'font-size',
+            'selector' => '.jtb-blurb-title',
+            'unit' => 'px',
+            'responsive' => true
+        ],
+        'title_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-blurb-title'
+        ],
+        'content_font_size' => [
+            'property' => 'font-size',
+            'selector' => '.jtb-blurb-description',
+            'unit' => 'px'
+        ],
+        'content_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-blurb-description'
+        ]
+    ];
+
     public function getSlug(): string
     {
         return 'blurb';
@@ -122,11 +195,11 @@ class JTB_Module_Blurb extends JTB_Element
                 ],
                 'default' => 'top'
             ],
-            'url' => [
+            'link_url' => [
                 'label' => 'Link URL',
                 'type' => 'text'
             ],
-            'url_new_window' => [
+            'link_target' => [
                 'label' => 'Open in New Tab',
                 'type' => 'toggle',
                 'default' => false
@@ -168,13 +241,16 @@ class JTB_Module_Blurb extends JTB_Element
 
     public function render(array $attrs, string $content = ''): string
     {
+        // Apply default styles from design system
+        $attrs = JTB_Default_Styles::mergeWithDefaults($this->getSlug(), $attrs);
+
         $title = $this->esc($attrs['title'] ?? 'Your Title Here');
         $bodyContent = $attrs['content'] ?? '<p>Your content goes here.</p>';
         $useIcon = !empty($attrs['use_icon']);
         $image = $attrs['image'] ?? '';
         $icon = $attrs['font_icon'] ?? '';
-        $url = $attrs['url'] ?? '';
-        $newWindow = !empty($attrs['url_new_window']) ? ' target="_blank" rel="noopener"' : '';
+        $url = $attrs['link_url'] ?? '';
+        $newWindow = !empty($attrs['link_target']) ? ' target="_blank" rel="noopener"' : '';
         $headerLevel = $attrs['header_level'] ?? 'h4';
         $placement = $attrs['image_placement'] ?? 'top';
         $useCircle = !empty($attrs['use_circle']);
@@ -218,77 +294,50 @@ class JTB_Module_Blurb extends JTB_Element
         return $this->renderWrapper($innerHtml, $attrs);
     }
 
+    /**
+     * Generate CSS for Blurb module
+     *
+     * Base styles are in jtb-base-modules.css.
+     * This handles module-specific customizations and special cases.
+     */
     public function generateCss(array $attrs, string $selector): string
     {
         $css = '';
 
-        // Text alignment
-        if (!empty($attrs['text_orientation'])) {
-            $css .= $selector . ' .jtb-blurb-container { text-align: ' . $attrs['text_orientation'] . '; }' . "\n";
-        }
+        // Use declarative style_config system
+        $css .= $this->generateStyleConfigCss($attrs, $selector);
 
-        // Icon color (supports both font icons with color and SVG icons with stroke)
+        // Special handling: SVG stroke color synced with icon color
         if (!empty($attrs['icon_color'])) {
-            $css .= $selector . ' .jtb-blurb-image .jtb-icon { color: ' . $attrs['icon_color'] . '; }' . "\n";
             $css .= $selector . ' .jtb-blurb-image .jtb-icon svg { stroke: ' . $attrs['icon_color'] . '; }' . "\n";
         }
-
-        // Icon size
-        if (!empty($attrs['icon_font_size'])) {
-            $css .= $selector . ' .jtb-blurb-image .jtb-icon { font-size: ' . $attrs['icon_font_size'] . 'px; }' . "\n";
+        if (!empty($attrs['icon_color__hover'])) {
+            $css .= $selector . ':hover .jtb-blurb-image .jtb-icon svg { stroke: ' . $attrs['icon_color__hover'] . '; }' . "\n";
         }
 
-        // Circle styles
+        // Circle icon styling (special case - needs multiple properties)
         if (!empty($attrs['use_circle'])) {
-            $circleColor = $attrs['circle_color'] ?? '#2ea3f2';
-            $css .= $selector . ' .jtb-blurb-icon-circle { background-color: ' . $circleColor . '; border-radius: 50%; padding: 20px; display: inline-flex; align-items: center; justify-content: center; }' . "\n";
+            $circleColor = $attrs['circle_color'] ?? $this->getDefault('blurb_circle_background');
+            if ($this->isDifferentFromDefault('blurb_circle_background', $circleColor)) {
+                $css .= $selector . ' .jtb-blurb-icon-circle { background-color: ' . $circleColor . '; }' . "\n";
+            }
 
             if (!empty($attrs['circle_border_color'])) {
                 $css .= $selector . ' .jtb-blurb-icon-circle { border: 2px solid ' . $attrs['circle_border_color'] . '; }' . "\n";
             }
+
+            if (!empty($attrs['circle_color__hover'])) {
+                $css .= $selector . ':hover .jtb-blurb-icon-circle { background-color: ' . $attrs['circle_color__hover'] . '; }' . "\n";
+            }
         }
 
-        // Image max width
-        if (!empty($attrs['image_max_width'])) {
-            $css .= $selector . ' .jtb-blurb-image img { max-width: ' . $attrs['image_max_width'] . 'px; }' . "\n";
-        }
-
-        // Content max width
-        if (!empty($attrs['content_max_width'])) {
-            $css .= $selector . ' .jtb-blurb-content { max-width: ' . $attrs['content_max_width'] . 'px; }' . "\n";
-        }
-
-        // Left placement layout
+        // Left placement layout (special case - complex flex layout)
         if (($attrs['image_placement'] ?? 'top') === 'left') {
             $css .= $selector . ' .jtb-blurb-position-left { display: flex; align-items: flex-start; }' . "\n";
             $css .= $selector . ' .jtb-blurb-position-left .jtb-blurb-image { margin-right: 20px; flex-shrink: 0; }' . "\n";
         }
 
-        // Hover states
-        if (!empty($attrs['icon_color__hover'])) {
-            $css .= $selector . ':hover .jtb-blurb-image .jtb-icon { color: ' . $attrs['icon_color__hover'] . '; }' . "\n";
-            $css .= $selector . ':hover .jtb-blurb-image .jtb-icon svg { stroke: ' . $attrs['icon_color__hover'] . '; }' . "\n";
-        }
-
-        if (!empty($attrs['circle_color__hover'])) {
-            $css .= $selector . ':hover .jtb-blurb-icon-circle { background-color: ' . $attrs['circle_color__hover'] . '; }' . "\n";
-        }
-
-        // Responsive
-        if (!empty($attrs['text_orientation__tablet'])) {
-            $css .= '@media (max-width: 980px) { ' . $selector . ' .jtb-blurb-container { text-align: ' . $attrs['text_orientation__tablet'] . '; } }' . "\n";
-        }
-        if (!empty($attrs['text_orientation__phone'])) {
-            $css .= '@media (max-width: 767px) { ' . $selector . ' .jtb-blurb-container { text-align: ' . $attrs['text_orientation__phone'] . '; } }' . "\n";
-        }
-
-        if (!empty($attrs['icon_font_size__tablet'])) {
-            $css .= '@media (max-width: 980px) { ' . $selector . ' .jtb-blurb-image .jtb-icon { font-size: ' . $attrs['icon_font_size__tablet'] . 'px; } }' . "\n";
-        }
-        if (!empty($attrs['icon_font_size__phone'])) {
-            $css .= '@media (max-width: 767px) { ' . $selector . ' .jtb-blurb-image .jtb-icon { font-size: ' . $attrs['icon_font_size__phone'] . 'px; } }' . "\n";
-        }
-
+        // Parent class handles common styles
         $css .= parent::generateCss($attrs, $selector);
 
         return $css;

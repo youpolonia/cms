@@ -25,6 +25,67 @@ class JTB_Module_FilterablePortfolio extends JTB_Element
     public bool $use_position = false;
     public bool $use_filters = true;
 
+    // === UNIFIED THEME SYSTEM ===
+    protected string $module_prefix = 'filterable_portfolio';
+
+    /**
+     * Declarative style configuration
+     */
+    protected array $style_config = [
+        'gutter' => [
+            'property' => 'gap',
+            'selector' => '.jtb-portfolio-grid',
+            'unit' => 'px'
+        ],
+        'filter_bg_color' => [
+            'property' => 'background',
+            'selector' => '.jtb-filter-btn'
+        ],
+        'filter_text_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-filter-btn'
+        ],
+        'filter_active_bg' => [
+            'property' => 'background',
+            'selector' => '.jtb-filter-btn.active'
+        ],
+        'filter_active_text' => [
+            'property' => 'color',
+            'selector' => '.jtb-filter-btn.active'
+        ],
+        'item_bg_color' => [
+            'property' => 'background',
+            'selector' => '.jtb-portfolio-inner'
+        ],
+        'hover_overlay_color' => [
+            'property' => 'background',
+            'selector' => '.jtb-portfolio-overlay'
+        ],
+        'title_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-portfolio-title'
+        ],
+        'title_font_size' => [
+            'property' => 'font-size',
+            'selector' => '.jtb-portfolio-title',
+            'unit' => 'px',
+            'responsive' => true
+        ],
+        'category_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-portfolio-cats'
+        ],
+        'zoom_icon_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-portfolio-actions a'
+        ],
+        'border_radius' => [
+            'property' => 'border-radius',
+            'selector' => '.jtb-portfolio-inner',
+            'unit' => 'px'
+        ]
+    ];
+
     public function getSlug(): string
     {
         return 'filterable_portfolio';
@@ -180,6 +241,9 @@ class JTB_Module_FilterablePortfolio extends JTB_Element
 
     public function render(array $attrs, string $content = ''): string
     {
+        // Apply default styles from design system
+        $attrs = JTB_Default_Styles::mergeWithDefaults($this->getSlug(), $attrs);
+
         $postsNumber = $attrs['posts_number'] ?? 12;
         $showTitle = $attrs['show_title'] ?? true;
         $showCategories = $attrs['show_categories'] ?? true;
@@ -273,53 +337,29 @@ class JTB_Module_FilterablePortfolio extends JTB_Element
         return $this->renderWrapper($innerHtml, $attrs);
     }
 
+    /**
+     * Generate CSS for Filterable Portfolio module
+     * Base styles are in jtb-base-modules.css
+     */
     public function generateCss(array $attrs, string $selector): string
     {
         $css = '';
 
-        $columns = $attrs['columns'] ?? '4';
-        $gutter = $attrs['gutter'] ?? 15;
+        // Use declarative style_config system
+        $css .= $this->generateStyleConfigCss($attrs, $selector);
+
         $filterAlign = $attrs['filter_alignment'] ?? 'center';
-        $filterBg = $attrs['filter_bg_color'] ?? '#f1f5f9';
-        $filterText = $attrs['filter_text_color'] ?? '#64748b';
-        $filterActiveBg = $attrs['filter_active_bg'] ?? '#7c3aed';
-        $filterActiveText = $attrs['filter_active_text'] ?? '#ffffff';
-        $overlayColor = $attrs['hover_overlay_color'] ?? 'rgba(124, 58, 237, 0.9)';
-        $titleColor = $attrs['title_color'] ?? '#ffffff';
-        $titleSize = $attrs['title_font_size'] ?? 18;
-        $catColor = $attrs['category_color'] ?? 'rgba(255,255,255,0.8)';
-        $iconColor = $attrs['zoom_icon_color'] ?? '#ffffff';
-        $borderRadius = $attrs['border_radius'] ?? 8;
-        $itemBg = $attrs['item_bg_color'] ?? '#ffffff';
 
         // Filter bar
         $justify = $filterAlign === 'left' ? 'flex-start' : ($filterAlign === 'right' ? 'flex-end' : 'center');
-        $css .= $selector . ' .jtb-portfolio-filter { ';
-        $css .= 'display: flex; flex-wrap: wrap; gap: 10px; ';
-        $css .= 'justify-content: ' . $justify . '; ';
-        $css .= 'margin-bottom: 30px; ';
-        $css .= '}' . "\n";
+        $css .= $selector . ' .jtb-portfolio-filter { display: flex; flex-wrap: wrap; gap: 10px; justify-content: ' . $justify . '; margin-bottom: 30px; }' . "\n";
 
-        // Filter buttons
-        $css .= $selector . ' .jtb-filter-btn { ';
-        $css .= 'padding: 10px 20px; ';
-        $css .= 'background: ' . $filterBg . '; ';
-        $css .= 'color: ' . $filterText . '; ';
-        $css .= 'border: none; border-radius: 6px; ';
-        $css .= 'font-size: 14px; font-weight: 500; ';
-        $css .= 'cursor: pointer; ';
-        $css .= 'transition: all 0.2s ease; ';
-        $css .= '}' . "\n";
-
+        // Filter buttons base styles
+        $css .= $selector . ' .jtb-filter-btn { padding: 10px 20px; border: none; border-radius: 6px; font-size: 14px; font-weight: 500; cursor: pointer; transition: all 0.2s ease; }' . "\n";
         $css .= $selector . ' .jtb-filter-btn:hover { filter: brightness(0.95); }' . "\n";
 
-        $css .= $selector . ' .jtb-filter-btn.active { ';
-        $css .= 'background: ' . $filterActiveBg . '; ';
-        $css .= 'color: ' . $filterActiveText . '; ';
-        $css .= '}' . "\n";
-
         // Grid
-        $css .= $selector . ' .jtb-portfolio-grid { display: grid; gap: ' . $gutter . 'px; }' . "\n";
+        $css .= $selector . ' .jtb-portfolio-grid { display: grid; }' . "\n";
         $css .= $selector . ' .jtb-portfolio-cols-2 { grid-template-columns: repeat(2, 1fr); }' . "\n";
         $css .= $selector . ' .jtb-portfolio-cols-3 { grid-template-columns: repeat(3, 1fr); }' . "\n";
         $css .= $selector . ' .jtb-portfolio-cols-4 { grid-template-columns: repeat(4, 1fr); }' . "\n";
@@ -327,18 +367,9 @@ class JTB_Module_FilterablePortfolio extends JTB_Element
         $css .= $selector . ' .jtb-portfolio-cols-6 { grid-template-columns: repeat(6, 1fr); }' . "\n";
 
         // Item
-        $css .= $selector . ' .jtb-portfolio-item { ';
-        $css .= 'transition: opacity 0.3s ease, transform 0.3s ease; ';
-        $css .= '}' . "\n";
-
+        $css .= $selector . ' .jtb-portfolio-item { transition: opacity 0.3s ease, transform 0.3s ease; }' . "\n";
         $css .= $selector . ' .jtb-portfolio-item.hidden { opacity: 0; transform: scale(0.8); pointer-events: none; position: absolute; }' . "\n";
-
-        $css .= $selector . ' .jtb-portfolio-inner { ';
-        $css .= 'background: ' . $itemBg . '; ';
-        $css .= 'border-radius: ' . $borderRadius . 'px; ';
-        $css .= 'overflow: hidden; ';
-        $css .= 'box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); ';
-        $css .= '}' . "\n";
+        $css .= $selector . ' .jtb-portfolio-inner { overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }' . "\n";
 
         // Image container
         $css .= $selector . ' .jtb-portfolio-image { position: relative; overflow: hidden; }' . "\n";
@@ -349,46 +380,22 @@ class JTB_Module_FilterablePortfolio extends JTB_Element
         $css .= $selector . ' .jtb-portfolio-placeholder { background: linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 100%); padding-bottom: 75%; }' . "\n";
 
         // Overlay
-        $css .= $selector . ' .jtb-portfolio-overlay { ';
-        $css .= 'position: absolute; top: 0; left: 0; right: 0; bottom: 0; ';
-        $css .= 'background: ' . $overlayColor . '; ';
-        $css .= 'display: flex; align-items: center; justify-content: center; ';
-        $css .= 'opacity: 0; transition: opacity 0.3s ease; ';
-        $css .= '}' . "\n";
-
+        $css .= $selector . ' .jtb-portfolio-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease; }' . "\n";
         $css .= $selector . ' .jtb-portfolio-item:hover .jtb-portfolio-overlay { opacity: 1; }' . "\n";
 
         // Content
-        $css .= $selector . ' .jtb-portfolio-content { ';
-        $css .= 'text-align: center; padding: 20px; ';
-        $css .= 'transform: translateY(10px); transition: transform 0.3s ease; ';
-        $css .= '}' . "\n";
-
+        $css .= $selector . ' .jtb-portfolio-content { text-align: center; padding: 20px; transform: translateY(10px); transition: transform 0.3s ease; }' . "\n";
         $css .= $selector . ' .jtb-portfolio-item:hover .jtb-portfolio-content { transform: translateY(0); }' . "\n";
 
         // Title
-        $css .= $selector . ' .jtb-portfolio-title { ';
-        $css .= 'margin: 0 0 8px; font-size: ' . $titleSize . 'px; ';
-        $css .= 'color: ' . $titleColor . '; font-weight: 600; ';
-        $css .= '}' . "\n";
+        $css .= $selector . ' .jtb-portfolio-title { margin: 0 0 8px; font-weight: 600; }' . "\n";
 
         // Categories
-        $css .= $selector . ' .jtb-portfolio-cats { ';
-        $css .= 'font-size: 13px; color: ' . $catColor . '; margin-bottom: 15px; ';
-        $css .= '}' . "\n";
+        $css .= $selector . ' .jtb-portfolio-cats { font-size: 13px; margin-bottom: 15px; }' . "\n";
 
         // Actions
         $css .= $selector . ' .jtb-portfolio-actions { display: flex; gap: 10px; justify-content: center; }' . "\n";
-
-        $css .= $selector . ' .jtb-portfolio-actions a { ';
-        $css .= 'display: flex; align-items: center; justify-content: center; ';
-        $css .= 'width: 44px; height: 44px; ';
-        $css .= 'background: rgba(255,255,255,0.2); ';
-        $css .= 'color: ' . $iconColor . '; ';
-        $css .= 'border-radius: 50%; ';
-        $css .= 'transition: all 0.2s ease; ';
-        $css .= '}' . "\n";
-
+        $css .= $selector . ' .jtb-portfolio-actions a { display: flex; align-items: center; justify-content: center; width: 44px; height: 44px; background: rgba(255,255,255,0.2); border-radius: 50%; transition: all 0.2s ease; }' . "\n";
         $css .= $selector . ' .jtb-portfolio-actions a:hover { background: rgba(255,255,255,0.3); transform: scale(1.1); }' . "\n";
 
         // Responsive
@@ -396,12 +403,9 @@ class JTB_Module_FilterablePortfolio extends JTB_Element
         $phoneCols = $attrs['columns__phone'] ?? '2';
 
         $css .= '@media (max-width: 980px) { ' . $selector . ' .jtb-portfolio-grid { grid-template-columns: repeat(' . $tabletCols . ', 1fr); } }' . "\n";
-        $css .= '@media (max-width: 767px) { ';
-        $css .= $selector . ' .jtb-portfolio-grid { grid-template-columns: repeat(' . $phoneCols . ', 1fr); } ';
-        $css .= $selector . ' .jtb-portfolio-filter { gap: 8px; } ';
-        $css .= $selector . ' .jtb-filter-btn { padding: 8px 14px; font-size: 13px; } ';
-        $css .= '}' . "\n";
+        $css .= '@media (max-width: 767px) { ' . $selector . ' .jtb-portfolio-grid { grid-template-columns: repeat(' . $phoneCols . ', 1fr); } ' . $selector . ' .jtb-portfolio-filter { gap: 8px; } ' . $selector . ' .jtb-filter-btn { padding: 8px 14px; font-size: 13px; } }' . "\n";
 
+        // Parent class handles common styles
         $css .= parent::generateCss($attrs, $selector);
 
         return $css;

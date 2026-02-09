@@ -25,6 +25,41 @@ class JTB_Module_Toggle extends JTB_Element
     public bool $use_position = false;
     public bool $use_filters = false;
 
+    // === UNIFIED THEME SYSTEM ===
+    protected string $module_prefix = 'toggle';
+
+    /**
+     * Declarative style configuration
+     */
+    protected array $style_config = [
+        'icon_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-toggle-icon',
+            'hover' => true
+        ],
+        'icon_size' => [
+            'property' => 'width',
+            'selector' => '.jtb-toggle-icon svg',
+            'unit' => 'px'
+        ],
+        'open_title_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-toggle-container.jtb-open .jtb-toggle-title'
+        ],
+        'open_bg_color' => [
+            'property' => 'background-color',
+            'selector' => '.jtb-toggle-container.jtb-open .jtb-toggle-header'
+        ],
+        'closed_title_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-toggle-container:not(.jtb-open) .jtb-toggle-title'
+        ],
+        'closed_bg_color' => [
+            'property' => 'background-color',
+            'selector' => '.jtb-toggle-container:not(.jtb-open) .jtb-toggle-header'
+        ]
+    ];
+
     public function getSlug(): string
     {
         return 'toggle';
@@ -124,6 +159,9 @@ class JTB_Module_Toggle extends JTB_Element
 
     public function render(array $attrs, string $content = ''): string
     {
+        // Apply default styles from design system
+        $attrs = JTB_Default_Styles::mergeWithDefaults($this->getSlug(), $attrs);
+
         $title = $this->esc($attrs['title'] ?? 'Toggle Title');
         $bodyContent = $attrs['content'] ?? '<p>Your toggle content goes here.</p>';
         $isOpen = !empty($attrs['open']);
@@ -167,28 +205,28 @@ class JTB_Module_Toggle extends JTB_Element
         return $this->renderWrapper($innerHtml, $attrs);
     }
 
+    /**
+     * Generate CSS for Toggle module
+     * Base styles are in jtb-base-modules.css
+     */
     public function generateCss(array $attrs, string $selector): string
     {
         $css = '';
+
+        // Use declarative style_config system
+        $css .= $this->generateStyleConfigCss($attrs, $selector);
 
         // Toggle container
         $css .= $selector . ' .jtb-toggle-container { border: 1px solid #d9d9d9; }' . "\n";
 
         // Header
-        $css .= $selector . ' .jtb-toggle-header { ';
-        $css .= 'display: flex; ';
-        $css .= 'align-items: center; ';
-        $css .= 'padding: 15px 20px; ';
-        $css .= 'cursor: pointer; ';
-        $css .= 'transition: all 0.3s ease; ';
-        $css .= '}' . "\n";
+        $css .= $selector . ' .jtb-toggle-header { display: flex; align-items: center; padding: 15px 20px; cursor: pointer; transition: all 0.3s ease; }' . "\n";
 
         // Icon position
         $iconPos = $attrs['icon_position'] ?? 'right';
         if ($iconPos === 'right') {
             $css .= $selector . ' .jtb-toggle-header { justify-content: space-between; }' . "\n";
         } else {
-            $css .= $selector . ' .jtb-toggle-header { }' . "\n";
             $css .= $selector . ' .jtb-toggle-icon { margin-right: 15px; }' . "\n";
         }
 
@@ -196,51 +234,19 @@ class JTB_Module_Toggle extends JTB_Element
         $css .= $selector . ' .jtb-toggle-title { margin: 0; flex-grow: 1; }' . "\n";
 
         // Icon
-        $iconColor = $attrs['icon_color'] ?? '#666666';
         $iconSize = $attrs['icon_size'] ?? 16;
-        $css .= $selector . ' .jtb-toggle-icon { ';
-        $css .= 'color: ' . $iconColor . '; ';
-        $css .= 'display: inline-flex; ';
-        $css .= 'align-items: center; ';
-        $css .= 'justify-content: center; ';
-        $css .= 'transition: transform 0.3s ease; ';
-        $css .= '}' . "\n";
-        $css .= $selector . ' .jtb-toggle-icon svg { width: ' . $iconSize . 'px; height: ' . $iconSize . 'px; }' . "\n";
+        $css .= $selector . ' .jtb-toggle-icon { display: inline-flex; align-items: center; justify-content: center; transition: transform 0.3s ease; }' . "\n";
+        $css .= $selector . ' .jtb-toggle-icon svg { height: ' . $iconSize . 'px; }' . "\n";
 
         // Icon rotation when open
         $css .= $selector . ' .jtb-toggle-container.jtb-open .jtb-toggle-icon { transform: rotate(180deg); }' . "\n";
         $css .= $selector . ' .jtb-toggle-container.jtb-open.jtb-toggle-icon-plus .jtb-toggle-icon { transform: rotate(45deg); }' . "\n";
 
         // Content
-        $css .= $selector . ' .jtb-toggle-content { ';
-        $css .= 'display: none; ';
-        $css .= 'padding: 20px; ';
-        $css .= 'border-top: 1px solid #d9d9d9; ';
-        $css .= '}' . "\n";
-
+        $css .= $selector . ' .jtb-toggle-content { display: none; padding: 20px; border-top: 1px solid #d9d9d9; }' . "\n";
         $css .= $selector . ' .jtb-toggle-container.jtb-open .jtb-toggle-content { display: block; }' . "\n";
 
-        // Open state styles
-        if (!empty($attrs['open_title_color'])) {
-            $css .= $selector . ' .jtb-toggle-container.jtb-open .jtb-toggle-title { color: ' . $attrs['open_title_color'] . '; }' . "\n";
-        }
-        if (!empty($attrs['open_bg_color'])) {
-            $css .= $selector . ' .jtb-toggle-container.jtb-open .jtb-toggle-header { background-color: ' . $attrs['open_bg_color'] . '; }' . "\n";
-        }
-
-        // Closed state styles
-        if (!empty($attrs['closed_title_color'])) {
-            $css .= $selector . ' .jtb-toggle-container:not(.jtb-open) .jtb-toggle-title { color: ' . $attrs['closed_title_color'] . '; }' . "\n";
-        }
-        if (!empty($attrs['closed_bg_color'])) {
-            $css .= $selector . ' .jtb-toggle-container:not(.jtb-open) .jtb-toggle-header { background-color: ' . $attrs['closed_bg_color'] . '; }' . "\n";
-        }
-
-        // Hover states
-        if (!empty($attrs['icon_color__hover'])) {
-            $css .= $selector . ' .jtb-toggle-header:hover .jtb-toggle-icon { color: ' . $attrs['icon_color__hover'] . '; }' . "\n";
-        }
-
+        // Parent class handles common styles
         $css .= parent::generateCss($attrs, $selector);
 
         return $css;

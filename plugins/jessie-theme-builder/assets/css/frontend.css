@@ -1,7 +1,134 @@
 /**
  * JTB Frontend CSS
  * Frontend display styles for rendered content
+ *
+ * ARCHITECTURE:
+ * 1. CSS Variables are generated dynamically by JTB_CSS_Variables class
+ * 2. Base module styles are in jtb-base-modules.css (uses CSS variables)
+ * 3. This file contains structure styles (sections, rows, columns)
+ * 4. Module-specific CSS is generated only for values different from defaults
  */
+
+/* ========================================
+   CSS VARIABLES FALLBACKS
+   These are fallback values - actual values come from JTB_CSS_Variables
+   ======================================== */
+
+:root {
+    /* Colors */
+    --jtb-primary-color: #6366f1;
+    --jtb-primary-hover: #4f46e5;
+    --jtb-secondary-color: #8b5cf6;
+    --jtb-accent-color: #06b6d4;
+    --jtb-text-color: #1f2937;
+    --jtb-text-light-color: #6b7280;
+    --jtb-heading-color: #111827;
+    --jtb-link-color: #6366f1;
+    --jtb-link-hover-color: #4f46e5;
+    --jtb-background-color: #ffffff;
+    --jtb-surface-color: #f8fafc;
+    --jtb-border-color: #e5e7eb;
+
+    /* Typography */
+    --jtb-body-font: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    --jtb-body-size: 16px;
+    --jtb-body-weight: 400;
+    --jtb-body-line-height: 1.6;
+    --jtb-heading-font: inherit;
+    --jtb-heading-weight: 700;
+    --jtb-heading-line-height: 1.3;
+
+    /* Heading Sizes */
+    --jtb-h1-size: 48px;
+    --jtb-h2-size: 36px;
+    --jtb-h3-size: 28px;
+    --jtb-h4-size: 24px;
+    --jtb-h5-size: 20px;
+    --jtb-h6-size: 18px;
+
+    /* Layout */
+    --jtb-content-width: 1200px;
+    --jtb-gutter-width: 30px;
+    --jtb-section-padding-top: 60px;
+    --jtb-section-padding-bottom: 60px;
+    --jtb-row-gap: 30px;
+    --jtb-column-gap: 30px;
+
+    /* Borders & Radius */
+    --jtb-border-radius: 8px;
+    --jtb-border-radius-sm: 4px;
+    --jtb-border-radius-lg: 12px;
+    --jtb-border-radius-xl: 16px;
+
+    /* Shadows */
+    --jtb-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+    --jtb-shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.06);
+    --jtb-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --jtb-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --jtb-shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.08), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+
+    /* Transitions */
+    --jtb-transition-fast: 150ms ease;
+    --jtb-transition: 300ms ease;
+    --jtb-transition-slow: 500ms ease;
+    --jtb-transition-smooth: 400ms cubic-bezier(0.4, 0, 0.2, 1);
+
+    /* Buttons */
+    --jtb-btn-font-size: 16px;
+    --jtb-btn-font-weight: 600;
+    --jtb-btn-padding-y: 14px;
+    --jtb-btn-padding-x: 28px;
+    --jtb-btn-border-radius: 8px;
+    --jtb-btn-bg: var(--jtb-primary-color);
+    --jtb-btn-color: #ffffff;
+    --jtb-btn-hover-bg: var(--jtb-primary-hover);
+    --jtb-btn-hover-color: #ffffff;
+
+    /* Form Inputs */
+    --jtb-input-bg: var(--jtb-surface-color);
+    --jtb-input-color: var(--jtb-text-color);
+    --jtb-input-border-color: var(--jtb-border-color);
+    --jtb-input-border-radius: 8px;
+    --jtb-input-padding-y: 14px;
+    --jtb-input-padding-x: 16px;
+    --jtb-input-focus-border-color: var(--jtb-primary-color);
+
+    /* ========================================
+       STAGE 21: STYLE PROOF TOKENS
+       Visual regression guards for VI/NR/ET/ATT
+       ======================================== */
+
+    /* Cue bar dimensions */
+    --jtb-sp-cue-height: 6px;
+    --jtb-sp-cue-radius: 999px;
+    --jtb-sp-cue-opacity: 0.9;
+    --jtb-sp-outline: 1px;
+    --jtb-sp-outline-strong: 2px;
+
+    /* Visual Intent colors (VI) */
+    --jtb-sp-vi-dominant: #2563eb;
+    --jtb-sp-vi-emphasis: #7c3aed;
+    --jtb-sp-vi-neutral: #64748b;
+    --jtb-sp-vi-soft: #14b8a6;
+
+    /* Narrative Role colors (NR) - highest priority */
+    --jtb-sp-nr-hook: #f59e0b;
+    --jtb-sp-nr-problem: #ef4444;
+    --jtb-sp-nr-promise: #3b82f6;
+    --jtb-sp-nr-proof: #22c55e;
+    --jtb-sp-nr-details: #94a3b8;
+    --jtb-sp-nr-relief: #06b6d4;
+    --jtb-sp-nr-resolution: #a855f7;
+
+    /* Emotional Tone colors (ET) */
+    --jtb-sp-et-calm: #0ea5e9;
+    --jtb-sp-et-focus: #2563eb;
+    --jtb-sp-et-trust: #16a34a;
+    --jtb-sp-et-urgency: #dc2626;
+
+    /* Default cue color (transparent = no cue) */
+    --jtb-sp-cue-color: transparent;
+}
 
 /* ========================================
    1. RESET
@@ -63,88 +190,113 @@
 
 /* 2 Columns - Equal */
 .jtb-row-cols-1-2-1-2 > .jtb-column {
-    flex: 0 0 calc(50% - 15px);
-    max-width: calc(50% - 15px);
+    flex: 1 1 0;
+    min-width: 0;
 }
 
 /* 3 Columns - Equal */
 .jtb-row-cols-1-3-1-3-1-3 > .jtb-column {
-    flex: 0 0 calc(33.333% - 20px);
-    max-width: calc(33.333% - 20px);
+    flex: 1 1 0;
+    min-width: 0;
 }
 
 /* 4 Columns - Equal */
 .jtb-row-cols-1-4-1-4-1-4-1-4 > .jtb-column {
-    flex: 0 0 calc(25% - 22.5px);
-    max-width: calc(25% - 22.5px);
+    flex: 1 1 0;
+    min-width: 0;
 }
 
 /* 2 Columns - 2/3 + 1/3 */
 .jtb-row-cols-2-3-1-3 > .jtb-column:first-child {
-    flex: 0 0 calc(66.666% - 15px);
-    max-width: calc(66.666% - 15px);
+    flex: 2 1 0;
+    min-width: 0;
 }
 
 .jtb-row-cols-2-3-1-3 > .jtb-column:last-child {
-    flex: 0 0 calc(33.333% - 15px);
-    max-width: calc(33.333% - 15px);
+    flex: 1 1 0;
+    min-width: 0;
 }
 
 /* 2 Columns - 1/3 + 2/3 */
 .jtb-row-cols-1-3-2-3 > .jtb-column:first-child {
-    flex: 0 0 calc(33.333% - 15px);
-    max-width: calc(33.333% - 15px);
+    flex: 1 1 0;
+    min-width: 0;
 }
 
 .jtb-row-cols-1-3-2-3 > .jtb-column:last-child {
-    flex: 0 0 calc(66.666% - 15px);
-    max-width: calc(66.666% - 15px);
+    flex: 2 1 0;
+    min-width: 0;
 }
 
 /* 2 Columns - 1/4 + 3/4 */
 .jtb-row-cols-1-4-3-4 > .jtb-column:first-child {
-    flex: 0 0 calc(25% - 15px);
-    max-width: calc(25% - 15px);
+    flex: 1 1 0;
+    min-width: 0;
 }
 
 .jtb-row-cols-1-4-3-4 > .jtb-column:last-child {
-    flex: 0 0 calc(75% - 15px);
-    max-width: calc(75% - 15px);
+    flex: 3 1 0;
+    min-width: 0;
 }
 
 /* 2 Columns - 3/4 + 1/4 */
 .jtb-row-cols-3-4-1-4 > .jtb-column:first-child {
-    flex: 0 0 calc(75% - 15px);
-    max-width: calc(75% - 15px);
+    flex: 3 1 0;
+    min-width: 0;
 }
 
 .jtb-row-cols-3-4-1-4 > .jtb-column:last-child {
-    flex: 0 0 calc(25% - 15px);
-    max-width: calc(25% - 15px);
+    flex: 1 1 0;
+    min-width: 0;
 }
 
 /* 3 Columns - 1/4 + 1/2 + 1/4 */
 .jtb-row-cols-1-4-1-2-1-4 > .jtb-column:first-child,
 .jtb-row-cols-1-4-1-2-1-4 > .jtb-column:last-child {
-    flex: 0 0 calc(25% - 20px);
-    max-width: calc(25% - 20px);
+    flex: 1 1 0;
+    min-width: 0;
 }
 
 .jtb-row-cols-1-4-1-2-1-4 > .jtb-column:nth-child(2) {
-    flex: 0 0 calc(50% - 20px);
-    max-width: calc(50% - 20px);
+    flex: 2 1 0;
+    min-width: 0;
 }
 
 /* 5 Columns */
 .jtb-row-cols-1-5-1-5-1-5-1-5-1-5 > .jtb-column {
-    flex: 0 0 calc(20% - 24px);
-    max-width: calc(20% - 24px);
+    flex: 1 1 0;
+    min-width: 0;
 }
 
 /* 6 Columns */
 .jtb-row-cols-1-6-1-6-1-6-1-6-1-6-1-6 > .jtb-column {
-    flex: 0 0 calc(16.666% - 25px);
-    max-width: calc(16.666% - 25px);
+    flex: 1 1 0;
+    min-width: 0;
+}
+
+/* 4 Columns - 1/3 + 1/6 + 1/6 + 1/3 (Footer layout) */
+.jtb-row-cols-1-3-1-6-1-6-1-3 > .jtb-column:first-child,
+.jtb-row-cols-1-3-1-6-1-6-1-3 > .jtb-column:last-child {
+    flex: 2 1 0;
+    min-width: 0;
+}
+
+.jtb-row-cols-1-3-1-6-1-6-1-3 > .jtb-column:nth-child(2),
+.jtb-row-cols-1-3-1-6-1-6-1-3 > .jtb-column:nth-child(3) {
+    flex: 1 1 0;
+    min-width: 0;
+}
+
+/* 3 Columns - 1/4 + 1/2 + 1/4 (Header layout) */
+.jtb-row-cols-1-4-1-2-1-4 > .jtb-column:first-child,
+.jtb-row-cols-1-4-1-2-1-4 > .jtb-column:last-child {
+    flex: 1 1 0;
+    min-width: 0;
+}
+
+.jtb-row-cols-1-4-1-2-1-4 > .jtb-column:nth-child(2) {
+    flex: 2 1 0;
+    min-width: 0;
 }
 
 /* ========================================
@@ -315,31 +467,46 @@
 
 /* ========================================
    13. VISIBILITY CLASSES
+   FIX 2026-02-04: Corrected mobile-first logic
    ======================================== */
 
-/* Desktop visibility - shown by default, hidden on desktop when class applied */
-.jtb-hide-desktop {
-    display: none !important;
+/*
+ * Mobile-first approach:
+ * - Elements are visible by default on all devices
+ * - .jtb-hide-desktop: hidden on desktop (981px+), visible on tablet/phone
+ * - .jtb-hide-tablet: hidden on tablet (768-980px), visible on desktop/phone
+ * - .jtb-hide-phone: hidden on phone (0-767px), visible on desktop/tablet
+ */
+
+/* Phone visibility - hidden only on phone */
+.jtb-hide-phone {
+    display: block !important;
 }
 
-/* Tablet visibility */
-@media (max-width: 980px) {
-    .jtb-hide-desktop {
-        display: block !important;
+@media (max-width: 767px) {
+    .jtb-hide-phone {
+        display: none !important;
     }
+}
 
+/* Tablet visibility - hidden only on tablet */
+.jtb-hide-tablet {
+    display: block !important;
+}
+
+@media (min-width: 768px) and (max-width: 980px) {
     .jtb-hide-tablet {
         display: none !important;
     }
 }
 
-/* Phone visibility */
-@media (max-width: 767px) {
-    .jtb-hide-tablet {
-        display: block !important;
-    }
+/* Desktop visibility - hidden only on desktop */
+.jtb-hide-desktop {
+    display: block !important;
+}
 
-    .jtb-hide-phone {
+@media (min-width: 981px) {
+    .jtb-hide-desktop {
         display: none !important;
     }
 }
@@ -1963,5 +2130,1352 @@ body.jtb-mobile-menu-open {
 
     .jtb-post-card.jtb-layout-list .jtb-post-image {
         width: 100% !important;
+    }
+}
+
+/* ========================================
+   Stage 14: Visual Scale Classes
+   ======================================== */
+
+.jtb-scale-xs { --jtb-scale: 0.85; }
+.jtb-scale-sm { --jtb-scale: 0.92; }
+.jtb-scale-md { --jtb-scale: 1; }
+.jtb-scale-lg { --jtb-scale: 1.12; }
+.jtb-scale-xl { --jtb-scale: 1.25; }
+
+.jtb-scale-lg .jtb-section-inner,
+.jtb-scale-xl .jtb-section-inner {
+    padding-top: calc(80px * var(--jtb-scale-padding, 1));
+    padding-bottom: calc(80px * var(--jtb-scale-padding, 1));
+}
+
+.jtb-scale-lg h1 { font-size: calc(var(--jtb-h1-size, 48px) * 1.12); }
+.jtb-scale-lg h2 { font-size: calc(var(--jtb-h2-size, 36px) * 1.12); }
+.jtb-scale-lg h3 { font-size: calc(var(--jtb-h3-size, 28px) * 1.12); }
+
+.jtb-scale-xl h1 { font-size: calc(var(--jtb-h1-size, 48px) * 1.25); }
+.jtb-scale-xl h2 { font-size: calc(var(--jtb-h2-size, 36px) * 1.25); }
+.jtb-scale-xl h3 { font-size: calc(var(--jtb-h3-size, 28px) * 1.25); }
+
+/* ========================================
+   Stage 15: Typography Scale & Text Emphasis
+   ======================================== */
+
+.jtb-ts-xs { --jtb-ts: 0.9; }
+.jtb-ts-sm { --jtb-ts: 0.95; }
+.jtb-ts-md { --jtb-ts: 1; }
+.jtb-ts-lg { --jtb-ts: 1.1; }
+.jtb-ts-xl { --jtb-ts: 1.25; }
+
+.jtb-ts-lg h1 { font-size: calc(var(--jtb-h1-size, 48px) * 1.1); }
+.jtb-ts-lg h2 { font-size: calc(var(--jtb-h2-size, 36px) * 1.1); }
+.jtb-ts-lg h3 { font-size: calc(var(--jtb-h3-size, 28px) * 1.1); }
+.jtb-ts-lg p { font-size: calc(var(--jtb-body-size, 16px) * 1.1); }
+.jtb-ts-lg .jtb-button { font-size: calc(14px * 1.1); padding: calc(12px * 1.1) calc(24px * 1.1); }
+
+.jtb-ts-xl h1 { font-size: calc(var(--jtb-h1-size, 48px) * 1.25); }
+.jtb-ts-xl h2 { font-size: calc(var(--jtb-h2-size, 36px) * 1.25); }
+.jtb-ts-xl h3 { font-size: calc(var(--jtb-h3-size, 28px) * 1.25); }
+.jtb-ts-xl p { font-size: calc(var(--jtb-body-size, 16px) * 1.25); }
+.jtb-ts-xl .jtb-button { font-size: calc(14px * 1.25); padding: calc(12px * 1.25) calc(24px * 1.25); }
+
+.jtb-te-strong h1,
+.jtb-te-strong h2,
+.jtb-te-strong h3 {
+    font-weight: 700;
+    letter-spacing: -0.01em;
+}
+
+.jtb-te-strong p {
+    font-weight: 500;
+}
+
+.jtb-te-soft h1,
+.jtb-te-soft h2,
+.jtb-te-soft h3 {
+    font-weight: 400;
+    opacity: 0.9;
+}
+
+.jtb-te-soft p {
+    font-weight: 400;
+    opacity: 0.9;
+    max-width: 720px;
+}
+
+/* ============================================================
+   Stage 16: Emotional Contrast & Attention Flow Engine
+
+   Emotional Tone: calm, focus, trust, urgency
+   Attention Level: low, medium, high
+
+   These classes provide subtle visual cues that reinforce
+   the emotional journey through the page.
+   ============================================================ */
+
+/* --- Emotional Tone: CALM --- */
+/* Serene, relaxed sections - reduced contrast, softer spacing */
+.jtb-et-calm {
+    --jtb-et-filter: brightness(1.02);
+}
+
+.jtb-et-calm h1,
+.jtb-et-calm h2,
+.jtb-et-calm h3 {
+    letter-spacing: 0.02em;
+}
+
+.jtb-et-calm p {
+    line-height: 1.8;
+    max-width: 680px;
+}
+
+/* --- Emotional Tone: FOCUS --- */
+/* Sharp, attention-grabbing sections - crisp typography */
+.jtb-et-focus {
+    --jtb-et-filter: contrast(1.02);
+}
+
+.jtb-et-focus h1,
+.jtb-et-focus h2 {
+    letter-spacing: -0.02em;
+    font-weight: 700;
+}
+
+.jtb-et-focus p {
+    line-height: 1.6;
+}
+
+/* --- Emotional Tone: TRUST --- */
+/* Credibility-building sections - warm, approachable */
+.jtb-et-trust {
+    --jtb-et-filter: saturate(1.05);
+}
+
+.jtb-et-trust h2,
+.jtb-et-trust h3 {
+    font-weight: 600;
+}
+
+.jtb-et-trust p {
+    line-height: 1.75;
+}
+
+/* Trust sections often contain testimonials, logos, stats */
+.jtb-et-trust .jtb-testimonial,
+.jtb-et-trust .jtb-counter,
+.jtb-et-trust .jtb-blurb {
+    transform: scale(1);
+    transition: transform 0.3s ease;
+}
+
+.jtb-et-trust .jtb-testimonial:hover,
+.jtb-et-trust .jtb-counter:hover,
+.jtb-et-trust .jtb-blurb:hover {
+    transform: scale(1.02);
+}
+
+/* --- Emotional Tone: URGENCY --- */
+/* Action-driving sections - bold, high contrast */
+.jtb-et-urgency {
+    --jtb-et-filter: contrast(1.05) saturate(1.1);
+}
+
+.jtb-et-urgency h1,
+.jtb-et-urgency h2 {
+    font-weight: 800;
+    letter-spacing: -0.02em;
+}
+
+.jtb-et-urgency p {
+    font-weight: 500;
+}
+
+/* CTA buttons in urgency sections get enhanced styling */
+.jtb-et-urgency .jtb-button,
+.jtb-et-urgency .jtb-cta-button {
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.jtb-et-urgency .jtb-button:hover,
+.jtb-et-urgency .jtb-cta-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* --- Attention Level: LOW --- */
+/* Background sections that don't compete for attention */
+.jtb-att-low {
+    --jtb-att-opacity: 0.92;
+}
+
+.jtb-att-low h2,
+.jtb-att-low h3 {
+    opacity: var(--jtb-att-opacity, 1);
+}
+
+.jtb-att-low p {
+    opacity: calc(var(--jtb-att-opacity, 1) - 0.05);
+}
+
+/* --- Attention Level: MEDIUM --- */
+/* Standard sections with balanced attention */
+.jtb-att-medium {
+    --jtb-att-opacity: 1;
+}
+
+/* --- Attention Level: HIGH --- */
+/* Key sections that demand user attention */
+.jtb-att-high {
+    --jtb-att-opacity: 1;
+}
+
+.jtb-att-high h1,
+.jtb-att-high h2 {
+    font-weight: 700;
+}
+
+.jtb-att-high .jtb-button {
+    font-weight: 600;
+}
+
+/* High attention sections have slightly increased visual weight */
+.jtb-att-high > .jtb-section-inner {
+    position: relative;
+}
+
+/* --- Combined Emotional + Attention Patterns --- */
+
+/* Hero: FOCUS + HIGH - maximum impact */
+.jtb-et-focus.jtb-att-high h1 {
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+}
+
+/* Final CTA: URGENCY + HIGH - conversion focused */
+.jtb-et-urgency.jtb-att-high {
+    position: relative;
+}
+
+.jtb-et-urgency.jtb-att-high::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.03) 100%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* Trust sections: TRUST + MEDIUM - credible but not aggressive */
+.jtb-et-trust.jtb-att-medium {
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+/* FAQ/Support: CALM + LOW - reassuring, easy to digest */
+.jtb-et-calm.jtb-att-low .jtb-accordion-title,
+.jtb-et-calm.jtb-att-low .jtb-toggle-title {
+    font-weight: 500;
+}
+
+/* --- Dark Mode Adjustments --- */
+.jtb-context-dark.jtb-et-urgency .jtb-button,
+.jtb-context-dark.jtb-et-urgency .jtb-cta-button {
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+}
+
+.jtb-context-dark.jtb-et-urgency .jtb-button:hover,
+.jtb-context-dark.jtb-et-urgency .jtb-cta-button:hover {
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+}
+
+.jtb-context-dark.jtb-et-trust.jtb-att-medium {
+    border-top-color: rgba(255, 255, 255, 0.1);
+    border-bottom-color: rgba(255, 255, 255, 0.1);
+}
+
+/* ==========================================================================
+   STAGE 19: GOLDEN PAGE VISUAL POLISH ENGINE
+   Production-grade styling that reflects Stages 11-18 signals
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   19.1 GOLDEN PAGE TOKENS
+   Consistent design tokens for premium look
+   -------------------------------------------------------------------------- */
+
+:root {
+    /* Golden Page Scale System */
+    --jtb-scale: 1;
+    --jtb-scale-xs: 0.85;
+    --jtb-scale-sm: 0.92;
+    --jtb-scale-md: 1;
+    --jtb-scale-lg: 1.12;
+    --jtb-scale-xl: 1.25;
+
+    /* Golden Page Tokens */
+    --jtb-gp-radius: 16px;
+    --jtb-gp-radius-sm: 8px;
+    --jtb-gp-radius-lg: 24px;
+    --jtb-gp-shadow-1: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+    --jtb-gp-shadow-2: 0 4px 12px rgba(0, 0, 0, 0.08), 0 2px 4px rgba(0, 0, 0, 0.04);
+    --jtb-gp-shadow-3: 0 12px 32px rgba(0, 0, 0, 0.1), 0 4px 8px rgba(0, 0, 0, 0.05);
+    --jtb-gp-border: rgba(0, 0, 0, 0.06);
+    --jtb-gp-border-light: rgba(0, 0, 0, 0.04);
+
+    /* Section padding baseline */
+    --jtb-gp-section-pad: 64px;
+    --jtb-gp-section-pad-sm: 40px;
+    --jtb-gp-section-pad-lg: 96px;
+}
+
+/* --------------------------------------------------------------------------
+   19.2 VISUAL SCALE SYSTEM (jtb-scale-*)
+   Section-level scaling that affects all children
+   -------------------------------------------------------------------------- */
+
+.jtb-scale-xs { --jtb-scale: 0.85; }
+.jtb-scale-sm { --jtb-scale: 0.92; }
+.jtb-scale-md { --jtb-scale: 1; }
+.jtb-scale-lg { --jtb-scale: 1.12; }
+.jtb-scale-xl { --jtb-scale: 1.25; }
+
+/* Typography scaling with clamps for safety */
+.jtb-section h1 {
+    font-size: clamp(32px, calc(var(--jtb-h1-size, 48px) * var(--jtb-scale)), 72px);
+}
+
+.jtb-section h2 {
+    font-size: clamp(24px, calc(var(--jtb-h2-size, 36px) * var(--jtb-scale)), 56px);
+}
+
+.jtb-section h3 {
+    font-size: clamp(18px, calc(var(--jtb-h3-size, 28px) * var(--jtb-scale)), 42px);
+}
+
+.jtb-section p,
+.jtb-section .jtb-text {
+    font-size: clamp(14px, calc(var(--jtb-body-size, 16px) * var(--jtb-scale)), 20px);
+}
+
+/* Button scaling */
+.jtb-section .jtb-button {
+    padding: clamp(10px, calc(14px * var(--jtb-scale)), 20px) clamp(20px, calc(28px * var(--jtb-scale)), 40px);
+    font-size: clamp(14px, calc(16px * var(--jtb-scale)), 20px);
+}
+
+/* Section padding scaling */
+.jtb-section {
+    scroll-margin-top: 80px;
+    padding-top: clamp(32px, calc(var(--jtb-gp-section-pad) * var(--jtb-scale)), 120px);
+    padding-bottom: clamp(32px, calc(var(--jtb-gp-section-pad) * var(--jtb-scale)), 120px);
+}
+
+/* --------------------------------------------------------------------------
+   19.3 VISUAL INTENT STYLING (jtb-vi-*)
+   -------------------------------------------------------------------------- */
+
+/* DOMINANT - Maximum visual impact */
+.jtb-vi-dominant {
+    --jtb-scale: 1.15;
+}
+
+.jtb-vi-dominant h1,
+.jtb-vi-dominant h2 {
+    font-weight: 800;
+    letter-spacing: -0.02em;
+}
+
+.jtb-vi-dominant > .jtb-section-inner {
+    padding-left: clamp(16px, 5vw, 40px);
+    padding-right: clamp(16px, 5vw, 40px);
+}
+
+/* EMPHASIS - Slightly elevated */
+.jtb-vi-emphasis {
+    --jtb-scale: 1.05;
+}
+
+.jtb-vi-emphasis h1,
+.jtb-vi-emphasis h2,
+.jtb-vi-emphasis h3 {
+    font-weight: 700;
+}
+
+/* NEUTRAL - Baseline */
+.jtb-vi-neutral {
+    --jtb-scale: 1;
+}
+
+/* SOFT - Reduced prominence */
+.jtb-vi-soft {
+    --jtb-scale: 0.95;
+}
+
+.jtb-vi-soft h1,
+.jtb-vi-soft h2,
+.jtb-vi-soft h3 {
+    font-weight: 600;
+    opacity: 0.92;
+}
+
+.jtb-vi-soft p,
+.jtb-vi-soft .jtb-text {
+    max-width: 680px;
+    margin-left: auto;
+    margin-right: auto;
+    opacity: 0.88;
+}
+
+/* --------------------------------------------------------------------------
+   19.4 EMOTIONAL TONE POLISH (jtb-et-*)
+   -------------------------------------------------------------------------- */
+
+/* CALM - Relaxed, easy reading */
+.jtb-et-calm {
+    line-height: 1.75;
+}
+
+.jtb-et-calm h1, .jtb-et-calm h2, .jtb-et-calm h3 {
+    line-height: 1.4;
+    letter-spacing: 0;
+}
+
+.jtb-et-calm p {
+    color: var(--jtb-text-light-color, #6b7280);
+}
+
+/* FOCUS - Strong headlines, tight tracking */
+.jtb-et-focus h1, .jtb-et-focus h2 {
+    font-weight: 800;
+    letter-spacing: -0.025em;
+    line-height: 1.15;
+}
+
+.jtb-et-focus p {
+    letter-spacing: -0.01em;
+}
+
+/* TRUST - Solid, professional feel */
+.jtb-et-trust .jtb-button,
+.jtb-et-trust .jtb-cta-button {
+    box-shadow: var(--jtb-gp-shadow-1);
+    transition: all var(--jtb-transition);
+}
+
+.jtb-et-trust .jtb-button:hover,
+.jtb-et-trust .jtb-cta-button:hover {
+    box-shadow: var(--jtb-gp-shadow-2);
+    transform: translateY(-1px);
+}
+
+.jtb-et-trust .jtb-testimonial,
+.jtb-et-trust .jtb-blurb {
+    border: 1px solid var(--jtb-gp-border);
+    border-radius: var(--jtb-gp-radius);
+}
+
+/* URGENCY - CTA emphasis (subtle, only on hover) */
+.jtb-et-urgency .jtb-button,
+.jtb-et-urgency .jtb-cta-button {
+    font-weight: 700;
+    box-shadow: var(--jtb-gp-shadow-2);
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.jtb-et-urgency .jtb-button:hover,
+.jtb-et-urgency .jtb-cta-button:hover {
+    box-shadow: var(--jtb-gp-shadow-3);
+    transform: translateY(-2px) scale(1.02);
+}
+
+/* Subtle pulse ONLY on button hover for urgency */
+@keyframes jtb-urgency-pulse {
+    0%, 100% { box-shadow: var(--jtb-gp-shadow-2), 0 0 0 0 rgba(99, 102, 241, 0.3); }
+    50% { box-shadow: var(--jtb-gp-shadow-2), 0 0 0 6px rgba(99, 102, 241, 0); }
+}
+
+.jtb-et-urgency .jtb-button:hover,
+.jtb-et-urgency .jtb-cta-button:hover {
+    animation: jtb-urgency-pulse 1.5s ease-in-out infinite;
+}
+
+/* --------------------------------------------------------------------------
+   19.5 ATTENTION LEVEL POLISH (jtb-att-*)
+   -------------------------------------------------------------------------- */
+
+/* HIGH attention - stronger visual presence */
+.jtb-att-high .jtb-button,
+.jtb-att-high .jtb-cta-button {
+    font-weight: 700;
+    box-shadow: var(--jtb-gp-shadow-2);
+}
+
+.jtb-att-high h1,
+.jtb-att-high h2 {
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+/* LOW attention - subtle, unobtrusive */
+.jtb-att-low {
+    opacity: 0.95;
+}
+
+.jtb-att-low h1, .jtb-att-low h2, .jtb-att-low h3 {
+    font-weight: 500;
+}
+
+/* --------------------------------------------------------------------------
+   19.6 NARRATIVE ROLE STYLING (jtb-nr-*)
+   -------------------------------------------------------------------------- */
+
+/* HOOK - Headline with spacing bonus */
+.jtb-nr-hook {
+    padding-top: clamp(48px, calc(80px * var(--jtb-scale)), 140px);
+}
+
+.jtb-nr-hook h1 {
+    font-weight: 800;
+    line-height: 1.1;
+    margin-bottom: 1.5em;
+}
+
+/* PROBLEM - Mild accent (left border) */
+.jtb-nr-problem {
+    border-left: 4px solid var(--jtb-accent-color, #06b6d4);
+    padding-left: 2rem;
+}
+
+.jtb-nr-problem h2, .jtb-nr-problem h3 {
+    color: var(--jtb-heading-color);
+}
+
+/* PROMISE - Value proposition clarity */
+.jtb-nr-promise h2, .jtb-nr-promise h3 {
+    font-weight: 700;
+    color: var(--jtb-heading-color);
+}
+
+/* PROOF - Card consistency */
+.jtb-nr-proof .jtb-testimonial,
+.jtb-nr-proof .jtb-blurb,
+.jtb-nr-proof .jtb-team-member {
+    background: var(--jtb-surface-color, #f8fafc);
+    border: 1px solid var(--jtb-gp-border);
+    border-radius: var(--jtb-gp-radius);
+    box-shadow: var(--jtb-gp-shadow-1);
+}
+
+/* DETAILS - Clear, scannable */
+.jtb-nr-details .jtb-accordion,
+.jtb-nr-details .jtb-pricing-table {
+    border: 1px solid var(--jtb-gp-border);
+    border-radius: var(--jtb-gp-radius);
+    overflow: hidden;
+}
+
+/* RELIEF - Breathing space, lighter feel */
+.jtb-nr-relief {
+    background-color: var(--jtb-surface-color, #f8fafc);
+    --jtb-scale: 0.92;
+}
+
+.jtb-nr-relief p {
+    font-size: clamp(13px, calc(14px * var(--jtb-scale)), 16px);
+    color: var(--jtb-text-light-color);
+}
+
+/* RESOLUTION - CTA strongest treatment */
+.jtb-nr-resolution {
+    padding-top: clamp(48px, calc(72px * var(--jtb-scale)), 120px);
+    padding-bottom: clamp(48px, calc(72px * var(--jtb-scale)), 120px);
+}
+
+.jtb-nr-resolution h2, .jtb-nr-resolution h3 {
+    font-weight: 800;
+    margin-bottom: 1.25em;
+}
+
+.jtb-nr-resolution .jtb-button,
+.jtb-nr-resolution .jtb-cta-button {
+    font-size: clamp(16px, calc(18px * var(--jtb-scale)), 22px);
+    padding: clamp(14px, calc(18px * var(--jtb-scale)), 24px) clamp(28px, calc(36px * var(--jtb-scale)), 48px);
+    font-weight: 700;
+    box-shadow: var(--jtb-gp-shadow-2);
+    border-radius: var(--jtb-gp-radius-sm);
+}
+
+.jtb-nr-resolution .jtb-button:hover,
+.jtb-nr-resolution .jtb-cta-button:hover {
+    box-shadow: var(--jtb-gp-shadow-3);
+    transform: translateY(-2px);
+}
+
+/* --------------------------------------------------------------------------
+   19.7 GOLDEN PAGE MODULE POLISH
+   Consistent card/module styling
+   -------------------------------------------------------------------------- */
+
+/* Cards baseline */
+.jtb-blurb,
+.jtb-testimonial,
+.jtb-team-member,
+.jtb-pricing-table {
+    border-radius: var(--jtb-gp-radius);
+    transition: box-shadow var(--jtb-transition), transform var(--jtb-transition);
+}
+
+/* Hover lift for interactive cards */
+.jtb-blurb:hover,
+.jtb-testimonial:hover {
+    box-shadow: var(--jtb-gp-shadow-2);
+    transform: translateY(-2px);
+}
+
+/* Images consistency */
+.jtb-section img {
+    max-width: 100%;
+    height: auto;
+    border-radius: var(--jtb-gp-radius-sm);
+}
+
+/* Buttons consistency */
+.jtb-button,
+.jtb-cta-button {
+    border-radius: var(--jtb-gp-radius-sm);
+    font-weight: 600;
+    transition: all var(--jtb-transition);
+}
+
+/* --------------------------------------------------------------------------
+   19.8 RESPONSIVE GOLDEN PAGE
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 1024px) {
+    :root {
+        --jtb-gp-section-pad: 48px;
+    }
+
+    .jtb-scale-xl { --jtb-scale: 1.15; }
+    .jtb-scale-lg { --jtb-scale: 1.08; }
+}
+
+@media (max-width: 768px) {
+    :root {
+        --jtb-gp-section-pad: 36px;
+        --jtb-gp-radius: 12px;
+    }
+
+    .jtb-scale-xl { --jtb-scale: 1.1; }
+    .jtb-scale-lg { --jtb-scale: 1.05; }
+
+    .jtb-nr-hook {
+        padding-top: clamp(32px, 10vw, 80px);
+    }
+
+    .jtb-nr-problem {
+        padding-left: 1rem;
+        border-left-width: 3px;
+    }
+}
+
+@media (max-width: 480px) {
+    :root {
+        --jtb-gp-section-pad: 28px;
+        --jtb-gp-radius: 10px;
+    }
+
+    .jtb-scale-xl { --jtb-scale: 1.05; }
+    .jtb-scale-lg { --jtb-scale: 1.02; }
+}
+
+/* ==========================================================================
+   STAGE 20: UX & PERFORMANCE HARDENING
+   UX polish, accessibility, motion safety, performance guards
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   20.1 SECTION FOCUS FRAMING (IntersectionObserver driven)
+   Subtle indicator when section is in viewport
+   -------------------------------------------------------------------------- */
+.jtb-section {
+    /* Performance: containment for layout optimization */
+    contain: layout style;
+    position: relative;
+}
+
+.jtb-section.jtb-in-view {
+    /* Subtle focus indicator - gradient underline */
+}
+
+.jtb-section.jtb-in-view::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: min(90%, 800px);
+    height: 2px;
+    background: linear-gradient(90deg,
+        transparent 0%,
+        var(--jtb-primary-color, #6366f1) 20%,
+        var(--jtb-primary-color, #6366f1) 80%,
+        transparent 100%);
+    opacity: 0.3;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+
+/* Hero and CTA don't need underline focus */
+.jtb-nr-hook.jtb-in-view::after,
+.jtb-nr-resolution.jtb-in-view::after {
+    display: none;
+}
+
+/* --------------------------------------------------------------------------
+   20.2 CONTENT WIDTH DISCIPLINE (Readable line-length)
+   Enforce 68ch max for body text, except Hero/CTA
+   -------------------------------------------------------------------------- */
+.jtb-section p,
+.jtb-section li,
+.jtb-section blockquote,
+.jtb-text p,
+.jtb-text li {
+    max-width: 68ch;
+}
+
+/* Center long text for better readability */
+.jtb-section p:only-child,
+.jtb-text p:only-child {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Exceptions: Hero and CTA can have wider text */
+.jtb-nr-hook p,
+.jtb-nr-resolution p,
+.jtb-vi-dominant p {
+    max-width: 80ch;
+}
+
+/* Cards grid: equal-height with minimum */
+.jtb-row {
+    align-items: stretch;
+}
+
+.jtb-blurb,
+.jtb-testimonial,
+.jtb-pricing-table,
+.jtb-team-member {
+    min-height: var(--jtb-card-min-height, auto);
+    display: flex;
+    flex-direction: column;
+}
+
+.jtb-blurb-content,
+.jtb-testimonial-content {
+    flex: 1;
+}
+
+/* --------------------------------------------------------------------------
+   20.3 MOTION SAFETY (prefers-reduced-motion)
+   Disable animations for users who prefer reduced motion
+   -------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+
+    /* Disable all pulses */
+    .jtb-et-urgency .jtb-button:hover,
+    .jtb-et-urgency .jtb-cta-button:hover {
+        animation: none !important;
+    }
+
+    /* Disable hover lifts */
+    .jtb-blurb:hover,
+    .jtb-testimonial:hover,
+    .jtb-button:hover,
+    .jtb-cta-button:hover {
+        transform: none !important;
+    }
+
+    /* Keep basic visual feedback */
+    .jtb-button:hover,
+    .jtb-cta-button:hover {
+        opacity: 0.9;
+    }
+
+    /* Disable section focus animation */
+    .jtb-section.jtb-in-view::after {
+        transition: none !important;
+    }
+}
+
+/* --------------------------------------------------------------------------
+   20.4 CONTRAST GUARDRAILS
+   Ensure AA contrast in all contexts
+   -------------------------------------------------------------------------- */
+
+/* DARK context: ensure light text */
+.jtb-context-dark,
+.jtb-context-dark h1,
+.jtb-context-dark h2,
+.jtb-context-dark h3,
+.jtb-context-dark h4,
+.jtb-context-dark p {
+    color: var(--jtb-dark-text, #f8fafc);
+}
+
+.jtb-context-dark .jtb-text-light,
+.jtb-context-dark .jtb-subtext {
+    color: var(--jtb-dark-text-muted, #cbd5e1);
+}
+
+/* PRIMARY context: ensure readable text */
+.jtb-context-primary h1,
+.jtb-context-primary h2,
+.jtb-context-primary h3,
+.jtb-context-primary p {
+    color: var(--jtb-primary-text, #ffffff);
+}
+
+/* Button contrast enforcement */
+.jtb-button,
+.jtb-cta-button {
+    /* Minimum contrast ratio via color fallbacks */
+    --btn-bg: var(--jtb-btn-bg, var(--jtb-primary-color, #6366f1));
+    --btn-text: var(--jtb-btn-color, #ffffff);
+    background-color: var(--btn-bg);
+    color: var(--btn-text);
+}
+
+/* Light background: darker button text if needed */
+.jtb-context-light .jtb-button.jtb-btn-light,
+.jtb-context-light .jtb-cta-button.jtb-btn-light {
+    --btn-bg: var(--jtb-surface-color, #f8fafc);
+    --btn-text: var(--jtb-text-color, #1f2937);
+    border: 1px solid var(--jtb-border-color, #e5e7eb);
+}
+
+/* Focus ring for keyboard navigation */
+.jtb-button:focus-visible,
+.jtb-cta-button:focus-visible,
+a:focus-visible {
+    outline: 2px solid var(--jtb-primary-color, #6366f1);
+    outline-offset: 2px;
+}
+
+/* Focus states for interactive elements */
+.jtb-nav-link:focus-visible,
+.jtb-mobile-nav-link:focus-visible,
+.jtb-mobile-nav-toggle:focus-visible,
+.jtb-hamburger:focus-visible,
+.jtb-mobile-menu-close:focus-visible,
+.jtb-menu-icon:focus-visible,
+.jtb-accordion-header:focus-visible,
+.jtb-tabs-nav-item:focus-visible,
+.jtb-toggle-header:focus-visible,
+.jtb-gallery-item:focus-visible,
+.jtb-slider-arrow:focus-visible,
+.jtb-slider-dot:focus-visible {
+    outline: 2px solid var(--jtb-primary-color, #6366f1);
+    outline-offset: 2px;
+}
+
+/* Focus within for dropdowns */
+.jtb-nav-item:focus-within .jtb-nav-dropdown {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+/* Skip to content link (accessibility) */
+.jtb-skip-link {
+    position: absolute;
+    top: -100%;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10000;
+    background: var(--jtb-primary-color, #6366f1);
+    color: #ffffff;
+    padding: 12px 24px;
+    border-radius: var(--jtb-border-radius, 8px);
+    text-decoration: none;
+    font-weight: 600;
+    transition: top 0.2s ease;
+}
+
+.jtb-skip-link:focus {
+    top: 16px;
+}
+
+/* --------------------------------------------------------------------------
+   20.5 PERFORMANCE GUARDS (Frontend)
+   Optimize rendering for large pages
+   -------------------------------------------------------------------------- */
+
+/* Containment for sections */
+.jtb-section {
+    contain: layout style;
+}
+
+/* Will-change only on hover targets */
+.jtb-button,
+.jtb-cta-button,
+.jtb-blurb,
+.jtb-testimonial {
+    will-change: auto;
+}
+
+.jtb-button:hover,
+.jtb-cta-button:hover,
+.jtb-blurb:hover,
+.jtb-testimonial:hover {
+    will-change: transform, box-shadow;
+}
+
+/* Image optimization */
+.jtb-section img {
+    content-visibility: auto;
+    contain-intrinsic-size: 300px 200px;
+}
+
+/* Disable expensive filters in production */
+.jtb-section {
+    backdrop-filter: none;
+}
+
+/* ==========================================================================
+   STAGE 21: STYLE PROOF CALIBRATION
+   Visual regression guards for VI/NR/ET/ATT
+   Cue bar system + attention outline + typography emphasis
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   21.1 SECTION CUE BAR SYSTEM
+   One ::before per section with color based on priority: NR > VI > ET
+   -------------------------------------------------------------------------- */
+
+/* Base section setup for cue bar */
+.jtb-section {
+    position: relative;
+    --jtb-sp-cue-color: transparent;
+}
+
+/* Cue bar pseudo-element */
+.jtb-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: min(90%, 600px);
+    height: var(--jtb-sp-cue-height, 6px);
+    background-color: var(--jtb-sp-cue-color);
+    border-radius: 0 0 var(--jtb-sp-cue-radius, 999px) var(--jtb-sp-cue-radius, 999px);
+    opacity: var(--jtb-sp-cue-opacity, 0.9);
+    pointer-events: none;
+    z-index: 10;
+    transition: opacity 0.2s ease;
+}
+
+/* Hide cue when no color set */
+.jtb-section:not([class*="jtb-nr-"]):not([class*="jtb-vi-"]):not([class*="jtb-et-"])::before {
+    opacity: 0;
+    height: 0;
+}
+
+/* --------------------------------------------------------------------------
+   21.2 NARRATIVE ROLE CUE COLORS (Highest Priority)
+   -------------------------------------------------------------------------- */
+.jtb-nr-hook { --jtb-sp-cue-color: var(--jtb-sp-nr-hook, #f59e0b); }
+.jtb-nr-problem { --jtb-sp-cue-color: var(--jtb-sp-nr-problem, #ef4444); }
+.jtb-nr-promise { --jtb-sp-cue-color: var(--jtb-sp-nr-promise, #3b82f6); }
+.jtb-nr-proof { --jtb-sp-cue-color: var(--jtb-sp-nr-proof, #22c55e); }
+.jtb-nr-details { --jtb-sp-cue-color: var(--jtb-sp-nr-details, #94a3b8); }
+.jtb-nr-relief { --jtb-sp-cue-color: var(--jtb-sp-nr-relief, #06b6d4); }
+.jtb-nr-resolution { --jtb-sp-cue-color: var(--jtb-sp-nr-resolution, #a855f7); }
+
+/* --------------------------------------------------------------------------
+   21.3 VISUAL INTENT CUE COLORS (Second Priority)
+   Only applied if no NR class present
+   -------------------------------------------------------------------------- */
+.jtb-vi-dominant:not([class*="jtb-nr-"]) { --jtb-sp-cue-color: var(--jtb-sp-vi-dominant, #2563eb); }
+.jtb-vi-emphasis:not([class*="jtb-nr-"]) { --jtb-sp-cue-color: var(--jtb-sp-vi-emphasis, #7c3aed); }
+.jtb-vi-neutral:not([class*="jtb-nr-"]) { --jtb-sp-cue-color: var(--jtb-sp-vi-neutral, #64748b); }
+.jtb-vi-soft:not([class*="jtb-nr-"]) { --jtb-sp-cue-color: var(--jtb-sp-vi-soft, #14b8a6); }
+
+/* --------------------------------------------------------------------------
+   21.4 EMOTIONAL TONE CUE COLORS (Third Priority)
+   Only applied if no NR and no VI class present
+   -------------------------------------------------------------------------- */
+.jtb-et-calm:not([class*="jtb-nr-"]):not([class*="jtb-vi-"]) { --jtb-sp-cue-color: var(--jtb-sp-et-calm, #0ea5e9); }
+.jtb-et-focus:not([class*="jtb-nr-"]):not([class*="jtb-vi-"]) { --jtb-sp-cue-color: var(--jtb-sp-et-focus, #2563eb); }
+.jtb-et-trust:not([class*="jtb-nr-"]):not([class*="jtb-vi-"]) { --jtb-sp-cue-color: var(--jtb-sp-et-trust, #16a34a); }
+.jtb-et-urgency:not([class*="jtb-nr-"]):not([class*="jtb-vi-"]) { --jtb-sp-cue-color: var(--jtb-sp-et-urgency, #dc2626); }
+
+/* --------------------------------------------------------------------------
+   21.5 ATTENTION OUTLINE (via box-shadow, no layout shift)
+   -------------------------------------------------------------------------- */
+.jtb-att-low {
+    /* No outline for low attention */
+}
+
+.jtb-att-medium {
+    box-shadow: inset 0 0 0 var(--jtb-sp-outline, 1px) rgba(99, 102, 241, 0.15);
+}
+
+.jtb-att-high {
+    box-shadow: inset 0 0 0 var(--jtb-sp-outline-strong, 2px) rgba(99, 102, 241, 0.25);
+}
+
+/* Attention outline uses tone color if available */
+.jtb-et-calm.jtb-att-medium { box-shadow: inset 0 0 0 var(--jtb-sp-outline, 1px) rgba(14, 165, 233, 0.15); }
+.jtb-et-calm.jtb-att-high { box-shadow: inset 0 0 0 var(--jtb-sp-outline-strong, 2px) rgba(14, 165, 233, 0.25); }
+
+.jtb-et-focus.jtb-att-medium { box-shadow: inset 0 0 0 var(--jtb-sp-outline, 1px) rgba(37, 99, 235, 0.15); }
+.jtb-et-focus.jtb-att-high { box-shadow: inset 0 0 0 var(--jtb-sp-outline-strong, 2px) rgba(37, 99, 235, 0.25); }
+
+.jtb-et-trust.jtb-att-medium { box-shadow: inset 0 0 0 var(--jtb-sp-outline, 1px) rgba(22, 163, 74, 0.15); }
+.jtb-et-trust.jtb-att-high { box-shadow: inset 0 0 0 var(--jtb-sp-outline-strong, 2px) rgba(22, 163, 74, 0.25); }
+
+.jtb-et-urgency.jtb-att-medium { box-shadow: inset 0 0 0 var(--jtb-sp-outline, 1px) rgba(220, 38, 38, 0.15); }
+.jtb-et-urgency.jtb-att-high { box-shadow: inset 0 0 0 var(--jtb-sp-outline-strong, 2px) rgba(220, 38, 38, 0.25); }
+
+/* --------------------------------------------------------------------------
+   21.6 TYPOGRAPHY EMPHASIS (safe, no size shift)
+   -------------------------------------------------------------------------- */
+.jtb-te-strong {
+    letter-spacing: -0.01em;
+}
+
+.jtb-te-strong .jtb-button,
+.jtb-te-strong .jtb-cta-button,
+.jtb-te-strong a {
+    text-decoration-thickness: 2px;
+    text-underline-offset: 3px;
+}
+
+.jtb-te-soft {
+    opacity: 0.92;
+}
+
+.jtb-te-soft h1,
+.jtb-te-soft h2,
+.jtb-te-soft h3 {
+    font-weight: 500;
+}
+
+/* --------------------------------------------------------------------------
+   21.7 STYLE PROOF ACCESSIBILITY
+   -------------------------------------------------------------------------- */
+
+/* Reduced motion: no transitions on cue bar */
+@media (prefers-reduced-motion: reduce) {
+    .jtb-section::before {
+        transition: none !important;
+    }
+}
+
+/* High contrast: stronger cues */
+@media (prefers-contrast: high) {
+    :root {
+        --jtb-sp-cue-height: 8px;
+        --jtb-sp-cue-opacity: 1;
+        --jtb-sp-outline: 2px;
+        --jtb-sp-outline-strong: 3px;
+    }
+
+    /* Force strong outline for medium/high attention */
+    .jtb-att-medium {
+        box-shadow: inset 0 0 0 2px rgba(99, 102, 241, 0.4) !important;
+    }
+
+    .jtb-att-high {
+        box-shadow: inset 0 0 0 3px rgba(99, 102, 241, 0.5) !important;
+    }
+
+    /* Ensure cue colors remain distinct */
+    .jtb-section::before {
+        opacity: 1 !important;
+    }
+}
+
+/* ============================================
+ * STAGE 12: VISUAL INTENT CLASSES (Complete)
+ * Kontrola wizualnej hierarchii sekcji
+ * ============================================ */
+
+.jtb-vi-dominant {
+    --jtb-section-contrast: 1.2;
+    --jtb-heading-weight: 800;
+    position: relative;
+    z-index: 10;
+}
+
+.jtb-vi-dominant::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.03) 0%, rgba(139, 92, 246, 0.03) 100%);
+    pointer-events: none;
+    z-index: -1;
+}
+
+.jtb-vi-emphasis {
+    --jtb-section-contrast: 1.1;
+    --jtb-heading-weight: 700;
+}
+
+.jtb-vi-neutral {
+    --jtb-section-contrast: 1;
+    --jtb-heading-weight: 600;
+}
+
+.jtb-vi-soft {
+    --jtb-section-contrast: 0.9;
+    --jtb-heading-weight: 500;
+    opacity: 0.95;
+}
+
+/* ============================================
+ * STAGE 13: VISUAL DENSITY CLASSES
+ * Kontrola gęstości i przepływu
+ * ============================================ */
+
+.jtb-vd-dense {
+    --jtb-element-spacing: 0.75;
+    --jtb-section-padding-multiplier: 0.8;
+}
+
+.jtb-vd-dense .jtb-row {
+    gap: calc(var(--jtb-row-gap, 30px) * 0.75);
+}
+
+.jtb-vd-dense .jtb-column {
+    gap: calc(var(--jtb-column-gap, 20px) * 0.75);
+}
+
+.jtb-vd-dense > .jtb-section-inner {
+    padding-top: calc(var(--jtb-gp-section-pad, 64px) * 0.8);
+    padding-bottom: calc(var(--jtb-gp-section-pad, 64px) * 0.8);
+}
+
+.jtb-vd-normal {
+    --jtb-element-spacing: 1;
+    --jtb-section-padding-multiplier: 1;
+}
+
+.jtb-vd-sparse {
+    --jtb-element-spacing: 1.5;
+    --jtb-section-padding-multiplier: 1.3;
+}
+
+.jtb-vd-sparse .jtb-row {
+    gap: calc(var(--jtb-row-gap, 30px) * 1.5);
+}
+
+.jtb-vd-sparse .jtb-column {
+    gap: calc(var(--jtb-column-gap, 20px) * 1.5);
+}
+
+.jtb-vd-sparse > .jtb-section-inner {
+    padding-top: calc(var(--jtb-gp-section-pad, 64px) * 1.3);
+    padding-bottom: calc(var(--jtb-gp-section-pad, 64px) * 1.3);
+}
+
+/* ============================================
+ * ANIMATION KEYFRAMES (Complete Set)
+ * 7 typów animacji wejściowych
+ * ============================================ */
+
+/* Fade */
+@keyframes jtb-fade {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.jtb-animation-fade {
+    animation: jtb-fade 0.6s ease-out forwards;
+}
+
+/* Slide (from bottom) */
+@keyframes jtb-slide {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.jtb-animation-slide {
+    animation: jtb-slide 0.6s ease-out forwards;
+}
+
+/* Slide Left */
+@keyframes jtb-slide-left {
+    from {
+        opacity: 0;
+        transform: translateX(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.jtb-animation-slide-left {
+    animation: jtb-slide-left 0.6s ease-out forwards;
+}
+
+/* Slide Right */
+@keyframes jtb-slide-right {
+    from {
+        opacity: 0;
+        transform: translateX(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.jtb-animation-slide-right {
+    animation: jtb-slide-right 0.6s ease-out forwards;
+}
+
+/* Bounce */
+@keyframes jtb-bounce {
+    0% {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+    70% {
+        transform: translateY(5px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.jtb-animation-bounce {
+    animation: jtb-bounce 0.8s ease-out forwards;
+}
+
+/* Zoom */
+@keyframes jtb-zoom {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.jtb-animation-zoom {
+    animation: jtb-zoom 0.5s ease-out forwards;
+}
+
+/* Flip */
+@keyframes jtb-flip {
+    from {
+        opacity: 0;
+        transform: perspective(400px) rotateX(-90deg);
+    }
+    to {
+        opacity: 1;
+        transform: perspective(400px) rotateX(0);
+    }
+}
+
+.jtb-animation-flip {
+    animation: jtb-flip 0.6s ease-out forwards;
+}
+
+/* Fold */
+@keyframes jtb-fold {
+    from {
+        opacity: 0;
+        transform: perspective(400px) rotateY(-90deg);
+    }
+    to {
+        opacity: 1;
+        transform: perspective(400px) rotateY(0);
+    }
+}
+
+.jtb-animation-fold {
+    animation: jtb-fold 0.6s ease-out forwards;
+}
+
+/* Roll */
+@keyframes jtb-roll {
+    from {
+        opacity: 0;
+        transform: translateX(-100%) rotate(-120deg);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0) rotate(0);
+    }
+}
+
+.jtb-animation-roll {
+    animation: jtb-roll 0.8s ease-out forwards;
+}
+
+/* Animated element base - hidden until triggered */
+.jtb-animated {
+    opacity: 0;
+}
+
+.jtb-animated.jtb-visible {
+    opacity: 1;
+}
+
+/* Animation delays */
+.jtb-animation-delay-100 { animation-delay: 0.1s; }
+.jtb-animation-delay-200 { animation-delay: 0.2s; }
+.jtb-animation-delay-300 { animation-delay: 0.3s; }
+.jtb-animation-delay-400 { animation-delay: 0.4s; }
+.jtb-animation-delay-500 { animation-delay: 0.5s; }
+
+/* Respect user preference for reduced motion */
+@media (prefers-reduced-motion: reduce) {
+    .jtb-animated,
+    [class*="jtb-animation-"] {
+        animation: none !important;
+        opacity: 1 !important;
+        transform: none !important;
     }
 }

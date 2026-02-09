@@ -26,6 +26,51 @@ class JTB_Module_Tabs extends JTB_Element
     public bool $use_position = false;
     public bool $use_filters = false;
 
+    // === UNIFIED THEME SYSTEM ===
+    protected string $module_prefix = 'tabs';
+
+    /**
+     * Declarative style configuration
+     */
+    protected array $style_config = [
+        // Active tab
+        'active_tab_bg_color' => [
+            'property' => 'background-color',
+            'selector' => '.jtb-tab-button.jtb-active'
+        ],
+        'active_tab_text_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-tab-button.jtb-active'
+        ],
+        // Inactive tab
+        'inactive_tab_bg_color' => [
+            'property' => 'background-color',
+            'selector' => '.jtb-tab-button'
+        ],
+        'inactive_tab_text_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-tab-button',
+            'hover' => true
+        ],
+        // Border
+        'tab_border_color' => [
+            'property' => 'border-color',
+            'selector' => '.jtb-tab-button, .jtb-tabs-content'
+        ],
+        // Body
+        'body_bg_color' => [
+            'property' => 'background-color',
+            'selector' => '.jtb-tabs-content'
+        ],
+        // Typography
+        'tab_font_size' => [
+            'property' => 'font-size',
+            'selector' => '.jtb-tab-button',
+            'unit' => 'px',
+            'responsive' => true
+        ]
+    ];
+
     public function getSlug(): string
     {
         return 'tabs';
@@ -95,6 +140,9 @@ class JTB_Module_Tabs extends JTB_Element
 
     public function render(array $attrs, string $content = ''): string
     {
+        // Apply default styles from design system
+        $attrs = JTB_Default_Styles::mergeWithDefaults($this->getSlug(), $attrs);
+
         $navPosition = $attrs['nav_position'] ?? 'top';
 
         // Parse child tab items to extract nav
@@ -109,13 +157,20 @@ class JTB_Module_Tabs extends JTB_Element
         return $this->renderWrapper($innerHtml, $attrs);
     }
 
+    /**
+     * Generate CSS for Tabs module
+     * Base styles are in jtb-base-modules.css
+     */
     public function generateCss(array $attrs, string $selector): string
     {
         $css = '';
 
+        // Use declarative style_config system
+        $css .= $this->generateStyleConfigCss($attrs, $selector);
+
+        // Nav position special handling (changes flex direction)
         $navPosition = $attrs['nav_position'] ?? 'top';
 
-        // Container flex direction based on nav position
         if ($navPosition === 'left' || $navPosition === 'right') {
             $css .= $selector . ' .jtb-tabs-container { display: flex; }' . "\n";
             if ($navPosition === 'right') {
@@ -126,64 +181,7 @@ class JTB_Module_Tabs extends JTB_Element
             $css .= $selector . ' .jtb-tabs-container { display: flex; flex-direction: column-reverse; }' . "\n";
         }
 
-        // Tab navigation
-        $css .= $selector . ' .jtb-tabs-nav { display: flex; list-style: none; margin: 0; padding: 0; }' . "\n";
-
-        // Tab button
-        $inactiveBg = $attrs['inactive_tab_bg_color'] ?? '#f4f4f4';
-        $inactiveText = $attrs['inactive_tab_text_color'] ?? '#666666';
-        $borderColor = $attrs['tab_border_color'] ?? '#d9d9d9';
-        $tabFontSize = $attrs['tab_font_size'] ?? 14;
-
-        $css .= $selector . ' .jtb-tab-button { ';
-        $css .= 'background-color: ' . $inactiveBg . '; ';
-        $css .= 'color: ' . $inactiveText . '; ';
-        $css .= 'border: 1px solid ' . $borderColor . '; ';
-        $css .= 'padding: 12px 20px; ';
-        $css .= 'cursor: pointer; ';
-        $css .= 'font-size: ' . $tabFontSize . 'px; ';
-        $css .= 'transition: all 0.3s ease; ';
-        $css .= 'border-bottom: none; ';
-        $css .= 'margin-right: -1px; ';
-        $css .= '}' . "\n";
-
-        // Active tab
-        $activeBg = $attrs['active_tab_bg_color'] ?? '#ffffff';
-        $activeText = $attrs['active_tab_text_color'] ?? '#2ea3f2';
-
-        $css .= $selector . ' .jtb-tab-button.jtb-active { ';
-        $css .= 'background-color: ' . $activeBg . '; ';
-        $css .= 'color: ' . $activeText . '; ';
-        $css .= 'border-bottom-color: ' . $activeBg . '; ';
-        $css .= 'position: relative; ';
-        $css .= 'z-index: 1; ';
-        $css .= '}' . "\n";
-
-        // Hover for inactive
-        if (!empty($attrs['inactive_tab_text_color__hover'])) {
-            $css .= $selector . ' .jtb-tab-button:not(.jtb-active):hover { color: ' . $attrs['inactive_tab_text_color__hover'] . '; }' . "\n";
-        }
-
-        // Tab content area
-        $bodyBg = $attrs['body_bg_color'] ?? '#ffffff';
-        $css .= $selector . ' .jtb-tabs-content { ';
-        $css .= 'background-color: ' . $bodyBg . '; ';
-        $css .= 'border: 1px solid ' . $borderColor . '; ';
-        $css .= 'padding: 20px; ';
-        $css .= '}' . "\n";
-
-        // Tab panels
-        $css .= $selector . ' .jtb-tab-panel { display: none; }' . "\n";
-        $css .= $selector . ' .jtb-tab-panel.jtb-active { display: block; }' . "\n";
-
-        // Responsive font size
-        if (!empty($attrs['tab_font_size__tablet'])) {
-            $css .= '@media (max-width: 980px) { ' . $selector . ' .jtb-tab-button { font-size: ' . $attrs['tab_font_size__tablet'] . 'px; } }' . "\n";
-        }
-        if (!empty($attrs['tab_font_size__phone'])) {
-            $css .= '@media (max-width: 767px) { ' . $selector . ' .jtb-tab-button { font-size: ' . $attrs['tab_font_size__phone'] . 'px; } }' . "\n";
-        }
-
+        // Parent class handles common styles
         $css .= parent::generateCss($attrs, $selector);
 
         return $css;

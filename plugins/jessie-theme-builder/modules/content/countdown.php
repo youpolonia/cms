@@ -25,6 +25,43 @@ class JTB_Module_Countdown extends JTB_Element
     public bool $use_position = false;
     public bool $use_filters = false;
 
+    // === UNIFIED THEME SYSTEM ===
+    protected string $module_prefix = 'countdown';
+
+    /**
+     * Declarative style configuration
+     */
+    protected array $style_config = [
+        'number_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-countdown-number'
+        ],
+        'label_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-countdown-label'
+        ],
+        'separator_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-countdown-separator'
+        ],
+        'box_bg_color' => [
+            'property' => 'background-color',
+            'selector' => '.jtb-countdown-unit'
+        ],
+        'number_font_size' => [
+            'property' => 'font-size',
+            'selector' => '.jtb-countdown-number, .jtb-countdown-separator',
+            'unit' => 'px',
+            'responsive' => true
+        ],
+        'label_font_size' => [
+            'property' => 'font-size',
+            'selector' => '.jtb-countdown-label',
+            'unit' => 'px',
+            'responsive' => true
+        ]
+    ];
+
     public function getSlug(): string
     {
         return 'countdown';
@@ -113,6 +150,9 @@ class JTB_Module_Countdown extends JTB_Element
 
     public function render(array $attrs, string $content = ''): string
     {
+        // Apply default styles from design system
+        $attrs = JTB_Default_Styles::mergeWithDefaults($this->getSlug(), $attrs);
+
         $date = $attrs['date'] ?? date('Y-m-d', strtotime('+30 days'));
         $title = $this->esc($attrs['title'] ?? '');
         $showLabels = $attrs['show_labels'] ?? true;
@@ -181,17 +221,18 @@ class JTB_Module_Countdown extends JTB_Element
         return $this->renderWrapper($innerHtml, $attrs);
     }
 
+    /**
+     * Generate CSS for Countdown module
+     * Base styles are in jtb-base-modules.css
+     */
     public function generateCss(array $attrs, string $selector): string
     {
         $css = '';
 
+        // Use declarative style_config system
+        $css .= $this->generateStyleConfigCss($attrs, $selector);
+
         $layout = $attrs['layout'] ?? 'inline';
-        $numberColor = $attrs['number_color'] ?? '#333333';
-        $labelColor = $attrs['label_color'] ?? '#666666';
-        $separatorColor = $attrs['separator_color'] ?? '#cccccc';
-        $boxBg = $attrs['box_bg_color'] ?? '#f9f9f9';
-        $numberSize = $attrs['number_font_size'] ?? 48;
-        $labelSize = $attrs['label_font_size'] ?? 14;
 
         // Container
         $css .= $selector . ' .jtb-countdown-container { text-align: center; }' . "\n";
@@ -200,14 +241,9 @@ class JTB_Module_Countdown extends JTB_Element
         // Timer
         $css .= $selector . ' .jtb-countdown-timer { display: flex; justify-content: center; align-items: center; gap: 10px; flex-wrap: wrap; }' . "\n";
 
-        // Unit
+        // Unit layout
         if ($layout === 'block' || $layout === 'circle') {
-            $css .= $selector . ' .jtb-countdown-unit { '
-                . 'background: ' . $boxBg . '; '
-                . 'padding: 20px 25px; '
-                . 'min-width: 80px; '
-                . 'text-align: center; '
-                . '}' . "\n";
+            $css .= $selector . ' .jtb-countdown-unit { padding: 20px 25px; min-width: 80px; text-align: center; }' . "\n";
 
             if ($layout === 'circle') {
                 $css .= $selector . ' .jtb-countdown-unit { border-radius: 50%; width: 100px; height: 100px; display: flex; flex-direction: column; align-items: center; justify-content: center; }' . "\n";
@@ -217,43 +253,19 @@ class JTB_Module_Countdown extends JTB_Element
         }
 
         // Number
-        $css .= $selector . ' .jtb-countdown-number { '
-            . 'display: block; '
-            . 'font-size: ' . $numberSize . 'px; '
-            . 'font-weight: bold; '
-            . 'color: ' . $numberColor . '; '
-            . 'line-height: 1; '
-            . '}' . "\n";
+        $css .= $selector . ' .jtb-countdown-number { display: block; font-weight: bold; line-height: 1; }' . "\n";
 
         // Label
-        $css .= $selector . ' .jtb-countdown-label { '
-            . 'display: block; '
-            . 'font-size: ' . $labelSize . 'px; '
-            . 'color: ' . $labelColor . '; '
-            . 'text-transform: uppercase; '
-            . 'letter-spacing: 1px; '
-            . 'margin-top: 5px; '
-            . '}' . "\n";
+        $css .= $selector . ' .jtb-countdown-label { display: block; text-transform: uppercase; letter-spacing: 1px; margin-top: 5px; }' . "\n";
 
         // Separator
-        $css .= $selector . ' .jtb-countdown-separator { '
-            . 'font-size: ' . $numberSize . 'px; '
-            . 'color: ' . $separatorColor . '; '
-            . 'font-weight: bold; '
-            . '}' . "\n";
+        $css .= $selector . ' .jtb-countdown-separator { font-weight: bold; }' . "\n";
 
         if ($layout !== 'inline') {
             $css .= $selector . ' .jtb-countdown-separator { display: none; }' . "\n";
         }
 
-        // Responsive
-        if (!empty($attrs['number_font_size__tablet'])) {
-            $css .= '@media (max-width: 980px) { ' . $selector . ' .jtb-countdown-number, ' . $selector . ' .jtb-countdown-separator { font-size: ' . $attrs['number_font_size__tablet'] . 'px; } }' . "\n";
-        }
-        if (!empty($attrs['number_font_size__phone'])) {
-            $css .= '@media (max-width: 767px) { ' . $selector . ' .jtb-countdown-number, ' . $selector . ' .jtb-countdown-separator { font-size: ' . $attrs['number_font_size__phone'] . 'px; } }' . "\n";
-        }
-
+        // Parent class handles common styles
         $css .= parent::generateCss($attrs, $selector);
 
         return $css;

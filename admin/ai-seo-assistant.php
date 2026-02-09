@@ -18,10 +18,6 @@ require_once CMS_ROOT . '/core/database.php';
 cms_session_start('admin');
 csrf_boot('admin');
 
-if (!defined('DEV_MODE') || !DEV_MODE) {
-    http_response_code(403);
-    exit('Forbidden');
-}
 
 cms_require_admin_role();
 

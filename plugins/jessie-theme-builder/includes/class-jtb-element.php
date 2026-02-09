@@ -39,6 +39,40 @@ abstract class JTB_Element
     public string $child_slug = '';
 
     // ========================================
+    // Style Configuration (Declarative CSS)
+    // ========================================
+
+    /**
+     * Deklaratywna konfiguracja stylów modułu.
+     * Definiuje GDZIE mają być zastosowane style, nie JAK je generować.
+     *
+     * Format:
+     * [
+     *     'element_name' => [
+     *         'selector' => '.jtb-gallery-title',        // CSS selector względem modułu
+     *         'properties' => [                           // Mapowanie atrybut => właściwość CSS
+     *             'title_font_size' => 'font-size',
+     *             'title_color' => 'color',
+     *         ],
+     *         'css_var_prefix' => 'gallery-title',        // Prefix zmiennej CSS (opcjonalnie)
+     *         'hover' => true,                            // Czy obsługuje hover state
+     *         'responsive' => ['font_size', 'padding'],   // Które właściwości są responsive
+     *     ],
+     * ]
+     *
+     * @var array
+     */
+    protected array $style_config = [];
+
+    /**
+     * Prefix modułu dla global settings i CSS variables
+     * np. 'gallery', 'blog', 'blurb'
+     *
+     * @var string
+     */
+    protected string $module_prefix = '';
+
+    // ========================================
     // Abstract Methods
     // ========================================
 
@@ -1446,7 +1480,286 @@ abstract class JTB_Element
         $css .= $this->generateResponsiveCss($attrs, $selector, 'tablet', 980);
         $css .= $this->generateResponsiveCss($attrs, $selector, 'phone', 767);
 
+        // Style Config CSS (declarative system)
+        $css .= $this->generateStyleConfigCss($attrs, $selector);
+
         return $css;
+    }
+
+    /**
+     * Generate CSS from declarative style_config
+     *
+     * This method processes the $style_config array and generates CSS
+     * only for values that differ from the global defaults.
+     *
+     * @param array $attrs Module attributes
+     * @param string $selector Base CSS selector
+     * @return string Generated CSS
+     */
+    protected function generateStyleConfigCss(array $attrs, string $selector): string
+    {
+        // Skip if no style config defined
+        if (empty($this->style_config)) {
+            return '';
+        }
+
+        $css = '';
+        $tabletCss = [];
+        $phoneCss = [];
+
+        // Get module prefix for global settings lookup
+        $modulePrefix = $this->module_prefix ?: $this->getSlug();
+
+        // Group rules by selector
+        $rulesBySelector = [];
+        $hoverRulesBySelector = [];
+
+        foreach ($this->style_config as $attrKey => $config) {
+            // FIXED: Handle ACTUAL format used in modules:
+            // 'attr_key' => ['property' => 'css-prop', 'selector' => '.class', ...]
+            if (empty($config['property']) || empty($config['selector'])) {
+                continue;
+            }
+
+            $cssProperty = $config['property'];
+            $elementSelector = $selector . ' ' . $config['selector'];
+            $unit = $config['unit'] ?? '';
+            $hasHover = !empty($config['hover']);
+            $isResponsive = !empty($config['responsive']);
+
+            // Get value from attributes
+            $value = $attrs[$attrKey] ?? null;
+
+            // Get global default
+            $globalKey = $modulePrefix . '_' . $attrKey;
+            $globalDefault = JTB_Global_Settings::get($globalKey);
+
+            // Generate CSS if value exists (don't skip based on default comparison - AI sets explicit values)
+            if ($value !== null && $value !== '') {
+                $cssValue = $this->formatStyleConfigValue($cssProperty, $value, $unit);
+                if (!isset($rulesBySelector[$elementSelector])) {
+                    $rulesBySelector[$elementSelector] = [];
+                }
+                $rulesBySelector[$elementSelector][] = "{$cssProperty}: {$cssValue}";
+            }
+
+            // Hover state
+            if ($hasHover) {
+                $hoverKey = $attrKey . '__hover';
+                $hoverValue = $attrs[$hoverKey] ?? null;
+
+                if ($hoverValue !== null && $hoverValue !== '') {
+                    $cssValue = $this->formatStyleConfigValue($cssProperty, $hoverValue, $unit);
+                    $hoverSelector = $elementSelector . ':hover';
+                    if (!isset($hoverRulesBySelector[$hoverSelector])) {
+                        $hoverRulesBySelector[$hoverSelector] = [];
+                    }
+                    $hoverRulesBySelector[$hoverSelector][] = "{$cssProperty}: {$cssValue}";
+                }
+            }
+
+            // Responsive values
+            if ($isResponsive) {
+                // Tablet
+                $tabletKey = $attrKey . '__tablet';
+                $tabletValue = $attrs[$tabletKey] ?? null;
+                if ($tabletValue !== null && $tabletValue !== '') {
+                    $cssValue = $this->formatStyleConfigValue($cssProperty, $tabletValue, $unit);
+                    if (!isset($tabletCss[$elementSelector])) {
+                        $tabletCss[$elementSelector] = [];
+                    }
+                    $tabletCss[$elementSelector][] = "{$cssProperty}: {$cssValue}";
+                }
+
+                // Phone
+                $phoneKey = $attrKey . '__phone';
+                $phoneValue = $attrs[$phoneKey] ?? null;
+                if ($phoneValue !== null && $phoneValue !== '') {
+                    $cssValue = $this->formatStyleConfigValue($cssProperty, $phoneValue, $unit);
+                    if (!isset($phoneCss[$elementSelector])) {
+                        $phoneCss[$elementSelector] = [];
+                    }
+                    $phoneCss[$elementSelector][] = "{$cssProperty}: {$cssValue}";
+                }
+            }
+        }
+
+        // Generate CSS blocks for normal rules
+        foreach ($rulesBySelector as $elementSelector => $rules) {
+            $css .= "{$elementSelector} { " . implode('; ', $rules) . "; }\n";
+        }
+
+        // Generate CSS blocks for hover rules
+        foreach ($hoverRulesBySelector as $hoverSelector => $rules) {
+            $css .= "{$hoverSelector} { " . implode('; ', $rules) . "; }\n";
+        }
+
+        // Generate tablet media query
+        if (!empty($tabletCss)) {
+            $css .= "@media (max-width: 980px) {\n";
+            foreach ($tabletCss as $sel => $rules) {
+                $css .= "    {$sel} {\n";
+                foreach ($rules as $rule) {
+                    $css .= "        {$rule};\n";
+                }
+                $css .= "    }\n";
+            }
+            $css .= "}\n";
+        }
+
+        // Generate phone media query
+        if (!empty($phoneCss)) {
+            $css .= "@media (max-width: 767px) {\n";
+            foreach ($phoneCss as $sel => $rules) {
+                $css .= "    {$sel} {\n";
+                foreach ($rules as $rule) {
+                    $css .= "        {$rule};\n";
+                }
+                $css .= "    }\n";
+            }
+            $css .= "}\n";
+        }
+
+        return $css;
+    }
+
+    /**
+     * Format a value from style_config with explicit unit
+     *
+     * @param string $property CSS property name
+     * @param mixed $value Raw value
+     * @param string $unit Unit to add (px, em, etc.)
+     * @return string Formatted CSS value
+     */
+    protected function formatStyleConfigValue(string $property, $value, string $unit = ''): string
+    {
+        // Handle array values (padding, margin, border-radius as {top, right, bottom, left})
+        if (is_array($value)) {
+            // Check if it's a spacing array (padding/margin)
+            if (isset($value['top']) || isset($value['right']) || isset($value['bottom']) || isset($value['left'])) {
+                $top = $value['top'] ?? 0;
+                $right = $value['right'] ?? 0;
+                $bottom = $value['bottom'] ?? 0;
+                $left = $value['left'] ?? 0;
+                return "{$top}px {$right}px {$bottom}px {$left}px";
+            }
+            // Check if it's a border-radius array
+            if (isset($value['top_left']) || isset($value['top_right']) || isset($value['bottom_right']) || isset($value['bottom_left'])) {
+                $tl = $value['top_left'] ?? 0;
+                $tr = $value['top_right'] ?? 0;
+                $br = $value['bottom_right'] ?? 0;
+                $bl = $value['bottom_left'] ?? 0;
+                return "{$tl}px {$tr}px {$br}px {$bl}px";
+            }
+            // Unknown array format - return empty to avoid error
+            return '';
+        }
+
+        // If value already has units, return as-is
+        if (is_string($value) && preg_match('/[a-z%]$/i', $value)) {
+            return $value;
+        }
+
+        // If numeric and unit specified, add unit
+        if (is_numeric($value) && $unit) {
+            return $value . $unit;
+        }
+
+        // If numeric and no unit but property typically needs px
+        if (is_numeric($value)) {
+            $pxProperties = ['font-size', 'width', 'height', 'max-width', 'min-width',
+                'padding', 'margin', 'border-radius', 'border-width', 'gap',
+                'letter-spacing', 'top', 'right', 'bottom', 'left'];
+            foreach ($pxProperties as $pxProp) {
+                if (str_contains($property, $pxProp)) {
+                    return $value . 'px';
+                }
+            }
+        }
+
+        return (string) $value;
+    }
+
+    /**
+     * Format a CSS value with proper units
+     *
+     * @param string $property CSS property name
+     * @param mixed $value Raw value
+     * @return string Formatted CSS value
+     */
+    protected function formatCssValue(string $property, $value): string
+    {
+        // If value already has units, return as-is
+        if (is_string($value) && preg_match('/[a-z%]$/i', $value)) {
+            return $value;
+        }
+
+        // Properties that need 'px' unit
+        $pxProperties = [
+            'font-size', 'width', 'height', 'min-width', 'min-height',
+            'max-width', 'max-height', 'padding', 'padding-top', 'padding-right',
+            'padding-bottom', 'padding-left', 'margin', 'margin-top', 'margin-right',
+            'margin-bottom', 'margin-left', 'border-width', 'border-radius',
+            'top', 'right', 'bottom', 'left', 'gap', 'letter-spacing',
+            'border-top-width', 'border-right-width', 'border-bottom-width', 'border-left-width',
+            'border-top-left-radius', 'border-top-right-radius', 'border-bottom-left-radius', 'border-bottom-right-radius'
+        ];
+
+        // Properties that need 'em' unit
+        $emProperties = ['line-height'];
+
+        // Check if numeric
+        if (is_numeric($value)) {
+            if (in_array($property, $pxProperties)) {
+                return $value . 'px';
+            }
+            if (in_array($property, $emProperties)) {
+                return $value . 'em';
+            }
+        }
+
+        return (string)$value;
+    }
+
+    /**
+     * Get the CSS variable name for a module setting
+     *
+     * @param string $key Setting key
+     * @return string CSS variable reference
+     */
+    protected function getCssVar(string $key): string
+    {
+        $prefix = $this->module_prefix ?: $this->getSlug();
+        return "var(--jtb-{$prefix}-{$key})";
+    }
+
+    /**
+     * Check if an attribute value differs from its global default
+     *
+     * @param string $key Attribute key
+     * @param mixed $value Attribute value
+     * @return bool
+     */
+    protected function isDifferentFromDefault(string $key, $value): bool
+    {
+        $prefix = $this->module_prefix ?: $this->getSlug();
+        $globalKey = $prefix . '_' . $key;
+
+        return JTB_Global_Settings::isDifferentFromDefault($globalKey, $value);
+    }
+
+    /**
+     * Get default value for a module setting
+     *
+     * @param string $key Setting key (without module prefix)
+     * @return mixed
+     */
+    protected function getDefault(string $key)
+    {
+        $prefix = $this->module_prefix ?: $this->getSlug();
+        $globalKey = $prefix . '_' . $key;
+
+        return JTB_Global_Settings::get($globalKey);
     }
 
     protected function generateBackgroundCss(array $attrs, string $selector): string
@@ -1456,6 +1769,9 @@ abstract class JTB_Element
 
         $bgType = $attrs['background_type'] ?? 'none';
 
+        // FIXED 2026-02-03: Only apply background-color when background_type is EXPLICITLY set to 'color'
+        // Previously, auto-detection caused unwanted dark backgrounds from default styles
+        // AI should explicitly set background_type: 'color' when it wants a colored background
         if ($bgType === 'color' && !empty($attrs['background_color'])) {
             $rules[] = 'background-color: ' . $attrs['background_color'];
         } elseif ($bgType === 'gradient') {
@@ -1565,25 +1881,73 @@ abstract class JTB_Element
     {
         $css = '';
         $rules = [];
+        $tabletRules = [];
+        $phoneRules = [];
 
-        // Margin
+        // Helper function to format spacing value
+        $formatSpacing = function($value, $property) {
+            if (is_array($value)) {
+                // Array format: {top: 10, right: 20, bottom: 10, left: 20}
+                return $property . ': ' . ($value['top'] ?? 0) . 'px ' . ($value['right'] ?? 0) . 'px ' . ($value['bottom'] ?? 0) . 'px ' . ($value['left'] ?? 0) . 'px';
+            } elseif (is_numeric($value)) {
+                // Single value - apply to all sides
+                return $property . ': ' . (int)$value . 'px';
+            } elseif (is_string($value) && !empty($value)) {
+                // Already formatted string (e.g., "10px 20px")
+                return $property . ': ' . $value;
+            }
+            return null;
+        };
+
+        // Margin - desktop
         if (!empty($attrs['margin'])) {
-            $margin = $attrs['margin'];
-            if (is_array($margin)) {
-                $rules[] = 'margin: ' . ($margin['top'] ?? 0) . 'px ' . ($margin['right'] ?? 0) . 'px ' . ($margin['bottom'] ?? 0) . 'px ' . ($margin['left'] ?? 0) . 'px';
-            }
+            $rule = $formatSpacing($attrs['margin'], 'margin');
+            if ($rule) $rules[] = $rule;
         }
 
-        // Padding
+        // Margin - tablet
+        if (!empty($attrs['margin__tablet'])) {
+            $rule = $formatSpacing($attrs['margin__tablet'], 'margin');
+            if ($rule) $tabletRules[] = $rule;
+        }
+
+        // Margin - phone
+        if (!empty($attrs['margin__phone'])) {
+            $rule = $formatSpacing($attrs['margin__phone'], 'margin');
+            if ($rule) $phoneRules[] = $rule;
+        }
+
+        // Padding - desktop
         if (!empty($attrs['padding'])) {
-            $padding = $attrs['padding'];
-            if (is_array($padding)) {
-                $rules[] = 'padding: ' . ($padding['top'] ?? 0) . 'px ' . ($padding['right'] ?? 0) . 'px ' . ($padding['bottom'] ?? 0) . 'px ' . ($padding['left'] ?? 0) . 'px';
-            }
+            $rule = $formatSpacing($attrs['padding'], 'padding');
+            if ($rule) $rules[] = $rule;
         }
 
+        // Padding - tablet
+        if (!empty($attrs['padding__tablet'])) {
+            $rule = $formatSpacing($attrs['padding__tablet'], 'padding');
+            if ($rule) $tabletRules[] = $rule;
+        }
+
+        // Padding - phone
+        if (!empty($attrs['padding__phone'])) {
+            $rule = $formatSpacing($attrs['padding__phone'], 'padding');
+            if ($rule) $phoneRules[] = $rule;
+        }
+
+        // Desktop CSS
         if (!empty($rules)) {
             $css .= $selector . ' { ' . implode('; ', $rules) . '; }' . "\n";
+        }
+
+        // Tablet CSS
+        if (!empty($tabletRules)) {
+            $css .= '@media (max-width: 980px) { ' . $selector . ' { ' . implode('; ', $tabletRules) . '; } }' . "\n";
+        }
+
+        // Phone CSS
+        if (!empty($phoneRules)) {
+            $css .= '@media (max-width: 767px) { ' . $selector . ' { ' . implode('; ', $phoneRules) . '; } }' . "\n";
         }
 
         return $css;
@@ -1594,11 +1958,48 @@ abstract class JTB_Element
         $css = '';
         $rules = [];
 
-        // Border width
+        // COMPATIBILITY FIX 2026-02-03: Support BOTH JS combined format AND PHP separate fields
+        // JS sends: {border: {width: 1, style: 'solid', color: '#000', radius: 8}}
+        // PHP expects: {border_width: {...}, border_style: 'solid', border_color: '#000', border_radius: {...}}
+
+        // Extract values from JS combined format if present
+        if (!empty($attrs['border']) && is_array($attrs['border'])) {
+            $border = $attrs['border'];
+
+            // Width - JS sends single number
+            if (isset($border['width'])) {
+                $w = (int) $border['width'];
+                if ($w > 0) {
+                    $rules[] = 'border-width: ' . $w . 'px';
+                }
+            }
+
+            // Style
+            if (!empty($border['style']) && $border['style'] !== 'none') {
+                $rules[] = 'border-style: ' . $border['style'];
+            }
+
+            // Color
+            if (!empty($border['color'])) {
+                $rules[] = 'border-color: ' . $border['color'];
+            }
+
+            // Radius - JS sends single number, we apply to all corners
+            if (isset($border['radius'])) {
+                $r = (int) $border['radius'];
+                $rules[] = 'border-radius: ' . $r . 'px';
+            }
+        }
+
+        // PHP separate fields format (takes precedence if both exist)
+
+        // Border width - supports both array and single value
         if (!empty($attrs['border_width'])) {
             $width = $attrs['border_width'];
             if (is_array($width)) {
                 $rules[] = 'border-width: ' . ($width['top'] ?? 0) . 'px ' . ($width['right'] ?? 0) . 'px ' . ($width['bottom'] ?? 0) . 'px ' . ($width['left'] ?? 0) . 'px';
+            } elseif (is_numeric($width)) {
+                $rules[] = 'border-width: ' . (int)$width . 'px';
             }
         }
 
@@ -1612,16 +2013,34 @@ abstract class JTB_Element
             $rules[] = 'border-color: ' . $attrs['border_color'];
         }
 
-        // Border radius
+        // Border radius - supports array (4 corners), single number, or string
         if (!empty($attrs['border_radius'])) {
             $radius = $attrs['border_radius'];
             if (is_array($radius)) {
-                $rules[] = 'border-radius: ' . ($radius['top_left'] ?? 0) . 'px ' . ($radius['top_right'] ?? 0) . 'px ' . ($radius['bottom_right'] ?? 0) . 'px ' . ($radius['bottom_left'] ?? 0) . 'px';
+                // Check if it's the corners format (top_left, etc.) or sides format (top, right, etc.)
+                if (isset($radius['top_left'])) {
+                    $rules[] = 'border-radius: ' . ($radius['top_left'] ?? 0) . 'px ' . ($radius['top_right'] ?? 0) . 'px ' . ($radius['bottom_right'] ?? 0) . 'px ' . ($radius['bottom_left'] ?? 0) . 'px';
+                } elseif (isset($radius['top'])) {
+                    // Some JS might send as top/right/bottom/left
+                    $rules[] = 'border-radius: ' . ($radius['top'] ?? 0) . 'px ' . ($radius['right'] ?? 0) . 'px ' . ($radius['bottom'] ?? 0) . 'px ' . ($radius['left'] ?? 0) . 'px';
+                }
+            } elseif (is_numeric($radius)) {
+                // Single value - apply to all corners
+                $rules[] = 'border-radius: ' . (int)$radius . 'px';
+            } elseif (is_string($radius) && !empty($radius)) {
+                // Already formatted string (e.g., "10px" or "10px 5px")
+                $rules[] = 'border-radius: ' . $radius;
             }
         }
 
         if (!empty($rules)) {
-            $css .= $selector . ' { ' . implode('; ', $rules) . '; }' . "\n";
+            // Remove duplicate rules (keep last one)
+            $uniqueRules = [];
+            foreach ($rules as $rule) {
+                $prop = explode(':', $rule)[0];
+                $uniqueRules[$prop] = $rule;
+            }
+            $css .= $selector . ' { ' . implode('; ', $uniqueRules) . '; }' . "\n";
         }
 
         // Hover state
@@ -1636,6 +2055,12 @@ abstract class JTB_Element
     {
         $css = '';
         $style = $attrs['box_shadow_style'] ?? 'none';
+
+        // AI Compatibility: Support direct box_shadow string
+        if ($style === 'none' && !empty($attrs['box_shadow']) && is_string($attrs['box_shadow'])) {
+            $css .= $selector . ' { box-shadow: ' . $attrs['box_shadow'] . '; }' . "\n";
+            return $css;
+        }
 
         if ($style === 'none') {
             return $css;

@@ -48,6 +48,9 @@ if (json_last_error() !== JSON_ERROR_NONE) {
     exit;
 }
 
+// Debug: Log content structure
+error_log('JTB Save: post_id=' . $postId . ', sections=' . count($contentArray['content'] ?? []));
+
 // Check if post exists
 $db = \core\Database::connection();
 $stmt = $db->prepare("SELECT id FROM pages WHERE id = ?");
@@ -61,6 +64,20 @@ if (!$stmt->fetch()) {
 
 // Save content
 try {
+    // Debug validation before save
+    if (!JTB_Builder::validateContent($contentArray)) {
+        error_log('JTB Save: Validation failed for post_id=' . $postId);
+        error_log('JTB Save: Content structure: ' . json_encode(array_keys($contentArray)));
+        if (!empty($contentArray['content'])) {
+            foreach ($contentArray['content'] as $i => $section) {
+                error_log('JTB Save: Section ' . $i . ' type=' . ($section['type'] ?? 'missing') . ' id=' . ($section['id'] ?? 'missing'));
+            }
+        }
+        http_response_code(400);
+        echo json_encode(['success' => false, 'error' => 'Content validation failed']);
+        exit;
+    }
+
     $result = JTB_Builder::saveContent($postId, $contentArray);
 
     if ($result) {
@@ -72,10 +89,12 @@ try {
             ]
         ]);
     } else {
+        error_log('JTB Save: saveContent returned false for post_id=' . $postId);
         http_response_code(500);
         echo json_encode(['success' => false, 'error' => 'Failed to save content']);
     }
 } catch (\Exception $e) {
+    error_log('JTB Save Exception: ' . $e->getMessage());
     http_response_code(500);
     echo json_encode(['success' => false, 'error' => 'Server error: ' . $e->getMessage()]);
 }

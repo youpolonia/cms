@@ -25,6 +25,32 @@ class JTB_Module_PostNavigation extends JTB_Element
     public bool $use_position = false;
     public bool $use_filters = false;
 
+    // === UNIFIED THEME SYSTEM ===
+    protected string $module_prefix = 'post_navigation';
+
+    /**
+     * Declarative style configuration
+     */
+    protected array $style_config = [
+        'link_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-post-nav-link',
+            'hover' => true
+        ],
+        'title_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-post-nav-title'
+        ],
+        'label_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-post-nav-label'
+        ],
+        'overlay_color' => [
+            'property' => 'background',
+            'selector' => '.jtb-post-nav-overlay'
+        ]
+    ];
+
     public function getSlug(): string
     {
         return 'post_navigation';
@@ -85,6 +111,9 @@ class JTB_Module_PostNavigation extends JTB_Element
 
     public function render(array $attrs, string $content = ''): string
     {
+        // Apply default styles from design system
+        $attrs = JTB_Default_Styles::mergeWithDefaults($this->getSlug(), $attrs);
+
         $showImage = $attrs['show_featured_image'] ?? true;
         $prevText = $this->esc($attrs['prev_text'] ?? 'Previous Post');
         $nextText = $this->esc($attrs['next_text'] ?? 'Next Post');
@@ -157,15 +186,19 @@ class JTB_Module_PostNavigation extends JTB_Element
         return $this->renderWrapper($innerHtml, $attrs);
     }
 
+    /**
+     * Generate CSS for Post Navigation module
+     * Base styles are in jtb-base-modules.css
+     */
     public function generateCss(array $attrs, string $selector): string
     {
         $css = '';
 
+        // Use declarative style_config system
+        $css .= $this->generateStyleConfigCss($attrs, $selector);
+
         $showImage = $attrs['show_featured_image'] ?? true;
         $linkColor = $attrs['link_color'] ?? '#2ea3f2';
-        $titleColor = $attrs['title_color'] ?? '#333333';
-        $labelColor = $attrs['label_color'] ?? '#999999';
-        $overlayColor = $attrs['overlay_color'] ?? 'rgba(0,0,0,0.3)';
 
         // Container
         $css .= $selector . ' .jtb-post-navigation-container { display: flex; gap: 20px; }' . "\n";
@@ -176,53 +209,29 @@ class JTB_Module_PostNavigation extends JTB_Element
 
         if ($showImage) {
             $css .= $selector . ' .jtb-post-nav-link { min-height: 150px; }' . "\n";
-
-            // Image
             $css .= $selector . ' .jtb-post-nav-image { position: absolute; top: 0; left: 0; right: 0; bottom: 0; }' . "\n";
             $css .= $selector . ' .jtb-post-nav-image img, ' . $selector . ' .jtb-post-nav-image-placeholder { width: 100%; height: 100%; object-fit: cover; }' . "\n";
-            $css .= $selector . ' .jtb-post-nav-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: ' . $overlayColor . '; transition: background 0.3s ease; }' . "\n";
+            $css .= $selector . ' .jtb-post-nav-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; transition: background 0.3s ease; }' . "\n";
             $css .= $selector . ' .jtb-post-nav-link:hover .jtb-post-nav-overlay { background: rgba(0,0,0,0.5); }' . "\n";
-
-            // Content over image
             $css .= $selector . ' .jtb-post-nav-content { position: relative; z-index: 1; padding: 30px; display: flex; flex-direction: column; justify-content: center; min-height: 90px; }' . "\n";
             $css .= $selector . ' .jtb-post-nav-label { color: rgba(255,255,255,0.8); }' . "\n";
             $css .= $selector . ' .jtb-post-nav-title { color: #ffffff; }' . "\n";
         } else {
             $css .= $selector . ' .jtb-post-nav-content { padding: 20px; border: 1px solid #eee; }' . "\n";
-            $css .= $selector . ' .jtb-post-nav-label { color: ' . $labelColor . '; }' . "\n";
-            $css .= $selector . ' .jtb-post-nav-title { color: ' . $titleColor . '; }' . "\n";
             $css .= $selector . ' .jtb-post-nav-link:hover { border-color: ' . $linkColor . '; }' . "\n";
         }
 
         // Label
-        $css .= $selector . ' .jtb-post-nav-label { '
-            . 'font-size: 12px; '
-            . 'text-transform: uppercase; '
-            . 'letter-spacing: 1px; '
-            . 'margin-bottom: 8px; '
-            . 'display: flex; '
-            . 'align-items: center; '
-            . 'gap: 6px; '
-            . '}' . "\n";
+        $css .= $selector . ' .jtb-post-nav-label { font-size: 12px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }' . "\n";
         $css .= $selector . ' .jtb-post-nav-next .jtb-post-nav-label { justify-content: flex-end; }' . "\n";
         $css .= $selector . ' .jtb-nav-icon { display: inline-flex; align-items: center; }' . "\n";
         $css .= $selector . ' .jtb-nav-icon svg { width: 14px; height: 14px; }' . "\n";
 
         // Title
-        $css .= $selector . ' .jtb-post-nav-title { '
-            . 'font-size: 18px; '
-            . 'font-weight: bold; '
-            . 'display: block; '
-            . 'transition: color 0.3s ease; '
-            . '}' . "\n";
+        $css .= $selector . ' .jtb-post-nav-title { font-size: 18px; font-weight: bold; display: block; transition: color 0.3s ease; }' . "\n";
 
         // Alignment
         $css .= $selector . ' .jtb-post-nav-next { text-align: right; }' . "\n";
-
-        // Hover
-        if (!empty($attrs['link_color__hover'])) {
-            $css .= $selector . ' .jtb-post-nav-link:hover .jtb-post-nav-title { color: ' . $attrs['link_color__hover'] . '; }' . "\n";
-        }
 
         // Responsive
         $css .= '@media (max-width: 767px) {' . "\n";
@@ -230,6 +239,7 @@ class JTB_Module_PostNavigation extends JTB_Element
         $css .= '  ' . $selector . ' .jtb-post-nav-next { text-align: left; }' . "\n";
         $css .= '}' . "\n";
 
+        // Parent class handles common styles
         $css .= parent::generateCss($attrs, $selector);
 
         return $css;

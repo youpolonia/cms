@@ -26,6 +26,14 @@ class JTB_Module_MapPin extends JTB_Element
     public bool $use_position = false;
     public bool $use_filters = false;
 
+    // === UNIFIED THEME SYSTEM ===
+    protected string $module_prefix = 'map_pin';
+
+    /**
+     * Declarative style configuration
+     */
+    protected array $style_config = [];
+
     public function getSlug(): string
     {
         return 'map_pin';
@@ -86,6 +94,9 @@ class JTB_Module_MapPin extends JTB_Element
 
     public function render(array $attrs, string $content = ''): string
     {
+        // Apply default styles from design system
+        $attrs = JTB_Default_Styles::mergeWithDefaults($this->getSlug(), $attrs);
+
         $title = $this->esc($attrs['title'] ?? 'Location');
         $infoContent = $attrs['content'] ?? '';
         $address = $this->esc($attrs['pin_address'] ?? '');
@@ -123,10 +134,19 @@ class JTB_Module_MapPin extends JTB_Element
         return $html;
     }
 
+    /**
+     * Generate CSS for Map Pin module
+     * Base styles are in jtb-base-modules.css
+     * Map pins don't need CSS - they're rendered by map library
+     */
     public function generateCss(array $attrs, string $selector): string
     {
-        // Map pins don't need CSS - they're rendered by map library
-        return '';
+        $css = '';
+
+        // Use declarative style_config system
+        $css .= $this->generateStyleConfigCss($attrs, $selector);
+
+        return $css;
     }
 }
 

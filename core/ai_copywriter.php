@@ -801,247 +801,27 @@ class AICopywriter
      */
     private function callAIProvider(string $prompt, int $maxTokens = 1000): array
     {
-        $providerConfig = $this->config['providers'][$this->provider] ?? null;
+        $provider = $this->provider;
+        $model = $this->overrideModel ?? '';
 
-        if (!$providerConfig) {
-            return $this->errorResponse("AI provider '{$this->provider}' not configured");
-        }
-
-        $apiKey = $providerConfig['api_key'] ?? null;
-
-        if (empty($apiKey)) {
-            return $this->errorResponse("API key not configured for '{$this->provider}'");
-        }
-
-        // Build API request based on provider
-        switch ($this->provider) {
-            case 'openai':
-                return $this->callOpenAI($prompt, $maxTokens, $providerConfig);
-
-            case 'huggingface':
-                return $this->callHuggingFace($prompt, $maxTokens, $providerConfig);
-
-            case 'anthropic':
-                return $this->callAnthropic($prompt, $maxTokens, $providerConfig);
-
-            default:
-                return $this->errorResponse("Unsupported AI provider: {$this->provider}");
-        }
-    }
-
-    /**
-     * Call OpenAI API
-     *
-     * @param string $prompt Prompt text
-     * @param int $maxTokens Max tokens
-     * @param array $config Provider config
-     * @return array
-     */
-    private function callOpenAI(string $prompt, int $maxTokens, array $config): array
-    {
-        // Use override model if set, otherwise use config
-        $model = $this->overrideModel ?? $config['model'] ?? $config['models'][0] ?? 'gpt-4.1-mini';
-        $apiKey = $config['api_key'];
-
-        // Check if model is a reasoning model (GPT-5, GPT-4.1, O-series)
-        $isReasoningModel = (bool) preg_match('/^(o[1-4]|gpt-[45]\.|gpt-5$)/', $model);
-
-        $data = [
-            'model' => $model,
-            'messages' => [
-                ['role' => 'system', 'content' => 'You are an expert copywriter who creates compelling, effective marketing copy.'],
-                ['role' => 'user', 'content' => $prompt]
-            ]
-        ];
-
-        // Reasoning models use max_completion_tokens and don't support temperature
-        if ($isReasoningModel) {
-            // GPT-5 uses reasoning tokens, needs higher limit
-            $isGPT5 = (bool) preg_match('/^gpt-5/', $model);
-            $data['max_completion_tokens'] = $isGPT5 ? max($maxTokens * 4, 16000) : min($maxTokens, 4000);
-        } else {
-            $data['max_tokens'] = min($maxTokens, 4000);
-            $data['temperature'] = 0.7;
-        }
-
-        $ch = curl_init('https://api.openai.com/v1/chat/completions');
-        curl_setopt_array($ch, [
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_POST => true,
-            CURLOPT_POSTFIELDS => json_encode($data),
-            CURLOPT_HTTPHEADER => [
-                'Content-Type: application/json',
-                'Authorization: Bearer ' . $apiKey
-            ],
-            CURLOPT_TIMEOUT => 60
-        ]);
-
-        $response = curl_exec($ch);
-        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        $error = curl_error($ch);
-        curl_close($ch);
-
-        if ($error) {
-            return $this->errorResponse("API request failed: {$error}");
-        }
-
-        if ($httpCode !== 200) {
-            $errorData = json_decode($response, true);
-            $errorMsg = $errorData['error']['message'] ?? "HTTP {$httpCode}";
-            return $this->errorResponse("OpenAI API error: {$errorMsg}");
-        }
-
-        $result = json_decode($response, true);
-        
-        // Parse response from various formats (GPT-4o, GPT-5.x, etc.)
-        $content = null;
-        if (isset($result['choices'][0]['message']['content'])) {
-            $content = $result['choices'][0]['message']['content'];
-        } elseif (isset($result['output_text']) && !empty($result['output_text'])) {
-            $content = $result['output_text'];
-        } elseif (isset($result['output']) && is_array($result['output'])) {
-            foreach ($result['output'] as $item) {
-                if (isset($item['content']) && is_array($item['content'])) {
-                    foreach ($item['content'] as $c) {
-                        if (isset($c['text'])) { $content = $c['text']; break 2; }
-                    }
-                }
-            }
-        }
-
-        if (empty($content)) {
-            return $this->errorResponse('Empty response from AI');
-        }
-
-        return [
-            'success' => true,
-            'content' => $content,
-            'usage' => $result['usage'] ?? null
-        ];
-    }
-
-    /**
-     * Call HuggingFace API
-     *
-     * @param string $prompt Prompt text
-     * @param int $maxTokens Max tokens
-     * @param array $config Provider config
-     * @return array
-     */
-    private function callHuggingFace(string $prompt, int $maxTokens, array $config): array
-    {
-        $model = $config['model'] ?? $config['models'][0] ?? 'meta-llama/Llama-2-7b-chat-hf';
-        $apiKey = $config['api_key'];
-
-        $data = [
-            'inputs' => $prompt,
-            'parameters' => [
-                'max_new_tokens' => min($maxTokens, 2000),
-                'temperature' => 0.7,
-                'return_full_text' => false
-            ]
-        ];
-
-        $url = "https://api-inference.huggingface.co/models/{$model}";
-
-        $ch = curl_init($url);
-        curl_setopt_array($ch, [
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_POST => true,
-            CURLOPT_POSTFIELDS => json_encode($data),
-            CURLOPT_HTTPHEADER => [
-                'Content-Type: application/json',
-                'Authorization: Bearer ' . $apiKey
-            ],
-            CURLOPT_TIMEOUT => 120
-        ]);
-
-        $response = curl_exec($ch);
-        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        $error = curl_error($ch);
-        curl_close($ch);
-
-        if ($error) {
-            return $this->errorResponse("API request failed: {$error}");
-        }
-
-        if ($httpCode !== 200) {
-            return $this->errorResponse("HuggingFace API error: HTTP {$httpCode}");
-        }
-
-        $result = json_decode($response, true);
-        $content = $result[0]['generated_text'] ?? '';
-
-        if (empty($content)) {
-            return $this->errorResponse('Empty response from AI');
-        }
-
-        return [
-            'success' => true,
-            'content' => $content
-        ];
-    }
-
-    /**
-     * Call Anthropic API
-     *
-     * @param string $prompt Prompt text
-     * @param int $maxTokens Max tokens
-     * @param array $config Provider config
-     * @return array
-     */
-    private function callAnthropic(string $prompt, int $maxTokens, array $config): array
-    {
-        $model = $config['model'] ?? 'claude-3-sonnet-20240229';
-        $apiKey = $config['api_key'];
-
-        $data = [
-            'model' => $model,
+        // Use ai_universal_generate for all providers
+        $result = ai_universal_generate($provider, $model, 'You are an expert copywriter who creates compelling, effective marketing copy.', $prompt, [
             'max_tokens' => min($maxTokens, 4000),
-            'messages' => [
-                ['role' => 'user', 'content' => $prompt]
-            ],
-            'system' => 'You are an expert copywriter who creates compelling, effective marketing copy.'
-        ];
-
-        $ch = curl_init('https://api.anthropic.com/v1/messages');
-        curl_setopt_array($ch, [
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_POST => true,
-            CURLOPT_POSTFIELDS => json_encode($data),
-            CURLOPT_HTTPHEADER => [
-                'Content-Type: application/json',
-                'x-api-key: ' . $apiKey,
-                'anthropic-version: 2023-06-01'
-            ],
-            CURLOPT_TIMEOUT => 60
+            'temperature' => 0.7,
         ]);
 
-        $response = curl_exec($ch);
-        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        $error = curl_error($ch);
-        curl_close($ch);
-
-        if ($error) {
-            return $this->errorResponse("API request failed: {$error}");
+        if (!$result['ok']) {
+            return $this->errorResponse($result['error'] ?? 'AI generation failed');
         }
 
-        if ($httpCode !== 200) {
-            $errorData = json_decode($response, true);
-            $errorMsg = $errorData['error']['message'] ?? "HTTP {$httpCode}";
-            return $this->errorResponse("Anthropic API error: {$errorMsg}");
-        }
-
-        $result = json_decode($response, true);
-        $content = $result['content'][0]['text'] ?? '';
-
-        if (empty($content)) {
+        $text = trim($result['content'] ?? $result['text'] ?? '');
+        if (empty($text)) {
             return $this->errorResponse('Empty response from AI');
         }
 
         return [
             'success' => true,
-            'content' => $content,
+            'content' => $text,
             'usage' => $result['usage'] ?? null
         ];
     }

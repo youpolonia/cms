@@ -20,7 +20,6 @@ cms_session_start('admin');
 csrf_boot('admin');
 cms_require_admin_role();
 
-if (!defined('DEV_MODE') || !DEV_MODE) { http_response_code(403); exit('Forbidden'); }
 
 function esc($str) { return htmlspecialchars((string)$str, ENT_QUOTES, 'UTF-8'); }
 

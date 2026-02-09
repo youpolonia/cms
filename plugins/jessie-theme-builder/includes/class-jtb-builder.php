@@ -113,45 +113,58 @@ class JTB_Builder
      */
     public static function validateContent(array $content): bool
     {
+        $logFile = '/tmp/jtb_render.log';
+
         // Must have version
         if (!isset($content['version'])) {
+            file_put_contents($logFile, "[VALIDATE] FAIL: missing version\n", FILE_APPEND);
             return false;
         }
 
         // Must have content array
         if (!isset($content['content']) || !is_array($content['content'])) {
+            file_put_contents($logFile, "[VALIDATE] FAIL: missing content array\n", FILE_APPEND);
             return false;
         }
 
+        file_put_contents($logFile, "[VALIDATE] Checking " . count($content['content']) . " sections\n", FILE_APPEND);
+
         // Validate each section
-        foreach ($content['content'] as $section) {
-            if (!self::validateSection($section)) {
+        foreach ($content['content'] as $index => $section) {
+            if (!self::validateSection($section, $logFile)) {
+                file_put_contents($logFile, "[VALIDATE] FAIL: section $index failed\n", FILE_APPEND);
+                file_put_contents($logFile, "[VALIDATE] Section keys: " . implode(',', array_keys($section)) . "\n", FILE_APPEND);
+                file_put_contents($logFile, "[VALIDATE] Section type: " . ($section['type'] ?? 'null') . ", id: " . ($section['id'] ?? 'null') . "\n", FILE_APPEND);
                 return false;
             }
         }
 
+        file_put_contents($logFile, "[VALIDATE] ALL SECTIONS PASSED\n", FILE_APPEND);
         return true;
     }
 
     /**
      * Validate section structure
      */
-    private static function validateSection(array $section): bool
+    private static function validateSection(array $section, string $logFile = '/tmp/jtb_render.log'): bool
     {
         // Must have type
         if (!isset($section['type']) || $section['type'] !== 'section') {
+            file_put_contents($logFile, "[SECTION] FAIL: type is '" . ($section['type'] ?? 'null') . "'\n", FILE_APPEND);
             return false;
         }
 
         // Must have id
         if (empty($section['id'])) {
+            file_put_contents($logFile, "[SECTION] FAIL: missing id. Keys: " . implode(',', array_keys($section)) . "\n", FILE_APPEND);
             return false;
         }
 
         // Children must be rows
         if (isset($section['children']) && is_array($section['children'])) {
-            foreach ($section['children'] as $row) {
-                if (!self::validateRow($row)) {
+            foreach ($section['children'] as $rowIndex => $row) {
+                if (!self::validateRow($row, $logFile)) {
+                    file_put_contents($logFile, "[SECTION] FAIL: row $rowIndex failed\n", FILE_APPEND);
                     return false;
                 }
             }
@@ -163,22 +176,25 @@ class JTB_Builder
     /**
      * Validate row structure
      */
-    private static function validateRow(array $row): bool
+    private static function validateRow(array $row, string $logFile = '/tmp/jtb_render.log'): bool
     {
         // Must have type
         if (!isset($row['type']) || $row['type'] !== 'row') {
+            file_put_contents($logFile, "[ROW] FAIL: type is '" . ($row['type'] ?? 'null') . "'\n", FILE_APPEND);
             return false;
         }
 
         // Must have id
         if (empty($row['id'])) {
+            file_put_contents($logFile, "[ROW] FAIL: missing id\n", FILE_APPEND);
             return false;
         }
 
         // Children must be columns
         if (isset($row['children']) && is_array($row['children'])) {
-            foreach ($row['children'] as $column) {
-                if (!self::validateColumn($column)) {
+            foreach ($row['children'] as $colIndex => $column) {
+                if (!self::validateColumn($column, $logFile)) {
+                    file_put_contents($logFile, "[ROW] FAIL: column $colIndex failed\n", FILE_APPEND);
                     return false;
                 }
             }
@@ -190,22 +206,25 @@ class JTB_Builder
     /**
      * Validate column structure
      */
-    private static function validateColumn(array $column): bool
+    private static function validateColumn(array $column, string $logFile = '/tmp/jtb_render.log'): bool
     {
         // Must have type
         if (!isset($column['type']) || $column['type'] !== 'column') {
+            file_put_contents($logFile, "[COLUMN] FAIL: type is '" . ($column['type'] ?? 'null') . "'\n", FILE_APPEND);
             return false;
         }
 
         // Must have id
         if (empty($column['id'])) {
+            file_put_contents($logFile, "[COLUMN] FAIL: missing id\n", FILE_APPEND);
             return false;
         }
 
         // Children must be valid modules
         if (isset($column['children']) && is_array($column['children'])) {
-            foreach ($column['children'] as $module) {
-                if (!self::validateModule($module)) {
+            foreach ($column['children'] as $modIndex => $module) {
+                if (!self::validateModule($module, $logFile)) {
+                    file_put_contents($logFile, "[COLUMN] FAIL: module $modIndex failed\n", FILE_APPEND);
                     return false;
                 }
             }
@@ -217,15 +236,17 @@ class JTB_Builder
     /**
      * Validate module structure
      */
-    private static function validateModule(array $module): bool
+    private static function validateModule(array $module, string $logFile = '/tmp/jtb_render.log'): bool
     {
         // Must have type
         if (empty($module['type'])) {
+            file_put_contents($logFile, "[MODULE] FAIL: empty type\n", FILE_APPEND);
             return false;
         }
 
         // Must have id
         if (empty($module['id'])) {
+            file_put_contents($logFile, "[MODULE] FAIL: missing id for type '" . $module['type'] . "'\n", FILE_APPEND);
             return false;
         }
 
@@ -233,6 +254,7 @@ class JTB_Builder
         $structureTypes = ['section', 'row', 'column'];
         if (!in_array($module['type'], $structureTypes)) {
             if (!JTB_Registry::exists($module['type'])) {
+                file_put_contents($logFile, "[MODULE] FAIL: unregistered type '" . $module['type'] . "'\n", FILE_APPEND);
                 return false;
             }
         }

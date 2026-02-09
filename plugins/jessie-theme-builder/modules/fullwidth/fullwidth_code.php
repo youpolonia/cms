@@ -25,6 +25,15 @@ class JTB_Module_FullwidthCode extends JTB_Element
     public bool $use_position = false;
     public bool $use_filters = false;
 
+    // === UNIFIED THEME SYSTEM ===
+    protected string $module_prefix = 'fullwidth_code';
+
+    /**
+     * Declarative style configuration
+     * Simple module - mostly uses raw HTML output
+     */
+    protected array $style_config = [];
+
     public function getSlug(): string
     {
         return 'fullwidth_code';
@@ -49,6 +58,9 @@ class JTB_Module_FullwidthCode extends JTB_Element
 
     public function render(array $attrs, string $content = ''): string
     {
+        // Apply default styles from design system
+        $attrs = JTB_Default_Styles::mergeWithDefaults($this->getSlug(), $attrs);
+
         $rawContent = $attrs['raw_content'] ?? '';
 
         $innerHtml = '<div class="jtb-fullwidth-code-container">';
@@ -61,6 +73,9 @@ class JTB_Module_FullwidthCode extends JTB_Element
     public function generateCss(array $attrs, string $selector): string
     {
         $css = '';
+
+        // Use declarative style_config system
+        $css .= $this->generateStyleConfigCss($attrs, $selector);
 
         $css .= $selector . ' .jtb-fullwidth-code-container { width: 100%; }' . "\n";
 

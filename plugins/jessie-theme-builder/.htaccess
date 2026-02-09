@@ -1,0 +1,9 @@
+# Block test files
+<FilesMatch "^test.*\.php$">
+    Require all denied
+</FilesMatch>
+
+# Block backup files  
+<FilesMatch "\.(bak|backup|backup2|before-cleanup)$">
+    Require all denied
+</FilesMatch>

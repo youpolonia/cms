@@ -26,6 +26,21 @@ class JTB_Module_Map extends JTB_Element
     public bool $use_position = false;
     public bool $use_filters = true;
 
+    // === UNIFIED THEME SYSTEM ===
+    protected string $module_prefix = 'map';
+
+    /**
+     * Declarative style configuration
+     */
+    protected array $style_config = [
+        'map_height' => [
+            'property' => 'height',
+            'selector' => '.jtb-map-container',
+            'unit' => 'px',
+            'responsive' => true
+        ]
+    ];
+
     public function getSlug(): string
     {
         return 'map';
@@ -81,6 +96,9 @@ class JTB_Module_Map extends JTB_Element
 
     public function render(array $attrs, string $content = ''): string
     {
+        // Apply default styles from design system
+        $attrs = JTB_Default_Styles::mergeWithDefaults($this->getSlug(), $attrs);
+
         $address = $attrs['address'] ?? 'New York, NY, USA';
         $zoom = $attrs['zoom'] ?? 14;
         $height = $attrs['map_height'] ?? 400;
@@ -104,9 +122,16 @@ class JTB_Module_Map extends JTB_Element
         return $this->renderWrapper($innerHtml, $attrs);
     }
 
+    /**
+     * Generate CSS for Map module
+     * Base styles are in jtb-base-modules.css
+     */
     public function generateCss(array $attrs, string $selector): string
     {
         $css = '';
+
+        // Use declarative style_config system
+        $css .= $this->generateStyleConfigCss($attrs, $selector);
 
         $css .= $selector . ' .jtb-map-container { position: relative; overflow: hidden; }' . "\n";
         $css .= $selector . ' .jtb-map-iframe { width: 100%; height: 100%; }' . "\n";
@@ -117,14 +142,7 @@ class JTB_Module_Map extends JTB_Element
             $css .= $selector . ' .jtb-map-iframe { filter: grayscale(100%); }' . "\n";
         }
 
-        // Responsive height
-        if (!empty($attrs['map_height__tablet'])) {
-            $css .= '@media (max-width: 980px) { ' . $selector . ' .jtb-map-container { height: ' . $attrs['map_height__tablet'] . 'px; } }' . "\n";
-        }
-        if (!empty($attrs['map_height__phone'])) {
-            $css .= '@media (max-width: 767px) { ' . $selector . ' .jtb-map-container { height: ' . $attrs['map_height__phone'] . 'px; } }' . "\n";
-        }
-
+        // Parent class handles common styles
         $css .= parent::generateCss($attrs, $selector);
 
         return $css;

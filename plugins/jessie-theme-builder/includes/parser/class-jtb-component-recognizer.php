@@ -918,7 +918,7 @@ class JTB_Component_Recognizer
                 $buttons = self::findButtons($child);
                 if (!empty($buttons)) {
                     $slideData['attrs']['button_text'] = $buttons[0]['text'] ?? '';
-                    $slideData['attrs']['button_url'] = $buttons[0]['url'] ?? '';
+                    $slideData['attrs']['link_url'] = $buttons[0]['url'] ?? '';
                 }
 
                 $data['children'][] = $slideData;
@@ -1267,7 +1267,7 @@ class JTB_Component_Recognizer
             'per' => 'month',
             'content' => '',
             'button_text' => '',
-            'button_url' => '',
+            'link_url' => '',
             'featured' => false,
         ];
 
@@ -1313,7 +1313,7 @@ class JTB_Component_Recognizer
         $buttons = self::findButtons($element);
         if (!empty($buttons)) {
             $data['button_text'] = $buttons[0]['text'] ?? 'Sign Up';
-            $data['button_url'] = $buttons[0]['url'] ?? '#';
+            $data['link_url'] = $buttons[0]['url'] ?? '#';
         }
 
         // Extract badge text
@@ -1603,7 +1603,7 @@ class JTB_Component_Recognizer
         $buttons = self::findButtons($element);
         if (!empty($buttons)) {
             $data['button_text'] = $buttons[0]['text'] ?? '';
-            $data['button_url'] = $buttons[0]['url'] ?? '';
+            $data['link_url'] = $buttons[0]['url'] ?? '';
         }
 
         return $data;

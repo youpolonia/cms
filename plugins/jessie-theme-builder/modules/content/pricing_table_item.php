@@ -26,6 +26,41 @@ class JTB_Module_PricingTableItem extends JTB_Element
     public bool $use_position = false;
     public bool $use_filters = false;
 
+    protected string $module_prefix = 'pricing_table_item';
+
+    protected array $style_config = [
+        'header_background_color' => [
+            'property' => 'background',
+            'selector' => '.jtb-pricing-header'
+        ],
+        'header_text_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-pricing-header'
+        ],
+        'price_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-pricing-price-wrap'
+        ],
+        'body_background_color' => [
+            'property' => 'background',
+            'selector' => ''
+        ],
+        'bullet_color' => [
+            'property' => 'background',
+            'selector' => '.jtb-pricing-features li::before'
+        ],
+        'button_background_color' => [
+            'property' => 'background',
+            'selector' => '.jtb-pricing-button',
+            'hover' => true
+        ],
+        'button_text_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-pricing-button',
+            'hover' => true
+        ]
+    ];
+
     public function getSlug(): string
     {
         return 'pricing_table_item';
@@ -74,12 +109,12 @@ class JTB_Module_PricingTableItem extends JTB_Element
                 'type' => 'text',
                 'default' => 'Sign Up'
             ],
-            'button_url' => [
+            'link_url' => [
                 'label' => 'Button URL',
                 'type' => 'url',
                 'default' => '#'
             ],
-            'url_new_window' => [
+            'link_target' => [
                 'label' => 'Open in New Tab',
                 'type' => 'toggle',
                 'default' => false
@@ -132,6 +167,9 @@ class JTB_Module_PricingTableItem extends JTB_Element
 
     public function render(array $attrs, string $content = ''): string
     {
+        // Apply default styles from design system
+        $attrs = JTB_Default_Styles::mergeWithDefaults($this->getSlug(), $attrs);
+
         $title = $this->esc($attrs['title'] ?? 'Basic Plan');
         $subtitle = $this->esc($attrs['subtitle'] ?? '');
         $currency = $this->esc($attrs['currency'] ?? '$');
@@ -139,8 +177,8 @@ class JTB_Module_PricingTableItem extends JTB_Element
         $per = $this->esc($attrs['per'] ?? 'month');
         $featuresText = $attrs['content'] ?? '';
         $buttonText = $this->esc($attrs['button_text'] ?? 'Sign Up');
-        $buttonUrl = $attrs['button_url'] ?? '#';
-        $newWindow = !empty($attrs['url_new_window']) ? ' target="_blank" rel="noopener"' : '';
+        $buttonUrl = $attrs['link_url'] ?? '#';
+        $newWindow = !empty($attrs['link_target']) ? ' target="_blank" rel="noopener"' : '';
         $featured = !empty($attrs['featured']);
 
         // Parse features from text (one per line)
@@ -200,6 +238,7 @@ class JTB_Module_PricingTableItem extends JTB_Element
     public function generateCss(array $attrs, string $selector): string
     {
         $css = parent::generateCss($attrs, $selector);
+        $css .= $this->generateStyleConfigCss($attrs, $selector);
 
         $headerBg = $attrs['header_background_color'] ?? '#7c3aed';
         $headerText = $attrs['header_text_color'] ?? '#ffffff';

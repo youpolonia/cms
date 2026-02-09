@@ -19,12 +19,16 @@ const JTBTemplateEditor = {
         this.templateName = data.name;
         this.isNew = data.isNew;
 
+        // Filter modules based on template type
+        const filteredModules = this.filterModulesByTemplateType(window.JTB_MODULES || {}, data.type);
+
         // Initialize the main builder with template content
         if (typeof JTB !== 'undefined' && typeof JTB.init === 'function') {
             JTB.init({
                 postId: null, // Templates don't use post_id
                 content: data.content,
-                modules: window.JTB_MODULES || {}
+                modules: filteredModules,
+                templateType: data.type // Pass template type to builder
             });
         }
 
@@ -34,7 +38,55 @@ const JTBTemplateEditor = {
         }
 
         this.bindEvents();
-        this.renderModulesList();
+    },
+
+    /**
+     * Get allowed categories for each template type
+     */
+    getAllowedCategories(templateType) {
+        const categoryMap = {
+            'header': ['header', 'content', 'media', 'interactive'],
+            'footer': ['footer', 'content', 'media', 'interactive'],
+            'body': ['dynamic', 'content', 'media', 'interactive', 'forms', 'blog'],
+            'single': ['dynamic', 'content', 'media', 'interactive', 'forms', 'blog'],
+            'archive': ['dynamic', 'content', 'media', 'interactive', 'blog'],
+            '404': ['content', 'media', 'interactive'],
+            'search': ['dynamic', 'content', 'media', 'interactive']
+        };
+
+        // Default categories if template type not found
+        return categoryMap[templateType] || ['content', 'media', 'interactive', 'forms', 'blog', 'header', 'footer', 'dynamic'];
+    },
+
+    /**
+     * Filter modules based on template type
+     */
+    filterModulesByTemplateType(modules, templateType) {
+        const allowedCategories = this.getAllowedCategories(templateType);
+        const filteredModules = {};
+
+        // Always include structure modules
+        const structureModules = ['section', 'row', 'column'];
+
+        for (const slug in modules) {
+            if (modules.hasOwnProperty(slug)) {
+                const module = modules[slug];
+                const category = module.category || 'content';
+
+                // Include structure modules always
+                if (structureModules.includes(slug)) {
+                    filteredModules[slug] = module;
+                    continue;
+                }
+
+                // Include if category is allowed for this template type
+                if (allowedCategories.includes(category)) {
+                    filteredModules[slug] = module;
+                }
+            }
+        }
+
+        return filteredModules;
     },
 
     /**
@@ -58,177 +110,6 @@ const JTBTemplateEditor = {
                 const device = btn.dataset.device;
                 this.setPreviewDevice(device);
             });
-        });
-
-        // Category tabs for modules
-        document.querySelectorAll('#categoryTabs .jtb-category-tab').forEach(tab => {
-            tab.addEventListener('click', () => {
-                document.querySelectorAll('#categoryTabs .jtb-category-tab').forEach(t => t.classList.remove('active'));
-                tab.classList.add('active');
-                this.filterModules(tab.dataset.category);
-            });
-        });
-
-        // Module search
-        const search = document.getElementById('moduleSearch');
-        if (search) {
-            search.addEventListener('input', () => {
-                this.searchModules(search.value);
-            });
-        }
-    },
-
-    /**
-     * Render modules list in sidebar
-     */
-    renderModulesList() {
-        const container = document.getElementById('modulesList');
-        if (!container) return;
-
-        const modules = window.JTB_MODULES || {};
-
-        container.innerHTML = '';
-
-        Object.keys(modules).forEach(slug => {
-            const module = modules[slug];
-
-            const item = document.createElement('div');
-            item.className = 'jtb-module-list-item';
-            item.dataset.slug = slug;
-            item.dataset.category = module.category || 'content';
-            item.draggable = true;
-
-            // Get icon - use JTB.getModuleIcon if available, otherwise map common icons
-            const icon = this.getModuleIcon(slug, module.icon);
-
-            item.innerHTML = `
-                <span class="jtb-module-list-icon">${icon}</span>
-                <span class="jtb-module-list-name">${this.escapeHtml(module.name)}</span>
-            `;
-
-            // Drag events
-            item.addEventListener('dragstart', (e) => {
-                e.dataTransfer.setData('module-type', slug);
-                e.dataTransfer.effectAllowed = 'copy';
-                item.classList.add('dragging');
-            });
-
-            item.addEventListener('dragend', () => {
-                item.classList.remove('dragging');
-            });
-
-            // Click to add - open module picker or add directly to last section
-            item.addEventListener('click', () => {
-                this.addModuleFromSidebar(slug);
-            });
-
-            container.appendChild(item);
-        });
-    },
-
-    /**
-     * Get module icon (emoji) from slug or icon name
-     */
-    getModuleIcon(slug, iconName) {
-        // First check if JTB has getModuleIcon
-        if (typeof JTB !== 'undefined' && typeof JTB.getModuleIcon === 'function') {
-            return JTB.getModuleIcon(slug);
-        }
-
-        // Fallback icon mapping
-        const iconMap = {
-            // Structure
-            'section': '📦', 'row': '▤', 'column': '▥',
-            // Theme
-            'menu': '☰', 'site_logo': '🏷️', 'search_form': '🔍', 'search': '🔍',
-            'post_title': '📰', 'post_content': '📄', 'social_icons': '📱',
-            // Content
-            'text': '📝', 'heading': '🔤', 'image': '🖼️', 'button': '🔘',
-            'blurb': '💬', 'divider': '➖', 'cta': '📢', 'code': '💻',
-            'testimonial': '💭', 'team_member': '👤', 'pricing_table': '💰',
-            'social_follow': '📱', 'accordion': '📋', 'tabs': '📑',
-            'toggle': '🔀', 'video': '🎬', 'audio': '🔊', 'gallery': '🖼️',
-            'slider': '🎠', 'map': '🗺️', 'contact_form': '✉️', 'login': '🔐',
-            'signup': '📝', 'blog': '📰', 'portfolio': '💼',
-            'number_counter': '🔢', 'circle_counter': '⭕', 'bar_counter': '📊',
-            'progress-bar': '📊', 'countdown': '⏱️', 'sidebar': '📌',
-            'comments': '💬', 'shop': '🛒', 'post_navigation': '↔️',
-            // Fullwidth
-            'fullwidth_header': '🎯', 'fullwidth_image': '🖼️',
-            'fullwidth_slider': '🎠', 'fullwidth_menu': '☰'
-        };
-
-        return iconMap[slug] || iconMap[iconName] || '📦';
-    },
-
-    /**
-     * Add module from sidebar click
-     */
-    addModuleFromSidebar(moduleType) {
-        if (typeof JTB === 'undefined') return;
-
-        // Check if there's any content
-        const content = JTB.state.content;
-        if (!content || !content.content || content.content.length === 0) {
-            // No sections - create one first, then add row and module
-            JTB.addSection();
-            // After adding section, add the module to first column
-            setTimeout(() => {
-                if (JTB.state.content.content.length > 0) {
-                    const section = JTB.state.content.content[0];
-                    if (section.children && section.children.length > 0) {
-                        const row = section.children[0];
-                        if (row.children && row.children.length > 0) {
-                            JTB.addModule([0, 0, 0], moduleType);
-                        }
-                    }
-                }
-            }, 100);
-        } else {
-            // Find last section, last row, last column
-            const lastSectionIdx = content.content.length - 1;
-            const lastSection = content.content[lastSectionIdx];
-
-            if (lastSection.children && lastSection.children.length > 0) {
-                const lastRowIdx = lastSection.children.length - 1;
-                const lastRow = lastSection.children[lastRowIdx];
-
-                if (lastRow.children && lastRow.children.length > 0) {
-                    const lastColIdx = lastRow.children.length - 1;
-                    JTB.addModule([lastSectionIdx, lastRowIdx, lastColIdx], moduleType);
-                }
-            }
-        }
-    },
-
-    /**
-     * Filter modules by category
-     */
-    filterModules(category) {
-        document.querySelectorAll('.jtb-module-list-item').forEach(item => {
-            if (category === 'all' || item.dataset.category === category) {
-                item.style.display = 'flex';
-            } else {
-                item.style.display = 'none';
-            }
-        });
-    },
-
-    /**
-     * Search modules
-     */
-    searchModules(query) {
-        const q = query.toLowerCase();
-
-        document.querySelectorAll('.jtb-module-list-item').forEach(item => {
-            const name = item.querySelector('.jtb-module-list-name').textContent.toLowerCase();
-            const slug = item.dataset.slug.toLowerCase();
-
-            if (name.includes(q) || slug.includes(q)) {
-                item.style.display = 'flex';
-            } else {
-                item.style.display = 'none';
-            }
         });
     },
 
@@ -283,8 +164,9 @@ const JTBTemplateEditor = {
             conditions = JTBConditionsBuilder.getConditionsData();
         }
 
-        // Get default status
-        const isDefault = document.getElementById('isDefault').checked;
+        // Get default status (with null check)
+        const isDefaultEl = document.getElementById('isDefault');
+        const isDefault = isDefaultEl ? isDefaultEl.checked : false;
 
         const data = {
             name: name,
@@ -408,13 +290,20 @@ const JTBTemplateEditor = {
         modal = document.getElementById('previewModal');
         const iframe = document.getElementById('previewIframe');
 
-        // Build iframe content
+        // Build iframe content with base module styles
+        const pluginUrl = JTB?.pluginUrl || '/plugins/jessie-theme-builder';
         const iframeContent = `
             <!DOCTYPE html>
             <html>
             <head>
                 <meta charset="UTF-8">
                 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <link rel="preconnect" href="https://fonts.googleapis.com">
+                <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+                <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+                <link rel="stylesheet" href="${pluginUrl}/assets/css/frontend.css">
+                <link rel="stylesheet" href="${pluginUrl}/assets/css/jtb-base-modules.css">
+                <link rel="stylesheet" href="${pluginUrl}/assets/css/animations.css">
                 <style>
                     * { box-sizing: border-box; }
                     body { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #fff; }
@@ -481,5 +370,85 @@ const JTBTemplateEditor = {
         const div = document.createElement('div');
         div.textContent = str;
         return div.innerHTML;
+    },
+
+    /**
+     * Apply AI-generated layout to canvas
+     * Called by JTB_AI_Template.applyToCanvas()
+     */
+    applyLayout(layout) {
+        if (!layout || !layout.sections) {
+            console.error('Invalid layout data');
+            return false;
+        }
+
+        // Use JTB.Builder.setContent if available
+        if (typeof JTB !== 'undefined' && JTB.setContent) {
+            JTB.setContent({ version: '1.0', content: layout.sections });
+            return true;
+        }
+
+        // Fallback: use JTB.init with new content
+        if (typeof JTB !== 'undefined' && JTB.init) {
+            JTB.init({
+                postId: null,
+                content: { version: '1.0', content: layout.sections },
+                modules: window.JTB_MODULES || {},
+                templateType: this.templateType
+            });
+            return true;
+        }
+
+        console.error('JTB builder not available');
+        return false;
+    }
+};
+
+// ==========================================================================
+// AI PANEL INTEGRATION FOR TEMPLATE EDITOR
+// Updated: 2026-02-04 - Now uses full ai-panel.js (same as Page Builder)
+// ==========================================================================
+
+// JTB_AI_Template is now a thin wrapper that delegates to JTB_AI
+// This maintains backward compatibility with any code that references JTB_AI_Template
+const JTB_AI_Template = {
+    /**
+     * Toggle panel - delegates to JTB_AI
+     */
+    togglePanel() {
+        if (typeof JTB_AI !== 'undefined' && JTB_AI.toggle) {
+            JTB_AI.toggle();
+        }
+    },
+
+    /**
+     * Close panel - delegates to JTB_AI
+     */
+    closePanel() {
+        if (typeof JTB_AI !== 'undefined' && JTB_AI.close) {
+            JTB_AI.close();
+        }
+    },
+
+    /**
+     * Generate - delegates to JTB_AI
+     * Note: JTB_AI now handles template vs page mode automatically
+     */
+    generate() {
+        // JTB_AI handles generation through its event system
+        const generateBtn = document.getElementById('jtb-ai-generate-btn');
+        if (generateBtn) {
+            generateBtn.click();
+        }
+    },
+
+    /**
+     * Apply to canvas - delegates to JTB_AI insert function
+     */
+    applyToCanvas() {
+        const insertBtn = document.getElementById('jtb-ai-preview-insert');
+        if (insertBtn) {
+            insertBtn.click();
+        }
     }
 };

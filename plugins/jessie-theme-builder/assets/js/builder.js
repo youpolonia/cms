@@ -19,7 +19,7 @@
     // Debug logging helper
     JTB.log = function(...args) {
         if (JTB.DEBUG) {
-            console.log('[JTB]', ...args);
+            // debug disabled
         }
     };
 
@@ -43,6 +43,7 @@
         postId: null,
         csrfToken: null,
         modules: {},
+        templateType: null, // 'header', 'footer', 'body', etc. - for Theme Builder
         breakpoints: {
             desktop: 1200,
             tablet: 980,
@@ -152,6 +153,11 @@
             'forms': 'Forms',
             'blog': 'Blog',
             'fullwidth': 'Fullwidth',
+            // Theme Builder categories (split by purpose)
+            'header': 'Header',
+            'footer': 'Footer',
+            'dynamic': 'Dynamic Content',
+            // Legacy - keep for backwards compatibility
             'theme': 'Theme Builder',
             'other': 'Other'
         };
@@ -185,7 +191,16 @@
                 headers: {
                     'Accept': 'application/json'
                 }
-            }).then(response => response.json());
+            })
+            .then(response => {
+                if (!response.ok) throw new Error('HTTP ' + response.status);
+                return response.json();
+            })
+            .catch(error => {
+                console.error('[JTB API GET] ' + endpoint + ':', error.message);
+                JTB.notify && JTB.notify('Connection error: ' + error.message, 'error');
+                return { success: false, error: error.message };
+            });
         },
 
         post: function(endpoint, data) {
@@ -203,7 +218,16 @@
                 method: 'POST',
                 credentials: 'include',
                 body: formData
-            }).then(response => response.json());
+            })
+            .then(response => {
+                if (!response.ok) throw new Error('HTTP ' + response.status);
+                return response.json();
+            })
+            .catch(error => {
+                console.error('[JTB API POST] ' + endpoint + ':', error.message);
+                JTB.notify && JTB.notify('Connection error: ' + error.message, 'error');
+                return { success: false, error: error.message };
+            });
         }
     };
 
@@ -293,6 +317,33 @@
         };
     };
 
+    /**
+     * Parse column widths from columns string (e.g., "1_2,1_2" -> ["50%", "50%"])
+     * Format: "1" = full width, "1_2" = 50%, "1_3" = 33.33%, "1_4" = 25%, etc.
+     */
+    JTB.parseColumnWidths = function(columnsStr) {
+        if (!columnsStr || columnsStr === '1') {
+            return ['100%'];
+        }
+
+        const columnMap = {
+            '1': '100%',
+            '1_2': '50%',
+            '1_3': '33.333%',
+            '2_3': '66.666%',
+            '1_4': '25%',
+            '3_4': '75%',
+            '1_5': '20%',
+            '2_5': '40%',
+            '3_5': '60%',
+            '4_5': '80%',
+            '1_6': '16.666%',
+            '5_6': '83.333%'
+        };
+
+        return columnsStr.split(',').map(col => columnMap[col.trim()] || '100%');
+    };
+
     JTB.createRow = function(columns) {
         const row = {
             type: 'row',
@@ -327,13 +378,14 @@
         const moduleConfig = JTB.config.modules[type];
         if (!moduleConfig) return null;
 
-        const attrs = {};
+        // Start with default styles from JTB_Default_Styles (via API)
+        const attrs = moduleConfig.defaults ? { ...moduleConfig.defaults } : {};
 
-        // Set default values from field definitions
+        // Override with field definitions defaults (for fields not in defaults)
         if (moduleConfig.fields && moduleConfig.fields.content) {
             for (const fieldName in moduleConfig.fields.content) {
                 const field = moduleConfig.fields.content[fieldName];
-                if (field.default !== undefined) {
+                if (field.default !== undefined && attrs[fieldName] === undefined) {
                     attrs[fieldName] = field.default;
                 }
             }
@@ -469,7 +521,7 @@
             <div class="jtb-toolbar-actions">
                 <button class="jtb-toolbar-btn" data-action="settings" title="Settings">${JTB.getToolbarIcon('settings')}</button>
                 <button class="jtb-toolbar-btn" data-action="duplicate" title="Duplicate">${JTB.getToolbarIcon('duplicate')}</button>
-                <button class="jtb-toolbar-btn" data-action="delete" title="Delete">${JTB.getToolbarIcon('delete')}</button>
+                <button class="jtb-toolbar-btn delete" data-action="delete" title="Delete">${JTB.getToolbarIcon('delete')}</button>
             </div>
         `;
         div.appendChild(toolbar);
@@ -529,7 +581,7 @@
                 <button class="jtb-toolbar-btn" data-action="columns" title="Change Columns">${JTB.getToolbarIcon('columns')}</button>
                 <button class="jtb-toolbar-btn" data-action="settings" title="Settings">${JTB.getToolbarIcon('settings')}</button>
                 <button class="jtb-toolbar-btn" data-action="duplicate" title="Duplicate">${JTB.getToolbarIcon('duplicate')}</button>
-                <button class="jtb-toolbar-btn" data-action="delete" title="Delete">${JTB.getToolbarIcon('delete')}</button>
+                <button class="jtb-toolbar-btn delete" data-action="delete" title="Delete">${JTB.getToolbarIcon('delete')}</button>
             </div>
         `;
         div.appendChild(toolbar);
@@ -540,9 +592,13 @@
         columnsContainer.style.display = 'flex';
         columnsContainer.style.gap = '15px';
 
+        // Parse column widths from row.attrs.columns (e.g., "1_2,1_2" or "1_3,1_3,1_3")
+        const columnWidths = JTB.parseColumnWidths(row.attrs?.columns || '1');
+
         const columns = row.children || [];
         columns.forEach((column, columnIndex) => {
-            columnsContainer.appendChild(JTB.renderColumnEditor(column, { sectionIndex, rowIndex, columnIndex }));
+            const width = columnWidths[columnIndex] || '100%';
+            columnsContainer.appendChild(JTB.renderColumnEditor(column, { sectionIndex, rowIndex, columnIndex }, width));
         });
 
         div.appendChild(columnsContainer);
@@ -567,11 +623,17 @@
         return div;
     };
 
-    JTB.renderColumnEditor = function(column, indexes) {
+    JTB.renderColumnEditor = function(column, indexes, width) {
         const div = document.createElement('div');
         div.className = 'jtb-column-editor';
         div.dataset.id = column.id;
-        div.style.flex = '1';
+        // Use calculated width from row's columns attribute, or flex:1 as fallback
+        if (width && width !== '100%') {
+            div.style.width = width;
+            div.style.flexShrink = '0';
+        } else {
+            div.style.flex = '1';
+        }
 
         // Modules
         const modules = column.children || [];
@@ -609,13 +671,22 @@
      * Generate inline CSS styles from module's design attributes
      * This is used for real-time preview on canvas
      */
-    JTB.getDesignStyles = function(attrs) {
+    JTB.getDesignStyles = function(attrs, skipDefaults = true) {
         if (!attrs) return '';
 
         const styles = [];
 
-        // Background
-        if (attrs.background_color) {
+        // Helper to check if value is user-defined (not from defaults)
+        // Skip common default background colors that shouldn't be applied in editor preview
+        const defaultBgColors = ['#ffffff', '#fff', 'white', '#0f172a', '#1e293b', 'transparent', ''];
+        const isUserDefinedBg = (color) => {
+            if (!color) return false;
+            if (skipDefaults && defaultBgColors.includes(color.toLowerCase())) return false;
+            return true;
+        };
+
+        // Background - only apply if explicitly set by user (not default)
+        if (attrs.background_color && isUserDefinedBg(attrs.background_color)) {
             styles.push(`background-color: ${attrs.background_color}`);
         }
         if (attrs.background_image) {
@@ -632,17 +703,29 @@
             styles.push(`color: ${attrs.text_color}`);
         }
 
-        // Padding
-        if (attrs.padding_top) styles.push(`padding-top: ${attrs.padding_top}`);
-        if (attrs.padding_right) styles.push(`padding-right: ${attrs.padding_right}`);
-        if (attrs.padding_bottom) styles.push(`padding-bottom: ${attrs.padding_bottom}`);
-        if (attrs.padding_left) styles.push(`padding-left: ${attrs.padding_left}`);
+        // Padding - support both object format {top,right,bottom,left} and individual props
+        if (attrs.padding && typeof attrs.padding === 'object') {
+            const p = attrs.padding;
+            const unit = (v) => typeof v === 'number' ? `${v}px` : v;
+            styles.push(`padding: ${unit(p.top || 0)} ${unit(p.right || 0)} ${unit(p.bottom || 0)} ${unit(p.left || 0)}`);
+        } else {
+            if (attrs.padding_top) styles.push(`padding-top: ${attrs.padding_top}`);
+            if (attrs.padding_right) styles.push(`padding-right: ${attrs.padding_right}`);
+            if (attrs.padding_bottom) styles.push(`padding-bottom: ${attrs.padding_bottom}`);
+            if (attrs.padding_left) styles.push(`padding-left: ${attrs.padding_left}`);
+        }
 
-        // Margin
-        if (attrs.margin_top) styles.push(`margin-top: ${attrs.margin_top}`);
-        if (attrs.margin_right) styles.push(`margin-right: ${attrs.margin_right}`);
-        if (attrs.margin_bottom) styles.push(`margin-bottom: ${attrs.margin_bottom}`);
-        if (attrs.margin_left) styles.push(`margin-left: ${attrs.margin_left}`);
+        // Margin - support both object format {top,right,bottom,left} and individual props
+        if (attrs.margin && typeof attrs.margin === 'object') {
+            const m = attrs.margin;
+            const unit = (v) => typeof v === 'number' ? `${v}px` : v;
+            styles.push(`margin: ${unit(m.top || 0)} ${unit(m.right || 0)} ${unit(m.bottom || 0)} ${unit(m.left || 0)}`);
+        } else {
+            if (attrs.margin_top) styles.push(`margin-top: ${attrs.margin_top}`);
+            if (attrs.margin_right) styles.push(`margin-right: ${attrs.margin_right}`);
+            if (attrs.margin_bottom) styles.push(`margin-bottom: ${attrs.margin_bottom}`);
+            if (attrs.margin_left) styles.push(`margin-left: ${attrs.margin_left}`);
+        }
 
         // Border
         if (attrs.border_width && attrs.border_width !== '0px') {
@@ -650,8 +733,15 @@
             styles.push(`border-style: ${attrs.border_style || 'solid'}`);
             if (attrs.border_color) styles.push(`border-color: ${attrs.border_color}`);
         }
+        // Border radius - support both object format {top_left,top_right,bottom_right,bottom_left} and string
         if (attrs.border_radius) {
-            styles.push(`border-radius: ${attrs.border_radius}`);
+            if (typeof attrs.border_radius === 'object') {
+                const br = attrs.border_radius;
+                const unit = (v) => typeof v === 'number' ? `${v}px` : v;
+                styles.push(`border-radius: ${unit(br.top_left || 0)} ${unit(br.top_right || 0)} ${unit(br.bottom_right || 0)} ${unit(br.bottom_left || 0)}`);
+            } else {
+                styles.push(`border-radius: ${attrs.border_radius}`);
+            }
         }
 
         // Box shadow
@@ -664,12 +754,18 @@
             styles.push(`box-shadow: ${h} ${v} ${blur} ${spread} ${color}`);
         }
 
-        // Typography
-        if (attrs.font_size) styles.push(`font-size: ${attrs.font_size}`);
+        // Typography - add px unit if value is numeric
+        if (attrs.font_size) {
+            const fs = typeof attrs.font_size === 'number' ? `${attrs.font_size}px` : attrs.font_size;
+            styles.push(`font-size: ${fs}`);
+        }
         if (attrs.font_weight) styles.push(`font-weight: ${attrs.font_weight}`);
         if (attrs.font_family) styles.push(`font-family: ${attrs.font_family}`);
         if (attrs.line_height) styles.push(`line-height: ${attrs.line_height}`);
-        if (attrs.letter_spacing) styles.push(`letter-spacing: ${attrs.letter_spacing}`);
+        if (attrs.letter_spacing) {
+            const ls = typeof attrs.letter_spacing === 'number' ? `${attrs.letter_spacing}px` : attrs.letter_spacing;
+            styles.push(`letter-spacing: ${ls}`);
+        }
         if (attrs.text_align) styles.push(`text-align: ${attrs.text_align}`);
 
         // Transforms
@@ -766,13 +862,15 @@
         const toolbar = document.createElement('div');
         toolbar.className = 'jtb-module-toolbar';
         toolbar.innerHTML = `
-            <span class="jtb-module-icon">${JTB.getModuleIcon(module.type, 14)}</span>
-            <span class="jtb-module-name">${moduleName}</span>
             <div class="jtb-toolbar-actions">
                 <button class="jtb-toolbar-btn" data-action="move" title="Move">${JTB.getToolbarIcon('move')}</button>
                 <button class="jtb-toolbar-btn" data-action="settings" title="Settings">${JTB.getToolbarIcon('settings')}</button>
                 <button class="jtb-toolbar-btn" data-action="duplicate" title="Duplicate">${JTB.getToolbarIcon('duplicate')}</button>
-                <button class="jtb-toolbar-btn" data-action="delete" title="Delete">${JTB.getToolbarIcon('delete')}</button>
+                <button class="jtb-toolbar-btn delete" data-action="delete" title="Delete">${JTB.getToolbarIcon('delete')}</button>
+            </div>
+            <div class="jtb-module-name-row">
+                <span class="jtb-module-icon">${JTB.getModuleIcon(module.type, 14)}</span>
+                <span class="jtb-module-name">${moduleName}</span>
             </div>
         `;
         div.appendChild(toolbar);
@@ -1652,12 +1750,23 @@
     };
 
     JTB.deleteSection = function(sectionIndex) {
-        if (confirm('Are you sure you want to delete this section?')) {
-            JTB.state.content.content.splice(sectionIndex, 1);
-            JTB.markDirty();
-            JTB.renderCanvas();
-            JTB.Settings.close();
+        if (!JTB.state.content?.content) {
+            console.error("[JTB] Cannot delete: content is undefined");
+            return;
         }
+        if (sectionIndex < 0 || sectionIndex >= JTB.state.content.content.length) {
+            console.error("[JTB] Invalid section index:", sectionIndex);
+            return;
+        }
+        if (!confirm("Delete this section?")) return;
+        // console.log removed
+        // console.log removed
+
+        JTB.state.content.content.splice(sectionIndex, 1);
+        JTB.markDirty();
+        JTB.renderCanvas();
+        JTB.Settings.close();
+        // console.log removed
     };
 
     JTB.addRow = function(sectionIndex, columns) {
@@ -1963,7 +2072,7 @@
         JTB.api.post('/render', { content: contentJson })
             .then(response => {
                 if (response.success) {
-                    JTB.showPreviewModal(response.data.html, response.data.css);
+                    JTB.showPreviewModal(response.html, response.css);
                 } else {
                     throw new Error(response.error || 'Failed to generate preview');
                 }
@@ -2020,7 +2129,12 @@
                 <meta charset="UTF-8">
                 <meta name="viewport" content="width=device-width, initial-scale=1.0">
                 <title>Preview</title>
+                <link rel="preconnect" href="https://fonts.googleapis.com">
+                <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+                <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
                 <link rel="stylesheet" href="/plugins/jessie-theme-builder/assets/css/frontend.css">
+                <link rel="stylesheet" href="/plugins/jessie-theme-builder/assets/css/jtb-base-modules.css">
+                <link rel="stylesheet" href="/plugins/jessie-theme-builder/assets/css/animations.css">
                 <style>${css || ''}</style>
             </head>
             <body>
@@ -2129,6 +2243,13 @@
     JTB.openModulePicker = function(indexes) {
         const modules = JTB.config.modules;
         const categories = JTB.config.categories || {};
+        const templateType = JTB.config.templateType;
+
+        // Get primary category based on template type
+        const primaryCategory = JTB.getPrimaryCategory(templateType);
+
+        // Get category order based on template type
+        const categoryOrder = JTB.getCategoryOrder(templateType);
 
         const closeIcon = typeof JTB.getFeatherIcon === 'function' ? JTB.getFeatherIcon('x', 18) : '×';
         let html = '<div class="jtb-modal-header"><span class="jtb-modal-title">Add Module</span><button class="jtb-modal-close">' + closeIcon + '</button></div>';
@@ -2137,25 +2258,57 @@
         // Category tabs (skip 'structure' as those modules are added via dedicated buttons)
         html += '<div class="jtb-category-tabs">';
         html += '<button class="jtb-category-tab active" data-category="all">All</button>';
-        for (const catKey in categories) {
-            if (catKey === 'structure') continue; // Skip structure category
-            html += `<button class="jtb-category-tab" data-category="${catKey}">${categories[catKey].label}</button>`;
+
+        // Add primary category first if it exists
+        if (primaryCategory && categories[primaryCategory]) {
+            html += `<button class="jtb-category-tab" data-category="${primaryCategory}">${categories[primaryCategory].label}</button>`;
         }
+
+        // Add other categories in order
+        categoryOrder.forEach(catKey => {
+            if (catKey === 'structure' || catKey === primaryCategory) return;
+            if (categories[catKey]) {
+                html += `<button class="jtb-category-tab" data-category="${catKey}">${categories[catKey].label}</button>`;
+            }
+        });
         html += '</div>';
+
+        // Sort modules: primary category first
+        // Filter out structure modules and child modules (child modules are added automatically)
+        const sortedSlugs = Object.keys(modules)
+            .filter(slug => {
+                if (['section', 'row', 'column'].includes(slug)) return false;
+                if (modules[slug].is_child) return false; // Hide child modules
+                return true;
+            })
+            .sort((a, b) => {
+                const catA = modules[a].category || 'content';
+                const catB = modules[b].category || 'content';
+
+                // Primary category first
+                if (catA === primaryCategory && catB !== primaryCategory) return -1;
+                if (catB === primaryCategory && catA !== primaryCategory) return 1;
+
+                // Then by category order
+                const orderA = categoryOrder.indexOf(catA);
+                const orderB = categoryOrder.indexOf(catB);
+                if (orderA !== -1 && orderB !== -1 && orderA !== orderB) return orderA - orderB;
+
+                // Then by name
+                return modules[a].name.localeCompare(modules[b].name);
+            });
 
         // Module grid
         html += '<div class="jtb-module-grid">';
-        for (const slug in modules) {
+        sortedSlugs.forEach(slug => {
             const module = modules[slug];
-            if (['section', 'row', 'column'].includes(slug)) continue;
-
             html += `
                 <div class="jtb-module-item" data-type="${slug}" data-category="${module.category}">
                     <span class="jtb-module-item-icon">${JTB.getModuleIcon(slug)}</span>
                     <span class="jtb-module-item-name">${module.name}</span>
                 </div>
             `;
-        }
+        });
         html += '</div>';
         html += '</div>';
 
@@ -2188,17 +2341,84 @@
         }
     };
 
+    /**
+     * Get primary category for template type
+     */
+    JTB.getPrimaryCategory = function(templateType) {
+        const primaryMap = {
+            'header': 'header',
+            'footer': 'footer',
+            'body': 'dynamic',
+            'single': 'dynamic',
+            'archive': 'dynamic',
+            '404': 'content',
+            'search': 'dynamic'
+        };
+        return primaryMap[templateType] || 'content';
+    };
+
+    /**
+     * Get category order for template type
+     */
+    JTB.getCategoryOrder = function(templateType) {
+        const orderMap = {
+            'header': ['header', 'content', 'media', 'interactive', 'fullwidth'],
+            'footer': ['footer', 'content', 'media', 'interactive', 'fullwidth'],
+            'body': ['dynamic', 'content', 'media', 'interactive', 'forms', 'blog', 'fullwidth'],
+            'single': ['dynamic', 'content', 'media', 'interactive', 'forms', 'blog', 'fullwidth'],
+            'archive': ['dynamic', 'content', 'media', 'interactive', 'blog', 'fullwidth'],
+            '404': ['content', 'media', 'interactive', 'fullwidth'],
+            'search': ['dynamic', 'content', 'media', 'interactive', 'fullwidth']
+        };
+        return orderMap[templateType] || ['content', 'media', 'interactive', 'forms', 'blog', 'fullwidth', 'header', 'footer', 'dynamic'];
+    };
+
     JTB.openColumnPicker = function(indexes) {
+        // Full column structure options (Divi-style)
         const columns = [
+            // Row 1: Basic equal columns
             { value: '1', label: '1 Column', cols: [1] },
             { value: '1_2,1_2', label: '2 Equal', cols: [1, 1] },
             { value: '1_3,1_3,1_3', label: '3 Equal', cols: [1, 1, 1] },
             { value: '1_4,1_4,1_4,1_4', label: '4 Equal', cols: [1, 1, 1, 1] },
+            { value: '1_5,1_5,1_5,1_5,1_5', label: '5 Equal', cols: [1, 1, 1, 1, 1] },
+            { value: '1_6,1_6,1_6,1_6,1_6,1_6', label: '6 Equal', cols: [1, 1, 1, 1, 1, 1] },
+
+            // Row 2: Two columns - asymmetric
             { value: '2_3,1_3', label: '2/3 + 1/3', cols: [2, 1] },
             { value: '1_3,2_3', label: '1/3 + 2/3', cols: [1, 2] },
-            { value: '1_4,3_4', label: '1/4 + 3/4', cols: [1, 3] },
             { value: '3_4,1_4', label: '3/4 + 1/4', cols: [3, 1] },
-            { value: '1_4,1_2,1_4', label: '1/4 + 1/2 + 1/4', cols: [1, 2, 1] }
+            { value: '1_4,3_4', label: '1/4 + 3/4', cols: [1, 3] },
+            { value: '4_5,1_5', label: '4/5 + 1/5', cols: [4, 1] },
+            { value: '1_5,4_5', label: '1/5 + 4/5', cols: [1, 4] },
+
+            // Row 3: Two columns - more asymmetric
+            { value: '5_6,1_6', label: '5/6 + 1/6', cols: [5, 1] },
+            { value: '1_6,5_6', label: '1/6 + 5/6', cols: [1, 5] },
+            { value: '2_5,3_5', label: '2/5 + 3/5', cols: [2, 3] },
+            { value: '3_5,2_5', label: '3/5 + 2/5', cols: [3, 2] },
+
+            // Row 4: Three columns - asymmetric
+            { value: '1_4,1_2,1_4', label: '1/4 + 1/2 + 1/4', cols: [1, 2, 1] },
+            { value: '1_2,1_4,1_4', label: '1/2 + 1/4 + 1/4', cols: [2, 1, 1] },
+            { value: '1_4,1_4,1_2', label: '1/4 + 1/4 + 1/2', cols: [1, 1, 2] },
+            { value: '1_5,3_5,1_5', label: '1/5 + 3/5 + 1/5', cols: [1, 3, 1] },
+            { value: '1_6,2_3,1_6', label: '1/6 + 2/3 + 1/6', cols: [1, 4, 1] },
+            { value: '1_6,1_6,2_3', label: '1/6 + 1/6 + 2/3', cols: [1, 1, 4] },
+
+            // Row 5: Three columns - more variations
+            { value: '2_3,1_6,1_6', label: '2/3 + 1/6 + 1/6', cols: [4, 1, 1] },
+            { value: '1_5,1_5,3_5', label: '1/5 + 1/5 + 3/5', cols: [1, 1, 3] },
+            { value: '3_5,1_5,1_5', label: '3/5 + 1/5 + 1/5', cols: [3, 1, 1] },
+            { value: '1_4,1_4,1_4,1_4', label: '4 Equal', cols: [1, 1, 1, 1] },
+
+            // Row 6: Four columns - asymmetric
+            { value: '1_2,1_6,1_6,1_6', label: '1/2 + 1/6×3', cols: [3, 1, 1, 1] },
+            { value: '1_6,1_6,1_6,1_2', label: '1/6×3 + 1/2', cols: [1, 1, 1, 3] },
+            { value: '1_4,1_4,1_4,1_4', label: '1/4×4', cols: [1, 1, 1, 1] },
+            { value: '1_5,1_5,1_5,2_5', label: '1/5×3 + 2/5', cols: [1, 1, 1, 2] },
+            { value: '2_5,1_5,1_5,1_5', label: '2/5 + 1/5×3', cols: [2, 1, 1, 1] },
+            { value: '1_6,1_3,1_3,1_6', label: '1/6 + 1/3 + 1/3 + 1/6', cols: [1, 2, 2, 1] }
         ];
 
         const colCloseIcon = typeof JTB.getFeatherIcon === 'function' ? JTB.getFeatherIcon('x', 18) : '×';

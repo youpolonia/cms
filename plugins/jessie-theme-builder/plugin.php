@@ -140,7 +140,10 @@ class JessieThemeBuilderPlugin implements \EnhancedPluginInterface
         require_once $includesPath . '/class-jtb-registry.php';
         require_once $includesPath . '/class-jtb-fields.php';
         require_once $includesPath . '/class-jtb-fonts.php';
+        require_once $includesPath . '/class-jtb-default-styles.php';
         require_once $includesPath . '/class-jtb-renderer.php';
+        require_once $includesPath . '/class-jtb-css-output.php';
+        require_once $includesPath . '/class-jtb-style-system.php';
         require_once $includesPath . '/class-jtb-settings.php';
         require_once $includesPath . '/class-jtb-builder.php';
         require_once $includesPath . '/class-jtb-icons.php';

@@ -15,13 +15,42 @@ class JTB_Module_Post_Excerpt extends JTB_Element
     public string $slug = 'post_excerpt';
     public string $name = 'Post Excerpt';
     public string $icon = 'file-text';
-    public string $category = 'theme';
+    public string $category = 'dynamic';
 
     public bool $use_background = true;
     public bool $use_spacing = true;
     public bool $use_border = true;
     public bool $use_box_shadow = true;
     public bool $use_animation = true;
+    public bool $use_typography = true;
+
+    protected string $module_prefix = 'post_excerpt';
+
+    protected array $style_config = [
+        'text_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-excerpt-text'
+        ],
+        'link_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-read-more',
+            'hover' => true
+        ],
+        'font_size' => [
+            'property' => 'font-size',
+            'selector' => '.jtb-excerpt-text',
+            'unit' => 'px',
+            'responsive' => true
+        ],
+        'line_height' => [
+            'property' => 'line-height',
+            'selector' => '.jtb-excerpt-text'
+        ],
+        'text_alignment' => [
+            'property' => 'text-align',
+            'responsive' => true
+        ]
+    ];
 
     public function getSlug(): string
     {
@@ -103,18 +132,35 @@ class JTB_Module_Post_Excerpt extends JTB_Element
 
     public function render(array $attrs, string $content = ''): string
     {
+        // Apply default styles from design system
+        $attrs = JTB_Default_Styles::mergeWithDefaults($this->getSlug(), $attrs);
+
         $id = $attrs['id'] ?? 'post_excerpt_' . uniqid();
         $alignment = $attrs['text_alignment'] ?? 'left';
         $showReadMore = $attrs['show_read_more'] ?? true;
         $readMoreText = $attrs['read_more_text'] ?? 'Read More';
+        $excerptLength = $attrs['excerpt_length'] ?? 55;
+
+        // Get dynamic content
+        $isPreview = JTB_Dynamic_Context::isPreviewMode();
+        $excerpt = JTB_Dynamic_Context::getPostExcerpt($excerptLength * 6); // ~6 chars per word
+        $postUrl = JTB_Dynamic_Context::getPostUrl();
+
+        // Fallback to placeholder
+        if (empty($excerpt) || $isPreview) {
+            $excerpt = JTB_Dynamic_Context::getPlaceholder('excerpt');
+        }
+        if (empty($postUrl)) {
+            $postUrl = '#';
+        }
 
         $classes = ['jtb-post-excerpt', 'jtb-align-' . $this->esc($alignment)];
 
         $html = '<div id="' . $this->esc($id) . '" class="' . implode(' ', $classes) . '">';
-        $html .= '<p class="jtb-excerpt-text">This is where your post excerpt will appear. The excerpt provides a brief summary of your post content, giving readers a preview of what to expect when they click through to read the full article.</p>';
+        $html .= '<p class="jtb-excerpt-text">' . $this->esc($excerpt) . '</p>';
 
         if ($showReadMore) {
-            $html .= '<a href="#" class="jtb-read-more">' . $this->esc($readMoreText) . ' <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle;"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></a>';
+            $html .= '<a href="' . $this->esc($postUrl) . '" class="jtb-read-more">' . $this->esc($readMoreText) . ' <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle;"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></a>';
         }
 
         $html .= '</div>';
@@ -125,6 +171,7 @@ class JTB_Module_Post_Excerpt extends JTB_Element
     public function generateCss(array $attrs, string $selector): string
     {
         $css = parent::generateCss($attrs, $selector);
+        $css .= $this->generateStyleConfigCss($attrs, $selector);
 
         $textColor = $attrs['text_color'] ?? '#4b5563';
         $linkColor = $attrs['link_color'] ?? '#7c3aed';

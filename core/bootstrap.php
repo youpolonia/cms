@@ -138,13 +138,7 @@ NotificationService::subscribe('content_state_changed', function(array $data) {
     error_log("Content state changed: {$data['from_state']} → {$data['to_state']}");
 });
 
-// Initialize content module
-if (file_exists(__DIR__ . '/../modules/content/contentmodule.php')) {
-    require_once __DIR__ . '/../modules/content/contentmodule.php';
-} else {
-    error_log('Missing modules/content/contentmodule.php');
-}
-ContentModule::init();
+// Content module removed (2026-02-08) — articles/pages handled directly by admin controllers
 
 // Initialize admin module
 // NOTE: AdminModule::init() disabled - it calls non-existent Router::get() static method
@@ -159,9 +153,6 @@ ContentModule::init();
 // Initialize auth module
 // NOTE: AuthModule::init() disabled - it calls non-existent Router::addRoute() static method
 // Auth routes are defined in config/routes.php instead
-// if (file_exists(__DIR__ . '/../modules/auth/authmodule.php')) {
-//     require_once __DIR__ . '/../modules/auth/authmodule.php';
 // } else {
-//     error_log('Missing modules/auth/authmodule.php');
 // }
 // AuthModule::init();

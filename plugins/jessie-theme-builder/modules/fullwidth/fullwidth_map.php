@@ -25,6 +25,21 @@ class JTB_Module_FullwidthMap extends JTB_Element
     public bool $use_position = false;
     public bool $use_filters = true;
 
+    // === UNIFIED THEME SYSTEM ===
+    protected string $module_prefix = 'fullwidth_map';
+
+    /**
+     * Declarative style configuration
+     */
+    protected array $style_config = [
+        'map_height' => [
+            'property' => 'height',
+            'selector' => '.jtb-fullwidth-map-container',
+            'unit' => 'px',
+            'responsive' => true
+        ]
+    ];
+
     public function getSlug(): string
     {
         return 'fullwidth_map';
@@ -89,6 +104,9 @@ class JTB_Module_FullwidthMap extends JTB_Element
 
     public function render(array $attrs, string $content = ''): string
     {
+        // Apply default styles from design system
+        $attrs = JTB_Default_Styles::mergeWithDefaults($this->getSlug(), $attrs);
+
         $address = $this->esc($attrs['address'] ?? 'New York, NY');
         $zoom = $attrs['zoom'] ?? 14;
         $grayscale = !empty($attrs['grayscale']);
@@ -137,6 +155,9 @@ class JTB_Module_FullwidthMap extends JTB_Element
     public function generateCss(array $attrs, string $selector): string
     {
         $css = '';
+
+        // Use declarative style_config system
+        $css .= $this->generateStyleConfigCss($attrs, $selector);
 
         $mapHeight = $attrs['map_height'] ?? 400;
         $grayscale = !empty($attrs['grayscale']);

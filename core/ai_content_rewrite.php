@@ -19,78 +19,7 @@ require_once CMS_ROOT . '/core/ai_hf.php';
 require_once CMS_ROOT . '/core/ai_models.php';
 require_once CMS_ROOT . '/core/ai_content.php';
 
-/**
- * Generate text using OpenAI API
- * Supports GPT-4o, GPT-4.1, GPT-5, O-series models
- */
-function ai_openai_generate_text(string $prompt, array $options = []): array
-{
-    // Load settings
-    $settingsFile = CMS_ROOT . '/config/ai_settings.json';
-    if (!file_exists($settingsFile)) {
-        return ['ok' => false, 'error' => 'AI settings not found'];
-    }
-
-    $settings = json_decode(file_get_contents($settingsFile), true);
-    $openaiConfig = $settings['providers']['openai'] ?? [];
-
-    if (empty($openaiConfig['api_key'])) {
-        return ['ok' => false, 'error' => 'OpenAI API key not configured'];
-    }
-
-    // Model selection: options > config > default
-    $model = $options['model'] ?? $openaiConfig['default_model'] ?? 'gpt-5.2';
-
-    // Validate model if ai_models.php is loaded
-    if (function_exists('ai_is_valid_model') && !ai_is_valid_model($model)) {
-        $model = function_exists('ai_get_default_model') ? ai_get_default_model() : 'gpt-5.2';
-    }
-
-    $maxTokens = $options['params']['max_new_tokens'] ?? $options['params']['max_tokens'] ?? 1000;
-    $temperature = $options['params']['temperature'] ?? 0.7;
-    
-    $requestBody = [
-        'model' => $model,
-        'messages' => [
-            ['role' => 'system', 'content' => 'You are a professional SEO content writer. Output clean HTML formatted content for a CMS. Use proper HTML tags: <h2>, <h3> for headings, <p> for paragraphs, <ul>/<ol> with <li> for lists, <strong> for emphasis. Never use markdown. Output only the HTML content without any preamble or explanation.'],
-            ['role' => 'user', 'content' => $prompt]
-        ],
-        'max_tokens' => (int)$maxTokens,
-        'temperature' => (float)$temperature
-    ];
-    
-    $ch = curl_init('https://api.openai.com/v1/chat/completions');
-    curl_setopt($ch, CURLOPT_POST, true);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($requestBody));
-    curl_setopt($ch, CURLOPT_HTTPHEADER, [
-        'Authorization: Bearer ' . $openaiConfig['api_key'],
-        'Content-Type: application/json'
-    ]);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_TIMEOUT, 60);
-    
-    $response = curl_exec($ch);
-    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    curl_close($ch);
-    
-    if ($response === false || $httpCode < 200 || $httpCode >= 300) {
-        return ['ok' => false, 'error' => 'OpenAI API error (HTTP ' . $httpCode . ')'];
-    }
-    
-    $data = json_decode($response, true);
-    
-    if (isset($data['error'])) {
-        return ['ok' => false, 'error' => $data['error']['message'] ?? 'OpenAI error'];
-    }
-    
-    $text = $data['choices'][0]['message']['content'] ?? null;
-    
-    if (empty($text)) {
-        return ['ok' => false, 'error' => 'No content generated'];
-    }
-    
-    return ['ok' => true, 'text' => trim($text)];
-}
+// ai_openai_generate_text() removed — use ai_universal_generate() from ai_content.php instead
 
 /**
  * Available rewrite modes
@@ -286,43 +215,48 @@ function ai_rewrite_content(string $content, string $mode = 'paraphrase', array 
 
     $prompt = ai_rewrite_build_prompt($content, $mode, $options);
 
-    // Use multi-provider ai_universal_generate if provider specified
-    $provider = $options['provider'] ?? 'openai';
-    $model = $options['model'] ?? 'gpt-5.2';
+    // Use multi-provider ai_universal_generate
+    $provider = $options['provider'] ?? '';
+    $model = $options['model'] ?? '';
+
+    // Auto-detect provider if not specified
+    if (empty($provider)) {
+        $aiSettings = ai_config_load_full();
+        if (!empty($aiSettings['providers'])) {
+            foreach ($aiSettings['providers'] as $pName => $pConfig) {
+                if (!empty($pConfig['enabled']) && !empty($pConfig['api_key'])) {
+                    $provider = $pName;
+                    if (empty($model)) $model = $pConfig['default_model'] ?? '';
+                    break;
+                }
+            }
+        }
+    }
+
+    if (empty($provider)) {
+        return ['ok' => false, 'error' => 'No AI provider configured.'];
+    }
 
     // Validate provider and model
     if (function_exists('ai_is_valid_provider') && !ai_is_valid_provider($provider)) {
         $provider = 'openai';
     }
     if (function_exists('ai_is_valid_provider_model') && !ai_is_valid_provider_model($provider, $model)) {
-        $model = function_exists('ai_get_provider_default_model') ? ai_get_provider_default_model($provider) : 'gpt-5.2';
+        $model = function_exists('ai_get_provider_default_model') ? ai_get_provider_default_model($provider) : '';
     }
 
     $systemPrompt = 'You are a professional content rewriter. Output clean, high-quality text. Do not add any preamble or explanation.';
 
-    // Use universal generate for multi-provider support
-    if (function_exists('ai_universal_generate')) {
-        $result = ai_universal_generate($provider, $model, $systemPrompt, $prompt, [
-            'max_tokens' => $maxTokens,
-            'temperature' => 0.7
-        ]);
-    } else {
-        // Fallback to legacy OpenAI-only function
-        $genOptions = [
-            'params' => [
-                'max_new_tokens' => $maxTokens,
-                'temperature' => 0.7,
-            ],
-            'model' => $model
-        ];
-        $result = ai_openai_generate_text($prompt, $genOptions);
-    }
+    $result = ai_universal_generate($provider, $model, $systemPrompt, $prompt, [
+        'max_tokens' => $maxTokens,
+        'temperature' => 0.7
+    ]);
 
     if (!$result['ok']) {
         return ['ok' => false, 'error' => $result['error'] ?? 'AI generation failed'];
     }
 
-    $rewritten = trim($result['text']);
+    $rewritten = trim($result['content'] ?? '');
 
     // Clean up common AI artifacts
     $rewritten = preg_replace('/^(Here\'s|Here is|The rewritten|Rewritten version:?)\s*/i', '', $rewritten);

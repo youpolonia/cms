@@ -25,6 +25,39 @@ class JTB_Module_FullwidthPostTitle extends JTB_Element
     public bool $use_position = false;
     public bool $use_filters = true;
 
+    // === UNIFIED THEME SYSTEM ===
+    protected string $module_prefix = 'fullwidth_post_title';
+
+    /**
+     * Declarative style configuration
+     */
+    protected array $style_config = [
+        'module_height' => [
+            'property' => 'min-height',
+            'selector' => '.jtb-fullwidth-post-title-container',
+            'unit' => 'px',
+            'responsive' => true
+        ],
+        'overlay_color' => [
+            'property' => 'background',
+            'selector' => '.jtb-post-title-overlay'
+        ],
+        'title_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-post-title-heading'
+        ],
+        'meta_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-post-title-meta, .jtb-post-title-category'
+        ],
+        'title_font_size' => [
+            'property' => 'font-size',
+            'selector' => '.jtb-post-title-heading',
+            'unit' => 'px',
+            'responsive' => true
+        ]
+    ];
+
     public function getSlug(): string
     {
         return 'fullwidth_post_title';
@@ -132,6 +165,9 @@ class JTB_Module_FullwidthPostTitle extends JTB_Element
 
     public function render(array $attrs, string $content = ''): string
     {
+        // Apply default styles from design system
+        $attrs = JTB_Default_Styles::mergeWithDefaults($this->getSlug(), $attrs);
+
         $title = $this->esc($attrs['title'] ?? 'Page Title');
         $showMeta = $attrs['show_meta'] ?? true;
         $showAuthor = $attrs['show_author'] ?? true;
@@ -193,6 +229,9 @@ class JTB_Module_FullwidthPostTitle extends JTB_Element
     public function generateCss(array $attrs, string $selector): string
     {
         $css = '';
+
+        // Use declarative style_config system
+        $css .= $this->generateStyleConfigCss($attrs, $selector);
 
         $moduleHeight = $attrs['module_height'] ?? 300;
         $overlayColor = $attrs['overlay_color'] ?? 'rgba(0,0,0,0.4)';

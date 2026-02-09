@@ -26,6 +26,48 @@ class JTB_Module_SliderItem extends JTB_Element
     public bool $use_position = false;
     public bool $use_filters = false;
 
+    // === UNIFIED THEME SYSTEM ===
+    protected string $module_prefix = 'slider_item';
+
+    /**
+     * Declarative style configuration
+     */
+    protected array $style_config = [
+        'background_color' => [
+            'property' => 'background-color',
+            'selector' => ''
+        ],
+        'background_overlay' => [
+            'property' => 'background-color',
+            'selector' => '.jtb-slide-overlay'
+        ],
+        'text_color' => [
+            'property' => 'color',
+            'selector' => ''
+        ],
+        'heading_font_size' => [
+            'property' => 'font-size',
+            'selector' => '.jtb-slide-heading',
+            'unit' => 'px',
+            'responsive' => true
+        ],
+        'button_bg_color' => [
+            'property' => 'background-color',
+            'selector' => '.jtb-slide-button',
+            'hover' => true
+        ],
+        'button_text_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-slide-button',
+            'hover' => true
+        ],
+        'button_border_color' => [
+            'property' => 'border-color',
+            'selector' => '.jtb-slide-button',
+            'hover' => true
+        ]
+    ];
+
     public function getSlug(): string
     {
         return 'slider_item';
@@ -133,6 +175,9 @@ class JTB_Module_SliderItem extends JTB_Element
 
     public function render(array $attrs, string $content = ''): string
     {
+        // Apply default styles from design system
+        $attrs = JTB_Default_Styles::mergeWithDefaults($this->getSlug(), $attrs);
+
         $heading = $this->esc($attrs['heading'] ?? 'Slide Title');
         $bodyContent = $attrs['content'] ?? '';
         $buttonText = $this->esc($attrs['button_text'] ?? '');
@@ -169,39 +214,25 @@ class JTB_Module_SliderItem extends JTB_Element
         return $html;
     }
 
+    /**
+     * Generate CSS for Slider Item module
+     * Base styles are in jtb-base-modules.css
+     */
     public function generateCss(array $attrs, string $selector): string
     {
         $css = '';
 
-        $bgColor = $attrs['background_color'] ?? '#2ea3f2';
-        $overlayColor = $attrs['background_overlay'] ?? 'rgba(0,0,0,0.3)';
-        $textColor = $attrs['text_color'] ?? '#ffffff';
-        $headingSize = $attrs['heading_font_size'] ?? 46;
+        // Use declarative style_config system
+        $css .= $this->generateStyleConfigCss($attrs, $selector);
 
-        // Slide background
-        $css .= $selector . ' { ';
-        $css .= 'background-color: ' . $bgColor . '; ';
-        $css .= 'background-size: cover; ';
-        $css .= 'background-position: center; ';
-        $css .= 'color: ' . $textColor . '; ';
-        $css .= 'display: flex; ';
-        $css .= 'padding: 40px; ';
-        $css .= '}' . "\n";
+        // Slide base styles
+        $css .= $selector . ' { background-size: cover; background-position: center; display: flex; padding: 40px; }' . "\n";
 
         // Overlay
-        $css .= $selector . ' .jtb-slide-overlay { ';
-        $css .= 'position: absolute; ';
-        $css .= 'top: 0; left: 0; right: 0; bottom: 0; ';
-        $css .= 'background-color: ' . $overlayColor . '; ';
-        $css .= '}' . "\n";
+        $css .= $selector . ' .jtb-slide-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; }' . "\n";
 
         // Content
-        $css .= $selector . ' .jtb-slide-content { ';
-        $css .= 'position: relative; ';
-        $css .= 'z-index: 1; ';
-        $css .= 'max-width: 800px; ';
-        $css .= 'margin: auto; ';
-        $css .= '}' . "\n";
+        $css .= $selector . ' .jtb-slide-content { position: relative; z-index: 1; max-width: 800px; margin: auto; }' . "\n";
 
         // Alignment
         $css .= $selector . '.jtb-slide-align-left .jtb-slide-content { margin-left: 0; text-align: left; }' . "\n";
@@ -214,47 +245,13 @@ class JTB_Module_SliderItem extends JTB_Element
         $css .= $selector . '.jtb-slide-valign-bottom { align-items: flex-end; }' . "\n";
 
         // Heading
-        $css .= $selector . ' .jtb-slide-heading { ';
-        $css .= 'font-size: ' . $headingSize . 'px; ';
-        $css .= 'margin-bottom: 20px; ';
-        $css .= '}' . "\n";
+        $css .= $selector . ' .jtb-slide-heading { margin-bottom: 20px; }' . "\n";
 
         // Description
         $css .= $selector . ' .jtb-slide-description { margin-bottom: 30px; }' . "\n";
 
-        // Button
-        $btnBg = $attrs['button_bg_color'] ?? 'transparent';
-        $btnText = $attrs['button_text_color'] ?? '#ffffff';
-        $btnBorder = $attrs['button_border_color'] ?? '#ffffff';
-
-        $css .= $selector . ' .jtb-slide-button { ';
-        $css .= 'display: inline-block; ';
-        $css .= 'background-color: ' . $btnBg . '; ';
-        $css .= 'color: ' . $btnText . '; ';
-        $css .= 'border: 2px solid ' . $btnBorder . '; ';
-        $css .= 'padding: 12px 24px; ';
-        $css .= 'text-decoration: none; ';
-        $css .= 'transition: all 0.3s ease; ';
-        $css .= '}' . "\n";
-
-        // Button hover
-        if (!empty($attrs['button_bg_color__hover'])) {
-            $css .= $selector . ' .jtb-slide-button:hover { background-color: ' . $attrs['button_bg_color__hover'] . '; }' . "\n";
-        }
-        if (!empty($attrs['button_text_color__hover'])) {
-            $css .= $selector . ' .jtb-slide-button:hover { color: ' . $attrs['button_text_color__hover'] . '; }' . "\n";
-        }
-        if (!empty($attrs['button_border_color__hover'])) {
-            $css .= $selector . ' .jtb-slide-button:hover { border-color: ' . $attrs['button_border_color__hover'] . '; }' . "\n";
-        }
-
-        // Responsive heading
-        if (!empty($attrs['heading_font_size__tablet'])) {
-            $css .= '@media (max-width: 980px) { ' . $selector . ' .jtb-slide-heading { font-size: ' . $attrs['heading_font_size__tablet'] . 'px; } }' . "\n";
-        }
-        if (!empty($attrs['heading_font_size__phone'])) {
-            $css .= '@media (max-width: 767px) { ' . $selector . ' .jtb-slide-heading { font-size: ' . $attrs['heading_font_size__phone'] . 'px; } }' . "\n";
-        }
+        // Button base styles
+        $css .= $selector . ' .jtb-slide-button { display: inline-block; border: 2px solid; padding: 12px 24px; text-decoration: none; transition: all 0.3s ease; }' . "\n";
 
         return $css;
     }

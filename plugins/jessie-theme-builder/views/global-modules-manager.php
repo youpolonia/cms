@@ -20,6 +20,8 @@ defined('CMS_ROOT') or die('Direct access not allowed');
     <title>Global Modules - Jessie CMS</title>
     <link rel="stylesheet" href="<?= htmlspecialchars($pluginUrl) ?>/assets/css/builder.css">
     <link rel="stylesheet" href="<?= htmlspecialchars($pluginUrl) ?>/assets/css/template-manager.css">
+    <!-- Unified Theme System - Base Module Styles -->
+    <link rel="stylesheet" href="<?= htmlspecialchars($pluginUrl) ?>/assets/css/jtb-base-modules.css">
 </head>
 <body class="jtb-builder-page">
     <div class="jtb-template-manager">

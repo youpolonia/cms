@@ -15,13 +15,55 @@ class JTB_Module_Menu extends JTB_Element
     public string $slug = 'menu';
     public string $name = 'Menu';
     public string $icon = 'menu';
-    public string $category = 'theme';
+    public string $category = 'header';
 
     public bool $use_background = true;
     public bool $use_spacing = true;
     public bool $use_border = true;
     public bool $use_box_shadow = true;
     public bool $use_animation = true;
+    public bool $use_typography = true;
+
+    protected string $module_prefix = 'menu';
+
+    protected array $style_config = [
+        'logo_width' => [
+            'property' => 'width',
+            'selector' => '.jtb-logo-img',
+            'unit' => 'px',
+            'responsive' => true
+        ],
+        'menu_text_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-nav-link',
+            'hover' => true
+        ],
+        'icon_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-menu-icon',
+            'hover' => true
+        ],
+        'menu_font_size' => [
+            'property' => 'font-size',
+            'selector' => '.jtb-nav-link',
+            'unit' => 'px',
+            'responsive' => true
+        ],
+        'menu_font_weight' => [
+            'property' => 'font-weight',
+            'selector' => '.jtb-nav-link'
+        ],
+        'menu_item_spacing' => [
+            'property' => 'gap',
+            'selector' => '.jtb-nav-list',
+            'unit' => 'px'
+        ],
+        'icon_size' => [
+            'property' => 'width',
+            'selector' => '.jtb-menu-icon svg',
+            'unit' => 'px'
+        ]
+    ];
 
     public function getSlug(): string
     {
@@ -148,6 +190,9 @@ class JTB_Module_Menu extends JTB_Element
 
     public function render(array $attrs, string $content = ''): string
     {
+        // Apply default styles from design system
+        $attrs = JTB_Default_Styles::mergeWithDefaults($this->getSlug(), $attrs);
+
         $id = $attrs['id'] ?? 'menu_' . uniqid();
         $logo = $attrs['logo'] ?? '';
         $logoUrl = $attrs['logo_url'] ?? '/';
@@ -172,24 +217,34 @@ class JTB_Module_Menu extends JTB_Element
         $html = '<nav id="' . $this->esc($id) . '" class="' . implode(' ', $classes) . '">';
         $html .= '<div class="jtb-menu-inner">';
 
-        // Logo
+        // Logo - only show if logo image is set
         $html .= '<div class="jtb-menu-logo">';
         if ($logo) {
             $html .= '<a href="' . $this->esc($logoUrl) . '" class="jtb-logo-link">';
             $html .= '<img src="' . $this->esc($logo) . '" alt="' . $this->esc($logoAlt) . '" class="jtb-logo-img">';
             $html .= '</a>';
-        } else {
-            $html .= '<a href="' . $this->esc($logoUrl) . '" class="jtb-logo-text">LOGO</a>';
         }
+        // No placeholder - if no logo, show empty space
         $html .= '</div>';
 
-        // Navigation
+        // Navigation - Get dynamic menu items
+        $isPreview = JTB_Dynamic_Context::isPreviewMode();
+        $menuLocation = $attrs['menu_location'] ?? 'primary';
+        $menuItems = JTB_Dynamic_Context::getMenuItems($menuLocation);
+
         $html .= '<div class="jtb-menu-nav">';
         $html .= '<ul class="jtb-nav-list">';
-        $html .= '<li class="jtb-nav-item"><a href="#" class="jtb-nav-link">Home</a></li>';
-        $html .= '<li class="jtb-nav-item"><a href="#" class="jtb-nav-link">About</a></li>';
-        $html .= '<li class="jtb-nav-item"><a href="#" class="jtb-nav-link">Services</a></li>';
-        $html .= '<li class="jtb-nav-item"><a href="#" class="jtb-nav-link">Contact</a></li>';
+
+        if (!empty($menuItems) && !$isPreview) {
+            $html .= $this->renderMenuItems($menuItems);
+        } else {
+            // Placeholder menu items for preview
+            $html .= '<li class="jtb-nav-item"><a href="#" class="jtb-nav-link">Home</a></li>';
+            $html .= '<li class="jtb-nav-item"><a href="#" class="jtb-nav-link">About</a></li>';
+            $html .= '<li class="jtb-nav-item"><a href="#" class="jtb-nav-link">Services</a></li>';
+            $html .= '<li class="jtb-nav-item"><a href="#" class="jtb-nav-link">Contact</a></li>';
+        }
+
         $html .= '</ul>';
         $html .= '</div>';
 
@@ -201,18 +256,115 @@ class JTB_Module_Menu extends JTB_Element
         if ($showCart) {
             $html .= '<a href="#" class="jtb-menu-icon jtb-cart-icon" aria-label="Cart">' . $cartIcon . '</a>';
         }
-        $html .= '<button type="button" class="jtb-menu-icon jtb-hamburger" aria-label="Menu">' . $hamburgerIcon . '</button>';
+        $html .= '<button type="button" class="jtb-menu-icon jtb-hamburger" aria-label="Menu" aria-expanded="false" aria-controls="jtb-mobile-menu-' . $this->esc($id) . '">' . $hamburgerIcon . '</button>';
         $html .= '</div>';
 
         $html .= '</div>';
+
+        // Mobile menu (off-canvas)
+        $html .= '<div id="jtb-mobile-menu-' . $this->esc($id) . '" class="jtb-mobile-menu" aria-hidden="true">';
+        $html .= '<div class="jtb-mobile-menu-header">';
+        if ($logo) {
+            $html .= '<a href="' . $this->esc($logoUrl) . '" class="jtb-logo-link">';
+            $html .= '<img src="' . $this->esc($logo) . '" alt="' . $this->esc($logoAlt) . '" class="jtb-logo-img">';
+            $html .= '</a>';
+        }
+        $closeIcon = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>';
+        $html .= '<button type="button" class="jtb-mobile-menu-close" aria-label="Close menu">' . $closeIcon . '</button>';
+        $html .= '</div>';
+        $html .= '<nav class="jtb-mobile-menu-nav">';
+        $html .= '<ul class="jtb-mobile-nav-list">';
+
+        if (!empty($menuItems) && !$isPreview) {
+            $html .= $this->renderMobileMenuItems($menuItems);
+        } else {
+            // Placeholder for preview
+            $html .= '<li class="jtb-mobile-nav-item"><a href="#" class="jtb-mobile-nav-link">Home</a></li>';
+            $html .= '<li class="jtb-mobile-nav-item"><a href="#" class="jtb-mobile-nav-link">About</a></li>';
+            $html .= '<li class="jtb-mobile-nav-item"><a href="#" class="jtb-mobile-nav-link">Services</a></li>';
+            $html .= '<li class="jtb-mobile-nav-item"><a href="#" class="jtb-mobile-nav-link">Contact</a></li>';
+        }
+
+        $html .= '</ul>';
+        $html .= '</nav>';
+        $html .= '</div>';
+        $html .= '<div class="jtb-mobile-menu-overlay" aria-hidden="true"></div>';
+
         $html .= '</nav>';
 
+        return $html;
+    }
+
+    /**
+     * Render menu items recursively (desktop)
+     */
+    private function renderMenuItems(array $items, int $depth = 0): string
+    {
+        $html = '';
+        foreach ($items as $item) {
+            $hasChildren = !empty($item['children']);
+            $classes = ['jtb-nav-item'];
+            if ($hasChildren) {
+                $classes[] = 'jtb-has-children';
+            }
+
+            $target = ($item['target'] ?? '_self') === '_blank' ? ' target="_blank" rel="noopener"' : '';
+
+            $html .= '<li class="' . implode(' ', $classes) . '">';
+            $html .= '<a href="' . $this->esc($item['url'] ?? '#') . '" class="jtb-nav-link"' . $target . '>' . $this->esc($item['title'] ?? '') . '</a>';
+
+            if ($hasChildren) {
+                $chevron = '<svg class="jtb-dropdown-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>';
+                $html .= $chevron;
+                $html .= '<ul class="jtb-nav-dropdown">';
+                $html .= $this->renderMenuItems($item['children'], $depth + 1);
+                $html .= '</ul>';
+            }
+
+            $html .= '</li>';
+        }
+        return $html;
+    }
+
+    /**
+     * Render mobile menu items recursively
+     */
+    private function renderMobileMenuItems(array $items, int $depth = 0): string
+    {
+        $html = '';
+        foreach ($items as $item) {
+            $hasChildren = !empty($item['children']);
+            $classes = ['jtb-mobile-nav-item'];
+            if ($hasChildren) {
+                $classes[] = 'jtb-has-children';
+            }
+
+            $target = ($item['target'] ?? '_self') === '_blank' ? ' target="_blank" rel="noopener"' : '';
+
+            $html .= '<li class="' . implode(' ', $classes) . '">';
+
+            if ($hasChildren) {
+                $chevron = '<svg class="jtb-mobile-dropdown-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>';
+                $html .= '<button type="button" class="jtb-mobile-nav-toggle" aria-expanded="false">';
+                $html .= '<span class="jtb-mobile-nav-link-text">' . $this->esc($item['title'] ?? '') . '</span>';
+                $html .= $chevron;
+                $html .= '</button>';
+                $html .= '<ul class="jtb-mobile-nav-dropdown">';
+                $html .= $this->renderMobileMenuItems($item['children'], $depth + 1);
+                $html .= '</ul>';
+            } else {
+                $html .= '<a href="' . $this->esc($item['url'] ?? '#') . '" class="jtb-mobile-nav-link"' . $target . '>' . $this->esc($item['title'] ?? '') . '</a>';
+            }
+
+            $html .= '</li>';
+        }
         return $html;
     }
 
     public function generateCss(array $attrs, string $selector): string
     {
         $css = parent::generateCss($attrs, $selector);
+        $css .= $this->generateStyleConfigCss($attrs, $selector);
 
         $menuStyle = $attrs['menu_style'] ?? 'left_aligned';
         $logoWidth = $attrs['logo_width'] ?? 150;
@@ -237,6 +389,7 @@ class JTB_Module_Menu extends JTB_Element
         $css .= $selector . ' .jtb-menu-inner { ';
         $css .= 'display: flex; ';
         $css .= 'align-items: center; ';
+        $css .= 'gap: 40px; '; // Space between logo, nav, and icons
         if ($menuStyle === 'left_aligned') {
             $css .= 'justify-content: space-between; ';
         } elseif ($menuStyle === 'centered_logo') {
@@ -248,10 +401,9 @@ class JTB_Module_Menu extends JTB_Element
         $css .= '}' . "\n";
 
         // Logo
-        $css .= $selector . ' .jtb-menu-logo { display: flex; align-items: center; }' . "\n";
+        $css .= $selector . ' .jtb-menu-logo { display: flex; align-items: center; min-height: 40px; }' . "\n";
         $css .= $selector . ' .jtb-logo-link { display: inline-block; line-height: 0; }' . "\n";
         $css .= $selector . ' .jtb-logo-img { width: ' . intval($logoWidth) . 'px; height: auto; }' . "\n";
-        $css .= $selector . ' .jtb-logo-text { font-weight: bold; font-size: 20px; color: ' . $menuTextColor . '; text-decoration: none; }' . "\n";
 
         // Nav list
         $css .= $selector . ' .jtb-menu-nav { display: flex; align-items: center; }' . "\n";
@@ -334,7 +486,152 @@ class JTB_Module_Menu extends JTB_Element
             $css .= ' }' . "\n";
         }
 
-        // Mobile menu
+        // Dropdown menu (desktop)
+        $css .= $selector . ' .jtb-nav-item { position: relative; }' . "\n";
+        $css .= $selector . ' .jtb-has-children { display: flex; align-items: center; gap: 4px; }' . "\n";
+        $css .= $selector . ' .jtb-dropdown-icon { transition: transform 0.2s ease; }' . "\n";
+        $css .= $selector . ' .jtb-has-children:hover .jtb-dropdown-icon { transform: rotate(180deg); }' . "\n";
+
+        $css .= $selector . ' .jtb-nav-dropdown { ';
+        $css .= 'position: absolute; ';
+        $css .= 'top: 100%; ';
+        $css .= 'left: 0; ';
+        $css .= 'min-width: 200px; ';
+        $css .= 'background: #ffffff; ';
+        $css .= 'border-radius: 8px; ';
+        $css .= 'box-shadow: 0 4px 20px rgba(0,0,0,0.15); ';
+        $css .= 'padding: 8px 0; ';
+        $css .= 'list-style: none; ';
+        $css .= 'margin: 0; ';
+        $css .= 'opacity: 0; ';
+        $css .= 'visibility: hidden; ';
+        $css .= 'transform: translateY(10px); ';
+        $css .= 'transition: all 0.2s ease; ';
+        $css .= 'z-index: 1000; ';
+        $css .= '}' . "\n";
+
+        $css .= $selector . ' .jtb-has-children:hover .jtb-nav-dropdown { ';
+        $css .= 'opacity: 1; ';
+        $css .= 'visibility: visible; ';
+        $css .= 'transform: translateY(0); ';
+        $css .= '}' . "\n";
+
+        $css .= $selector . ' .jtb-nav-dropdown .jtb-nav-item { display: block; }' . "\n";
+        $css .= $selector . ' .jtb-nav-dropdown .jtb-nav-link { ';
+        $css .= 'display: block; ';
+        $css .= 'padding: 10px 16px; ';
+        $css .= 'white-space: nowrap; ';
+        $css .= '}' . "\n";
+        $css .= $selector . ' .jtb-nav-dropdown .jtb-nav-link:hover { ';
+        $css .= 'background: #f3f4f6; ';
+        $css .= '}' . "\n";
+
+        // Mobile menu - hidden on desktop, shown on mobile
+        $css .= $selector . ' .jtb-hamburger { display: none; }' . "\n";
+        $css .= $selector . ' .jtb-mobile-menu { ';
+        $css .= 'position: fixed; ';
+        $css .= 'top: 0; ';
+        $css .= 'right: -100%; ';
+        $css .= 'width: 300px; ';
+        $css .= 'max-width: 85vw; ';
+        $css .= 'height: 100vh; ';
+        $css .= 'background: #ffffff; ';
+        $css .= 'box-shadow: -4px 0 20px rgba(0,0,0,0.15); ';
+        $css .= 'z-index: 9999; ';
+        $css .= 'transition: right 0.3s ease; ';
+        $css .= 'overflow-y: auto; ';
+        $css .= '}' . "\n";
+
+        $css .= $selector . ' .jtb-mobile-menu.open { right: 0; }' . "\n";
+
+        $css .= $selector . ' .jtb-mobile-menu-overlay { ';
+        $css .= 'position: fixed; ';
+        $css .= 'top: 0; ';
+        $css .= 'left: 0; ';
+        $css .= 'width: 100%; ';
+        $css .= 'height: 100%; ';
+        $css .= 'background: rgba(0,0,0,0.5); ';
+        $css .= 'z-index: 9998; ';
+        $css .= 'opacity: 0; ';
+        $css .= 'visibility: hidden; ';
+        $css .= 'transition: all 0.3s ease; ';
+        $css .= '}' . "\n";
+
+        $css .= $selector . ' .jtb-mobile-menu.open + .jtb-mobile-menu-overlay { ';
+        $css .= 'opacity: 1; ';
+        $css .= 'visibility: visible; ';
+        $css .= '}' . "\n";
+
+        $css .= $selector . ' .jtb-mobile-menu-header { ';
+        $css .= 'display: flex; ';
+        $css .= 'align-items: center; ';
+        $css .= 'justify-content: space-between; ';
+        $css .= 'padding: 20px; ';
+        $css .= 'border-bottom: 1px solid #e5e7eb; ';
+        $css .= '}' . "\n";
+
+        $css .= $selector . ' .jtb-mobile-menu-close { ';
+        $css .= 'background: none; ';
+        $css .= 'border: none; ';
+        $css .= 'padding: 8px; ';
+        $css .= 'cursor: pointer; ';
+        $css .= 'color: #6b7280; ';
+        $css .= '}' . "\n";
+
+        $css .= $selector . ' .jtb-mobile-menu-close:hover { color: #111827; }' . "\n";
+
+        $css .= $selector . ' .jtb-mobile-menu-nav { padding: 16px 0; }' . "\n";
+
+        $css .= $selector . ' .jtb-mobile-nav-list { ';
+        $css .= 'list-style: none; ';
+        $css .= 'margin: 0; ';
+        $css .= 'padding: 0; ';
+        $css .= '}' . "\n";
+
+        $css .= $selector . ' .jtb-mobile-nav-link, ' . $selector . ' .jtb-mobile-nav-toggle { ';
+        $css .= 'display: flex; ';
+        $css .= 'align-items: center; ';
+        $css .= 'justify-content: space-between; ';
+        $css .= 'width: 100%; ';
+        $css .= 'padding: 14px 20px; ';
+        $css .= 'font-size: 16px; ';
+        $css .= 'font-weight: 500; ';
+        $css .= 'color: ' . $menuTextColor . '; ';
+        $css .= 'text-decoration: none; ';
+        $css .= 'background: none; ';
+        $css .= 'border: none; ';
+        $css .= 'text-align: left; ';
+        $css .= 'cursor: pointer; ';
+        $css .= '}' . "\n";
+
+        $css .= $selector . ' .jtb-mobile-nav-link:hover, ' . $selector . ' .jtb-mobile-nav-toggle:hover { ';
+        $css .= 'background: #f3f4f6; ';
+        $css .= 'color: ' . $menuHoverColor . '; ';
+        $css .= '}' . "\n";
+
+        $css .= $selector . ' .jtb-mobile-dropdown-icon { ';
+        $css .= 'transition: transform 0.2s ease; ';
+        $css .= '}' . "\n";
+
+        $css .= $selector . ' .jtb-mobile-nav-toggle[aria-expanded="true"] .jtb-mobile-dropdown-icon { ';
+        $css .= 'transform: rotate(180deg); ';
+        $css .= '}' . "\n";
+
+        $css .= $selector . ' .jtb-mobile-nav-dropdown { ';
+        $css .= 'list-style: none; ';
+        $css .= 'margin: 0; ';
+        $css .= 'padding: 0 0 0 20px; ';
+        $css .= 'max-height: 0; ';
+        $css .= 'overflow: hidden; ';
+        $css .= 'transition: max-height 0.3s ease; ';
+        $css .= 'background: #f9fafb; ';
+        $css .= '}' . "\n";
+
+        $css .= $selector . ' .jtb-mobile-nav-dropdown.open { ';
+        $css .= 'max-height: 500px; ';
+        $css .= '}' . "\n";
+
+        // Responsive - show hamburger on mobile
         $css .= '@media (max-width: 767px) { ';
         $css .= $selector . ' .jtb-menu-nav { display: none; }';
         $css .= $selector . ' .jtb-hamburger { display: flex; }';

@@ -22,9 +22,8 @@ return [
             ['label' => '🖼️ Media', 'url' => '/admin/media'],
             ['label' => '🎨 Galleries', 'url' => '/admin/galleries'],
             ['label' => '💬 Comments', 'url' => '/admin/comments'],
-            ['label' => '📋 Navigation', 'url' => '/admin/navigation'],
+            ['label' => '📋 Navigation', 'url' => '/admin/menus'],
             ['label' => '🧩 Widgets', 'url' => '/admin/widgets'],
-            ['label' => '✅ Approval', 'url' => '/admin/content-approval'],
             ['label' => '💡 Suggestions', 'url' => '/admin/content-suggestions'],
         ]
     ],
@@ -87,16 +86,10 @@ return [
         'label' => '🎨 Appearance',
         'type' => 'dropdown',
         'items' => [
-            ['label' => '🎨 Themes', 'url' => '/admin/themes'],
+            ['label' => '🌐 Website Builder', 'url' => '/admin/jtb/website-builder'],
             ['label' => '🏗️ Page Builder', 'url' => '/admin/jessie-theme-builder'],
-            ['label' => '🔧 Theme Builder', 'url' => '/admin/theme-builder'],
-            ['label' => '🏗️ TB4 Builder', 'url' => '/admin/tb4'],
-            ['label' => '📄 TB Pages', 'url' => '/admin/theme-builder'],
-            ['label' => '📑 TB Templates', 'url' => '/admin/theme-builder/templates'],
-            ['label' => '🎨 AI Designer 4.0', 'url' => '/admin/ai-designer'],
-            ['label' => '✨ AI Theme Builder', 'url' => '/admin/ai-theme-builder'],
+            ['label' => '🎨 Themes', 'url' => '/admin/themes'],
             ['label' => '🧩 AI Components', 'url' => '/admin/ai-components'],
-            ['label' => '📚 Layout Library', 'url' => '/admin/layout-library'],
         ]
     ],
 

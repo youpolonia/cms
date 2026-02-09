@@ -1,9 +1,0 @@
-{
-  "name": "Content Module",
-  "version": "1.0.0",
-  "description": "Core content management functionality",
-  "author": "CMS Team",
-  "dependencies": {
-    "core": "^1.0"
-  }
-}

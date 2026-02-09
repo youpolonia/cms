@@ -408,7 +408,7 @@ $emojiGrid = [
     align-items: center;
     margin-bottom: 1.5rem;
     padding-bottom: 1rem;
-    border-bottom: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--border);
 }
 
 .form-grid {
@@ -430,7 +430,7 @@ $emojiGrid = [
 .form-input {
     width: 100%;
     padding: 0.5rem 0.75rem;
-    border: 1px solid var(--border-color);
+    border: 1px solid var(--border);
     border-radius: 4px;
     font-size: 0.95rem;
     background: var(--bg-primary);
@@ -439,7 +439,7 @@ $emojiGrid = [
 
 .form-input:focus {
     outline: none;
-    border-color: var(--accent-color);
+    border-color: var(--accent);
     box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
@@ -465,7 +465,7 @@ $emojiGrid = [
 .icon-display {
     width: 50px;
     height: 50px;
-    border: 2px dashed var(--border-color);
+    border: 2px dashed var(--border);
     border-radius: 8px;
     display: flex;
     align-items: center;
@@ -477,7 +477,7 @@ $emojiGrid = [
 }
 
 .icon-display:hover {
-    border-color: var(--accent-color);
+    border-color: var(--accent);
     background: var(--bg-primary);
 }
 
@@ -487,7 +487,7 @@ $emojiGrid = [
     gap: 0.25rem;
     padding: 0.75rem;
     background: var(--bg-secondary);
-    border: 1px solid var(--border-color);
+    border: 1px solid var(--border);
     border-radius: 8px;
     margin-top: 0.5rem;
 }
@@ -504,7 +504,7 @@ $emojiGrid = [
 }
 
 .icon-option:hover {
-    background: var(--accent-color);
+    background: var(--accent);
     transform: scale(1.1);
 }
 
@@ -520,7 +520,7 @@ $emojiGrid = [
     flex-direction: column;
     align-items: center;
     padding: 0.75rem;
-    border: 2px solid var(--border-color);
+    border: 2px solid var(--border);
     border-radius: 8px;
     cursor: pointer;
     text-align: center;
@@ -529,12 +529,12 @@ $emojiGrid = [
 }
 
 .type-card:hover {
-    border-color: var(--accent-color);
+    border-color: var(--accent);
     background: var(--bg-secondary);
 }
 
 .type-card.selected {
-    border-color: var(--accent-color);
+    border-color: var(--accent);
     background: rgba(59, 130, 246, 0.1);
 }
 
@@ -599,7 +599,7 @@ $emojiGrid = [
     display: flex;
     justify-content: space-between;
     padding: 0.5rem 0;
-    border-bottom: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--border);
 }
 
 .meta-row:last-child { border-bottom: none; }
@@ -648,7 +648,7 @@ $emojiGrid = [
     justify-content: space-between;
     align-items: center;
     padding: 1rem 1.5rem;
-    border-bottom: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--border);
 }
 
 .modal-header h3 { margin: 0; }
@@ -691,7 +691,7 @@ $emojiGrid = [
 .ai-chip {
     padding: 0.35rem 0.75rem;
     background: var(--bg-secondary);
-    border: 1px solid var(--border-color);
+    border: 1px solid var(--border);
     border-radius: 20px;
     font-size: 0.8rem;
     cursor: pointer;
@@ -715,7 +715,7 @@ $emojiGrid = [
 .ai-loading .spinner {
     width: 24px;
     height: 24px;
-    border: 3px solid var(--border-color);
+    border: 3px solid var(--border);
     border-top-color: var(--accent);
     border-radius: 50%;
     animation: spin 0.8s linear infinite;
@@ -737,7 +737,7 @@ $emojiGrid = [
 
 .modal-footer {
     padding: 1rem 1.5rem;
-    border-top: 1px solid var(--border-color);
+    border-top: 1px solid var(--border);
     display: flex;
     justify-content: flex-end;
     gap: 0.5rem;

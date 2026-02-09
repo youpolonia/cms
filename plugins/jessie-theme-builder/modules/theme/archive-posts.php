@@ -15,13 +15,56 @@ class JTB_Module_Archive_Posts extends JTB_Element
     public string $slug = 'archive_posts';
     public string $name = 'Archive Posts';
     public string $icon = 'layout-grid';
-    public string $category = 'theme';
+    public string $category = 'dynamic';
 
     public bool $use_background = true;
     public bool $use_spacing = true;
     public bool $use_border = true;
     public bool $use_box_shadow = true;
     public bool $use_animation = true;
+    public bool $use_typography = true;
+
+    protected string $module_prefix = 'archive_posts';
+
+    protected array $style_config = [
+        'gap' => [
+            'property' => 'gap',
+            'selector' => '.jtb-posts-grid',
+            'unit' => 'px',
+            'responsive' => true
+        ],
+        'card_background' => [
+            'property' => 'background',
+            'selector' => '.jtb-post-card'
+        ],
+        'card_border_radius' => [
+            'property' => 'border-radius',
+            'selector' => '.jtb-post-card',
+            'unit' => 'px'
+        ],
+        'title_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-post-title a',
+            'hover' => true
+        ],
+        'excerpt_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-post-excerpt'
+        ],
+        'meta_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-post-meta'
+        ],
+        'category_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-post-category'
+        ],
+        'link_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-read-more, .jtb-post-meta a',
+            'hover' => true
+        ]
+    ];
 
     public function getSlug(): string
     {
@@ -247,6 +290,9 @@ class JTB_Module_Archive_Posts extends JTB_Element
 
     public function render(array $attrs, string $content = ''): string
     {
+        // Apply default styles from design system
+        $attrs = JTB_Default_Styles::mergeWithDefaults($this->getSlug(), $attrs);
+
         $id = $attrs['id'] ?? 'archive_posts_' . uniqid();
         $layout = $attrs['layout'] ?? 'grid';
         $postsPerPage = $attrs['posts_per_page'] ?? 9;
@@ -255,11 +301,19 @@ class JTB_Module_Archive_Posts extends JTB_Element
         $showCategory = $attrs['show_category'] ?? true;
         $showTitle = $attrs['show_title'] ?? true;
         $showExcerpt = $attrs['show_excerpt'] ?? true;
+        $excerptLength = $attrs['excerpt_length'] ?? 20;
         $showAuthor = $attrs['show_author'] ?? true;
         $showDate = $attrs['show_date'] ?? true;
+        $dateFormat = $attrs['date_format'] ?? 'M j, Y';
         $showReadMore = $attrs['show_read_more'] ?? true;
         $readMoreText = $attrs['read_more_text'] ?? 'Read More';
         $showPagination = $attrs['show_pagination'] ?? true;
+
+        // Get dynamic posts
+        $isPreview = JTB_Dynamic_Context::isPreviewMode();
+        $currentPage = (int)($_GET['page'] ?? 1);
+        $offset = ($currentPage - 1) * $postsPerPage;
+        $posts = JTB_Dynamic_Context::getArchivePosts($postsPerPage, $offset);
 
         // SVG arrow icon
         $arrowIcon = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>';
@@ -272,52 +326,72 @@ class JTB_Module_Archive_Posts extends JTB_Element
         $html = '<div id="' . $this->esc($id) . '" class="' . implode(' ', $classes) . '">';
         $html .= '<div class="jtb-posts-grid">';
 
-        // Render placeholder posts
-        $previewCount = min($postsPerPage, 6);
-        for ($i = 0; $i < $previewCount; $i++) {
-            $html .= '<article class="jtb-post-card">';
+        // Use real posts if available, otherwise show placeholders
+        if (!empty($posts) && !$isPreview) {
+            foreach ($posts as $post) {
+                $html .= $this->renderPostCard($post, [
+                    'showImage' => $showImage,
+                    'imageAspect' => $imageAspect,
+                    'showCategory' => $showCategory,
+                    'showTitle' => $showTitle,
+                    'showExcerpt' => $showExcerpt,
+                    'excerptLength' => $excerptLength,
+                    'showAuthor' => $showAuthor,
+                    'showDate' => $showDate,
+                    'dateFormat' => $dateFormat,
+                    'showReadMore' => $showReadMore,
+                    'readMoreText' => $readMoreText,
+                    'arrowIcon' => $arrowIcon,
+                    'imgSvg' => $imgSvg
+                ]);
+            }
+        } else {
+            // Render placeholder posts for preview
+            $previewCount = min($postsPerPage, 6);
+            for ($i = 0; $i < $previewCount; $i++) {
+                $html .= '<article class="jtb-post-card">';
 
-            if ($showImage) {
-                $html .= '<div class="jtb-post-image" style="aspect-ratio: ' . $this->esc($imageAspect) . ';">';
-                $html .= '<a href="#"><img src="data:image/svg+xml,' . rawurlencode($imgSvg) . '" alt="" /></a>';
+                if ($showImage) {
+                    $html .= '<div class="jtb-post-image" style="aspect-ratio: ' . $this->esc($imageAspect) . ';">';
+                    $html .= '<a href="#"><img src="data:image/svg+xml,' . rawurlencode($imgSvg) . '" alt="" /></a>';
+                    $html .= '</div>';
+                }
+
+                $html .= '<div class="jtb-post-content">';
+
+                if ($showCategory) {
+                    $html .= '<a href="#" class="jtb-post-category">Category</a>';
+                }
+
+                if ($showTitle) {
+                    $html .= '<h3 class="jtb-post-title"><a href="#">Sample Post Title ' . ($i + 1) . ' Goes Here</a></h3>';
+                }
+
+                if ($showExcerpt) {
+                    $html .= '<p class="jtb-post-excerpt">This is a sample excerpt that would appear for each post in the archive. It gives readers a preview of the content...</p>';
+                }
+
+                if ($showAuthor || $showDate) {
+                    $html .= '<div class="jtb-post-meta">';
+                    if ($showAuthor) {
+                        $html .= '<span class="jtb-post-author">By <a href="#">Author</a></span>';
+                    }
+                    if ($showAuthor && $showDate) {
+                        $html .= '<span class="jtb-post-meta-sep">|</span>';
+                    }
+                    if ($showDate) {
+                        $html .= '<span class="jtb-post-date">' . date($dateFormat, strtotime('-' . ($i * 2) . ' days')) . '</span>';
+                    }
+                    $html .= '</div>';
+                }
+
+                if ($showReadMore) {
+                    $html .= '<a href="#" class="jtb-read-more">' . $this->esc($readMoreText) . ' ' . $arrowIcon . '</a>';
+                }
+
                 $html .= '</div>';
+                $html .= '</article>';
             }
-
-            $html .= '<div class="jtb-post-content">';
-
-            if ($showCategory) {
-                $html .= '<a href="#" class="jtb-post-category">Category</a>';
-            }
-
-            if ($showTitle) {
-                $html .= '<h3 class="jtb-post-title"><a href="#">Sample Post Title ' . ($i + 1) . ' Goes Here</a></h3>';
-            }
-
-            if ($showExcerpt) {
-                $html .= '<p class="jtb-post-excerpt">This is a sample excerpt that would appear for each post in the archive. It gives readers a preview of the content...</p>';
-            }
-
-            // Meta row
-            if ($showAuthor || $showDate) {
-                $html .= '<div class="jtb-post-meta">';
-                if ($showAuthor) {
-                    $html .= '<span class="jtb-post-author">By <a href="#">Author</a></span>';
-                }
-                if ($showAuthor && $showDate) {
-                    $html .= '<span class="jtb-post-meta-sep">|</span>';
-                }
-                if ($showDate) {
-                    $html .= '<span class="jtb-post-date">' . date('M j, Y', strtotime('-' . ($i * 2) . ' days')) . '</span>';
-                }
-                $html .= '</div>';
-            }
-
-            if ($showReadMore) {
-                $html .= '<a href="#" class="jtb-read-more">' . $this->esc($readMoreText) . ' ' . $arrowIcon . '</a>';
-            }
-
-            $html .= '</div>'; // content
-            $html .= '</article>';
         }
 
         $html .= '</div>'; // grid
@@ -325,12 +399,11 @@ class JTB_Module_Archive_Posts extends JTB_Element
         // Pagination
         if ($showPagination) {
             $html .= '<nav class="jtb-pagination">';
-            $html .= '<a href="#" class="jtb-page-num jtb-page-active">1</a>';
-            $html .= '<a href="#" class="jtb-page-num">2</a>';
-            $html .= '<a href="#" class="jtb-page-num">3</a>';
+            $html .= '<a href="?page=1" class="jtb-page-num' . ($currentPage === 1 ? ' jtb-page-active' : '') . '">1</a>';
+            $html .= '<a href="?page=2" class="jtb-page-num' . ($currentPage === 2 ? ' jtb-page-active' : '') . '">2</a>';
+            $html .= '<a href="?page=3" class="jtb-page-num' . ($currentPage === 3 ? ' jtb-page-active' : '') . '">3</a>';
             $html .= '<span class="jtb-page-dots">...</span>';
-            $html .= '<a href="#" class="jtb-page-num">10</a>';
-            $html .= '<a href="#" class="jtb-page-next">Next ' . $arrowIcon . '</a>';
+            $html .= '<a href="?page=' . ($currentPage + 1) . '" class="jtb-page-next">Next ' . $arrowIcon . '</a>';
             $html .= '</nav>';
         }
 
@@ -339,9 +412,66 @@ class JTB_Module_Archive_Posts extends JTB_Element
         return $html;
     }
 
+    /**
+     * Render a single post card
+     */
+    private function renderPostCard(array $post, array $options): string
+    {
+        $html = '<article class="jtb-post-card">';
+
+        if ($options['showImage']) {
+            $html .= '<div class="jtb-post-image" style="aspect-ratio: ' . $this->esc($options['imageAspect']) . ';">';
+            $imgSrc = !empty($post['featured_image'])
+                ? $post['featured_image']
+                : 'data:image/svg+xml,' . rawurlencode($options['imgSvg']);
+            $html .= '<a href="' . $this->esc($post['url'] ?? '#') . '"><img src="' . $this->esc($imgSrc) . '" alt="' . $this->esc($post['title'] ?? '') . '" /></a>';
+            $html .= '</div>';
+        }
+
+        $html .= '<div class="jtb-post-content">';
+
+        if ($options['showCategory'] && !empty($post['category'])) {
+            $catSlug = strtolower(str_replace(' ', '-', $post['category']));
+            $html .= '<a href="/category/' . $this->esc($catSlug) . '" class="jtb-post-category">' . $this->esc($post['category']) . '</a>';
+        }
+
+        if ($options['showTitle']) {
+            $html .= '<h3 class="jtb-post-title"><a href="' . $this->esc($post['url'] ?? '#') . '">' . $this->esc($post['title'] ?? 'Untitled') . '</a></h3>';
+        }
+
+        if ($options['showExcerpt'] && !empty($post['excerpt'])) {
+            $excerpt = wp_trim_words($post['excerpt'], $options['excerptLength'], '...');
+            $html .= '<p class="jtb-post-excerpt">' . $this->esc($excerpt) . '</p>';
+        }
+
+        if ($options['showAuthor'] || $options['showDate']) {
+            $html .= '<div class="jtb-post-meta">';
+            if ($options['showAuthor'] && !empty($post['author'])) {
+                $html .= '<span class="jtb-post-author">By <a href="/author/' . $this->esc($post['author_slug'] ?? '') . '">' . $this->esc($post['author']) . '</a></span>';
+            }
+            if ($options['showAuthor'] && $options['showDate']) {
+                $html .= '<span class="jtb-post-meta-sep">|</span>';
+            }
+            if ($options['showDate'] && !empty($post['date'])) {
+                $html .= '<span class="jtb-post-date">' . $this->esc($post['date']) . '</span>';
+            }
+            $html .= '</div>';
+        }
+
+        if ($options['showReadMore']) {
+            $html .= '<a href="' . $this->esc($post['url'] ?? '#') . '" class="jtb-read-more">' . $this->esc($options['readMoreText']) . ' ' . $options['arrowIcon'] . '</a>';
+        }
+
+        $html .= '</div>';
+        $html .= '</article>';
+
+        return $html;
+    }
+
     public function generateCss(array $attrs, string $selector): string
     {
         $css = parent::generateCss($attrs, $selector);
+        $css .= $this->generateStyleConfigCss($attrs, $selector);
 
         $layout = $attrs['layout'] ?? 'grid';
         $columns = $attrs['columns'] ?? '3';

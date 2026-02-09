@@ -25,6 +25,97 @@ class JTB_Module_Blog extends JTB_Element
     public bool $use_position = false;
     public bool $use_filters = false;
 
+    // === UNIFIED THEME SYSTEM ===
+    protected string $module_prefix = 'blog';
+
+    /**
+     * Declarative style configuration
+     * Maps attribute names to CSS properties and selectors
+     * Base styles are in jtb-base-modules.css
+     */
+    protected array $style_config = [
+        // Grid/Layout
+        'columns' => [
+            'property' => '--blog-columns',
+            'selector' => '.jtb-blog-container',
+            'responsive' => true
+        ],
+        'gap' => [
+            'property' => 'gap',
+            'selector' => '.jtb-blog-grid',
+            'unit' => 'px'
+        ],
+        // Overlay
+        'overlay_color' => [
+            'property' => 'background-color',
+            'selector' => '.jtb-blog-overlay'
+        ],
+        // Card styling
+        'card_background' => [
+            'property' => 'background-color',
+            'selector' => '.jtb-blog-post'
+        ],
+        'card_padding' => [
+            'property' => 'padding',
+            'selector' => '.jtb-blog-content'
+        ],
+        'card_border_radius' => [
+            'property' => 'border-radius',
+            'selector' => '.jtb-blog-post',
+            'unit' => 'px'
+        ],
+        // Typography
+        'title_font_size' => [
+            'property' => 'font-size',
+            'selector' => '.jtb-blog-title',
+            'unit' => 'px'
+        ],
+        'title_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-blog-title a'
+        ],
+        'title_hover_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-blog-title a:hover'
+        ],
+        'meta_font_size' => [
+            'property' => 'font-size',
+            'selector' => '.jtb-blog-meta',
+            'unit' => 'px'
+        ],
+        'meta_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-blog-meta'
+        ],
+        'excerpt_font_size' => [
+            'property' => 'font-size',
+            'selector' => '.jtb-blog-excerpt',
+            'unit' => 'px'
+        ],
+        'excerpt_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-blog-excerpt'
+        ],
+        // Read more button
+        'read_more_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-blog-more'
+        ],
+        'read_more_hover_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-blog-more:hover'
+        ],
+        // Pagination
+        'pagination_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-page-number'
+        ],
+        'pagination_active_bg' => [
+            'property' => 'background-color',
+            'selector' => '.jtb-page-number.current'
+        ]
+    ];
+
     public function getSlug(): string
     {
         return 'blog';
@@ -149,6 +240,9 @@ class JTB_Module_Blog extends JTB_Element
 
     public function render(array $attrs, string $content = ''): string
     {
+        // Apply default styles from design system
+        $attrs = JTB_Default_Styles::mergeWithDefaults($this->getSlug(), $attrs);
+
         $fullwidth = !empty($attrs['fullwidth']);
         $postsNumber = $attrs['posts_number'] ?? 10;
         $showThumbnail = $attrs['show_thumbnail'] ?? true;
@@ -252,57 +346,35 @@ class JTB_Module_Blog extends JTB_Element
         return $this->renderWrapper($innerHtml, $attrs);
     }
 
+    /**
+     * Generate CSS for Blog module
+     *
+     * Base styles are defined in jtb-base-modules.css using CSS variables.
+     * This method only generates CSS for values that differ from defaults.
+     */
     public function generateCss(array $attrs, string $selector): string
     {
         $css = '';
 
-        $columns = $attrs['columns'] ?? '3';
-        $overlayColor = $attrs['overlay_color'] ?? 'rgba(0,0,0,0.3)';
+        // Use declarative style_config system
+        $css .= $this->generateStyleConfigCss($attrs, $selector);
 
-        // Grid layout
-        $css .= $selector . ' .jtb-blog-grid { display: grid; gap: 30px; }' . "\n";
-        $css .= $selector . ' .jtb-blog-cols-2 { grid-template-columns: repeat(2, 1fr); }' . "\n";
-        $css .= $selector . ' .jtb-blog-cols-3 { grid-template-columns: repeat(3, 1fr); }' . "\n";
-        $css .= $selector . ' .jtb-blog-cols-4 { grid-template-columns: repeat(4, 1fr); }' . "\n";
+        // Handle columns as CSS variable
+        $columns = $attrs['columns'] ?? 3;
+        if ($this->isDifferentFromDefault('blog_columns', $columns)) {
+            $css .= $selector . ' .jtb-blog-container { --blog-columns: ' . intval($columns) . '; }' . "\n";
+        }
 
-        // List layout
-        $css .= $selector . ' .jtb-blog-list .jtb-blog-post { margin-bottom: 40px; padding-bottom: 40px; border-bottom: 1px solid #eee; }' . "\n";
+        // Responsive columns
+        if (!empty($attrs['columns__tablet'])) {
+            $css .= '@media (max-width: 980px) { ' . $selector . ' .jtb-blog-container { --blog-columns: ' . intval($attrs['columns__tablet']) . '; } }' . "\n";
+        }
 
-        // Thumbnail
-        $css .= $selector . ' .jtb-blog-thumbnail { position: relative; overflow: hidden; margin-bottom: 20px; }' . "\n";
-        $css .= $selector . ' .jtb-blog-thumbnail img { width: 100%; height: auto; display: block; transition: transform 0.3s ease; }' . "\n";
-        $css .= $selector . ' .jtb-blog-thumbnail:hover img { transform: scale(1.05); }' . "\n";
+        if (!empty($attrs['columns__phone'])) {
+            $css .= '@media (max-width: 767px) { ' . $selector . ' .jtb-blog-container { --blog-columns: ' . intval($attrs['columns__phone']) . '; } }' . "\n";
+        }
 
-        // Placeholder
-        $css .= $selector . ' .jtb-blog-thumbnail-placeholder { background: #f0f0f0; padding-bottom: 60%; }' . "\n";
-
-        // Overlay
-        $css .= $selector . ' .jtb-blog-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: ' . $overlayColor . '; opacity: 0; transition: opacity 0.3s ease; }' . "\n";
-        $css .= $selector . ' .jtb-blog-thumbnail:hover .jtb-blog-overlay { opacity: 1; }' . "\n";
-
-        // Title
-        $css .= $selector . ' .jtb-blog-title { margin: 0 0 10px; }' . "\n";
-        $css .= $selector . ' .jtb-blog-title a { text-decoration: none; color: inherit; }' . "\n";
-        $css .= $selector . ' .jtb-blog-title a:hover { color: #2ea3f2; }' . "\n";
-
-        // Meta
-        $css .= $selector . ' .jtb-blog-meta { font-size: 13px; color: #888; margin-bottom: 15px; }' . "\n";
-
-        // Excerpt
-        $css .= $selector . ' .jtb-blog-excerpt { margin-bottom: 15px; }' . "\n";
-
-        // Read more
-        $css .= $selector . ' .jtb-blog-more { color: #2ea3f2; text-decoration: none; font-weight: 500; }' . "\n";
-
-        // Pagination
-        $css .= $selector . ' .jtb-blog-pagination { display: flex; justify-content: center; gap: 10px; margin-top: 40px; }' . "\n";
-        $css .= $selector . ' .jtb-page-number { padding: 8px 15px; border: 1px solid #ddd; text-decoration: none; color: #666; }' . "\n";
-        $css .= $selector . ' .jtb-page-number.current { background: #2ea3f2; color: #fff; border-color: #2ea3f2; }' . "\n";
-
-        // Responsive
-        $css .= '@media (max-width: 980px) { ' . $selector . ' .jtb-blog-grid { grid-template-columns: repeat(2, 1fr); } }' . "\n";
-        $css .= '@media (max-width: 767px) { ' . $selector . ' .jtb-blog-grid { grid-template-columns: 1fr; } }' . "\n";
-
+        // Parent class handles common styles
         $css .= parent::generateCss($attrs, $selector);
 
         return $css;

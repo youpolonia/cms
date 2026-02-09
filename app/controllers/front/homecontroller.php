@@ -11,32 +11,9 @@ class HomeController
     {
         $pdo = db();
         
-        // Check for Theme Builder homepage first
-        $stmt = $pdo->query("SELECT id, title, slug, content_json, status FROM tb_pages WHERE is_homepage = 1 AND status = 'published' LIMIT 1");
-        $tbHomepage = $stmt->fetch(\PDO::FETCH_ASSOC);
+        // Legacy TB homepage check removed — JTB uses templates system
         
-        if ($tbHomepage && !empty($tbHomepage['content_json'])) {
-            $tbData = json_decode($tbHomepage['content_json'], true);
-            if ($tbData && is_array($tbData)) {
-                require_once CMS_ROOT . '/core/theme-builder/renderer.php';
-                $renderedContent = tb_render_page($tbData, ['preview_mode' => false]);
-                
-                // Create page array - mark as TB page to avoid article wrapper
-                $page = [
-                    'id' => $tbHomepage['id'],
-                    'title' => $tbHomepage['title'],
-                    'slug' => $tbHomepage['slug'],
-                    'content' => $renderedContent,
-                    'status' => $tbHomepage['status'],
-                    'is_tb_page' => true
-                ];
-                
-                render('front/page', ['page' => $page, 'isPreview' => false]);
-                return;
-            }
-        }
-        
-        // Fallback to static homepage
+        // Static homepage
         // Get published pages
         $stmt = $pdo->query("SELECT * FROM pages WHERE status = 'published' ORDER BY created_at DESC LIMIT 10");
         $pages = $stmt->fetchAll(\PDO::FETCH_ASSOC);

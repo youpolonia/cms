@@ -25,6 +25,14 @@ class JTB_Module_Heading extends JTB_Element
     public bool $use_position = false;
     public bool $use_filters = false;
 
+    // === UNIFIED THEME SYSTEM ===
+    protected string $module_prefix = 'heading';
+
+    /**
+     * Declarative style configuration
+     */
+    protected array $style_config = [];
+
     public function getSlug(): string
     {
         return 'heading';
@@ -72,6 +80,9 @@ class JTB_Module_Heading extends JTB_Element
 
     public function render(array $attrs, string $content = ''): string
     {
+        // Apply default styles from design system
+        $attrs = JTB_Default_Styles::mergeWithDefaults($this->getSlug(), $attrs);
+
         $text = $attrs['text'] ?? 'Your Heading Here';
         $level = $attrs['level'] ?? 'h2';
         $linkUrl = $attrs['link_url'] ?? '';
@@ -105,16 +116,19 @@ class JTB_Module_Heading extends JTB_Element
         return $this->renderWrapper($innerHtml, $attrs);
     }
 
+    /**
+     * Generate CSS for Heading module
+     * Base styles are in jtb-base-modules.css
+     */
     public function generateCss(array $attrs, string $selector): string
     {
         $css = '';
 
-        // Apply typography to heading element
-        $level = $attrs['level'] ?? 'h2';
-        $headingSelector = $selector . ' .jtb-heading-text';
+        // Use declarative style_config system
+        $css .= $this->generateStyleConfigCss($attrs, $selector);
 
         // Reset default heading margins
-        $css .= $headingSelector . ' { margin: 0; }' . "\n";
+        $css .= $selector . ' .jtb-heading-text { margin: 0; }' . "\n";
 
         // Link styling
         if (!empty($attrs['link_url'])) {
@@ -122,7 +136,7 @@ class JTB_Module_Heading extends JTB_Element
             $css .= $selector . ' .jtb-heading-link:hover { text-decoration: underline; }' . "\n";
         }
 
-        // Parent CSS
+        // Parent class handles common styles
         $css .= parent::generateCss($attrs, $selector);
 
         return $css;

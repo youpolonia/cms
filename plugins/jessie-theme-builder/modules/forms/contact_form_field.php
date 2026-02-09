@@ -26,6 +26,35 @@ class JTB_Module_ContactFormField extends JTB_Element
     public bool $use_position = false;
     public bool $use_filters = false;
 
+    // === UNIFIED THEME SYSTEM ===
+    protected string $module_prefix = 'contact_form_field';
+
+    /**
+     * Declarative style configuration
+     */
+    protected array $style_config = [
+        'label_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-field-label'
+        ],
+        'input_background' => [
+            'property' => 'background',
+            'selector' => '.jtb-field-input'
+        ],
+        'input_text_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-field-input'
+        ],
+        'input_border_color' => [
+            'property' => 'border-color',
+            'selector' => '.jtb-field-input'
+        ],
+        'input_focus_border' => [
+            'property' => 'border-color',
+            'selector' => '.jtb-field-input:focus'
+        ]
+    ];
+
     public function getSlug(): string
     {
         return 'contact_form_field';
@@ -161,6 +190,9 @@ class JTB_Module_ContactFormField extends JTB_Element
 
     public function render(array $attrs, string $content = ''): string
     {
+        // Apply default styles from design system
+        $attrs = JTB_Default_Styles::mergeWithDefaults($this->getSlug(), $attrs);
+
         $fieldId = $this->esc($attrs['field_id'] ?? 'field_' . uniqid());
         $fieldTitle = $this->esc($attrs['field_title'] ?? 'Field');
         $fieldType = $attrs['field_type'] ?? 'input';
@@ -255,45 +287,34 @@ class JTB_Module_ContactFormField extends JTB_Element
         return $html;
     }
 
+    /**
+     * Generate CSS for Contact Form Field module
+     * Base styles are in jtb-base-modules.css
+     */
     public function generateCss(array $attrs, string $selector): string
     {
-        $css = parent::generateCss($attrs, $selector);
+        $css = '';
 
-        $labelColor = $attrs['label_color'] ?? '#333333';
-        $inputBg = $attrs['input_background'] ?? '#ffffff';
-        $inputText = $attrs['input_text_color'] ?? '#333333';
-        $inputBorder = $attrs['input_border_color'] ?? '#dddddd';
-        $focusBorder = $attrs['input_focus_border'] ?? '#7c3aed';
+        // Use declarative style_config system
+        $css .= $this->generateStyleConfigCss($attrs, $selector);
 
         // Field container
         $css .= $selector . ' { margin-bottom: 20px; }' . "\n";
         $css .= $selector . '.jtb-field-fullwidth { width: 100%; }' . "\n";
 
         // Label
-        $css .= $selector . ' .jtb-field-label { ';
-        $css .= 'display: block; margin-bottom: 6px; ';
-        $css .= 'font-weight: 500; color: ' . $labelColor . '; ';
-        $css .= '}' . "\n";
-
+        $css .= $selector . ' .jtb-field-label { display: block; margin-bottom: 6px; font-weight: 500; }' . "\n";
         $css .= $selector . ' .jtb-required { color: #ef4444; margin-left: 2px; }' . "\n";
 
-        // Input
+        // Input base styles
         $css .= $selector . ' .jtb-field-input { ';
-        $css .= 'width: 100%; padding: 12px 16px; ';
-        $css .= 'background: ' . $inputBg . '; ';
-        $css .= 'color: ' . $inputText . '; ';
-        $css .= 'border: 1px solid ' . $inputBorder . '; ';
-        $css .= 'border-radius: 6px; ';
-        $css .= 'font-size: 15px; ';
+        $css .= 'width: 100%; padding: 12px 16px; border: 1px solid; border-radius: 6px; font-size: 15px; ';
         $css .= 'transition: border-color 0.2s ease, box-shadow 0.2s ease; ';
         $css .= '}' . "\n";
 
         // Focus state
-        $css .= $selector . ' .jtb-field-input:focus { ';
-        $css .= 'outline: none; ';
-        $css .= 'border-color: ' . $focusBorder . '; ';
-        $css .= 'box-shadow: 0 0 0 3px ' . $this->hexToRgba($focusBorder, 0.15) . '; ';
-        $css .= '}' . "\n";
+        $focusBorder = $attrs['input_focus_border'] ?? '#7c3aed';
+        $css .= $selector . ' .jtb-field-input:focus { outline: none; box-shadow: 0 0 0 3px ' . $this->hexToRgba($focusBorder, 0.15) . '; }' . "\n";
 
         // Textarea
         $css .= $selector . ' .jtb-field-textarea { resize: vertical; min-height: 120px; }' . "\n";
@@ -302,16 +323,15 @@ class JTB_Module_ContactFormField extends JTB_Element
         $css .= $selector . ' .jtb-field-select { ';
         $css .= 'appearance: none; ';
         $css .= 'background-image: url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'12\' height=\'12\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'%23666\' stroke-width=\'2\'%3E%3Cpolyline points=\'6 9 12 15 18 9\'/%3E%3C/svg%3E"); ';
-        $css .= 'background-repeat: no-repeat; ';
-        $css .= 'background-position: right 12px center; ';
-        $css .= 'padding-right: 40px; ';
+        $css .= 'background-repeat: no-repeat; background-position: right 12px center; padding-right: 40px; ';
         $css .= '}' . "\n";
 
         // Radio/Checkbox options
         $css .= $selector . ' .jtb-field-options { display: flex; flex-wrap: wrap; gap: 12px; }' . "\n";
-        $css .= $selector . ' .jtb-option-label { ';
-        $css .= 'display: flex; align-items: center; gap: 8px; cursor: pointer; ';
-        $css .= '}' . "\n";
+        $css .= $selector . ' .jtb-option-label { display: flex; align-items: center; gap: 8px; cursor: pointer; }' . "\n";
+
+        // Parent class handles common styles
+        $css .= parent::generateCss($attrs, $selector);
 
         return $css;
     }

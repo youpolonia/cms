@@ -26,6 +26,37 @@ class JTB_Module_FullwidthSlider extends JTB_Element
     public bool $use_position = false;
     public bool $use_filters = false;
 
+    // === UNIFIED THEME SYSTEM ===
+    protected string $module_prefix = 'fullwidth_slider';
+
+    /**
+     * Declarative style configuration
+     */
+    protected array $style_config = [
+        'arrows_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-fullwidth-slider-arrow'
+        ],
+        'arrows_bg_color' => [
+            'property' => 'background',
+            'selector' => '.jtb-fullwidth-slider-arrow'
+        ],
+        'dot_color' => [
+            'property' => 'background',
+            'selector' => '.jtb-fullwidth-slider-pagination .jtb-slider-dot'
+        ],
+        'dot_active_color' => [
+            'property' => 'background',
+            'selector' => '.jtb-fullwidth-slider-pagination .jtb-slider-dot.active'
+        ],
+        'custom_height' => [
+            'property' => 'height',
+            'selector' => '.jtb-fullwidth-slider-container',
+            'unit' => 'px',
+            'responsive' => true
+        ]
+    ];
+
     public function getSlug(): string
     {
         return 'fullwidth_slider';
@@ -120,6 +151,9 @@ class JTB_Module_FullwidthSlider extends JTB_Element
 
     public function render(array $attrs, string $content = ''): string
     {
+        // Apply default styles from design system
+        $attrs = JTB_Default_Styles::mergeWithDefaults($this->getSlug(), $attrs);
+
         $showArrows = $attrs['show_arrows'] ?? true;
         $showPagination = $attrs['show_pagination'] ?? true;
         $autoPlay = !empty($attrs['auto_play']);
@@ -207,6 +241,9 @@ class JTB_Module_FullwidthSlider extends JTB_Element
     public function generateCss(array $attrs, string $selector): string
     {
         $css = '';
+
+        // Use declarative style_config system
+        $css .= $this->generateStyleConfigCss($attrs, $selector);
 
         $sliderHeight = $attrs['slider_height'] ?? 'auto';
         $customHeight = $attrs['custom_height'] ?? 500;

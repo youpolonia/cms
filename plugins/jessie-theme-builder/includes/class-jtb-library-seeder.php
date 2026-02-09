@@ -41,7 +41,7 @@ class JTB_Library_Seeder
                 'category_slug' => self::mapCategory($page['category']),
                 'tags' => self::getTags($page['id']),
                 'content' => $page['content'],
-                'thumbnail' => self::getThumbnail($page['id']),
+                'thumbnail' => $page['thumbnail'] ?? null,
                 'is_premade' => 1,
                 'is_featured' => self::isFeatured($page['id']),
                 'template_type' => 'page',
@@ -62,7 +62,7 @@ class JTB_Library_Seeder
                 'category_slug' => 'sections',
                 'tags' => self::getTags($section['id']),
                 'content' => $section['content'],
-                'thumbnail' => self::getThumbnail($section['id']),
+                'thumbnail' => $section['thumbnail'] ?? null,
                 'is_premade' => 1,
                 'is_featured' => self::isFeatured($section['id']),
                 'template_type' => 'section',
@@ -93,8 +93,8 @@ class JTB_Library_Seeder
     private static function mapCategory(string $category): string
     {
         $map = [
-            'landing' => 'landing-page',
             'business' => 'business',
+            'landing' => 'landing-page',
             'portfolio' => 'portfolio',
             'blog' => 'blog',
             'ecommerce' => 'ecommerce',
@@ -102,13 +102,9 @@ class JTB_Library_Seeder
             'coming-soon' => 'coming-soon',
             'contact' => 'contact',
             'about' => 'about',
-            'hero' => 'sections',
-            'features' => 'sections',
-            'cta' => 'sections',
-            'testimonials' => 'sections',
         ];
 
-        return $map[$category] ?? 'landing-page';
+        return $map[$category] ?? 'business';
     }
 
     /**
@@ -117,10 +113,22 @@ class JTB_Library_Seeder
     private static function getDescription(string $id): string
     {
         $descriptions = [
-            'page-agency-landing' => 'Modern agency landing page with hero section, features grid, and call-to-action. Perfect for digital agencies and creative studios.',
-            'page-insurance-landing' => 'Professional insurance landing page with hero, coverage plans, methodology steps, and testimonials. Designed for insurance companies and financial services.',
-            'section-hero-modern' => 'Modern split-layout hero section with heading, description, CTA button, and featured image. Dark theme with accent colors.',
-            'section-insurance-hero' => 'Insurance-themed hero section with dual buttons, customer trust badges, and professional imagery. Clean light design.',
+            // Page layouts - 5 new pages
+            'page-home' => 'Complete home page with hero section, features grid, testimonials, and call-to-action. Perfect starting point for any business website.',
+            'page-about' => 'Professional about page with company story, team members section, and call-to-action. Ideal for introducing your company.',
+            'page-services' => 'Services page with service blurbs, pricing tables, and CTA. Great for showcasing what you offer.',
+            'page-portfolio' => 'Portfolio page with project gallery, testimonials, and CTA. Perfect for showcasing your work.',
+            'page-contact' => 'Contact page with contact information, contact form, and map. Everything needed to connect with visitors.',
+
+            // Section layouts
+            'section-hero-centered' => 'Centered hero section with heading, text, and CTA button. Clean and modern design.',
+            'section-hero-split' => 'Split hero section with content on left and image on right. Engaging two-column layout.',
+            'section-features-3col' => 'Features section with 3-column blurb grid. Highlight your key benefits.',
+            'section-testimonials' => 'Testimonials section with 3 client reviews. Build trust with social proof.',
+            'section-team' => 'Team section with 4 team member cards. Introduce your talented people.',
+            'section-pricing' => 'Pricing section with 3 pricing tables. Compare plans at a glance.',
+            'section-cta' => 'Call-to-action section with heading, text, and button. Drive conversions.',
+            'section-contact' => 'Contact section with info and form. Make it easy to get in touch.',
         ];
 
         return $descriptions[$id] ?? 'Professional premade template for Jessie Theme Builder.';
@@ -132,22 +140,25 @@ class JTB_Library_Seeder
     private static function getTags(string $id): array
     {
         $tags = [
-            'page-agency-landing' => ['agency', 'landing', 'modern', 'dark', 'creative'],
-            'page-insurance-landing' => ['insurance', 'landing', 'business', 'professional', 'finance', 'green'],
-            'section-hero-modern' => ['hero', 'dark', 'modern', 'cta'],
-            'section-insurance-hero' => ['hero', 'light', 'insurance', 'professional'],
+            // Page layouts
+            'page-home' => ['home', 'landing', 'business', 'hero', 'features', 'testimonials', 'cta'],
+            'page-about' => ['about', 'team', 'company', 'story', 'professional'],
+            'page-services' => ['services', 'pricing', 'business', 'blurbs', 'plans'],
+            'page-portfolio' => ['portfolio', 'gallery', 'creative', 'projects', 'showcase'],
+            'page-contact' => ['contact', 'form', 'map', 'information', 'address'],
+
+            // Section layouts
+            'section-hero-centered' => ['hero', 'centered', 'modern', 'cta', 'heading'],
+            'section-hero-split' => ['hero', 'split', 'image', 'two-column'],
+            'section-features-3col' => ['features', 'grid', 'blurb', '3-column'],
+            'section-testimonials' => ['testimonials', 'reviews', 'clients', 'social-proof'],
+            'section-team' => ['team', 'members', 'people', 'staff'],
+            'section-pricing' => ['pricing', 'tables', 'plans', 'comparison'],
+            'section-cta' => ['cta', 'call-to-action', 'conversion', 'button'],
+            'section-contact' => ['contact', 'form', 'info', 'address'],
         ];
 
         return $tags[$id] ?? ['template', 'premade'];
-    }
-
-    /**
-     * Get thumbnail URL for template
-     */
-    private static function getThumbnail(string $id): ?string
-    {
-        // For now, return null - thumbnails can be generated later
-        return null;
     }
 
     /**
@@ -156,8 +167,10 @@ class JTB_Library_Seeder
     private static function isFeatured(string $id): bool
     {
         $featured = [
-            'page-insurance-landing',
-            'page-agency-landing',
+            'page-home',
+            'page-services',
+            'section-hero-centered',
+            'section-pricing',
         ];
 
         return in_array($id, $featured);

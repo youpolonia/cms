@@ -51,28 +51,35 @@ function ai_landing_generate_spec(array $params): array
     // Build comprehensive prompt for HuggingFace
     $prompt = ai_landing_build_prompt($goal, $audience, $offer, $language, $primaryKeyword, $tone);
 
-    // Attempt HuggingFace generation
-    $config = ai_hf_config_load();
-    $aiEnabled = ai_hf_is_configured($config);
+    // Auto-detect AI provider
+    $provider = '';
+    $model = '';
+    $aiSettings = ai_config_load_full();
+    if (!empty($aiSettings['providers'])) {
+        foreach ($aiSettings['providers'] as $pName => $pConfig) {
+            if (!empty($pConfig['enabled']) && !empty($pConfig['api_key'])) {
+                $provider = $pName;
+                $model = $pConfig['default_model'] ?? '';
+                break;
+            }
+        }
+    }
 
     $rawResponse = null;
-    if ($aiEnabled) {
+    if (!empty($provider)) {
         try {
-            $result = ai_hf_generate_text($prompt, [
-                'params' => [
-                    'max_new_tokens' => 2000,
-                    'temperature' => 0.7,
-                    'top_p' => 0.9,
-                ]
+            $result = ai_universal_generate($provider, $model, 'You are a landing page copywriter.', $prompt, [
+                'max_tokens' => 2000,
+                'temperature' => 0.7,
             ]);
 
-            if ($result['ok'] === true && !empty($result['text'])) {
-                $rawResponse = $result['text'];
+            if ($result['ok'] === true) {
+                $rawResponse = trim($result['content'] ?? $result['text'] ?? '');
             } else {
-                error_log('[AI_LANDING] HuggingFace generation failed: ' . ($result['error'] ?? 'unknown'));
+                error_log('[AI_LANDING] AI generation failed: ' . ($result['error'] ?? 'unknown'));
             }
         } catch (\Throwable $e) {
-            error_log('[AI_LANDING] Exception during HF call: ' . $e->getMessage());
+            error_log('[AI_LANDING] Exception during AI call: ' . $e->getMessage());
         }
     }
 

@@ -15,13 +15,36 @@ class JTB_Module_Post_Meta extends JTB_Element
     public string $slug = 'post_meta';
     public string $name = 'Post Meta';
     public string $icon = 'info';
-    public string $category = 'theme';
+    public string $category = 'dynamic';
 
     public bool $use_background = true;
     public bool $use_spacing = true;
     public bool $use_border = true;
     public bool $use_box_shadow = true;
     public bool $use_animation = true;
+    public bool $use_typography = true;
+
+    protected string $module_prefix = 'post_meta';
+
+    protected array $style_config = [
+        'text_color' => [
+            'property' => 'color'
+        ],
+        'link_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-meta-link',
+            'hover' => true
+        ],
+        'icon_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-meta-icon'
+        ],
+        'font_size' => [
+            'property' => 'font-size',
+            'unit' => 'px',
+            'responsive' => true
+        ]
+    ];
 
     public function getSlug(): string
     {
@@ -141,6 +164,9 @@ class JTB_Module_Post_Meta extends JTB_Element
 
     public function render(array $attrs, string $content = ''): string
     {
+        // Apply default styles from design system
+        $attrs = JTB_Default_Styles::mergeWithDefaults($this->getSlug(), $attrs);
+
         $id = $attrs['id'] ?? 'post_meta_' . uniqid();
         $showAuthor = $attrs['show_author'] ?? true;
         $showAvatar = $attrs['show_author_avatar'] ?? false;
@@ -208,6 +234,7 @@ class JTB_Module_Post_Meta extends JTB_Element
     public function generateCss(array $attrs, string $selector): string
     {
         $css = parent::generateCss($attrs, $selector);
+        $css .= $this->generateStyleConfigCss($attrs, $selector);
 
         $textColor = $attrs['text_color'] ?? '#6b7280';
         $linkColor = $attrs['link_color'] ?? '#7c3aed';

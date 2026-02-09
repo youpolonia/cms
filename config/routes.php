@@ -254,85 +254,12 @@ return [
     'GET /admin/theme-editor/{name}' => ['Admin\\ThemeEditorController', 'edit', ['auth' => true]],
     'POST /admin/theme-editor/{name}/save' => ['Admin\\ThemeEditorController', 'save', ['auth' => true]],
 
-    // Theme Builder 3.0 (Page Builder)
-    'GET /admin/theme-builder' => ['Admin\\ThemeBuilderController', 'index', ['auth' => true]],
-    'GET /admin/theme-builder/create' => ['Admin\\ThemeBuilderController', 'create', ['auth' => true]],
-    'GET /admin/theme-builder/{id}/edit' => ['Admin\\ThemeBuilderController', 'edit', ['auth' => true]],
-    'GET /admin/theme-builder/page/{page_id}/edit' => ['Admin\\ThemeBuilderController', 'editPage', ['auth' => true]],
-    'POST /admin/theme-builder/save' => ['Admin\\ThemeBuilderController', 'save', ['auth' => true, 'csrf' => true]],
-    'GET /admin/theme-builder/{id}/content' => ['Admin\\ThemeBuilderController', 'getContent', ['auth' => true]],
-    'GET /admin/theme-builder/modules' => ['Admin\\ThemeBuilderController', 'getModules', ['auth' => true]],
-    'GET /admin/theme-builder/revision/{revision_id}' => ['Admin\\ThemeBuilderController', 'getRevision', ['auth' => true]],
-    'POST /admin/theme-builder/revision/restore' => ['Admin\\ThemeBuilderController', 'restoreRevision', ['auth' => true, 'csrf' => true]],
-    'POST /admin/theme-builder/preview' => ['Admin\\ThemeBuilderController', 'preview', ['auth' => true, 'csrf' => true]],
-    'POST /admin/theme-builder/{id}/delete' => ['Admin\\ThemeBuilderController', 'destroy', ['auth' => true, 'csrf' => true]],
-    'POST /admin/theme-builder/ai/generate' => ['Admin\\ThemeBuilderController', 'generateContent', ['auth' => true, 'csrf' => true]],
-    'POST /admin/theme-builder/{id}/set-homepage' => ['Admin\\ThemeBuilderController', 'setHomepage', ['auth' => true, 'csrf' => true]],
-    'POST /admin/theme-builder/{id}/remove-homepage' => ['Admin\\ThemeBuilderController', 'removeHomepage', ['auth' => true, 'csrf' => true]],
-    'POST /admin/theme-builder/bulk' => ['Admin\\ThemeBuilderController', 'bulk', ['auth' => true]],
-
-    // Theme Builder Templates (Header, Footer, Archive, etc.)
-    'GET /admin/theme-builder/templates' => ['Admin\\ThemeBuilderController', 'templates', ['auth' => true]],
-    'GET /admin/theme-builder/templates/create/{type}' => ['Admin\\ThemeBuilderController', 'createTemplate', ['auth' => true]],
-    'GET /admin/theme-builder/templates/{id}/edit' => ['Admin\\ThemeBuilderController', 'editTemplate', ['auth' => true]],
-    'POST /admin/theme-builder/templates/save' => ['Admin\\ThemeBuilderController', 'saveTemplate', ['auth' => true, 'csrf' => true]],
-    'POST /admin/theme-builder/templates/{id}/delete' => ['Admin\\ThemeBuilderController', 'deleteTemplate', ['auth' => true, 'csrf' => true]],
-    'POST /admin/theme-builder/templates/{id}/toggle' => ['Admin\\ThemeBuilderController', 'toggleTemplate', ['auth' => true, 'csrf' => true]],
-    'POST /admin/theme-builder/templates/{id}/duplicate' => ['Admin\\ThemeBuilderController', 'duplicateTemplate', ['auth' => true, 'csrf' => true]],
-    'POST /admin/theme-builder/templates/upload' => ['Admin\\ThemeBuilderController', 'uploadTemplate', ['auth' => true, 'csrf' => true]],
-
-    // Theme Builder 4.0 (Pure PHP Page Builder)
-    'GET /admin/tb4-builder' => ['Admin\\Tb4BuilderController', 'index', ['auth' => true]],
-    'GET /admin/tb4-builder/{id}/edit' => ['Admin\\Tb4BuilderController', 'edit', ['auth' => true]],
-    'POST /admin/tb4-builder/create' => ['Admin\\Tb4BuilderController', 'create', ['auth' => true, 'csrf' => true]],
-    'POST /admin/tb4-builder/{id}/save' => ['Admin\\Tb4BuilderController', 'save', ['auth' => true]],
-
-    // TB4 Builder (Alternate Routes)
-    'GET /admin/tb4' => ['Admin\\Tb4Controller', 'index', ['auth' => true]],
-    'GET /admin/tb4/create' => ['Admin\\Tb4Controller', 'create', ['auth' => true]],
-    'POST /admin/tb4/create' => ['Admin\\Tb4Controller', 'create', ['auth' => true, 'csrf' => true]],
-    'GET /admin/tb4/edit/{id}' => ['Admin\\Tb4Controller', 'edit', ['auth' => true]],
-    'POST /admin/tb4/delete/{id}' => ['Admin\\Tb4Controller', 'delete', ['auth' => true, 'csrf' => true]],
-    'POST /admin/tb4/save/{id}' => ['Admin\\Tb4Controller', 'save', ['auth' => true]],
-    'POST /admin/tb4/toggle/{id}' => ['Admin\\Tb4Controller', 'toggle', ['auth' => true, 'csrf' => true]],
-    'GET /admin/tb4/api' => ['Admin\\Tb4Controller', 'api', ['auth' => true]],
-    'POST /admin/tb4/api' => ['Admin\\Tb4Controller', 'api', ['auth' => true]],
-
-    // AI Theme Builder 4.0 (MVC) - Unified TB 3.0 Layout Generator
-    'GET /admin/ai-theme-builder' => ['Admin\\AiThemeBuilderController', 'index', ['auth' => true]],
-    'GET /admin/ai-theme-builder/create' => ['Admin\\AiThemeBuilderController', 'create', ['auth' => true]],
-    'POST /admin/ai-theme-builder/generate' => ['Admin\\AiThemeBuilderController', 'generate', ['auth' => true, 'csrf' => true]],
-    'POST /admin/ai-theme-builder/generate-header' => ['Admin\\AiThemeBuilderController', 'generateHeader', ['auth' => true, 'csrf' => true]],
-    'POST /admin/ai-theme-builder/generate-pages' => ['Admin\\AiThemeBuilderController', 'generatePages', ['auth' => true, 'csrf' => true]],
-    'POST /admin/ai-theme-builder/generate-footer' => ['Admin\\AiThemeBuilderController', 'generateFooter', ['auth' => true, 'csrf' => true]],
-    'POST /admin/ai-theme-builder/fetch-images' => ['Admin\\AiThemeBuilderController', 'fetchImages', ['auth' => true, 'csrf' => true]],
-    'POST /admin/ai-theme-builder/deploy' => ['Admin\\AiThemeBuilderController', 'deploy', ['auth' => true, 'csrf' => true]],
-    'POST /admin/ai-theme-builder/full-preview' => ['Admin\\AiThemeBuilderController', 'fullPreview', ['auth' => true, 'csrf' => true]],
-    'GET /admin/ai-theme-builder/preview/{name}' => ['Admin\\AiThemeBuilderController', 'preview', ['auth' => true]],
-    'POST /admin/ai-theme-builder/activate/{name}' => ['Admin\\AiThemeBuilderController', 'activate', ['auth' => true, 'csrf' => true]],
-    'POST /admin/ai-theme-builder/delete/{name}' => ['Admin\\AiThemeBuilderController', 'delete', ['auth' => true, 'csrf' => true]],
-    'POST /admin/ai-theme-builder/preview-new-tab' => ['Admin\\AiThemeBuilderController', 'previewNewTab', ['auth' => true, 'csrf' => true]],
-    'GET /admin/ai-theme-builder/show-preview' => ['Admin\\AiThemeBuilderController', 'showPreview', ['auth' => true]],
-    'POST /admin/ai-theme-builder/generate-html' => ['Admin\\AiThemeBuilderController', 'generateWithHtml', ['auth' => true, 'csrf' => true]],
-    'POST /admin/ai-theme-builder/convert-html' => ['Admin\\AiThemeBuilderController', 'convertHtml', ['auth' => true, 'csrf' => true]],
-
-    // AI Designer 4.0
-    'GET /admin/ai-designer' => ['Admin\\AiDesignerController', 'index', ['auth' => true]],
-    'POST /admin/ai-designer/generate' => ['Admin\\AiDesignerController', 'generate', ['auth' => true, 'csrf' => true]],
-    'GET /admin/ai-designer/preview' => ['Admin\\AiDesignerController', 'preview', ['auth' => true]],
-    'GET /admin/ai-designer/get-theme' => ['Admin\\AiDesignerController', 'getTheme', ['auth' => true]],
-    'GET /admin/ai-designer/list' => ['Admin\\AiDesignerController', 'listThemes', ['auth' => true]],
-    'POST /admin/ai-designer/deploy' => ['Admin\\AiDesignerController', 'deployTheme', ['auth' => true, 'csrf' => true]],
-    'POST /admin/ai-designer/delete' => ['Admin\\AiDesignerController', 'deleteTheme', ['auth' => true, 'csrf' => true]],
+    // Legacy TB3/TB4/AI Theme Builder/AI Designer routes — REMOVED 2026-02-08
+    // JTB (Jessie Theme Builder) routes are in /api/jtb/* and handled by index.php
+    // Legacy AI Designer routes — REMOVED 2026-02-08
 
     // Layout Library
-    'GET /admin/layout-library' => ['Admin\\LayoutLibraryController', 'index', ['auth' => true]],
-    'GET /admin/layout-library/preview' => ['Admin\\LayoutLibraryController', 'preview', ['auth' => true]],
-    'GET /admin/layout-library/list' => ['Admin\\LayoutLibraryController', 'list', ['auth' => true]],
-    'GET /admin/layout-library/get-sections' => ['Admin\\LayoutLibraryController', 'getSections', ['auth' => true]],
-    'POST /admin/layout-library/import' => ['Admin\\LayoutLibraryController', 'import', ['auth' => true, 'csrf' => true]],
-    'POST /admin/layout-library/delete' => ['Admin\\LayoutLibraryController', 'delete', ['auth' => true, 'csrf' => true]],
-    'POST /admin/layout-library/upload' => ['Admin\\LayoutLibraryController', 'upload', ['auth' => true, 'csrf' => true]],
+    // Legacy layout-library routes — REMOVED 2026-02-08 (used TB3 tb_layout_library table)
 
     // n8n Integration Settings (MVC)
     'GET /admin/n8n-settings' => ['Admin\\N8nSettingsController', 'index', ['auth' => true]],
@@ -402,6 +329,8 @@ return [
     'POST /api/jtb/render' => ['Admin\\JtbApiController', 'render', ['auth' => true]],
     'POST /api/jtb/upload' => ['Admin\\JtbApiController', 'upload', ['auth' => true, 'csrf' => true]],
 
+    // JTB AI Routes (delegated to plugin router)
+
     // FRONT-END ROUTES (Public)
 
     // Home page
@@ -419,8 +348,5 @@ return [
     'GET /features' => ['Front\\FeaturesController', 'index'],
     
     // Theme Builder preview
-    'GET /preview/tb/{id}' => ['Front\\ThemeBuilderPreviewController', 'show'],
-    'GET /preview/template/new' => ['Front\\ThemeBuilderPreviewController', 'showNewTemplate'],
-    'GET /preview/template/{id}' => ['Front\\ThemeBuilderPreviewController', 'showTemplate'],
-    'GET /preview/ai-theme' => ['Front\\ThemeBuilderPreviewController', 'showAiThemePreview'],
+    // Legacy TB preview routes — REMOVED 2026-02-08
 ];

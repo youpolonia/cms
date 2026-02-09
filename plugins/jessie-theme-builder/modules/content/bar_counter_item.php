@@ -26,6 +26,27 @@ class JTB_Module_BarCounterItem extends JTB_Element
     public bool $use_position = false;
     public bool $use_filters = false;
 
+    protected string $module_prefix = 'bar_counter_item';
+
+    protected array $style_config = [
+        'bar_background_color' => [
+            'property' => 'background-color',
+            'selector' => '.jtb-bar-counter-track'
+        ],
+        'bar_color' => [
+            'property' => 'background-color',
+            'selector' => '.jtb-bar-counter-fill'
+        ],
+        'label_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-bar-counter-title'
+        ],
+        'percent_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-bar-counter-percent'
+        ]
+    ];
+
     public function getSlug(): string
     {
         return 'bar_counter_item';
@@ -77,6 +98,9 @@ class JTB_Module_BarCounterItem extends JTB_Element
 
     public function render(array $attrs, string $content = ''): string
     {
+        // Apply default styles from design system
+        $attrs = JTB_Default_Styles::mergeWithDefaults($this->getSlug(), $attrs);
+
         $title = $this->esc($attrs['content'] ?? 'Progress Bar');
         $percent = intval($attrs['percent'] ?? 50);
 
@@ -96,6 +120,7 @@ class JTB_Module_BarCounterItem extends JTB_Element
     public function generateCss(array $attrs, string $selector): string
     {
         $css = parent::generateCss($attrs, $selector);
+        $css .= $this->generateStyleConfigCss($attrs, $selector);
 
         $barBg = $attrs['bar_background_color'] ?? '#dddddd';
         $barColor = $attrs['bar_color'] ?? '#7c3aed';

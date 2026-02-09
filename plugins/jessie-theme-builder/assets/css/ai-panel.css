@@ -1,0 +1,5545 @@
+/**
+ * JTB AI Panel CSS
+ * Matches JTB Builder UI (Catppuccin Dark theme)
+ *
+ * @package JessieThemeBuilder
+ * @version 2.0.0
+ */
+
+/* ==========================================================================
+   AI Toggle Button (FAB)
+   ========================================================================== */
+.jtb-ai-toggle {
+    position: fixed;
+    bottom: 80px;
+    right: 24px;
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: var(--accent, #89b4fa);
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(137, 180, 250, 0.3);
+    transition: all 0.2s ease;
+    z-index: 9998;
+}
+
+.jtb-ai-toggle:hover {
+    transform: scale(1.08);
+    box-shadow: 0 6px 20px rgba(137, 180, 250, 0.4);
+    background: var(--accent-hover, #b4befe);
+}
+
+.jtb-ai-toggle:active {
+    transform: scale(0.95);
+}
+
+.jtb-ai-toggle svg {
+    width: 24px;
+    height: 24px;
+    color: var(--bg-primary, #1e1e2e);
+    transition: transform 0.2s ease;
+}
+
+.jtb-ai-toggle.is-active {
+    background: var(--danger, #f38ba8);
+}
+
+.jtb-ai-toggle.is-active svg {
+    transform: rotate(45deg);
+}
+
+/* ==========================================================================
+   Loading Overlay (Full panel coverage during AI generation)
+   ========================================================================== */
+.jtb-ai-loading-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(30, 30, 46, 0.97);
+    backdrop-filter: blur(8px);
+    z-index: 100;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+}
+
+.jtb-ai-loading-overlay.is-visible {
+    display: flex;
+}
+
+.jtb-ai-loading-content {
+    text-align: center;
+    max-width: 320px;
+}
+
+.jtb-ai-loading-spinner {
+    width: 64px;
+    height: 64px;
+    margin: 0 auto 24px;
+    color: var(--accent, #89b4fa);
+}
+
+.jtb-ai-loading-spinner svg {
+    width: 100%;
+    height: 100%;
+}
+
+.jtb-ai-loading-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-primary, #cdd6f4);
+    margin-bottom: 24px;
+}
+
+.jtb-ai-loading-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 24px;
+    text-align: left;
+}
+
+.jtb-ai-loading-step {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    background: var(--bg-tertiary, #313244);
+    border-radius: 8px;
+    font-size: 13px;
+    color: var(--text-secondary, #a6adc8);
+    opacity: 0.5;
+    transition: all 0.3s ease;
+}
+
+.jtb-ai-loading-step.active {
+    opacity: 1;
+    background: rgba(137, 180, 250, 0.15);
+    color: var(--text-primary, #cdd6f4);
+}
+
+.jtb-ai-loading-step.completed {
+    opacity: 1;
+    color: var(--success, #a6e3a1);
+}
+
+.jtb-ai-loading-step .step-icon {
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+}
+
+.jtb-ai-loading-step.active .step-icon {
+    animation: pulse 1s ease-in-out infinite;
+}
+
+.jtb-ai-loading-step.completed .step-icon {
+    color: var(--success, #a6e3a1);
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+.jtb-ai-loading-tip {
+    font-size: 12px;
+    color: var(--text-secondary, #a6adc8);
+    padding: 12px;
+    background: var(--bg-tertiary, #313244);
+    border-radius: 8px;
+    line-height: 1.5;
+}
+
+/* ==========================================================================
+   AI Panel Container
+   ========================================================================== */
+.jtb-ai-panel {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 380px;
+    height: 100vh;
+    background: var(--bg-primary, #1e1e2e);
+    box-shadow: -4px 0 20px rgba(0, 0, 0, 0.3);
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    transform: translateX(100%);
+    transition: transform 300ms cubic-bezier(0.4, 0, 0.2, 1);
+    border-left: 1px solid var(--border, #313244);
+    border-radius: 0;
+    overflow: hidden;
+}
+
+.jtb-ai-panel.is-open {
+    transform: translateX(0);
+}
+
+/* Body state when panel is open */
+body.jtb-ai-panel-open {
+    overflow: hidden;
+}
+
+/* Panel Overlay (optional backdrop) */
+.jtb-ai-panel-overlay {
+    display: none;
+}
+
+/* ==========================================================================
+   Panel Header
+   ========================================================================== */
+.jtb-ai-panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    background: var(--bg-secondary, #181825);
+    border-bottom: 1px solid var(--border, #313244);
+    flex-shrink: 0;
+}
+
+.jtb-ai-panel-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-primary, #cdd6f4);
+}
+
+.jtb-ai-panel-title svg {
+    width: 22px;
+    height: 22px;
+    color: var(--accent, #89b4fa);
+}
+
+.jtb-ai-panel-close {
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius, 8px);
+    background: var(--bg-tertiary, #313244);
+    border: 1px solid var(--border, #313244);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-secondary, #a6adc8);
+    transition: all 0.15s ease;
+}
+
+.jtb-ai-panel-close:hover {
+    background: var(--danger, #f38ba8);
+    border-color: var(--danger, #f38ba8);
+    color: var(--bg-primary, #1e1e2e);
+}
+
+.jtb-ai-panel-close svg {
+    width: 16px;
+    height: 16px;
+}
+
+/* ==========================================================================
+   Tabs Navigation
+   ========================================================================== */
+.jtb-ai-panel-tabs {
+    display: flex;
+    background: var(--bg-secondary, #181825);
+    border-bottom: 1px solid var(--border, #313244);
+    flex-shrink: 0;
+    padding: 0 8px;
+}
+
+.jtb-ai-tab {
+    flex: 1;
+    padding: 12px 8px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-muted, #6c7086);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    position: relative;
+    transition: all 0.15s ease;
+}
+
+.jtb-ai-tab svg {
+    width: 18px;
+    height: 18px;
+    opacity: 0.6;
+    transition: all 0.15s ease;
+}
+
+.jtb-ai-tab:hover {
+    color: var(--text-secondary, #a6adc8);
+}
+
+.jtb-ai-tab:hover svg {
+    opacity: 0.8;
+}
+
+.jtb-ai-tab.active {
+    color: var(--accent, #89b4fa);
+}
+
+.jtb-ai-tab.active svg {
+    opacity: 1;
+    color: var(--accent, #89b4fa);
+}
+
+.jtb-ai-tab.active::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 8px;
+    right: 8px;
+    height: 2px;
+    background: var(--accent, #89b4fa);
+    border-radius: 2px 2px 0 0;
+}
+
+/* ==========================================================================
+   Panel Content Area
+   ========================================================================== */
+.jtb-ai-panel-body {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 20px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border, #313244) transparent;
+}
+
+.jtb-ai-panel-body::-webkit-scrollbar {
+    width: 6px;
+}
+
+.jtb-ai-panel-body::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.jtb-ai-panel-body::-webkit-scrollbar-thumb {
+    background-color: var(--border, #313244);
+    border-radius: 3px;
+}
+
+.jtb-ai-panel-body::-webkit-scrollbar-thumb:hover {
+    background-color: var(--text-muted, #6c7086);
+}
+
+/* Tab Content */
+.jtb-ai-tab-content {
+    display: none;
+}
+
+.jtb-ai-tab-content.active {
+    display: block;
+    animation: jtb-ai-fadeIn 200ms ease;
+}
+
+@keyframes jtb-ai-fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ==========================================================================
+   Form Elements
+   ========================================================================== */
+.jtb-ai-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.jtb-ai-field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.jtb-ai-field label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-secondary, #a6adc8);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* Textarea */
+.jtb-ai-field textarea {
+    width: 100%;
+    min-height: 100px;
+    padding: 12px;
+    border: 1px solid var(--border, #313244);
+    border-radius: var(--radius, 8px);
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--text-primary, #cdd6f4);
+    background: var(--bg-tertiary, #313244);
+    resize: vertical;
+    transition: all 0.15s ease;
+    font-family: inherit;
+}
+
+.jtb-ai-field textarea:focus {
+    outline: none;
+    border-color: var(--accent, #89b4fa);
+    box-shadow: 0 0 0 3px rgba(137, 180, 250, 0.15);
+}
+
+.jtb-ai-field textarea::placeholder {
+    color: var(--text-muted, #6c7086);
+}
+
+/* Select */
+.jtb-ai-field select {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--border, #313244);
+    border-radius: var(--radius, 8px);
+    font-size: 14px;
+    color: var(--text-primary, #cdd6f4);
+    background: var(--bg-tertiary, #313244);
+    cursor: pointer;
+    transition: all 0.15s ease;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23a6adc8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    padding-right: 40px;
+}
+
+.jtb-ai-field select:focus {
+    outline: none;
+    border-color: var(--accent, #89b4fa);
+    box-shadow: 0 0 0 3px rgba(137, 180, 250, 0.15);
+}
+
+/* ==========================================================================
+   Buttons
+   ========================================================================== */
+.jtb-ai-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 16px;
+    font-size: 13px;
+    font-weight: 500;
+    border-radius: var(--radius, 8px);
+    cursor: pointer;
+    transition: all 0.15s ease;
+    border: none;
+}
+
+.jtb-ai-btn svg {
+    width: 16px;
+    height: 16px;
+}
+
+/* Primary Button */
+.jtb-ai-btn-primary {
+    background: var(--accent, #89b4fa);
+    color: var(--bg-primary, #1e1e2e);
+}
+
+.jtb-ai-btn-primary:hover {
+    background: var(--accent-hover, #b4befe);
+}
+
+.jtb-ai-btn-primary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Secondary Button */
+.jtb-ai-btn-secondary {
+    background: var(--bg-tertiary, #313244);
+    color: var(--text-secondary, #a6adc8);
+    border: 1px solid var(--border, #313244);
+}
+
+.jtb-ai-btn-secondary:hover {
+    background: var(--bg-tertiary, #313244);
+    border-color: var(--text-muted, #6c7086);
+    color: var(--text-primary, #cdd6f4);
+}
+
+/* Outline Button */
+.jtb-ai-btn-outline {
+    background: transparent;
+    color: var(--accent, #89b4fa);
+    border: 1px solid var(--accent, #89b4fa);
+}
+
+.jtb-ai-btn-outline:hover {
+    background: var(--accent-muted, rgba(137, 180, 250, 0.15));
+}
+
+/* ==========================================================================
+   Section Grid
+   ========================================================================== */
+.jtb-ai-section-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+}
+
+.jtb-ai-section-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding: 14px 8px;
+    background: var(--bg-tertiary, #313244);
+    border: 1px solid var(--border, #313244);
+    border-radius: var(--radius, 8px);
+    cursor: pointer;
+    transition: all 0.15s ease;
+    color: var(--text-secondary, #a6adc8);
+}
+
+.jtb-ai-section-btn:hover {
+    border-color: var(--accent, #89b4fa);
+    background: var(--accent-muted, rgba(137, 180, 250, 0.15));
+    color: var(--accent, #89b4fa);
+}
+
+.jtb-ai-section-btn.selected {
+    border-color: var(--accent, #89b4fa);
+    background: var(--accent-muted, rgba(137, 180, 250, 0.15));
+    color: var(--accent, #89b4fa);
+}
+
+.jtb-ai-section-btn svg {
+    width: 20px;
+    height: 20px;
+    opacity: 0.8;
+}
+
+.jtb-ai-section-btn:hover svg,
+.jtb-ai-section-btn.selected svg {
+    opacity: 1;
+}
+
+.jtb-ai-section-btn span {
+    font-size: 11px;
+    font-weight: 500;
+}
+
+/* ==========================================================================
+   Content Options Grid
+   ========================================================================== */
+.jtb-ai-content-options {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+}
+
+.jtb-ai-content-btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px;
+    background: var(--bg-tertiary, #313244);
+    border: 1px solid var(--border, #313244);
+    border-radius: var(--radius, 8px);
+    cursor: pointer;
+    transition: all 0.15s ease;
+    color: var(--text-secondary, #a6adc8);
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.jtb-ai-content-btn:hover {
+    border-color: var(--accent, #89b4fa);
+    background: var(--accent-muted, rgba(137, 180, 250, 0.15));
+    color: var(--accent, #89b4fa);
+}
+
+.jtb-ai-content-btn.selected {
+    border-color: var(--accent, #89b4fa);
+    background: var(--accent-muted, rgba(137, 180, 250, 0.15));
+    color: var(--accent, #89b4fa);
+}
+
+.jtb-ai-content-btn svg {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+}
+
+/* ==========================================================================
+   Progress Indicator
+   ========================================================================== */
+.jtb-ai-progress {
+    display: none;
+    padding: 20px;
+    text-align: center;
+}
+
+.jtb-ai-progress.active {
+    display: block;
+}
+
+.jtb-ai-progress-bar {
+    width: 100%;
+    height: 4px;
+    background: var(--bg-tertiary, #313244);
+    border-radius: 2px;
+    overflow: hidden;
+    margin-bottom: 12px;
+}
+
+.jtb-ai-progress-fill {
+    height: 100%;
+    background: var(--accent, #89b4fa);
+    border-radius: 2px;
+    width: 0;
+    animation: jtb-ai-progress 2s ease-in-out infinite;
+}
+
+@keyframes jtb-ai-progress {
+    0% { width: 0; margin-left: 0; }
+    50% { width: 70%; margin-left: 15%; }
+    100% { width: 0; margin-left: 100%; }
+}
+
+.jtb-ai-progress-text {
+    font-size: 13px;
+    color: var(--text-secondary, #a6adc8);
+}
+
+/* ==========================================================================
+   Panel Footer
+   ========================================================================== */
+.jtb-ai-panel-footer {
+    display: flex;
+    gap: 10px;
+    padding: 16px 20px;
+    background: var(--bg-secondary, #181825);
+    border-top: 1px solid var(--border, #313244);
+    flex-shrink: 0;
+}
+
+/* ==========================================================================
+   Template Panel (Theme Builder - full height from top)
+   ========================================================================== */
+.jtb-ai-panel.jtb-ai-panel-template {
+    top: 0;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    border-radius: 0;
+}
+
+.jtb-ai-panel-template .jtb-ai-panel-body {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+}
+
+.jtb-ai-panel-template .jtb-ai-panel-footer {
+    flex-shrink: 0;
+}
+
+.jtb-ai-panel-footer .jtb-ai-btn {
+    flex: 1;
+}
+
+/* ==========================================================================
+   Preview Modal
+   ========================================================================== */
+.jtb-ai-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 10000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+}
+
+.jtb-ai-modal.active {
+    display: flex;
+}
+
+.jtb-ai-modal-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(4px);
+}
+
+.jtb-ai-modal-container {
+    position: relative;
+    width: 100%;
+    max-width: 900px;
+    max-height: 90vh;
+    background: var(--bg-primary, #1e1e2e);
+    border-radius: var(--radius-lg, 12px);
+    border: 1px solid var(--border, #313244);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    animation: jtb-ai-modalIn 200ms ease;
+}
+
+@keyframes jtb-ai-modalIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95) translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+.jtb-ai-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    background: var(--bg-secondary, #181825);
+    border-bottom: 1px solid var(--border, #313244);
+}
+
+.jtb-ai-modal-header h3 {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-primary, #cdd6f4);
+    margin: 0;
+}
+
+.jtb-ai-modal-close {
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius, 8px);
+    background: var(--bg-tertiary, #313244);
+    border: 1px solid var(--border, #313244);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-secondary, #a6adc8);
+    transition: all 0.15s ease;
+}
+
+.jtb-ai-modal-close:hover {
+    background: var(--danger, #f38ba8);
+    border-color: var(--danger, #f38ba8);
+    color: var(--bg-primary, #1e1e2e);
+}
+
+.jtb-ai-modal-close svg {
+    width: 16px;
+    height: 16px;
+}
+
+.jtb-ai-modal-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;
+    background: var(--bg-tertiary, #313244);
+}
+
+.jtb-ai-preview-frame {
+    min-height: 300px;
+    max-height: 60vh;
+    overflow-y: auto;
+    background: #ffffff;
+    border-radius: var(--radius, 8px);
+    padding: 0;
+}
+
+.jtb-ai-preview-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 200px;
+    color: var(--text-muted, #6c7086);
+    font-size: 14px;
+}
+
+/* ==========================================================================
+   Frontend-style Preview Rendering
+   When JTB_Renderer returns HTML, apply frontend CSS context
+   ========================================================================== */
+.jtb-ai-preview-rendered {
+    /* Reset to frontend context */
+    background: #ffffff;
+    color: var(--jtb-text-color, #1f2937);
+    font-family: var(--jtb-body-font, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif);
+    font-size: var(--jtb-body-size, 16px);
+    line-height: var(--jtb-body-line-height, 1.6);
+}
+
+.jtb-ai-preview-rendered .jtb-content {
+    padding: 0;
+    width: 100%;
+}
+
+/* ==========================================================================
+   CRITICAL: Override builder.css editor styles for preview context
+   builder.css applies .jtb-section, .jtb-row, .jtb-column, .jtb-module styles
+   that conflict with AI preview. These MUST be reset here with high specificity.
+   ========================================================================== */
+
+/* Section styling in preview - RESET builder.css editor styles */
+/* NOTE: Removed !important from padding/margin/background to allow AI-generated CSS to override */
+.jtb-ai-preview-rendered .jtb-section {
+    width: 100%;
+    position: relative;
+    /* RESET editor-only styles (keep !important) */
+    border: none !important;
+    transition: none !important;
+    box-shadow: none !important;
+}
+
+.jtb-ai-preview-rendered .jtb-section:hover {
+    border-color: transparent !important;
+}
+
+.jtb-ai-preview-rendered .jtb-section-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Row styling in preview - RESET builder.css editor styles */
+/* NOTE: Removed !important from padding/margin/background to allow AI-generated CSS to override */
+.jtb-ai-preview-rendered .jtb-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--jtb-row-gap, 30px);
+    /* RESET editor-only styles (keep !important) */
+    position: static !important;
+    border: none !important;
+    transition: none !important;
+}
+
+.jtb-ai-preview-rendered .jtb-row:hover {
+    border-color: transparent !important;
+}
+
+/* Column styling in preview - RESET builder.css editor styles */
+/* NOTE: Removed !important from padding/background to allow AI-generated CSS to override */
+.jtb-ai-preview-rendered .jtb-column {
+    /* RESET editor-only styles (keep !important) */
+    min-height: auto !important;
+    border: none !important;
+    transition: none !important;
+}
+
+.jtb-ai-preview-rendered .jtb-column:hover {
+    border-color: transparent !important;
+}
+
+/* Module styling in preview - RESET builder.css editor styles */
+/* Override CSS variables from builder.css */
+.jtb-ai-preview-rendered {
+    --bg-primary: transparent !important;
+    --bg-secondary: transparent !important;
+    --bg-tertiary: transparent !important;
+    --border: transparent !important;
+    --radius: 0 !important;
+}
+
+/* Module styling in preview - RESET builder.css editor styles */
+/* NOTE: Removed !important from padding/margin/background/border-radius to allow AI-generated CSS to override */
+.jtb-ai-preview-rendered .jtb-module,
+.jtb-ai-preview-rendered [class*="jtb-module-"],
+.jtb-ai-preview-rendered div[id^="heading_"],
+.jtb-ai-preview-rendered div[id^="text_"],
+.jtb-ai-preview-rendered div[id^="button_"],
+.jtb-ai-preview-rendered div[id^="image_"],
+.jtb-ai-preview-rendered div[id^="blurb_"],
+.jtb-ai-preview-rendered div[id^="testimonial_"],
+.jtb-ai-preview-rendered div[id^="pricing_"],
+.jtb-ai-preview-rendered div[id^="cta_"],
+.jtb-ai-preview-rendered div[id^="counter_"],
+.jtb-ai-preview-rendered div[id^="icon_"],
+.jtb-ai-preview-rendered div[id^="divider_"],
+.jtb-ai-preview-rendered div[id^="gallery_"],
+.jtb-ai-preview-rendered div[id^="slider_"],
+.jtb-ai-preview-rendered div[id^="video_"],
+.jtb-ai-preview-rendered div[id^="map_"],
+.jtb-ai-preview-rendered div[id^="accordion_"],
+.jtb-ai-preview-rendered div[id^="tabs_"],
+.jtb-ai-preview-rendered div[id^="toggle_"],
+.jtb-ai-preview-rendered div[id^="contact_"],
+.jtb-ai-preview-rendered div[id^="blog_"],
+.jtb-ai-preview-rendered div[id^="team_"],
+.jtb-ai-preview-rendered div[id^="social_"] {
+    /* RESET editor-only styles (keep !important) */
+    position: static !important;
+    cursor: default !important;
+    transition: none !important;
+    box-shadow: none !important;
+    /* Allow AI-generated CSS to control these */
+    border: none;
+}
+
+.jtb-ai-preview-rendered .jtb-module:hover,
+.jtb-ai-preview-rendered [class*="jtb-module-"]:hover {
+    border-color: transparent !important;
+}
+
+/* Column widths in preview - matching frontend.css */
+/* 1 Column */
+.jtb-ai-preview-rendered .jtb-row-cols-1 > .jtb-column,
+.jtb-ai-preview-rendered .jtb-row-cols-1-1 > .jtb-column { flex: 0 0 100%; max-width: 100%; }
+
+/* 2 Columns - Equal (AI uses 1_2_1_2) */
+.jtb-ai-preview-rendered .jtb-row-cols-1-2-1-2 > .jtb-column { flex: 1 1 0; min-width: 0; }
+
+/* 3 Columns - Equal (AI uses 1_3_1_3_1_3) */
+.jtb-ai-preview-rendered .jtb-row-cols-1-3-1-3-1-3 > .jtb-column { flex: 1 1 0; min-width: 0; }
+
+/* 4 Columns - Equal */
+.jtb-ai-preview-rendered .jtb-row-cols-1-4-1-4-1-4-1-4 > .jtb-column { flex: 1 1 0; min-width: 0; }
+
+/* 2 Columns - 2/3 + 1/3 */
+.jtb-ai-preview-rendered .jtb-row-cols-2-3-1-3 > .jtb-column:first-child { flex: 2 1 0; min-width: 0; }
+.jtb-ai-preview-rendered .jtb-row-cols-2-3-1-3 > .jtb-column:last-child { flex: 1 1 0; min-width: 0; }
+
+/* 2 Columns - 1/3 + 2/3 */
+.jtb-ai-preview-rendered .jtb-row-cols-1-3-2-3 > .jtb-column:first-child { flex: 1 1 0; min-width: 0; }
+.jtb-ai-preview-rendered .jtb-row-cols-1-3-2-3 > .jtb-column:last-child { flex: 2 1 0; min-width: 0; }
+
+/* 2 Columns - 1/4 + 3/4 */
+.jtb-ai-preview-rendered .jtb-row-cols-1-4-3-4 > .jtb-column:first-child { flex: 1 1 0; min-width: 0; }
+.jtb-ai-preview-rendered .jtb-row-cols-1-4-3-4 > .jtb-column:last-child { flex: 3 1 0; min-width: 0; }
+
+/* 2 Columns - 3/4 + 1/4 */
+.jtb-ai-preview-rendered .jtb-row-cols-3-4-1-4 > .jtb-column:first-child { flex: 3 1 0; min-width: 0; }
+.jtb-ai-preview-rendered .jtb-row-cols-3-4-1-4 > .jtb-column:last-child { flex: 1 1 0; min-width: 0; }
+
+/* 2 Columns - 1/2 + 1/2 (legacy format) */
+.jtb-ai-preview-rendered .jtb-row-cols-1-2 > .jtb-column { flex: 0 0 50%; max-width: 50%; }
+.jtb-ai-preview-rendered .jtb-row-cols-1-3 > .jtb-column { flex: 0 0 33.333%; max-width: 33.333%; }
+.jtb-ai-preview-rendered .jtb-row-cols-1-4 > .jtb-column { flex: 0 0 25%; max-width: 25%; }
+
+/* 5 and 6 Columns */
+.jtb-ai-preview-rendered .jtb-row-cols-1-5-1-5-1-5-1-5-1-5 > .jtb-column { flex: 1 1 0; min-width: 0; }
+.jtb-ai-preview-rendered .jtb-row-cols-1-6-1-6-1-6-1-6-1-6-1-6 > .jtb-column { flex: 1 1 0; min-width: 0; }
+
+/* Typography in preview */
+.jtb-ai-preview-rendered h1,
+.jtb-ai-preview-rendered h2,
+.jtb-ai-preview-rendered h3,
+.jtb-ai-preview-rendered h4,
+.jtb-ai-preview-rendered h5,
+.jtb-ai-preview-rendered h6 {
+    font-family: var(--jtb-heading-font, inherit);
+    font-weight: var(--jtb-heading-weight, 700);
+    line-height: var(--jtb-heading-line-height, 1.3);
+    color: var(--jtb-heading-color, #111827);
+    margin: 0 0 0.5em;
+}
+
+.jtb-ai-preview-rendered h1 { font-size: var(--jtb-h1-size, 48px); }
+.jtb-ai-preview-rendered h2 { font-size: var(--jtb-h2-size, 36px); }
+.jtb-ai-preview-rendered h3 { font-size: var(--jtb-h3-size, 28px); }
+.jtb-ai-preview-rendered h4 { font-size: var(--jtb-h4-size, 24px); }
+.jtb-ai-preview-rendered h5 { font-size: var(--jtb-h5-size, 20px); }
+.jtb-ai-preview-rendered h6 { font-size: var(--jtb-h6-size, 18px); }
+
+.jtb-ai-preview-rendered p {
+    margin: 0 0 1em;
+    color: var(--jtb-text-color, #1f2937);
+}
+
+/* Button styling in preview */
+.jtb-ai-preview-rendered .jtb-button,
+.jtb-ai-preview-rendered [class*="jtb-button"] {
+    display: inline-block;
+    padding: var(--jtb-btn-padding-y, 14px) var(--jtb-btn-padding-x, 28px);
+    font-size: var(--jtb-btn-font-size, 16px);
+    font-weight: var(--jtb-btn-font-weight, 600);
+    text-decoration: none;
+    border-radius: var(--jtb-btn-border-radius, 8px);
+    cursor: pointer;
+    transition: var(--jtb-transition, 300ms ease);
+}
+
+/* Card/Blurb styling in preview */
+.jtb-ai-preview-rendered .jtb-blurb,
+.jtb-ai-preview-rendered .jtb-testimonial,
+.jtb-ai-preview-rendered .jtb-pricing-table,
+.jtb-ai-preview-rendered .jtb-team-member {
+    background: var(--jtb-surface-color, #f8fafc);
+    border-radius: var(--jtb-border-radius, 8px);
+    box-shadow: var(--jtb-shadow, 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.06));
+}
+
+/* Image styling in preview */
+.jtb-ai-preview-rendered img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* Icon styling in preview */
+.jtb-ai-preview-rendered .jtb-blurb-icon,
+.jtb-ai-preview-rendered .jtb-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ==========================================================================
+   STAGE 19: GOLDEN PAGE PREVIEW POLISH
+   Match production styling in AI preview
+   ========================================================================== */
+
+/* Golden Page Tokens for Preview */
+.jtb-ai-preview-rendered {
+    --jtb-gp-radius: 16px;
+    --jtb-gp-radius-sm: 8px;
+    --jtb-gp-radius-lg: 24px;
+    --jtb-gp-shadow-1: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+    --jtb-gp-shadow-2: 0 4px 12px rgba(0, 0, 0, 0.08), 0 2px 4px rgba(0, 0, 0, 0.04);
+    --jtb-gp-shadow-3: 0 12px 32px rgba(0, 0, 0, 0.1), 0 4px 8px rgba(0, 0, 0, 0.05);
+    --jtb-gp-border: rgba(0, 0, 0, 0.06);
+    --jtb-gp-section-pad: 64px;
+    --jtb-scale: 1;
+}
+
+/* Preview container constraints */
+.jtb-ai-preview-frame {
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
+.jtb-ai-preview-rendered {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.jtb-ai-preview-rendered .jtb-section-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding-left: clamp(16px, 4vw, 32px);
+    padding-right: clamp(16px, 4vw, 32px);
+}
+
+/* Column min-width fix for wrapping */
+.jtb-ai-preview-rendered .jtb-column {
+    min-width: 0;
+}
+
+/* Image normalization */
+.jtb-ai-preview-rendered img {
+    max-width: 100%;
+    height: auto;
+    border-radius: var(--jtb-gp-radius-sm);
+    display: block;
+}
+
+/* --------------------------------------------------------------------------
+   19.2 Preview Scale System (mirror frontend.css)
+   -------------------------------------------------------------------------- */
+.jtb-ai-preview-rendered .jtb-scale-xs { --jtb-scale: 0.85; }
+.jtb-ai-preview-rendered .jtb-scale-sm { --jtb-scale: 0.92; }
+.jtb-ai-preview-rendered .jtb-scale-md { --jtb-scale: 1; }
+.jtb-ai-preview-rendered .jtb-scale-lg { --jtb-scale: 1.12; }
+.jtb-ai-preview-rendered .jtb-scale-xl { --jtb-scale: 1.25; }
+
+/* Typography scaling in preview */
+.jtb-ai-preview-rendered .jtb-section h1 {
+    font-size: clamp(28px, calc(40px * var(--jtb-scale)), 64px);
+}
+
+.jtb-ai-preview-rendered .jtb-section h2 {
+    font-size: clamp(22px, calc(32px * var(--jtb-scale)), 48px);
+}
+
+.jtb-ai-preview-rendered .jtb-section h3 {
+    font-size: clamp(18px, calc(24px * var(--jtb-scale)), 36px);
+}
+
+.jtb-ai-preview-rendered .jtb-section p {
+    font-size: clamp(14px, calc(16px * var(--jtb-scale)), 20px);
+}
+
+/* Button scaling in preview */
+.jtb-ai-preview-rendered .jtb-section .jtb-button {
+    padding: clamp(10px, calc(14px * var(--jtb-scale)), 20px) clamp(20px, calc(28px * var(--jtb-scale)), 40px);
+    font-size: clamp(14px, calc(16px * var(--jtb-scale)), 20px);
+}
+
+/* Section padding scaling */
+.jtb-ai-preview-rendered .jtb-section {
+    scroll-margin-top: 60px;
+    padding-top: clamp(28px, calc(var(--jtb-gp-section-pad) * var(--jtb-scale)), 100px);
+    padding-bottom: clamp(28px, calc(var(--jtb-gp-section-pad) * var(--jtb-scale)), 100px);
+}
+
+/* --------------------------------------------------------------------------
+   19.3 Preview Visual Intent Styling (jtb-vi-*)
+   -------------------------------------------------------------------------- */
+.jtb-ai-preview-rendered .jtb-vi-dominant { --jtb-scale: 1.15; }
+.jtb-ai-preview-rendered .jtb-vi-emphasis { --jtb-scale: 1.05; }
+.jtb-ai-preview-rendered .jtb-vi-neutral { --jtb-scale: 1; }
+.jtb-ai-preview-rendered .jtb-vi-soft { --jtb-scale: 0.95; }
+
+.jtb-ai-preview-rendered .jtb-vi-dominant h1,
+.jtb-ai-preview-rendered .jtb-vi-dominant h2 {
+    font-weight: 800;
+    letter-spacing: -0.02em;
+}
+
+.jtb-ai-preview-rendered .jtb-vi-soft p {
+    max-width: 640px;
+    margin-left: auto;
+    margin-right: auto;
+    opacity: 0.9;
+}
+
+/* --------------------------------------------------------------------------
+   19.4 Preview Emotional Tone Styling (jtb-et-*)
+   -------------------------------------------------------------------------- */
+.jtb-ai-preview-rendered .jtb-et-calm {
+    line-height: 1.75;
+}
+
+.jtb-ai-preview-rendered .jtb-et-focus h1,
+.jtb-ai-preview-rendered .jtb-et-focus h2 {
+    font-weight: 800;
+    letter-spacing: -0.025em;
+    line-height: 1.15;
+}
+
+.jtb-ai-preview-rendered .jtb-et-trust .jtb-button {
+    box-shadow: var(--jtb-gp-shadow-1);
+}
+
+.jtb-ai-preview-rendered .jtb-et-urgency .jtb-button {
+    font-weight: 700;
+    box-shadow: var(--jtb-gp-shadow-2);
+}
+
+/* --------------------------------------------------------------------------
+   19.5 Preview Attention Level Styling (jtb-att-*)
+   -------------------------------------------------------------------------- */
+.jtb-ai-preview-rendered .jtb-att-high .jtb-button {
+    font-weight: 700;
+    box-shadow: var(--jtb-gp-shadow-2);
+}
+
+.jtb-ai-preview-rendered .jtb-att-low {
+    opacity: 0.95;
+}
+
+/* --------------------------------------------------------------------------
+   19.6 Preview Narrative Role Styling (jtb-nr-*)
+   -------------------------------------------------------------------------- */
+.jtb-ai-preview-rendered .jtb-nr-hook {
+    padding-top: clamp(40px, calc(72px * var(--jtb-scale)), 120px);
+}
+
+.jtb-ai-preview-rendered .jtb-nr-hook h1 {
+    font-weight: 800;
+    line-height: 1.1;
+}
+
+.jtb-ai-preview-rendered .jtb-nr-problem {
+    border-left: 4px solid var(--jtb-accent-color, #06b6d4);
+    padding-left: 1.5rem;
+}
+
+.jtb-ai-preview-rendered .jtb-nr-proof .jtb-testimonial,
+.jtb-ai-preview-rendered .jtb-nr-proof .jtb-blurb {
+    background: var(--jtb-surface-color, #f8fafc);
+    border: 1px solid var(--jtb-gp-border);
+    border-radius: var(--jtb-gp-radius);
+    box-shadow: var(--jtb-gp-shadow-1);
+}
+
+.jtb-ai-preview-rendered .jtb-nr-relief {
+    background-color: var(--jtb-surface-color, #f8fafc);
+    --jtb-scale: 0.92;
+}
+
+.jtb-ai-preview-rendered .jtb-nr-resolution {
+    padding-top: clamp(40px, calc(64px * var(--jtb-scale)), 100px);
+    padding-bottom: clamp(40px, calc(64px * var(--jtb-scale)), 100px);
+}
+
+.jtb-ai-preview-rendered .jtb-nr-resolution .jtb-button {
+    font-size: clamp(15px, calc(17px * var(--jtb-scale)), 20px);
+    font-weight: 700;
+    box-shadow: var(--jtb-gp-shadow-2);
+}
+
+/* --------------------------------------------------------------------------
+   19.7 Preview Module Polish
+   -------------------------------------------------------------------------- */
+.jtb-ai-preview-rendered .jtb-blurb,
+.jtb-ai-preview-rendered .jtb-testimonial,
+.jtb-ai-preview-rendered .jtb-team-member,
+.jtb-ai-preview-rendered .jtb-pricing-table {
+    border-radius: var(--jtb-gp-radius);
+    border: 1px solid var(--jtb-gp-border);
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.jtb-ai-preview-rendered .jtb-blurb:hover,
+.jtb-ai-preview-rendered .jtb-testimonial:hover {
+    box-shadow: var(--jtb-gp-shadow-2);
+    transform: translateY(-2px);
+}
+
+.jtb-ai-preview-rendered .jtb-button {
+    border-radius: var(--jtb-gp-radius-sm);
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+.jtb-ai-preview-rendered .jtb-button:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--jtb-gp-shadow-2);
+}
+
+/* --------------------------------------------------------------------------
+   19.8 Preview Responsive
+   -------------------------------------------------------------------------- */
+@media (max-width: 768px) {
+    .jtb-ai-preview-rendered {
+        --jtb-gp-section-pad: 40px;
+        --jtb-gp-radius: 12px;
+    }
+
+    .jtb-ai-preview-rendered .jtb-scale-xl { --jtb-scale: 1.1; }
+    .jtb-ai-preview-rendered .jtb-scale-lg { --jtb-scale: 1.05; }
+
+    .jtb-ai-preview-rendered .jtb-nr-problem {
+        padding-left: 1rem;
+        border-left-width: 3px;
+    }
+}
+
+.jtb-ai-modal-footer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+    padding: 16px 20px;
+    background: var(--bg-secondary, #181825);
+    border-top: 1px solid var(--border, #313244);
+}
+
+/* ==========================================================================
+   Analysis Results
+   ========================================================================== */
+.jtb-ai-analysis {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.jtb-ai-analysis-score {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    background: var(--bg-tertiary, #313244);
+    border-radius: var(--radius, 8px);
+    text-align: center;
+}
+
+.jtb-ai-analysis-score-value {
+    font-size: 48px;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.jtb-ai-analysis-score.good .jtb-ai-analysis-score-value {
+    color: var(--success, #a6e3a1);
+}
+
+.jtb-ai-analysis-score.medium .jtb-ai-analysis-score-value {
+    color: var(--warning, #f9e2af);
+}
+
+.jtb-ai-analysis-score.poor .jtb-ai-analysis-score-value {
+    color: var(--danger, #f38ba8);
+}
+
+.jtb-ai-analysis-score-label {
+    font-size: 12px;
+    color: var(--text-muted, #6c7086);
+    margin-top: 4px;
+}
+
+.jtb-ai-analysis-assessment {
+    font-size: 14px;
+    color: var(--text-secondary, #a6adc8);
+    text-align: center;
+}
+
+.jtb-ai-analysis-issues,
+.jtb-ai-analysis-suggestions {
+    background: var(--bg-tertiary, #313244);
+    border-radius: var(--radius, 8px);
+    padding: 16px;
+}
+
+.jtb-ai-analysis-issues h4,
+.jtb-ai-analysis-suggestions h4 {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-primary, #cdd6f4);
+    margin: 0 0 12px 0;
+}
+
+.jtb-ai-analysis-issues ul,
+.jtb-ai-analysis-suggestions ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.jtb-ai-analysis-issues li,
+.jtb-ai-analysis-suggestions li {
+    font-size: 13px;
+    color: var(--text-secondary, #a6adc8);
+    padding: 10px 12px;
+    background: var(--bg-primary, #1e1e2e);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.jtb-ai-analysis-issues li::before {
+    content: '';
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.jtb-ai-analysis-issues li.severity-high::before {
+    background: var(--danger, #f38ba8);
+}
+
+.jtb-ai-analysis-issues li.severity-medium::before {
+    background: var(--warning, #f9e2af);
+}
+
+.jtb-ai-analysis-issues li.severity-low::before {
+    background: var(--accent, #89b4fa);
+}
+
+.jtb-ai-suggestion-btn {
+    margin-left: auto;
+    padding: 4px 10px;
+    font-size: 11px;
+    font-weight: 500;
+    background: var(--accent, #89b4fa);
+    color: var(--bg-primary, #1e1e2e);
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.jtb-ai-suggestion-btn:hover {
+    background: var(--accent-hover, #b4befe);
+}
+
+/* ==========================================================================
+   Results Display
+   ========================================================================== */
+.jtb-ai-results {
+    margin-top: 16px;
+    padding: 16px;
+    background: var(--bg-tertiary, #313244);
+    border-radius: var(--radius, 8px);
+    font-size: 13px;
+    color: var(--text-secondary, #a6adc8);
+}
+
+.jtb-ai-results h4 {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-primary, #cdd6f4);
+    margin: 0 0 12px 0;
+}
+
+/* ==========================================================================
+   Empty State
+   ========================================================================== */
+.jtb-ai-empty {
+    text-align: center;
+    padding: 40px 20px;
+}
+
+.jtb-ai-empty svg {
+    width: 48px;
+    height: 48px;
+    color: var(--text-muted, #6c7086);
+    margin-bottom: 12px;
+}
+
+.jtb-ai-empty h4 {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-primary, #cdd6f4);
+    margin: 0 0 8px 0;
+}
+
+.jtb-ai-empty p {
+    font-size: 13px;
+    color: var(--text-muted, #6c7086);
+    margin: 0;
+}
+
+/* ==========================================================================
+   Loading Spinner
+   ========================================================================== */
+.jtb-ai-spinner {
+    width: 24px;
+    height: 24px;
+    border: 2px solid var(--border, #313244);
+    border-top-color: var(--accent, #89b4fa);
+    border-radius: 50%;
+    animation: jtb-ai-spin 0.8s linear infinite;
+}
+
+@keyframes jtb-ai-spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* ==========================================================================
+   Preview Layout Styles
+   ========================================================================== */
+.jtb-ai-preview-sections {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.jtb-ai-preview-section {
+    background: var(--bg-secondary, #181825);
+    border: 1px solid var(--border, #313244);
+    border-radius: var(--radius, 8px);
+    overflow: hidden;
+}
+
+.jtb-ai-preview-section-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    background: var(--bg-tertiary, #313244);
+    border-bottom: 1px solid var(--border, #313244);
+}
+
+.jtb-ai-preview-section-number {
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--accent, #89b4fa);
+    color: var(--bg-primary, #1e1e2e);
+    border-radius: 50%;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.jtb-ai-preview-section-type {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-primary, #cdd6f4);
+}
+
+.jtb-ai-preview-section-content {
+    padding: 14px;
+}
+
+.jtb-ai-preview-row {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.jtb-ai-preview-row:last-child {
+    margin-bottom: 0;
+}
+
+.jtb-ai-preview-column {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.jtb-ai-preview-column[data-width="1_2"] { flex: 0 0 50%; }
+.jtb-ai-preview-column[data-width="1_3"] { flex: 0 0 33.33%; }
+.jtb-ai-preview-column[data-width="2_3"] { flex: 0 0 66.66%; }
+.jtb-ai-preview-column[data-width="1_4"] { flex: 0 0 25%; }
+.jtb-ai-preview-column[data-width="3_4"] { flex: 0 0 75%; }
+
+.jtb-ai-preview-module {
+    background: var(--bg-primary, #1e1e2e);
+    border: 1px solid var(--border, #313244);
+    border-radius: 6px;
+    padding: 10px 12px;
+}
+
+.jtb-ai-preview-module-type {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--accent, #89b4fa);
+    background: var(--accent-muted, rgba(137, 180, 250, 0.15));
+    padding: 2px 6px;
+    border-radius: 4px;
+    margin-bottom: 6px;
+}
+
+.jtb-ai-preview-module-content {
+    font-size: 13px;
+    color: var(--text-secondary, #a6adc8);
+    line-height: 1.5;
+}
+
+.jtb-ai-preview-module-content h4 {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-primary, #cdd6f4);
+    margin: 0 0 4px 0;
+}
+
+.jtb-ai-preview-module-content p {
+    margin: 0;
+    color: var(--text-muted, #6c7086);
+}
+
+.jtb-ai-preview-module-content button {
+    display: inline-block;
+    padding: 6px 12px;
+    background: var(--accent, #89b4fa);
+    color: var(--bg-primary, #1e1e2e);
+    border: none;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: default;
+}
+
+.jtb-ai-preview-module-content strong {
+    color: var(--text-primary, #cdd6f4);
+    font-weight: 600;
+}
+
+.jtb-ai-preview-empty {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--text-muted, #6c7086);
+}
+
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+@media (max-width: 768px) {
+    .jtb-ai-panel {
+        width: 100%;
+    }
+
+    .jtb-ai-toggle {
+        bottom: 16px;
+        right: 16px;
+        width: 48px;
+        height: 48px;
+    }
+
+    .jtb-ai-toggle svg {
+        width: 22px;
+        height: 22px;
+    }
+
+    .jtb-ai-section-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .jtb-ai-modal {
+        padding: 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    .jtb-ai-content-options {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ==========================================================================
+   COMPOSE TAB - Intent Selection Grid
+   ========================================================================== */
+.jtb-ai-intent-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+}
+
+.jtb-ai-intent-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding: 16px 12px;
+    background: var(--bg-tertiary, #313244);
+    border: 1px solid var(--border, #313244);
+    border-radius: var(--radius, 8px);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: center;
+}
+
+.jtb-ai-intent-btn:hover {
+    border-color: var(--accent, #89b4fa);
+    background: var(--accent-muted, rgba(137, 180, 250, 0.1));
+}
+
+.jtb-ai-intent-btn.selected {
+    border-color: var(--accent, #89b4fa);
+    background: var(--accent-muted, rgba(137, 180, 250, 0.15));
+    box-shadow: 0 0 0 3px rgba(137, 180, 250, 0.1);
+}
+
+.jtb-ai-intent-icon {
+    font-size: 24px;
+    line-height: 1;
+}
+
+.jtb-ai-intent-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-primary, #cdd6f4);
+}
+
+.jtb-ai-intent-desc {
+    font-size: 11px;
+    color: var(--text-muted, #6c7086);
+}
+
+.jtb-ai-intent-btn.selected .jtb-ai-intent-label {
+    color: var(--accent, #89b4fa);
+}
+
+/* Compact Intent Grid (3 columns, smaller buttons) */
+.jtb-ai-intent-grid-compact {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+}
+
+.jtb-ai-intent-grid-compact .jtb-ai-intent-btn {
+    padding: 10px 8px;
+    gap: 4px;
+}
+
+.jtb-ai-intent-grid-compact .jtb-ai-intent-icon {
+    font-size: 20px;
+}
+
+.jtb-ai-intent-grid-compact .jtb-ai-intent-label {
+    font-size: 11px;
+}
+
+.jtb-ai-intent-grid-compact .jtb-ai-intent-desc {
+    display: none; /* Hide description in compact mode */
+}
+
+/* ==========================================================================
+   COMPOSE TAB - Field Row (side-by-side fields)
+   ========================================================================== */
+.jtb-ai-field-row {
+    display: flex;
+    gap: 12px;
+}
+
+.jtb-ai-field-half {
+    flex: 1;
+    min-width: 0;
+}
+
+/* ==========================================================================
+   COMPOSE TAB - Advanced Options Toggle
+   ========================================================================== */
+.jtb-ai-advanced-toggle {
+    margin-top: 8px;
+}
+
+.jtb-ai-advanced-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 12px;
+    background: var(--bg-tertiary, #313244);
+    border: 1px solid var(--border, #45475a);
+    border-radius: var(--radius, 8px);
+    color: var(--text-secondary, #a6adc8);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.jtb-ai-advanced-btn:hover {
+    background: var(--bg-secondary, #45475a);
+    color: var(--text-primary, #cdd6f4);
+    border-color: var(--accent, #89b4fa);
+}
+
+.jtb-ai-advanced-btn svg {
+    transition: transform 0.2s ease;
+}
+
+.jtb-ai-advanced-btn.expanded svg {
+    transform: rotate(180deg);
+}
+
+.jtb-ai-advanced-options {
+    margin-top: 12px;
+    padding: 16px;
+    background: var(--bg-tertiary, #313244);
+    border: 1px solid var(--border, #45475a);
+    border-radius: var(--radius, 8px);
+}
+
+.jtb-ai-advanced-options .jtb-ai-field {
+    margin-bottom: 12px;
+}
+
+.jtb-ai-advanced-options .jtb-ai-field:last-child {
+    margin-bottom: 0;
+}
+
+/* ==========================================================================
+   COMPOSE TAB - Style Selection Grid
+   ========================================================================== */
+.jtb-ai-style-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+}
+
+.jtb-ai-style-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding: 12px 8px;
+    background: var(--bg-tertiary, #313244);
+    border: 1px solid var(--border, #313244);
+    border-radius: var(--radius, 8px);
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.jtb-ai-style-btn:hover {
+    border-color: var(--text-muted, #6c7086);
+}
+
+.jtb-ai-style-btn.active {
+    border-color: var(--accent, #89b4fa);
+    background: var(--accent-muted, rgba(137, 180, 250, 0.15));
+}
+
+.jtb-ai-style-preview {
+    width: 100%;
+    height: 32px;
+    border-radius: 4px;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Style previews - match PHP JTB_AI_Styles palettes */
+.jtb-ai-style-preview.modern {
+    /* PHP: primary=#3B82F6 blue, secondary=#1E40AF */
+    background: linear-gradient(135deg, #3B82F6 0%, #1E40AF 100%);
+}
+
+.jtb-ai-style-preview.minimal {
+    /* PHP: primary=#18181B near-black, background=#FFFFFF */
+    background: #FFFFFF;
+    border: 1px solid #18181B;
+}
+
+.jtb-ai-style-preview.bold {
+    /* PHP: primary=#7C3AED violet, secondary=#4C1D95 */
+    background: linear-gradient(135deg, #7C3AED 0%, #4C1D95 100%);
+}
+
+.jtb-ai-style-preview.elegant {
+    /* PHP: primary=#78716C stone, secondary=#44403C */
+    background: linear-gradient(135deg, #78716C 0%, #44403C 100%);
+}
+
+.jtb-ai-style-preview.playful {
+    /* PHP: primary=#EC4899 pink, secondary=#8B5CF6 purple */
+    background: linear-gradient(135deg, #EC4899 0%, #8B5CF6 100%);
+}
+
+.jtb-ai-style-preview.corporate {
+    /* PHP: primary=#1E40AF blue, secondary=#1E3A8A darker blue */
+    background: linear-gradient(135deg, #1E40AF 0%, #1E3A8A 100%);
+}
+
+.jtb-ai-style-btn span {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--text-secondary, #a6adc8);
+}
+
+.jtb-ai-style-btn.active span {
+    color: var(--accent, #89b4fa);
+}
+
+/* ==========================================================================
+   COMPOSE TAB - Composition Preview
+   ========================================================================== */
+.jtb-ai-composition-preview {
+    background: var(--bg-tertiary, #313244);
+    border: 1px solid var(--border, #313244);
+    border-radius: var(--radius, 8px);
+    padding: 16px;
+    min-height: 120px;
+}
+
+.jtb-ai-composition-empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100px;
+    color: var(--text-muted, #6c7086);
+    font-size: 13px;
+    text-align: center;
+}
+
+.jtb-ai-composition-flow {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+}
+
+.jtb-ai-composition-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background: var(--bg-primary, #1e1e2e);
+    border: 1px solid var(--border, #313244);
+    border-radius: 6px;
+    cursor: default;
+    transition: all 0.15s ease;
+}
+
+.jtb-ai-composition-item:hover {
+    border-color: var(--accent, #89b4fa);
+}
+
+.jtb-ai-composition-icon {
+    width: 32px;
+    height: 20px;
+    flex-shrink: 0;
+}
+
+.jtb-ai-composition-icon svg {
+    width: 100%;
+    height: 100%;
+}
+
+.jtb-ai-composition-label {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--text-secondary, #a6adc8);
+    white-space: nowrap;
+}
+
+.jtb-ai-composition-tension {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.jtb-ai-composition-connector {
+    width: 16px;
+    height: 2px;
+    background: var(--border, #313244);
+    flex-shrink: 0;
+}
+
+.jtb-ai-composition-summary {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border, #313244);
+    font-size: 12px;
+    color: var(--text-muted, #6c7086);
+    text-align: center;
+}
+
+/* ==========================================================================
+   PATTERNS TAB - Category Filter
+   ========================================================================== */
+.jtb-ai-pattern-categories {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.jtb-ai-category-btn {
+    padding: 6px 12px;
+    font-size: 12px;
+    font-weight: 500;
+    background: var(--bg-tertiary, #313244);
+    border: 1px solid var(--border, #313244);
+    border-radius: 16px;
+    cursor: pointer;
+    color: var(--text-secondary, #a6adc8);
+    transition: all 0.15s ease;
+}
+
+.jtb-ai-category-btn:hover {
+    border-color: var(--text-muted, #6c7086);
+}
+
+.jtb-ai-category-btn.active {
+    background: var(--accent, #89b4fa);
+    border-color: var(--accent, #89b4fa);
+    color: var(--bg-primary, #1e1e2e);
+}
+
+/* ==========================================================================
+   PATTERNS TAB - Pattern Grid
+   ========================================================================== */
+.jtb-ai-pattern-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+}
+
+.jtb-ai-pattern-card {
+    display: flex;
+    flex-direction: column;
+    background: var(--bg-tertiary, #313244);
+    border: 1px solid var(--border, #313244);
+    border-radius: var(--radius, 8px);
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.jtb-ai-pattern-card:hover {
+    border-color: var(--accent, #89b4fa);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.jtb-ai-pattern-card.selected {
+    border-color: var(--accent, #89b4fa);
+    background: var(--accent-muted, rgba(137, 180, 250, 0.1));
+}
+
+.jtb-ai-pattern-preview {
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-primary, #1e1e2e);
+    border-bottom: 1px solid var(--border, #313244);
+    padding: 8px;
+}
+
+.jtb-ai-pattern-preview svg {
+    width: 100%;
+    height: 100%;
+    max-width: 80px;
+}
+
+.jtb-ai-pattern-info {
+    padding: 10px 12px;
+}
+
+.jtb-ai-pattern-name {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-primary, #cdd6f4);
+    margin-bottom: 4px;
+}
+
+.jtb-ai-pattern-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.jtb-ai-pattern-variants {
+    font-size: 10px;
+    color: var(--text-muted, #6c7086);
+}
+
+.jtb-ai-pattern-tension {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+.jtb-ai-pattern-empty,
+.jtb-ai-loading {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 32px 16px;
+    color: var(--text-muted, #6c7086);
+    font-size: 13px;
+}
+
+/* ==========================================================================
+   PATTERNS TAB - Variant Selection
+   ========================================================================== */
+.jtb-ai-variant-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.jtb-ai-variant-btn {
+    padding: 6px 12px;
+    font-size: 12px;
+    font-weight: 500;
+    background: var(--bg-tertiary, #313244);
+    border: 1px solid var(--border, #313244);
+    border-radius: 4px;
+    cursor: pointer;
+    color: var(--text-secondary, #a6adc8);
+    transition: all 0.15s ease;
+}
+
+.jtb-ai-variant-btn:hover {
+    border-color: var(--text-muted, #6c7086);
+}
+
+.jtb-ai-variant-btn.active {
+    background: var(--accent, #89b4fa);
+    border-color: var(--accent, #89b4fa);
+    color: var(--bg-primary, #1e1e2e);
+}
+
+/* ==========================================================================
+   PATTERN INFO MODAL
+   ========================================================================== */
+.jtb-ai-pattern-info-modal .jtb-ai-modal-container {
+    max-width: 420px;
+}
+
+.jtb-ai-modal-sm {
+    max-width: 420px;
+}
+
+.jtb-ai-pattern-modal-preview {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100px;
+    background: var(--bg-tertiary, #313244);
+    border-radius: var(--radius, 8px);
+    margin-bottom: 16px;
+}
+
+.jtb-ai-pattern-modal-preview svg {
+    width: 120px;
+    height: 75px;
+}
+
+.jtb-ai-pattern-modal-details {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.jtb-ai-pattern-modal-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+}
+
+.jtb-ai-pattern-modal-label {
+    color: var(--text-muted, #6c7086);
+    min-width: 80px;
+}
+
+.jtb-ai-pattern-modal-row span:last-child {
+    color: var(--text-primary, #cdd6f4);
+}
+
+.jtb-ai-pattern-tension-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 11px;
+    font-weight: 600;
+    color: #fff;
+}
+
+.jtb-ai-pattern-modal-desc {
+    font-size: 13px;
+    color: var(--text-secondary, #a6adc8);
+    line-height: 1.5;
+    padding: 12px;
+    background: var(--bg-tertiary, #313244);
+    border-radius: 6px;
+    margin-top: 8px;
+}
+
+.jtb-ai-pattern-modal-variants {
+    margin-top: 16px;
+}
+
+.jtb-ai-pattern-modal-variants label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-secondary, #a6adc8);
+    margin-bottom: 8px;
+}
+
+.jtb-ai-variant-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.jtb-ai-variant-chip {
+    padding: 6px 12px;
+    font-size: 12px;
+    font-weight: 500;
+    background: var(--bg-tertiary, #313244);
+    border: 1px solid var(--border, #313244);
+    border-radius: 16px;
+    cursor: pointer;
+    color: var(--text-secondary, #a6adc8);
+    transition: all 0.15s ease;
+}
+
+.jtb-ai-variant-chip:hover {
+    border-color: var(--text-muted, #6c7086);
+}
+
+.jtb-ai-variant-chip.active {
+    background: var(--accent, #89b4fa);
+    border-color: var(--accent, #89b4fa);
+    color: var(--bg-primary, #1e1e2e);
+}
+
+/* ==========================================================================
+   PREVIEW MODAL - Meta Info
+   ========================================================================== */
+.jtb-ai-modal-meta {
+    display: flex;
+    gap: 16px;
+    margin-left: auto;
+    margin-right: 16px;
+}
+
+.jtb-ai-preview-meta-item {
+    font-size: 12px;
+    color: var(--text-muted, #6c7086);
+}
+
+.jtb-ai-preview-meta-item strong {
+    color: var(--accent, #89b4fa);
+    font-weight: 600;
+}
+
+/* ==========================================================================
+   PROGRESS - Visible State
+   ========================================================================== */
+.jtb-ai-progress {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    padding: 24px;
+    margin-top: 16px;
+    background: var(--bg-tertiary, #313244);
+    border-radius: var(--radius, 8px);
+}
+
+.jtb-ai-progress.is-visible {
+    display: flex;
+}
+
+/* ==========================================================================
+   TOAST NOTIFICATIONS
+   ========================================================================== */
+.jtb-ai-toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    padding: 12px 20px;
+    background: var(--bg-secondary, #181825);
+    border: 1px solid var(--border, #313244);
+    border-radius: var(--radius, 8px);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-primary, #cdd6f4);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+    z-index: 10001;
+    opacity: 0;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.jtb-ai-toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+.jtb-ai-toast-success {
+    border-color: var(--success, #a6e3a1);
+    background: rgba(166, 227, 161, 0.1);
+}
+
+.jtb-ai-toast-success::before {
+    content: '✓ ';
+    color: var(--success, #a6e3a1);
+}
+
+.jtb-ai-toast-error {
+    border-color: var(--danger, #f38ba8);
+    background: rgba(243, 139, 168, 0.1);
+}
+
+.jtb-ai-toast-error::before {
+    content: '✕ ';
+    color: var(--danger, #f38ba8);
+}
+
+/* ==========================================================================
+   PATTERN MODAL - Is Open State
+   ========================================================================== */
+.jtb-ai-modal.is-open {
+    display: flex;
+}
+
+/* ==========================================================================
+   Print - Hide AI Panel
+   ========================================================================== */
+@media print {
+    .jtb-ai-panel,
+    .jtb-ai-toggle,
+    .jtb-ai-modal {
+        display: none !important;
+    }
+}
+
+/* ==========================================================================
+   DEV_MODE: Visual Debug Mode
+   Shows overlay information about AI-generated layout structure
+   Only visible when Debug toggle is enabled AND DEV_MODE is true
+   ========================================================================== */
+
+/* Debug Toggle in Preview Modal Header */
+.jtb-ai-debug-toggle {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-right: 12px;
+    cursor: pointer;
+    font-size: 11px;
+    color: var(--text-muted, #6c7086);
+    user-select: none;
+}
+
+.jtb-ai-debug-toggle input[type="checkbox"] {
+    width: 14px;
+    height: 14px;
+    margin: 0;
+    cursor: pointer;
+    accent-color: var(--accent, #89b4fa);
+}
+
+.jtb-ai-debug-toggle-label {
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.jtb-ai-debug-toggle:hover {
+    color: var(--text-primary, #cdd6f4);
+}
+
+/* Debug Enabled State - Frame Border Indicators */
+.jtb-debug-enabled {
+    --debug-section-color: #3b82f6;
+    --debug-row-color: #10b981;
+    --debug-col-color: #f59e0b;
+    --debug-module-color: #ec4899;
+}
+
+/* Section Debug Outline */
+.jtb-debug-enabled .jtb-section {
+    outline: 2px dashed var(--debug-section-color) !important;
+    outline-offset: -2px;
+}
+
+/* Row Debug Outline */
+.jtb-debug-enabled .jtb-row {
+    outline: 1px dashed var(--debug-row-color) !important;
+    outline-offset: -1px;
+}
+
+/* Column Debug Outline */
+.jtb-debug-enabled .jtb-column {
+    outline: 1px dotted var(--debug-col-color) !important;
+    outline-offset: -1px;
+}
+
+/* Module Debug Outline */
+.jtb-debug-enabled .jtb-module,
+.jtb-debug-enabled [class*="jtb-module-"] {
+    outline: 1px dotted var(--debug-module-color) !important;
+    outline-offset: -1px;
+}
+
+/* Debug Overlay Badges - Common Styles */
+.jtb-debug-overlay {
+    position: absolute !important;
+    z-index: 1000 !important;
+    pointer-events: none !important;
+    font-family: 'SF Mono', 'Fira Code', monospace !important;
+    font-size: 10px !important;
+    line-height: 1.2 !important;
+    white-space: nowrap !important;
+}
+
+/* Section Badge - Top Left */
+.jtb-debug-section-badge {
+    top: 4px !important;
+    left: 4px !important;
+    display: flex !important;
+    gap: 4px !important;
+    flex-wrap: wrap !important;
+    max-width: calc(100% - 8px) !important;
+}
+
+.jtb-debug-section-badge span {
+    display: inline-block !important;
+    padding: 2px 6px !important;
+    border-radius: 3px !important;
+    font-weight: 600 !important;
+}
+
+.jtb-debug-index {
+    background: var(--debug-section-color) !important;
+    color: #fff !important;
+}
+
+.jtb-debug-pattern {
+    background: rgba(59, 130, 246, 0.15) !important;
+    color: var(--debug-section-color) !important;
+    border: 1px solid var(--debug-section-color) !important;
+}
+
+.jtb-debug-context {
+    text-transform: uppercase !important;
+    font-size: 9px !important;
+}
+
+.jtb-debug-context-light {
+    background: #f8fafc !important;
+    color: #1e293b !important;
+    border: 1px solid #cbd5e1 !important;
+}
+
+.jtb-debug-context-dark {
+    background: #1e293b !important;
+    color: #f8fafc !important;
+    border: 1px solid #475569 !important;
+}
+
+.jtb-debug-context-primary {
+    background: var(--debug-section-color) !important;
+    color: #fff !important;
+}
+
+/* AUTO-FIXED badge - Shows when AutoFix Engine modified this section */
+.jtb-debug-autofix {
+    background: #f97316 !important;
+    color: #fff !important;
+    font-size: 8px !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+    animation: jtb-debug-pulse 2s ease-in-out infinite !important;
+}
+
+/* Stage 11: ALT badge - background alternation active and complete */
+.jtb-debug-alt {
+    background: #10b981 !important;
+    color: #fff !important;
+    font-size: 8px !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.3px !important;
+    padding: 2px 5px !important;
+    border-radius: 3px !important;
+}
+
+/* Stage 11: ALT_BUG badge - use_background_alt=true but incomplete */
+.jtb-debug-alt-bug {
+    background: #dc2626 !important;
+    color: #fff !important;
+    font-size: 8px !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.3px !important;
+    padding: 2px 5px !important;
+    border-radius: 3px !important;
+    animation: jtb-debug-pulse 1s ease-in-out infinite !important;
+}
+
+@keyframes jtb-debug-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}
+
+.jtb-debug-bg {
+    background: rgba(100, 116, 139, 0.2) !important;
+    color: #64748b !important;
+    border: 1px solid #94a3b8 !important;
+    font-size: 9px !important;
+}
+
+/* --------------------------------------------------------------------------
+   Stage 19: Copy Debug Summary Button (DEV_MODE only)
+   -------------------------------------------------------------------------- */
+.jtb-debug-copy-btn {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+    padding: 4px 10px !important;
+    margin-left: 8px !important;
+    background: rgba(99, 102, 241, 0.2) !important;
+    color: #a5b4fc !important;
+    border: 1px solid rgba(99, 102, 241, 0.4) !important;
+    border-radius: 4px !important;
+    font-size: 10px !important;
+    font-weight: 600 !important;
+    font-family: 'SF Mono', monospace !important;
+    cursor: pointer !important;
+    pointer-events: auto !important;
+    transition: all 0.15s ease !important;
+}
+
+.jtb-debug-copy-btn:hover {
+    background: rgba(99, 102, 241, 0.35) !important;
+    color: #c7d2fe !important;
+    border-color: rgba(99, 102, 241, 0.6) !important;
+    transform: translateY(-1px) !important;
+}
+
+.jtb-debug-copy-btn:active {
+    transform: translateY(0) !important;
+    background: rgba(99, 102, 241, 0.5) !important;
+}
+
+/* Banner compact layout fix */
+.jtb-debug-banner {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 6px !important;
+    align-items: center !important;
+    max-width: 100% !important;
+    overflow-x: auto !important;
+    padding: 8px 12px !important;
+}
+
+/* Row Badge - Top Right */
+.jtb-debug-row-badge {
+    top: 2px !important;
+    right: 2px !important;
+}
+
+.jtb-debug-cols {
+    display: inline-block !important;
+    padding: 2px 5px !important;
+    background: rgba(16, 185, 129, 0.15) !important;
+    color: var(--debug-row-color) !important;
+    border: 1px solid var(--debug-row-color) !important;
+    border-radius: 3px !important;
+    font-weight: 500 !important;
+}
+
+/* Column Badge - Bottom Left */
+.jtb-debug-col-badge {
+    bottom: 2px !important;
+    left: 2px !important;
+}
+
+.jtb-debug-col-badge span {
+    display: inline-block !important;
+    padding: 1px 4px !important;
+    background: rgba(245, 158, 11, 0.15) !important;
+    color: var(--debug-col-color) !important;
+    border: 1px solid var(--debug-col-color) !important;
+    border-radius: 2px !important;
+    font-size: 9px !important;
+}
+
+/* Module Badge - Bottom Right */
+.jtb-debug-module-badge {
+    bottom: 2px !important;
+    right: 2px !important;
+    display: flex !important;
+    gap: 3px !important;
+}
+
+.jtb-debug-type {
+    display: inline-block !important;
+    padding: 1px 4px !important;
+    background: rgba(236, 72, 153, 0.15) !important;
+    color: var(--debug-module-color) !important;
+    border: 1px solid var(--debug-module-color) !important;
+    border-radius: 2px !important;
+    font-weight: 500 !important;
+}
+
+.jtb-debug-source {
+    display: inline-block !important;
+    padding: 1px 4px !important;
+    background: var(--debug-module-color) !important;
+    color: #fff !important;
+    border-radius: 2px !important;
+    font-size: 8px !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+}
+
+/* ==========================================================================
+   DEV_MODE: Confidence Scoring Debug Display
+   Shows confidence, decision, stop_reason, improvement in debug banner
+   ========================================================================== */
+
+/* Debug Banner - Top of Preview */
+.jtb-debug-banner {
+    position: sticky !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    z-index: 1001 !important;
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 6px !important;
+    padding: 8px 12px !important;
+    background: rgba(30, 41, 59, 0.95) !important;
+    border-bottom: 2px solid rgba(59, 130, 246, 0.5) !important;
+    font-family: 'SF Mono', 'Fira Code', monospace !important;
+    font-size: 10px !important;
+}
+
+/* Confidence Indicator */
+.jtb-debug-conf {
+    display: inline-flex !important;
+    align-items: center !important;
+    padding: 3px 8px !important;
+    border-radius: 4px !important;
+    font-weight: 700 !important;
+}
+
+.jtb-debug-conf-high {
+    background: #10b981 !important;
+    color: #fff !important;
+}
+
+.jtb-debug-conf-medium {
+    background: #f59e0b !important;
+    color: #fff !important;
+}
+
+.jtb-debug-conf-low {
+    background: #ef4444 !important;
+    color: #fff !important;
+}
+
+/* Decision Indicator */
+.jtb-debug-decision {
+    display: inline-flex !important;
+    align-items: center !important;
+    padding: 3px 8px !important;
+    border-radius: 4px !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+}
+
+.jtb-debug-decision-accept {
+    background: #10b981 !important;
+    color: #fff !important;
+}
+
+.jtb-debug-decision-retry {
+    background: #f59e0b !important;
+    color: #fff !important;
+}
+
+.jtb-debug-decision-fail {
+    background: #dc2626 !important;
+    color: #fff !important;
+    animation: jtb-debug-pulse 1s ease-in-out infinite !important;
+}
+
+/* Stop Reason */
+.jtb-debug-stop {
+    display: inline-flex !important;
+    align-items: center !important;
+    padding: 3px 8px !important;
+    background: #991b1b !important;
+    color: #fecaca !important;
+    border-radius: 4px !important;
+    font-weight: 600 !important;
+    font-size: 9px !important;
+}
+
+/* Improvement Delta */
+.jtb-debug-improvement {
+    display: inline-flex !important;
+    align-items: center !important;
+    padding: 3px 8px !important;
+    background: rgba(100, 116, 139, 0.3) !important;
+    color: #cbd5e1 !important;
+    border-radius: 4px !important;
+    font-weight: 500 !important;
+    font-size: 9px !important;
+}
+
+/* Oscillation Warning */
+.jtb-debug-oscillation {
+    display: inline-flex !important;
+    align-items: center !important;
+    padding: 3px 8px !important;
+    background: #7c2d12 !important;
+    color: #fdba74 !important;
+    border-radius: 4px !important;
+    font-weight: 700 !important;
+    animation: jtb-debug-pulse 0.5s ease-in-out infinite !important;
+}
+
+/* ==========================================================================
+   Stage 11: DARK_MISUSE Warning Styles
+   Critical violation - DARK context on LIGHT-only patterns
+   ========================================================================== */
+
+/* Dark sections count badge */
+.jtb-debug-dark-count {
+    display: inline-flex !important;
+    align-items: center !important;
+    padding: 3px 8px !important;
+    background: rgba(30, 41, 59, 0.8) !important;
+    color: #94a3b8 !important;
+    border-radius: 4px !important;
+    font-weight: 600 !important;
+    font-size: 9px !important;
+    border: 1px solid #334155 !important;
+}
+
+/* Dark overflow warning (>2 DARK sections) */
+.jtb-debug-dark-count.jtb-debug-dark-overflow {
+    background: #7f1d1d !important;
+    color: #fca5a5 !important;
+    border-color: #dc2626 !important;
+}
+
+/* DARK_MISUSE critical warning - red pulsing */
+.jtb-debug-dark-misuse {
+    display: inline-flex !important;
+    align-items: center !important;
+    padding: 4px 10px !important;
+    background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%) !important;
+    color: #ffffff !important;
+    border-radius: 4px !important;
+    font-weight: 700 !important;
+    font-size: 10px !important;
+    letter-spacing: 0.5px !important;
+    text-transform: uppercase !important;
+    border: 1px solid #ef4444 !important;
+    box-shadow: 0 0 8px rgba(220, 38, 38, 0.5) !important;
+    animation: jtb-debug-dark-misuse-pulse 1s ease-in-out infinite !important;
+    cursor: help !important;
+}
+
+@keyframes jtb-debug-dark-misuse-pulse {
+    0%, 100% {
+        box-shadow: 0 0 8px rgba(220, 38, 38, 0.5);
+        transform: scale(1);
+    }
+    50% {
+        box-shadow: 0 0 16px rgba(220, 38, 38, 0.8);
+        transform: scale(1.02);
+    }
+}
+
+/* AutoFix regression warning */
+.jtb-debug-autofix-regression {
+    display: inline-flex !important;
+    align-items: center !important;
+    padding: 4px 10px !important;
+    background: linear-gradient(135deg, #c026d3 0%, #86198f 100%) !important;
+    color: #ffffff !important;
+    border-radius: 4px !important;
+    font-weight: 700 !important;
+    font-size: 10px !important;
+    letter-spacing: 0.5px !important;
+    text-transform: uppercase !important;
+    border: 1px solid #e879f9 !important;
+    box-shadow: 0 0 8px rgba(192, 38, 211, 0.5) !important;
+    animation: jtb-debug-regression-pulse 1.2s ease-in-out infinite !important;
+    cursor: help !important;
+}
+
+@keyframes jtb-debug-regression-pulse {
+    0%, 100% {
+        box-shadow: 0 0 8px rgba(192, 38, 211, 0.5);
+    }
+    50% {
+        box-shadow: 0 0 20px rgba(192, 38, 211, 0.9);
+    }
+}
+
+/* Section badge - DARK context on LIGHT-only pattern (error styling) */
+.jtb-debug-section-badge .jtb-debug-context-dark-misuse {
+    background: #dc2626 !important;
+    color: #ffffff !important;
+    animation: jtb-debug-dark-misuse-pulse 1s ease-in-out infinite !important;
+}
+
+/* ==========================================================================
+   Preview Meta Confidence/Decision Badges (non-debug mode)
+   ========================================================================== */
+
+.jtb-ai-confidence-chip {
+    font-family: 'SF Mono', monospace !important;
+}
+
+.jtb-ai-decision-badge {
+    font-family: 'SF Mono', monospace !important;
+}
+
+.jtb-ai-stop-reason {
+    font-family: 'SF Mono', monospace !important;
+}
+
+/* ==========================================================================
+   Stage 12: Visual Intent Engine Styles
+   DOMINANT = highest visual weight (hero, final_cta)
+   EMPHASIS = high visual weight (trust_metrics, pricing)
+   NEUTRAL  = standard weight (features, services)
+   SOFT     = low visual weight (faq, footer, dividers)
+   ========================================================================== */
+
+/* Visual Intent CSS classes for sections (used by renderer) */
+.jtb-vi-dominant {
+    --vi-scale: 1.05;
+    --vi-weight: 700;
+}
+
+.jtb-vi-emphasis {
+    --vi-scale: 1.02;
+    --vi-weight: 600;
+}
+
+.jtb-vi-neutral {
+    --vi-scale: 1;
+    --vi-weight: 400;
+}
+
+.jtb-vi-soft {
+    --vi-scale: 0.98;
+    --vi-weight: 300;
+    opacity: 0.95;
+}
+
+/* Debug mode: Visual Intent badges */
+.jtb-debug-vi {
+    display: inline-flex !important;
+    align-items: center !important;
+    padding: 2px 6px !important;
+    border-radius: 3px !important;
+    font-weight: 600 !important;
+    font-size: 9px !important;
+    letter-spacing: 0.3px !important;
+    text-transform: uppercase !important;
+    margin-left: 4px !important;
+}
+
+/* VI badge colors */
+.jtb-debug-vi-dominant {
+    background: linear-gradient(135deg, #f97316 0%, #ea580c 100%) !important;
+    color: #ffffff !important;
+    border: 1px solid #fb923c !important;
+    box-shadow: 0 0 6px rgba(249, 115, 22, 0.4) !important;
+}
+
+.jtb-debug-vi-emphasis {
+    background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%) !important;
+    color: #ffffff !important;
+    border: 1px solid #a78bfa !important;
+}
+
+.jtb-debug-vi-neutral {
+    background: rgba(100, 116, 139, 0.3) !important;
+    color: #94a3b8 !important;
+    border: 1px solid #475569 !important;
+}
+
+.jtb-debug-vi-soft {
+    background: rgba(71, 85, 105, 0.2) !important;
+    color: #64748b !important;
+    border: 1px solid #334155 !important;
+    font-style: italic !important;
+}
+
+/* VI Conflict warning badge */
+.jtb-debug-vi-conflict {
+    display: inline-flex !important;
+    align-items: center !important;
+    padding: 4px 10px !important;
+    background: linear-gradient(135deg, #eab308 0%, #ca8a04 100%) !important;
+    color: #1e1e1e !important;
+    border-radius: 4px !important;
+    font-weight: 700 !important;
+    font-size: 10px !important;
+    letter-spacing: 0.5px !important;
+    text-transform: uppercase !important;
+    border: 1px solid #fde047 !important;
+    box-shadow: 0 0 8px rgba(234, 179, 8, 0.5) !important;
+    animation: jtb-debug-vi-conflict-pulse 1.5s ease-in-out infinite !important;
+    cursor: help !important;
+}
+
+@keyframes jtb-debug-vi-conflict-pulse {
+    0%, 100% {
+        box-shadow: 0 0 8px rgba(234, 179, 8, 0.5);
+    }
+    50% {
+        box-shadow: 0 0 16px rgba(234, 179, 8, 0.8);
+    }
+}
+
+/* HERO_NOT_DOMINANT warning badge */
+.jtb-debug-hero-not-dominant {
+    display: inline-flex !important;
+    align-items: center !important;
+    padding: 4px 10px !important;
+    background: linear-gradient(135deg, #f97316 0%, #c2410c 100%) !important;
+    color: #ffffff !important;
+    border-radius: 4px !important;
+    font-weight: 700 !important;
+    font-size: 10px !important;
+    letter-spacing: 0.5px !important;
+    text-transform: uppercase !important;
+    border: 1px solid #fb923c !important;
+    box-shadow: 0 0 8px rgba(249, 115, 22, 0.5) !important;
+    cursor: help !important;
+}
+
+/* ==========================================================================
+   Stage 13: Visual Rhythm Engine Styles
+   ========================================================================== */
+
+.jtb-vd-dense {
+    --vd-weight: 1.1;
+}
+
+.jtb-vd-normal {
+    --vd-weight: 1;
+}
+
+.jtb-vd-sparse {
+    --vd-weight: 0.9;
+}
+
+.jtb-debug-vd {
+    display: inline-flex !important;
+    align-items: center !important;
+    padding: 2px 6px !important;
+    border-radius: 3px !important;
+    font-weight: 600 !important;
+    font-size: 9px !important;
+    letter-spacing: 0.3px !important;
+    text-transform: uppercase !important;
+    margin-left: 4px !important;
+}
+
+.jtb-debug-vd-dense {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
+    color: #ffffff !important;
+    border: 1px solid #f87171 !important;
+}
+
+.jtb-debug-vd-normal {
+    background: rgba(100, 116, 139, 0.3) !important;
+    color: #94a3b8 !important;
+    border: 1px solid #475569 !important;
+}
+
+.jtb-debug-vd-sparse {
+    background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%) !important;
+    color: #ffffff !important;
+    border: 1px solid #4ade80 !important;
+}
+
+.jtb-debug-spacing {
+    display: inline-flex !important;
+    align-items: center !important;
+    padding: 2px 6px !important;
+    background: rgba(59, 130, 246, 0.2) !important;
+    color: #60a5fa !important;
+    border-radius: 3px !important;
+    font-weight: 600 !important;
+    font-size: 9px !important;
+    font-family: 'SF Mono', monospace !important;
+    margin-left: 4px !important;
+    border: 1px solid rgba(59, 130, 246, 0.4) !important;
+}
+
+.jtb-debug-dense-chain {
+    display: inline-flex !important;
+    align-items: center !important;
+    padding: 4px 10px !important;
+    background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%) !important;
+    color: #ffffff !important;
+    border-radius: 4px !important;
+    font-weight: 700 !important;
+    font-size: 10px !important;
+    letter-spacing: 0.5px !important;
+    text-transform: uppercase !important;
+    border: 1px solid #f87171 !important;
+    box-shadow: 0 0 8px rgba(239, 68, 68, 0.5) !important;
+    cursor: help !important;
+}
+
+.jtb-debug-no-climax {
+    display: inline-flex !important;
+    align-items: center !important;
+    padding: 4px 10px !important;
+    background: linear-gradient(135deg, #a855f7 0%, #7c3aed 100%) !important;
+    color: #ffffff !important;
+    border-radius: 4px !important;
+    font-weight: 700 !important;
+    font-size: 10px !important;
+    letter-spacing: 0.5px !important;
+    text-transform: uppercase !important;
+    border: 1px solid #c084fc !important;
+    box-shadow: 0 0 8px rgba(168, 85, 247, 0.5) !important;
+    cursor: help !important;
+}
+
+.jtb-debug-sparse-tight {
+    display: inline-flex !important;
+    align-items: center !important;
+    padding: 4px 10px !important;
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%) !important;
+    color: #1e1e1e !important;
+    border-radius: 4px !important;
+    font-weight: 700 !important;
+    font-size: 10px !important;
+    letter-spacing: 0.5px !important;
+    text-transform: uppercase !important;
+    border: 1px solid #fbbf24 !important;
+    cursor: help !important;
+}
+
+.jtb-debug-vd-stats {
+    display: inline-flex !important;
+    align-items: center !important;
+    padding: 3px 8px !important;
+    background: rgba(30, 41, 59, 0.8) !important;
+    color: #94a3b8 !important;
+    border-radius: 4px !important;
+    font-weight: 600 !important;
+    font-size: 9px !important;
+    font-family: 'SF Mono', monospace !important;
+    border: 1px solid #334155 !important;
+}
+
+/* ==========================================================================
+   Stage 14: Adaptive Hero & CTA Scaling Engine
+   ========================================================================== */
+
+.jtb-scale-xs {
+    --jtb-scale: 0.85;
+    --jtb-scale-heading: 0.85;
+    --jtb-scale-padding: 0.85;
+}
+
+.jtb-scale-sm {
+    --jtb-scale: 0.92;
+    --jtb-scale-heading: 0.92;
+    --jtb-scale-padding: 0.92;
+}
+
+.jtb-scale-md {
+    --jtb-scale: 1;
+    --jtb-scale-heading: 1;
+    --jtb-scale-padding: 1;
+}
+
+.jtb-scale-lg {
+    --jtb-scale: 1.12;
+    --jtb-scale-heading: 1.12;
+    --jtb-scale-padding: 1.12;
+}
+
+.jtb-scale-xl {
+    --jtb-scale: 1.25;
+    --jtb-scale-heading: 1.25;
+    --jtb-scale-padding: 1.25;
+}
+
+.jtb-scale-lg .jtb-section-inner,
+.jtb-scale-xl .jtb-section-inner {
+    padding-top: calc(80px * var(--jtb-scale-padding, 1)) !important;
+    padding-bottom: calc(80px * var(--jtb-scale-padding, 1)) !important;
+}
+
+.jtb-scale-lg h1,
+.jtb-scale-xl h1 {
+    font-size: calc(48px * var(--jtb-scale-heading, 1)) !important;
+}
+
+.jtb-scale-lg h2,
+.jtb-scale-xl h2 {
+    font-size: calc(36px * var(--jtb-scale-heading, 1)) !important;
+}
+
+.jtb-scale-lg h3,
+.jtb-scale-xl h3 {
+    font-size: calc(24px * var(--jtb-scale-heading, 1)) !important;
+}
+
+.jtb-scale-xs .jtb-section-inner,
+.jtb-scale-sm .jtb-section-inner {
+    padding-top: calc(60px * var(--jtb-scale-padding, 1)) !important;
+    padding-bottom: calc(60px * var(--jtb-scale-padding, 1)) !important;
+}
+
+.jtb-debug-scale {
+    display: inline-flex !important;
+    align-items: center !important;
+    padding: 2px 6px !important;
+    border-radius: 3px !important;
+    font-weight: 700 !important;
+    font-size: 9px !important;
+    letter-spacing: 0.3px !important;
+    margin-left: 4px !important;
+}
+
+.jtb-debug-scale-xs {
+    background: rgba(71, 85, 105, 0.3) !important;
+    color: #64748b !important;
+    border: 1px solid #475569 !important;
+}
+
+.jtb-debug-scale-sm {
+    background: rgba(100, 116, 139, 0.3) !important;
+    color: #94a3b8 !important;
+    border: 1px solid #64748b !important;
+}
+
+.jtb-debug-scale-md {
+    background: rgba(59, 130, 246, 0.2) !important;
+    color: #60a5fa !important;
+    border: 1px solid #3b82f6 !important;
+}
+
+.jtb-debug-scale-lg {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+    color: #ffffff !important;
+    border: 1px solid #34d399 !important;
+}
+
+.jtb-debug-scale-xl {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%) !important;
+    color: #1e1e1e !important;
+    border: 1px solid #fbbf24 !important;
+    box-shadow: 0 0 6px rgba(245, 158, 11, 0.4) !important;
+}
+
+.jtb-debug-scale-ok {
+    display: inline-flex !important;
+    align-items: center !important;
+    padding: 3px 8px !important;
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+    color: #ffffff !important;
+    border-radius: 4px !important;
+    font-weight: 600 !important;
+    font-size: 9px !important;
+    font-family: 'SF Mono', monospace !important;
+    border: 1px solid #34d399 !important;
+}
+
+.jtb-debug-scale-warn {
+    display: inline-flex !important;
+    align-items: center !important;
+    padding: 3px 8px !important;
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%) !important;
+    color: #1e1e1e !important;
+    border-radius: 4px !important;
+    font-weight: 600 !important;
+    font-size: 9px !important;
+    font-family: 'SF Mono', monospace !important;
+    border: 1px solid #fbbf24 !important;
+}
+
+.jtb-debug-hero-underscaled {
+    display: inline-flex !important;
+    align-items: center !important;
+    padding: 4px 10px !important;
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
+    color: #ffffff !important;
+    border-radius: 4px !important;
+    font-weight: 700 !important;
+    font-size: 10px !important;
+    letter-spacing: 0.5px !important;
+    text-transform: uppercase !important;
+    border: 1px solid #f87171 !important;
+    cursor: help !important;
+}
+
+.jtb-debug-cta-not-climax {
+    display: inline-flex !important;
+    align-items: center !important;
+    padding: 4px 10px !important;
+    background: linear-gradient(135deg, #a855f7 0%, #7c3aed 100%) !important;
+    color: #ffffff !important;
+    border-radius: 4px !important;
+    font-weight: 700 !important;
+    font-size: 10px !important;
+    letter-spacing: 0.5px !important;
+    text-transform: uppercase !important;
+    border: 1px solid #c084fc !important;
+    cursor: help !important;
+}
+
+.jtb-debug-multi-xl {
+    display: inline-flex !important;
+    align-items: center !important;
+    padding: 4px 10px !important;
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%) !important;
+    color: #1e1e1e !important;
+    border-radius: 4px !important;
+    font-weight: 700 !important;
+    font-size: 10px !important;
+    letter-spacing: 0.5px !important;
+    text-transform: uppercase !important;
+    border: 1px solid #fbbf24 !important;
+    cursor: help !important;
+}
+
+/* ==========================================================================
+   Stage 15: Adaptive Typography & Content Emphasis Engine
+   ========================================================================== */
+
+.jtb-ts-xs { --jtb-ts: 0.9; }
+.jtb-ts-sm { --jtb-ts: 0.95; }
+.jtb-ts-md { --jtb-ts: 1; }
+.jtb-ts-lg { --jtb-ts: 1.1; }
+.jtb-ts-xl { --jtb-ts: 1.25; }
+
+.jtb-ts-xs h1, .jtb-ts-xs h2, .jtb-ts-xs h3, .jtb-ts-xs h4, .jtb-ts-xs h5, .jtb-ts-xs h6 {
+    font-size: calc(1em * var(--jtb-ts, 1)) !important;
+}
+.jtb-ts-sm h1, .jtb-ts-sm h2, .jtb-ts-sm h3, .jtb-ts-sm h4, .jtb-ts-sm h5, .jtb-ts-sm h6 {
+    font-size: calc(1em * var(--jtb-ts, 1)) !important;
+}
+.jtb-ts-lg h1, .jtb-ts-lg h2, .jtb-ts-lg h3, .jtb-ts-lg h4, .jtb-ts-lg h5, .jtb-ts-lg h6 {
+    font-size: calc(1em * var(--jtb-ts, 1)) !important;
+}
+.jtb-ts-xl h1, .jtb-ts-xl h2, .jtb-ts-xl h3, .jtb-ts-xl h4, .jtb-ts-xl h5, .jtb-ts-xl h6 {
+    font-size: calc(1em * var(--jtb-ts, 1)) !important;
+}
+
+.jtb-ts-lg h1 { font-size: calc(48px * 1.1) !important; }
+.jtb-ts-lg h2 { font-size: calc(36px * 1.1) !important; }
+.jtb-ts-lg h3 { font-size: calc(24px * 1.1) !important; }
+.jtb-ts-xl h1 { font-size: calc(48px * 1.25) !important; }
+.jtb-ts-xl h2 { font-size: calc(36px * 1.25) !important; }
+.jtb-ts-xl h3 { font-size: calc(24px * 1.25) !important; }
+
+.jtb-ts-lg p, .jtb-ts-lg .jtb-text { font-size: calc(16px * 1.1) !important; }
+.jtb-ts-xl p, .jtb-ts-xl .jtb-text { font-size: calc(16px * 1.25) !important; }
+
+.jtb-ts-lg .jtb-button, .jtb-ts-lg button { font-size: calc(14px * 1.1) !important; padding: calc(12px * 1.1) calc(24px * 1.1) !important; }
+.jtb-ts-xl .jtb-button, .jtb-ts-xl button { font-size: calc(14px * 1.25) !important; padding: calc(12px * 1.25) calc(24px * 1.25) !important; }
+
+.jtb-te-strong {
+    --jtb-te-weight: 700;
+    --jtb-te-spacing: -0.01em;
+}
+
+.jtb-te-normal {
+    --jtb-te-weight: 500;
+    --jtb-te-spacing: 0;
+}
+
+.jtb-te-soft {
+    --jtb-te-weight: 400;
+    --jtb-te-spacing: 0;
+}
+
+.jtb-te-strong h1, .jtb-te-strong h2, .jtb-te-strong h3 {
+    font-weight: 700 !important;
+    letter-spacing: -0.01em !important;
+}
+
+.jtb-te-strong p, .jtb-te-strong .jtb-text {
+    font-weight: 500 !important;
+}
+
+.jtb-te-soft h1, .jtb-te-soft h2, .jtb-te-soft h3 {
+    font-weight: 400 !important;
+    opacity: 0.9 !important;
+}
+
+.jtb-te-soft p, .jtb-te-soft .jtb-text {
+    font-weight: 400 !important;
+    opacity: 0.9 !important;
+    max-width: 720px !important;
+}
+
+.jtb-debug-ts {
+    display: inline-flex !important;
+    align-items: center !important;
+    padding: 2px 5px !important;
+    border-radius: 3px !important;
+    font-weight: 600 !important;
+    font-size: 8px !important;
+    letter-spacing: 0.2px !important;
+    margin-left: 3px !important;
+}
+
+.jtb-debug-ts-xs, .jtb-debug-ts-sm {
+    background: rgba(71, 85, 105, 0.3) !important;
+    color: #64748b !important;
+    border: 1px solid #475569 !important;
+}
+
+.jtb-debug-ts-md {
+    background: rgba(59, 130, 246, 0.2) !important;
+    color: #60a5fa !important;
+    border: 1px solid #3b82f6 !important;
+}
+
+.jtb-debug-ts-lg {
+    background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%) !important;
+    color: #ffffff !important;
+    border: 1px solid #22d3ee !important;
+}
+
+.jtb-debug-ts-xl {
+    background: linear-gradient(135deg, #ec4899 0%, #db2777 100%) !important;
+    color: #ffffff !important;
+    border: 1px solid #f472b6 !important;
+    box-shadow: 0 0 4px rgba(236, 72, 153, 0.4) !important;
+}
+
+.jtb-debug-te {
+    display: inline-flex !important;
+    align-items: center !important;
+    padding: 2px 5px !important;
+    border-radius: 3px !important;
+    font-weight: 600 !important;
+    font-size: 8px !important;
+    margin-left: 3px !important;
+}
+
+.jtb-debug-te-strong {
+    background: linear-gradient(135deg, #f97316 0%, #ea580c 100%) !important;
+    color: #ffffff !important;
+    border: 1px solid #fb923c !important;
+}
+
+.jtb-debug-te-normal {
+    background: rgba(100, 116, 139, 0.3) !important;
+    color: #94a3b8 !important;
+    border: 1px solid #64748b !important;
+}
+
+.jtb-debug-te-soft {
+    background: rgba(71, 85, 105, 0.2) !important;
+    color: #64748b !important;
+    border: 1px solid #334155 !important;
+    font-style: italic !important;
+}
+
+.jtb-debug-typo-warn {
+    display: inline-flex !important;
+    align-items: center !important;
+    padding: 4px 10px !important;
+    background: linear-gradient(135deg, #ec4899 0%, #be185d 100%) !important;
+    color: #ffffff !important;
+    border-radius: 4px !important;
+    font-weight: 700 !important;
+    font-size: 10px !important;
+    letter-spacing: 0.5px !important;
+    text-transform: uppercase !important;
+    border: 1px solid #f472b6 !important;
+    cursor: help !important;
+}
+
+.jtb-debug-typo-stats {
+    display: inline-flex !important;
+    align-items: center !important;
+    padding: 3px 8px !important;
+    background: rgba(30, 41, 59, 0.8) !important;
+    color: #94a3b8 !important;
+    border-radius: 4px !important;
+    font-weight: 600 !important;
+    font-size: 9px !important;
+    font-family: 'SF Mono', monospace !important;
+    border: 1px solid #334155 !important;
+}
+
+/* ============================================================
+   Stage 16: Emotional Contrast & Attention Flow Engine
+
+   Emotional Tone: calm, focus, trust, urgency
+   Attention Level: low, medium, high
+   ============================================================ */
+
+/* --- Emotional Tone badges (ET) --- */
+.jtb-debug-et {
+    display: inline-flex !important;
+    align-items: center !important;
+    padding: 2px 6px !important;
+    border-radius: 3px !important;
+    font-weight: 700 !important;
+    font-size: 9px !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.3px !important;
+    cursor: help !important;
+}
+
+/* CALM - serene blue/teal */
+.jtb-debug-et-calm {
+    background: linear-gradient(135deg, rgba(6, 182, 212, 0.25) 0%, rgba(20, 184, 166, 0.2) 100%) !important;
+    color: #67e8f9 !important;
+    border: 1px solid rgba(6, 182, 212, 0.5) !important;
+}
+
+/* FOCUS - sharp blue */
+.jtb-debug-et-focus {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.3) 0%, rgba(99, 102, 241, 0.25) 100%) !important;
+    color: #93c5fd !important;
+    border: 1px solid rgba(59, 130, 246, 0.5) !important;
+}
+
+/* TRUST - warm green */
+.jtb-debug-et-trust {
+    background: linear-gradient(135deg, rgba(34, 197, 94, 0.3) 0%, rgba(16, 185, 129, 0.25) 100%) !important;
+    color: #86efac !important;
+    border: 1px solid rgba(34, 197, 94, 0.5) !important;
+}
+
+/* URGENCY - intense red/orange */
+.jtb-debug-et-urgency {
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.35) 0%, rgba(249, 115, 22, 0.3) 100%) !important;
+    color: #fca5a5 !important;
+    border: 1px solid rgba(239, 68, 68, 0.6) !important;
+    animation: pulse-urgency 2s infinite !important;
+}
+
+@keyframes pulse-urgency {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}
+
+/* --- Attention Level badges (ATT) --- */
+.jtb-debug-att {
+    display: inline-flex !important;
+    align-items: center !important;
+    padding: 2px 6px !important;
+    border-radius: 3px !important;
+    font-weight: 700 !important;
+    font-size: 9px !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.3px !important;
+    cursor: help !important;
+}
+
+/* LOW attention - muted */
+.jtb-debug-att-low {
+    background: rgba(71, 85, 105, 0.25) !important;
+    color: #94a3b8 !important;
+    border: 1px solid #475569 !important;
+}
+
+/* MEDIUM attention - balanced */
+.jtb-debug-att-medium {
+    background: rgba(234, 179, 8, 0.25) !important;
+    color: #fcd34d !important;
+    border: 1px solid rgba(234, 179, 8, 0.5) !important;
+}
+
+/* HIGH attention - intense */
+.jtb-debug-att-high {
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.3) 0%, rgba(220, 38, 38, 0.25) 100%) !important;
+    color: #fca5a5 !important;
+    border: 1px solid rgba(239, 68, 68, 0.5) !important;
+    box-shadow: 0 0 8px rgba(239, 68, 68, 0.3) !important;
+}
+
+/* --- Stage 16 Banner Warnings --- */
+
+.jtb-debug-att-overload {
+    display: inline-flex !important;
+    align-items: center !important;
+    padding: 4px 10px !important;
+    background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%) !important;
+    color: #ffffff !important;
+    border-radius: 4px !important;
+    font-weight: 700 !important;
+    font-size: 10px !important;
+    letter-spacing: 0.5px !important;
+    text-transform: uppercase !important;
+    border: 1px solid #ef4444 !important;
+    cursor: help !important;
+    animation: attention-pulse 1.5s infinite !important;
+}
+
+@keyframes attention-pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
+    50% { box-shadow: 0 0 0 4px rgba(239, 68, 68, 0); }
+}
+
+.jtb-debug-no-trust {
+    display: inline-flex !important;
+    align-items: center !important;
+    padding: 4px 10px !important;
+    background: linear-gradient(135deg, #d97706 0%, #92400e 100%) !important;
+    color: #ffffff !important;
+    border-radius: 4px !important;
+    font-weight: 700 !important;
+    font-size: 10px !important;
+    letter-spacing: 0.5px !important;
+    text-transform: uppercase !important;
+    border: 1px solid #f59e0b !important;
+    cursor: help !important;
+}
+
+.jtb-debug-no-calm {
+    display: inline-flex !important;
+    align-items: center !important;
+    padding: 4px 10px !important;
+    background: linear-gradient(135deg, #0891b2 0%, #155e75 100%) !important;
+    color: #ffffff !important;
+    border-radius: 4px !important;
+    font-weight: 700 !important;
+    font-size: 10px !important;
+    letter-spacing: 0.5px !important;
+    text-transform: uppercase !important;
+    border: 1px solid #22d3ee !important;
+    cursor: help !important;
+}
+
+.jtb-debug-urgency-early {
+    display: inline-flex !important;
+    align-items: center !important;
+    padding: 4px 10px !important;
+    background: linear-gradient(135deg, #ea580c 0%, #c2410c 100%) !important;
+    color: #ffffff !important;
+    border-radius: 4px !important;
+    font-weight: 700 !important;
+    font-size: 10px !important;
+    letter-spacing: 0.5px !important;
+    text-transform: uppercase !important;
+    border: 1px solid #fb923c !important;
+    cursor: help !important;
+}
+
+.jtb-debug-flat-flow {
+    display: inline-flex !important;
+    align-items: center !important;
+    padding: 4px 10px !important;
+    background: linear-gradient(135deg, #64748b 0%, #475569 100%) !important;
+    color: #ffffff !important;
+    border-radius: 4px !important;
+    font-weight: 700 !important;
+    font-size: 10px !important;
+    letter-spacing: 0.5px !important;
+    text-transform: uppercase !important;
+    border: 1px solid #94a3b8 !important;
+    cursor: help !important;
+}
+
+/* --- Stage 16 Banner Stats --- */
+
+.jtb-debug-emo-flow {
+    display: inline-flex !important;
+    align-items: center !important;
+    padding: 3px 8px !important;
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.3) 0%, rgba(168, 85, 247, 0.2) 100%) !important;
+    color: #c4b5fd !important;
+    border-radius: 4px !important;
+    font-weight: 700 !important;
+    font-size: 9px !important;
+    font-family: 'SF Mono', monospace !important;
+    border: 1px solid rgba(139, 92, 246, 0.5) !important;
+}
+
+.jtb-debug-att-stats {
+    display: inline-flex !important;
+    align-items: center !important;
+    padding: 3px 8px !important;
+    background: rgba(30, 41, 59, 0.8) !important;
+    color: #94a3b8 !important;
+    border-radius: 4px !important;
+    font-weight: 600 !important;
+    font-size: 9px !important;
+    font-family: 'SF Mono', monospace !important;
+    border: 1px solid #334155 !important;
+}
+
+.jtb-debug-urg-ok {
+    display: inline-flex !important;
+    align-items: center !important;
+    padding: 3px 8px !important;
+    background: rgba(34, 197, 94, 0.2) !important;
+    color: #86efac !important;
+    border-radius: 4px !important;
+    font-weight: 600 !important;
+    font-size: 9px !important;
+    font-family: 'SF Mono', monospace !important;
+    border: 1px solid rgba(34, 197, 94, 0.4) !important;
+}
+
+.jtb-debug-urg-early {
+    display: inline-flex !important;
+    align-items: center !important;
+    padding: 3px 8px !important;
+    background: rgba(249, 115, 22, 0.2) !important;
+    color: #fdba74 !important;
+    border-radius: 4px !important;
+    font-weight: 600 !important;
+    font-size: 9px !important;
+    font-family: 'SF Mono', monospace !important;
+    border: 1px solid rgba(249, 115, 22, 0.4) !important;
+}
+
+/* ============================================================
+   Stage 17: Narrative Flow Engine
+
+   Story Beats: HOOK → PROBLEM → PROMISE → PROOF → DETAILS → RELIEF → RESOLUTION
+   ============================================================ */
+
+/* --- Narrative Role badges (NR) --- */
+.jtb-debug-nr {
+    display: inline-flex !important;
+    align-items: center !important;
+    padding: 2px 6px !important;
+    border-radius: 3px !important;
+    font-weight: 700 !important;
+    font-size: 9px !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.3px !important;
+    cursor: help !important;
+}
+
+/* HOOK - attention grabber (gold/yellow) */
+.jtb-debug-nr-hook {
+    background: linear-gradient(135deg, rgba(234, 179, 8, 0.35) 0%, rgba(202, 138, 4, 0.3) 100%) !important;
+    color: #fcd34d !important;
+    border: 1px solid rgba(234, 179, 8, 0.6) !important;
+    box-shadow: 0 0 8px rgba(234, 179, 8, 0.3) !important;
+}
+
+/* PROBLEM - pain points (red/orange) */
+.jtb-debug-nr-problem {
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.3) 0%, rgba(220, 38, 38, 0.25) 100%) !important;
+    color: #fca5a5 !important;
+    border: 1px solid rgba(239, 68, 68, 0.5) !important;
+}
+
+/* PROMISE - value proposition (blue) */
+.jtb-debug-nr-promise {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.3) 0%, rgba(37, 99, 235, 0.25) 100%) !important;
+    color: #93c5fd !important;
+    border: 1px solid rgba(59, 130, 246, 0.5) !important;
+}
+
+/* PROOF - social proof (green) */
+.jtb-debug-nr-proof {
+    background: linear-gradient(135deg, rgba(34, 197, 94, 0.35) 0%, rgba(22, 163, 74, 0.3) 100%) !important;
+    color: #86efac !important;
+    border: 1px solid rgba(34, 197, 94, 0.6) !important;
+}
+
+/* DETAILS - specifics (gray/slate) */
+.jtb-debug-nr-details {
+    background: rgba(100, 116, 139, 0.3) !important;
+    color: #cbd5e1 !important;
+    border: 1px solid #64748b !important;
+}
+
+/* RELIEF - breathing room (teal/cyan) */
+.jtb-debug-nr-relief {
+    background: linear-gradient(135deg, rgba(6, 182, 212, 0.25) 0%, rgba(20, 184, 166, 0.2) 100%) !important;
+    color: #67e8f9 !important;
+    border: 1px solid rgba(6, 182, 212, 0.5) !important;
+}
+
+/* RESOLUTION - final CTA (purple/magenta) */
+.jtb-debug-nr-resolution {
+    background: linear-gradient(135deg, rgba(168, 85, 247, 0.35) 0%, rgba(139, 92, 246, 0.3) 100%) !important;
+    color: #d8b4fe !important;
+    border: 1px solid rgba(168, 85, 247, 0.6) !important;
+    box-shadow: 0 0 10px rgba(168, 85, 247, 0.3) !important;
+}
+
+/* --- Narrative Hard Fail badge --- */
+.jtb-debug-nr-fail {
+    display: inline-flex !important;
+    align-items: center !important;
+    padding: 4px 10px !important;
+    background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%) !important;
+    color: #ffffff !important;
+    border-radius: 4px !important;
+    font-weight: 700 !important;
+    font-size: 10px !important;
+    letter-spacing: 0.5px !important;
+    text-transform: uppercase !important;
+    border: 1px solid #ef4444 !important;
+    cursor: help !important;
+    animation: narrative-fail-pulse 1.5s infinite !important;
+}
+
+@keyframes narrative-fail-pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.5); }
+    50% { box-shadow: 0 0 0 6px rgba(220, 38, 38, 0); }
+}
+
+/* --- Stage 17 Banner Elements --- */
+
+/* Narrative signature */
+.jtb-debug-narr-sig {
+    display: inline-flex !important;
+    align-items: center !important;
+    padding: 3px 8px !important;
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.25) 0%, rgba(168, 85, 247, 0.2) 100%) !important;
+    color: #c4b5fd !important;
+    border-radius: 4px !important;
+    font-weight: 700 !important;
+    font-size: 9px !important;
+    font-family: 'SF Mono', monospace !important;
+    border: 1px solid rgba(139, 92, 246, 0.4) !important;
+}
+
+/* Narrative score - OK */
+.jtb-debug-narr-ok {
+    display: inline-flex !important;
+    align-items: center !important;
+    padding: 3px 8px !important;
+    background: rgba(34, 197, 94, 0.2) !important;
+    color: #86efac !important;
+    border-radius: 4px !important;
+    font-weight: 600 !important;
+    font-size: 9px !important;
+    font-family: 'SF Mono', monospace !important;
+    border: 1px solid rgba(34, 197, 94, 0.4) !important;
+}
+
+/* Narrative score - Warning */
+.jtb-debug-narr-warn {
+    display: inline-flex !important;
+    align-items: center !important;
+    padding: 3px 8px !important;
+    background: rgba(234, 179, 8, 0.2) !important;
+    color: #fcd34d !important;
+    border-radius: 4px !important;
+    font-weight: 600 !important;
+    font-size: 9px !important;
+    font-family: 'SF Mono', monospace !important;
+    border: 1px solid rgba(234, 179, 8, 0.4) !important;
+}
+
+/* Narrative score - Fail */
+.jtb-debug-narr-fail {
+    display: inline-flex !important;
+    align-items: center !important;
+    padding: 3px 8px !important;
+    background: rgba(239, 68, 68, 0.25) !important;
+    color: #fca5a5 !important;
+    border-radius: 4px !important;
+    font-weight: 600 !important;
+    font-size: 9px !important;
+    font-family: 'SF Mono', monospace !important;
+    border: 1px solid rgba(239, 68, 68, 0.5) !important;
+}
+
+/* Broken Story warning */
+.jtb-debug-broken-story {
+    display: inline-flex !important;
+    align-items: center !important;
+    padding: 4px 10px !important;
+    background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%) !important;
+    color: #ffffff !important;
+    border-radius: 4px !important;
+    font-weight: 700 !important;
+    font-size: 10px !important;
+    letter-spacing: 0.5px !important;
+    text-transform: uppercase !important;
+    border: 1px solid #ef4444 !important;
+    cursor: help !important;
+    animation: broken-story-pulse 2s infinite !important;
+}
+
+@keyframes broken-story-pulse {
+    0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.4); }
+    50% { opacity: 0.85; box-shadow: 0 0 0 4px rgba(220, 38, 38, 0); }
+}
+
+/* Flow OK indicator */
+.jtb-debug-flow-ok {
+    display: inline-flex !important;
+    align-items: center !important;
+    padding: 4px 10px !important;
+    background: linear-gradient(135deg, rgba(34, 197, 94, 0.3) 0%, rgba(22, 163, 74, 0.25) 100%) !important;
+    color: #86efac !important;
+    border-radius: 4px !important;
+    font-weight: 700 !important;
+    font-size: 10px !important;
+    letter-spacing: 0.5px !important;
+    text-transform: uppercase !important;
+    border: 1px solid rgba(34, 197, 94, 0.5) !important;
+}
+
+/* Missing roles badge */
+.jtb-debug-missing-roles {
+    display: inline-flex !important;
+    align-items: center !important;
+    padding: 4px 10px !important;
+    background: linear-gradient(135deg, #d97706 0%, #92400e 100%) !important;
+    color: #ffffff !important;
+    border-radius: 4px !important;
+    font-weight: 700 !important;
+    font-size: 10px !important;
+    letter-spacing: 0.5px !important;
+    text-transform: uppercase !important;
+    border: 1px solid #f59e0b !important;
+    cursor: help !important;
+}
+
+/* CTA before Promise critical warning */
+.jtb-debug-cta-before-promise {
+    display: inline-flex !important;
+    align-items: center !important;
+    padding: 4px 10px !important;
+    background: linear-gradient(135deg, #be123c 0%, #9f1239 100%) !important;
+    color: #ffffff !important;
+    border-radius: 4px !important;
+    font-weight: 700 !important;
+    font-size: 10px !important;
+    letter-spacing: 0.5px !important;
+    text-transform: uppercase !important;
+    border: 1px solid #f43f5e !important;
+    cursor: help !important;
+    animation: cta-promise-pulse 1.5s infinite !important;
+}
+
+@keyframes cta-promise-pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(190, 18, 60, 0.5); }
+    50% { box-shadow: 0 0 0 6px rgba(190, 18, 60, 0); }
+}
+
+/* ==========================================================================
+   Stage 18: NARRATIVE AUTO-CORRECTION Styles
+   Safe, deterministic narrative fixes visualization
+   ========================================================================== */
+
+/* Banner: AUTO-NR indicator (turkusowy) */
+.jtb-debug-nr-autofix {
+    display: inline-flex !important;
+    align-items: center !important;
+    padding: 4px 10px !important;
+    background: linear-gradient(135deg, #14b8a6 0%, #0d9488 100%) !important;
+    color: #ffffff !important;
+    border-radius: 4px !important;
+    font-weight: 700 !important;
+    font-size: 10px !important;
+    letter-spacing: 0.5px !important;
+    text-transform: uppercase !important;
+    border: 1px solid #2dd4bf !important;
+    cursor: help !important;
+}
+
+/* Banner: NR Placeholders count */
+.jtb-debug-nr-placeholders {
+    display: inline-flex !important;
+    align-items: center !important;
+    padding: 3px 8px !important;
+    background: rgba(148, 163, 184, 0.2) !important;
+    color: #94a3b8 !important;
+    border-radius: 4px !important;
+    font-weight: 600 !important;
+    font-size: 9px !important;
+    font-family: 'SF Mono', monospace !important;
+    border: 1px dashed rgba(148, 163, 184, 0.5) !important;
+}
+
+/* Banner: NR Swaps count (niebieski) */
+.jtb-debug-nr-swaps {
+    display: inline-flex !important;
+    align-items: center !important;
+    padding: 3px 8px !important;
+    background: rgba(59, 130, 246, 0.2) !important;
+    color: #60a5fa !important;
+    border-radius: 4px !important;
+    font-weight: 600 !important;
+    font-size: 9px !important;
+    font-family: 'SF Mono', monospace !important;
+    border: 1px solid rgba(59, 130, 246, 0.5) !important;
+}
+
+/* Banner: NR Blocked warning */
+.jtb-debug-nr-blocked-banner {
+    display: inline-flex !important;
+    align-items: center !important;
+    padding: 4px 10px !important;
+    background: linear-gradient(135deg, #7c2d12 0%, #9a3412 100%) !important;
+    color: #fdba74 !important;
+    border-radius: 4px !important;
+    font-weight: 700 !important;
+    font-size: 10px !important;
+    letter-spacing: 0.5px !important;
+    text-transform: uppercase !important;
+    border: 1px solid #ea580c !important;
+    cursor: help !important;
+    animation: nr-blocked-pulse 2s infinite !important;
+}
+
+@keyframes nr-blocked-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}
+
+/* Section badge: PLACEHOLDER (szary, dashed border) */
+.jtb-debug-nr-placeholder {
+    display: inline-flex !important;
+    align-items: center !important;
+    padding: 2px 6px !important;
+    background: rgba(100, 116, 139, 0.15) !important;
+    color: #94a3b8 !important;
+    border-radius: 3px !important;
+    font-weight: 600 !important;
+    font-size: 8px !important;
+    letter-spacing: 0.3px !important;
+    text-transform: uppercase !important;
+    border: 1px dashed rgba(148, 163, 184, 0.6) !important;
+    margin-left: 3px !important;
+}
+
+/* Section badge: SWAPPED (niebieski) */
+.jtb-debug-nr-swap {
+    display: inline-flex !important;
+    align-items: center !important;
+    padding: 2px 6px !important;
+    background: rgba(59, 130, 246, 0.2) !important;
+    color: #60a5fa !important;
+    border-radius: 3px !important;
+    font-weight: 600 !important;
+    font-size: 8px !important;
+    letter-spacing: 0.3px !important;
+    text-transform: uppercase !important;
+    border: 1px solid rgba(59, 130, 246, 0.5) !important;
+    margin-left: 3px !important;
+}
+
+/* Section badge: BLOCKED (pomaranczowy warning) */
+.jtb-debug-nr-blocked {
+    display: inline-flex !important;
+    align-items: center !important;
+    padding: 2px 6px !important;
+    background: linear-gradient(135deg, rgba(234, 88, 12, 0.3) 0%, rgba(194, 65, 12, 0.25) 100%) !important;
+    color: #fdba74 !important;
+    border-radius: 3px !important;
+    font-weight: 700 !important;
+    font-size: 8px !important;
+    letter-spacing: 0.3px !important;
+    text-transform: uppercase !important;
+    border: 1px solid rgba(234, 88, 12, 0.6) !important;
+    margin-left: 3px !important;
+}
+
+/* Placeholder section visual indicator */
+.jtb-section[data-placeholder="true"],
+.jtb-section._placeholder {
+    position: relative !important;
+    border: 2px dashed rgba(148, 163, 184, 0.4) !important;
+    border-radius: 8px !important;
+}
+
+.jtb-section[data-placeholder="true"]::before,
+.jtb-section._placeholder::before {
+    content: "AI PLACEHOLDER" !important;
+    position: absolute !important;
+    top: -12px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    background: #64748b !important;
+    color: #f1f5f9 !important;
+    padding: 2px 8px !important;
+    border-radius: 3px !important;
+    font-size: 9px !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.5px !important;
+    text-transform: uppercase !important;
+    z-index: 100 !important;
+}
+
+/* Swapped section visual indicator */
+.jtb-section[data-swapped="true"],
+.jtb-section._narrative_swapped {
+    position: relative !important;
+    outline: 2px solid rgba(59, 130, 246, 0.4) !important;
+    outline-offset: 2px !important;
+}
+
+/* Blocked section visual indicator */
+.jtb-section[data-blocked="true"],
+.jtb-section._autofix_blocked {
+    position: relative !important;
+    outline: 2px solid rgba(234, 88, 12, 0.5) !important;
+    outline-offset: 2px !important;
+}
+
+/* ==========================================================================
+   STAGE 20: UX & PERFORMANCE HARDENING (Preview)
+   Performance guards, accessibility, debug UX improvements
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   20.1 PERFORMANCE GUARDS (Preview)
+   Reduce reflows, limit expensive effects
+   -------------------------------------------------------------------------- */
+
+/* Containment for sections in preview */
+.jtb-ai-preview-rendered .jtb-section {
+    contain: layout style !important;
+    content-visibility: auto;
+    contain-intrinsic-size: auto 400px;
+}
+
+/* Cap shadows to level 2 in preview */
+.jtb-ai-preview-rendered .jtb-blurb,
+.jtb-ai-preview-rendered .jtb-testimonial,
+.jtb-ai-preview-rendered .jtb-pricing-table,
+.jtb-ai-preview-rendered .jtb-button,
+.jtb-ai-preview-rendered .jtb-cta-button {
+    box-shadow: var(--jtb-gp-shadow-1) !important;
+}
+
+.jtb-ai-preview-rendered .jtb-blurb:hover,
+.jtb-ai-preview-rendered .jtb-testimonial:hover {
+    box-shadow: var(--jtb-gp-shadow-2) !important;
+}
+
+/* Disable backdrop-filter in preview (expensive) */
+.jtb-ai-preview-rendered * {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+}
+
+/* Images: optimized rendering */
+.jtb-ai-preview-rendered img {
+    object-fit: cover;
+    filter: none !important;
+    image-rendering: auto;
+}
+
+/* Will-change only on interactive hover */
+.jtb-ai-preview-rendered .jtb-button,
+.jtb-ai-preview-rendered .jtb-cta-button,
+.jtb-ai-preview-rendered .jtb-blurb,
+.jtb-ai-preview-rendered .jtb-testimonial {
+    will-change: auto;
+}
+
+.jtb-ai-preview-rendered .jtb-button:hover,
+.jtb-ai-preview-rendered .jtb-cta-button:hover {
+    will-change: transform;
+}
+
+/* --------------------------------------------------------------------------
+   20.2 SECTION FOCUS FRAMING (IntersectionObserver driven)
+   -------------------------------------------------------------------------- */
+.jtb-ai-preview-rendered .jtb-section.jtb-in-view {
+    position: relative;
+}
+
+.jtb-ai-preview-rendered .jtb-section.jtb-in-view::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: min(90%, 700px);
+    height: 2px;
+    background: linear-gradient(90deg,
+        transparent 0%,
+        rgba(99, 102, 241, 0.5) 20%,
+        rgba(99, 102, 241, 0.5) 80%,
+        transparent 100%);
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    pointer-events: none;
+}
+
+.jtb-ai-preview-rendered .jtb-section.jtb-in-view::after {
+    opacity: 1;
+}
+
+/* Hide focus line for hero/cta */
+.jtb-ai-preview-rendered .jtb-nr-hook.jtb-in-view::after,
+.jtb-ai-preview-rendered .jtb-nr-resolution.jtb-in-view::after {
+    display: none;
+}
+
+/* --------------------------------------------------------------------------
+   20.3 MOTION SAFETY (Preview)
+   -------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+    .jtb-ai-preview-rendered *,
+    .jtb-ai-preview-rendered *::before,
+    .jtb-ai-preview-rendered *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+
+    .jtb-ai-preview-rendered .jtb-button:hover,
+    .jtb-ai-preview-rendered .jtb-cta-button:hover,
+    .jtb-ai-preview-rendered .jtb-blurb:hover,
+    .jtb-ai-preview-rendered .jtb-testimonial:hover {
+        transform: none !important;
+    }
+
+    /* Keep basic feedback */
+    .jtb-ai-preview-rendered .jtb-button:hover {
+        opacity: 0.9;
+    }
+
+    /* Disable debug animations */
+    .jtb-debug-autofix,
+    .jtb-debug-alt-bug,
+    .jtb-debug-broken-story,
+    .jtb-debug-cta-before-promise {
+        animation: none !important;
+    }
+}
+
+/* --------------------------------------------------------------------------
+   20.4 DEBUG UX IMPROVEMENTS
+   Quick filters, better triage, zero noise
+   -------------------------------------------------------------------------- */
+
+/* Debug Quick Filter Toolbar */
+.jtb-debug-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    padding: 6px 8px;
+    background: rgba(30, 41, 59, 0.95);
+    border-bottom: 1px solid rgba(71, 85, 105, 0.5);
+    font-size: 9px;
+}
+
+.jtb-debug-filter-chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 8px;
+    background: rgba(71, 85, 105, 0.3);
+    color: #94a3b8;
+    border: 1px solid rgba(71, 85, 105, 0.5);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    user-select: none;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.jtb-debug-filter-chip:hover {
+    background: rgba(99, 102, 241, 0.2);
+    color: #a5b4fc;
+    border-color: rgba(99, 102, 241, 0.4);
+}
+
+.jtb-debug-filter-chip.active {
+    background: rgba(99, 102, 241, 0.3);
+    color: #c7d2fe;
+    border-color: rgba(99, 102, 241, 0.6);
+}
+
+/* Filter highlight modes - hide non-matching sections */
+.jtb-debug-filter-problem .jtb-section:not(.jtb-nr-problem) { opacity: 0.3; }
+.jtb-debug-filter-promise .jtb-section:not(.jtb-nr-promise) { opacity: 0.3; }
+.jtb-debug-filter-proof .jtb-section:not(.jtb-nr-proof) { opacity: 0.3; }
+.jtb-debug-filter-cta .jtb-section:not(.jtb-nr-resolution) { opacity: 0.3; }
+.jtb-debug-filter-dark .jtb-section:not(.jtb-context-dark) { opacity: 0.3; }
+.jtb-debug-filter-xl .jtb-section:not(.jtb-scale-xl) { opacity: 0.3; }
+
+/* --------------------------------------------------------------------------
+   20.5 SNAPSHOT COMPARE (DEV_MODE)
+   Show diff between current and last debug summary
+   -------------------------------------------------------------------------- */
+.jtb-debug-compare-btn {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+    padding: 4px 10px !important;
+    margin-left: 4px !important;
+    background: rgba(34, 197, 94, 0.2) !important;
+    color: #86efac !important;
+    border: 1px solid rgba(34, 197, 94, 0.4) !important;
+    border-radius: 4px !important;
+    font-size: 10px !important;
+    font-weight: 600 !important;
+    font-family: 'SF Mono', monospace !important;
+    cursor: pointer !important;
+    pointer-events: auto !important;
+    transition: all 0.15s ease !important;
+}
+
+.jtb-debug-compare-btn:hover {
+    background: rgba(34, 197, 94, 0.35) !important;
+    color: #bbf7d0 !important;
+    border-color: rgba(34, 197, 94, 0.6) !important;
+}
+
+.jtb-debug-compare-btn:disabled {
+    opacity: 0.5 !important;
+    cursor: not-allowed !important;
+}
+
+/* Snapshot diff display */
+.jtb-debug-diff {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 6px 10px;
+    background: rgba(30, 41, 59, 0.9);
+    border-top: 1px solid rgba(71, 85, 105, 0.4);
+    font-size: 9px;
+    font-family: 'SF Mono', monospace;
+}
+
+.jtb-debug-diff-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-weight: 500;
+}
+
+.jtb-debug-diff-item.positive {
+    background: rgba(34, 197, 94, 0.2);
+    color: #86efac;
+}
+
+.jtb-debug-diff-item.negative {
+    background: rgba(239, 68, 68, 0.2);
+    color: #fca5a5;
+}
+
+.jtb-debug-diff-item.neutral {
+    background: rgba(100, 116, 139, 0.2);
+    color: #94a3b8;
+}
+
+/* --------------------------------------------------------------------------
+   20.6 ACCESSIBILITY ENHANCEMENTS
+   Focus rings, contrast, keyboard navigation
+   -------------------------------------------------------------------------- */
+
+/* Focus rings for debug controls */
+.jtb-debug-copy-btn:focus-visible,
+.jtb-debug-compare-btn:focus-visible,
+.jtb-debug-filter-chip:focus-visible {
+    outline: 2px solid #a5b4fc;
+    outline-offset: 2px;
+}
+
+/* Ensure debug text meets contrast requirements */
+.jtb-debug-banner {
+    min-height: 32px;
+    line-height: 1.4;
+}
+
+.jtb-debug-overlay {
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .jtb-debug-filter-chip {
+        border-width: 2px;
+    }
+
+    .jtb-debug-copy-btn,
+    .jtb-debug-compare-btn {
+        border-width: 2px;
+    }
+
+    .jtb-debug-section-badge span {
+        border-width: 2px !important;
+    }
+}
+
+/* ==========================================================================
+   STAGE 21: STYLE PROOF CALIBRATION (Preview Parity)
+   Mirror frontend cue bar system for exact preview match
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   21.1 STYLE PROOF TOKENS (Preview scope)
+   -------------------------------------------------------------------------- */
+.jtb-ai-preview-rendered {
+    /* Cue bar dimensions */
+    --jtb-sp-cue-height: 6px;
+    --jtb-sp-cue-radius: 999px;
+    --jtb-sp-cue-opacity: 0.9;
+    --jtb-sp-outline: 1px;
+    --jtb-sp-outline-strong: 2px;
+
+    /* Visual Intent colors (VI) */
+    --jtb-sp-vi-dominant: #2563eb;
+    --jtb-sp-vi-emphasis: #7c3aed;
+    --jtb-sp-vi-neutral: #64748b;
+    --jtb-sp-vi-soft: #14b8a6;
+
+    /* Narrative Role colors (NR) */
+    --jtb-sp-nr-hook: #f59e0b;
+    --jtb-sp-nr-problem: #ef4444;
+    --jtb-sp-nr-promise: #3b82f6;
+    --jtb-sp-nr-proof: #22c55e;
+    --jtb-sp-nr-details: #94a3b8;
+    --jtb-sp-nr-relief: #06b6d4;
+    --jtb-sp-nr-resolution: #a855f7;
+
+    /* Emotional Tone colors (ET) */
+    --jtb-sp-et-calm: #0ea5e9;
+    --jtb-sp-et-focus: #2563eb;
+    --jtb-sp-et-trust: #16a34a;
+    --jtb-sp-et-urgency: #dc2626;
+}
+
+/* --------------------------------------------------------------------------
+   21.2 SECTION CUE BAR (Preview)
+   -------------------------------------------------------------------------- */
+.jtb-ai-preview-rendered .jtb-section {
+    position: relative;
+    --jtb-sp-cue-color: transparent;
+}
+
+.jtb-ai-preview-rendered .jtb-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: min(90%, 600px);
+    height: var(--jtb-sp-cue-height, 6px);
+    background-color: var(--jtb-sp-cue-color);
+    border-radius: 0 0 var(--jtb-sp-cue-radius, 999px) var(--jtb-sp-cue-radius, 999px);
+    opacity: var(--jtb-sp-cue-opacity, 0.9);
+    pointer-events: none;
+    z-index: 10;
+    transition: opacity 0.2s ease;
+}
+
+/* Hide cue when no color set */
+.jtb-ai-preview-rendered .jtb-section:not([class*="jtb-nr-"]):not([class*="jtb-vi-"]):not([class*="jtb-et-"])::before {
+    opacity: 0;
+    height: 0;
+}
+
+/* --------------------------------------------------------------------------
+   21.3 NARRATIVE ROLE CUE COLORS (Preview - Highest Priority)
+   -------------------------------------------------------------------------- */
+.jtb-ai-preview-rendered .jtb-nr-hook { --jtb-sp-cue-color: var(--jtb-sp-nr-hook, #f59e0b); }
+.jtb-ai-preview-rendered .jtb-nr-problem { --jtb-sp-cue-color: var(--jtb-sp-nr-problem, #ef4444); }
+.jtb-ai-preview-rendered .jtb-nr-promise { --jtb-sp-cue-color: var(--jtb-sp-nr-promise, #3b82f6); }
+.jtb-ai-preview-rendered .jtb-nr-proof { --jtb-sp-cue-color: var(--jtb-sp-nr-proof, #22c55e); }
+.jtb-ai-preview-rendered .jtb-nr-details { --jtb-sp-cue-color: var(--jtb-sp-nr-details, #94a3b8); }
+.jtb-ai-preview-rendered .jtb-nr-relief { --jtb-sp-cue-color: var(--jtb-sp-nr-relief, #06b6d4); }
+.jtb-ai-preview-rendered .jtb-nr-resolution { --jtb-sp-cue-color: var(--jtb-sp-nr-resolution, #a855f7); }
+
+/* --------------------------------------------------------------------------
+   21.4 VISUAL INTENT CUE COLORS (Preview - Second Priority)
+   -------------------------------------------------------------------------- */
+.jtb-ai-preview-rendered .jtb-vi-dominant:not([class*="jtb-nr-"]) { --jtb-sp-cue-color: var(--jtb-sp-vi-dominant, #2563eb); }
+.jtb-ai-preview-rendered .jtb-vi-emphasis:not([class*="jtb-nr-"]) { --jtb-sp-cue-color: var(--jtb-sp-vi-emphasis, #7c3aed); }
+.jtb-ai-preview-rendered .jtb-vi-neutral:not([class*="jtb-nr-"]) { --jtb-sp-cue-color: var(--jtb-sp-vi-neutral, #64748b); }
+.jtb-ai-preview-rendered .jtb-vi-soft:not([class*="jtb-nr-"]) { --jtb-sp-cue-color: var(--jtb-sp-vi-soft, #14b8a6); }
+
+/* --------------------------------------------------------------------------
+   21.5 EMOTIONAL TONE CUE COLORS (Preview - Third Priority)
+   -------------------------------------------------------------------------- */
+.jtb-ai-preview-rendered .jtb-et-calm:not([class*="jtb-nr-"]):not([class*="jtb-vi-"]) { --jtb-sp-cue-color: var(--jtb-sp-et-calm, #0ea5e9); }
+.jtb-ai-preview-rendered .jtb-et-focus:not([class*="jtb-nr-"]):not([class*="jtb-vi-"]) { --jtb-sp-cue-color: var(--jtb-sp-et-focus, #2563eb); }
+.jtb-ai-preview-rendered .jtb-et-trust:not([class*="jtb-nr-"]):not([class*="jtb-vi-"]) { --jtb-sp-cue-color: var(--jtb-sp-et-trust, #16a34a); }
+.jtb-ai-preview-rendered .jtb-et-urgency:not([class*="jtb-nr-"]):not([class*="jtb-vi-"]) { --jtb-sp-cue-color: var(--jtb-sp-et-urgency, #dc2626); }
+
+/* --------------------------------------------------------------------------
+   21.6 ATTENTION OUTLINE (Preview)
+   -------------------------------------------------------------------------- */
+.jtb-ai-preview-rendered .jtb-att-medium {
+    box-shadow: inset 0 0 0 var(--jtb-sp-outline, 1px) rgba(99, 102, 241, 0.15);
+}
+
+.jtb-ai-preview-rendered .jtb-att-high {
+    box-shadow: inset 0 0 0 var(--jtb-sp-outline-strong, 2px) rgba(99, 102, 241, 0.25);
+}
+
+/* Attention with tone colors (Preview) */
+.jtb-ai-preview-rendered .jtb-et-calm.jtb-att-medium { box-shadow: inset 0 0 0 var(--jtb-sp-outline, 1px) rgba(14, 165, 233, 0.15); }
+.jtb-ai-preview-rendered .jtb-et-calm.jtb-att-high { box-shadow: inset 0 0 0 var(--jtb-sp-outline-strong, 2px) rgba(14, 165, 233, 0.25); }
+
+.jtb-ai-preview-rendered .jtb-et-focus.jtb-att-medium { box-shadow: inset 0 0 0 var(--jtb-sp-outline, 1px) rgba(37, 99, 235, 0.15); }
+.jtb-ai-preview-rendered .jtb-et-focus.jtb-att-high { box-shadow: inset 0 0 0 var(--jtb-sp-outline-strong, 2px) rgba(37, 99, 235, 0.25); }
+
+.jtb-ai-preview-rendered .jtb-et-trust.jtb-att-medium { box-shadow: inset 0 0 0 var(--jtb-sp-outline, 1px) rgba(22, 163, 74, 0.15); }
+.jtb-ai-preview-rendered .jtb-et-trust.jtb-att-high { box-shadow: inset 0 0 0 var(--jtb-sp-outline-strong, 2px) rgba(22, 163, 74, 0.25); }
+
+.jtb-ai-preview-rendered .jtb-et-urgency.jtb-att-medium { box-shadow: inset 0 0 0 var(--jtb-sp-outline, 1px) rgba(220, 38, 38, 0.15); }
+.jtb-ai-preview-rendered .jtb-et-urgency.jtb-att-high { box-shadow: inset 0 0 0 var(--jtb-sp-outline-strong, 2px) rgba(220, 38, 38, 0.25); }
+
+/* --------------------------------------------------------------------------
+   21.7 TYPOGRAPHY EMPHASIS (Preview)
+   -------------------------------------------------------------------------- */
+.jtb-ai-preview-rendered .jtb-te-strong {
+    letter-spacing: -0.01em;
+}
+
+.jtb-ai-preview-rendered .jtb-te-strong .jtb-button,
+.jtb-ai-preview-rendered .jtb-te-strong .jtb-cta-button,
+.jtb-ai-preview-rendered .jtb-te-strong a {
+    text-decoration-thickness: 2px;
+    text-underline-offset: 3px;
+}
+
+.jtb-ai-preview-rendered .jtb-te-soft {
+    opacity: 0.92;
+}
+
+.jtb-ai-preview-rendered .jtb-te-soft h1,
+.jtb-ai-preview-rendered .jtb-te-soft h2,
+.jtb-ai-preview-rendered .jtb-te-soft h3 {
+    font-weight: 500;
+}
+
+/* --------------------------------------------------------------------------
+   21.8 STYLE PROOF ACCESSIBILITY (Preview)
+   -------------------------------------------------------------------------- */
+
+/* Reduced motion: no transitions on cue bar */
+@media (prefers-reduced-motion: reduce) {
+    .jtb-ai-preview-rendered .jtb-section::before {
+        transition: none !important;
+    }
+}
+
+/* High contrast: stronger cues */
+@media (prefers-contrast: high) {
+    .jtb-ai-preview-rendered {
+        --jtb-sp-cue-height: 8px;
+        --jtb-sp-cue-opacity: 1;
+        --jtb-sp-outline: 2px;
+        --jtb-sp-outline-strong: 3px;
+    }
+
+    .jtb-ai-preview-rendered .jtb-att-medium {
+        box-shadow: inset 0 0 0 2px rgba(99, 102, 241, 0.4) !important;
+    }
+
+    .jtb-ai-preview-rendered .jtb-att-high {
+        box-shadow: inset 0 0 0 3px rgba(99, 102, 241, 0.5) !important;
+    }
+
+    .jtb-ai-preview-rendered .jtb-section::before {
+        opacity: 1 !important;
+    }
+}
+
+/* ==========================================================================
+   STAGE 22: VISUAL REGRESSION GUARD + CONSISTENCY SCORING (Preview)
+   DEV_MODE only - prevents visual drift, measures layout consistency
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   22.1 STYLE LOCK MODE (Visual Regression Guard)
+   Locks visual tokens when .jtb-style-locked is active
+   -------------------------------------------------------------------------- */
+
+/* When Style Lock is ON, freeze cue bar height to prevent drift */
+.jtb-ai-preview-rendered.jtb-style-locked {
+    --jtb-sp-cue-height: 6px !important;
+    --jtb-sp-cue-radius: 999px !important;
+    --jtb-sp-cue-opacity: 0.9 !important;
+}
+
+/* Lock outline thickness for attention levels */
+.jtb-ai-preview-rendered.jtb-style-locked .jtb-att-medium {
+    box-shadow: inset 0 0 0 1px rgba(99, 102, 241, 0.15) !important;
+}
+
+.jtb-ai-preview-rendered.jtb-style-locked .jtb-att-high {
+    box-shadow: inset 0 0 0 2px rgba(99, 102, 241, 0.25) !important;
+}
+
+/* Lock typography scale effects - disable jtb-ts-* scale modifications */
+.jtb-ai-preview-rendered.jtb-style-locked .jtb-ts-xs,
+.jtb-ai-preview-rendered.jtb-style-locked .jtb-ts-sm,
+.jtb-ai-preview-rendered.jtb-style-locked .jtb-ts-md,
+.jtb-ai-preview-rendered.jtb-style-locked .jtb-ts-lg,
+.jtb-ai-preview-rendered.jtb-style-locked .jtb-ts-xl {
+    --jtb-ts: 1 !important;
+}
+
+.jtb-ai-preview-rendered.jtb-style-locked [class*="jtb-ts-"] h1,
+.jtb-ai-preview-rendered.jtb-style-locked [class*="jtb-ts-"] h2,
+.jtb-ai-preview-rendered.jtb-style-locked [class*="jtb-ts-"] h3,
+.jtb-ai-preview-rendered.jtb-style-locked [class*="jtb-ts-"] h4,
+.jtb-ai-preview-rendered.jtb-style-locked [class*="jtb-ts-"] h5,
+.jtb-ai-preview-rendered.jtb-style-locked [class*="jtb-ts-"] h6 {
+    font-size: inherit;
+}
+
+/* Lock visual scale factors */
+.jtb-ai-preview-rendered.jtb-style-locked .jtb-scale-xs,
+.jtb-ai-preview-rendered.jtb-style-locked .jtb-scale-sm,
+.jtb-ai-preview-rendered.jtb-style-locked .jtb-scale-md,
+.jtb-ai-preview-rendered.jtb-style-locked .jtb-scale-lg,
+.jtb-ai-preview-rendered.jtb-style-locked .jtb-scale-xl {
+    --jtb-scale: 1;
+    --jtb-scale-heading: 1;
+    --jtb-scale-padding: 1;
+}
+
+/* Lock emotional tone-specific outlines */
+.jtb-ai-preview-rendered.jtb-style-locked .jtb-et-calm.jtb-att-medium,
+.jtb-ai-preview-rendered.jtb-style-locked .jtb-et-calm.jtb-att-high,
+.jtb-ai-preview-rendered.jtb-style-locked .jtb-et-focus.jtb-att-medium,
+.jtb-ai-preview-rendered.jtb-style-locked .jtb-et-focus.jtb-att-high,
+.jtb-ai-preview-rendered.jtb-style-locked .jtb-et-trust.jtb-att-medium,
+.jtb-ai-preview-rendered.jtb-style-locked .jtb-et-trust.jtb-att-high,
+.jtb-ai-preview-rendered.jtb-style-locked .jtb-et-urgency.jtb-att-medium,
+.jtb-ai-preview-rendered.jtb-style-locked .jtb-et-urgency.jtb-att-high {
+    box-shadow: inset 0 0 0 1px rgba(99, 102, 241, 0.15) !important;
+}
+
+/* Visual indicator when style is locked */
+.jtb-ai-preview-rendered.jtb-style-locked::after {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #f59e0b 0%, #fbbf24 50%, #f59e0b 100%);
+    z-index: 9999;
+    opacity: 0.8;
+}
+
+/* --------------------------------------------------------------------------
+   22.2 CONSISTENCY SCORE BADGE (Debug Banner)
+   Shows score 0-100 with color coding
+   -------------------------------------------------------------------------- */
+
+.jtb-debug-consistency {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+    padding: 4px 10px !important;
+    border-radius: 4px !important;
+    font-weight: 700 !important;
+    font-size: 10px !important;
+    font-family: 'SF Mono', 'Monaco', 'Consolas', monospace !important;
+    letter-spacing: 0.3px !important;
+    border: 1px solid !important;
+    cursor: help !important;
+}
+
+/* Consistency High (>= 85) - Green */
+.jtb-debug-consistency-high {
+    background: linear-gradient(135deg, rgba(34, 197, 94, 0.3) 0%, rgba(22, 163, 74, 0.25) 100%) !important;
+    color: #86efac !important;
+    border-color: rgba(34, 197, 94, 0.5) !important;
+}
+
+/* Consistency Medium (60-84) - Yellow */
+.jtb-debug-consistency-medium {
+    background: linear-gradient(135deg, rgba(234, 179, 8, 0.3) 0%, rgba(202, 138, 4, 0.25) 100%) !important;
+    color: #fde047 !important;
+    border-color: rgba(234, 179, 8, 0.5) !important;
+}
+
+/* Consistency Low (< 60) - Red */
+.jtb-debug-consistency-low {
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.3) 0%, rgba(220, 38, 38, 0.25) 100%) !important;
+    color: #fca5a5 !important;
+    border-color: rgba(239, 68, 68, 0.5) !important;
+}
+
+/* --------------------------------------------------------------------------
+   22.3 LOW CONSISTENCY WARNING BADGE
+   -------------------------------------------------------------------------- */
+
+.jtb-debug-low-consistency {
+    display: inline-flex !important;
+    align-items: center !important;
+    padding: 4px 10px !important;
+    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%) !important;
+    color: #ffffff !important;
+    border-radius: 4px !important;
+    font-weight: 700 !important;
+    font-size: 10px !important;
+    letter-spacing: 0.5px !important;
+    text-transform: uppercase !important;
+    border: 1px solid #ef4444 !important;
+    cursor: help !important;
+    animation: low-consistency-pulse 2s infinite !important;
+}
+
+@keyframes low-consistency-pulse {
+    0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.4); }
+    50% { opacity: 0.85; box-shadow: 0 0 0 4px rgba(220, 38, 38, 0); }
+}
+
+/* --------------------------------------------------------------------------
+   22.4 STYLE LOCK BUTTON (Debug Banner)
+   -------------------------------------------------------------------------- */
+
+.jtb-debug-lock-btn {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+    padding: 4px 10px !important;
+    background: rgba(100, 116, 139, 0.2) !important;
+    color: #94a3b8 !important;
+    border: 1px solid rgba(148, 163, 184, 0.4) !important;
+    border-radius: 4px !important;
+    font-size: 10px !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+    transition: all 0.15s ease !important;
+}
+
+.jtb-debug-lock-btn:hover {
+    background: rgba(100, 116, 139, 0.35) !important;
+    color: #cbd5e1 !important;
+    border-color: rgba(148, 163, 184, 0.6) !important;
+}
+
+/* Lock button active state */
+.jtb-debug-lock-btn.active {
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.3) 0%, rgba(217, 119, 6, 0.25) 100%) !important;
+    color: #fbbf24 !important;
+    border-color: rgba(245, 158, 11, 0.6) !important;
+}
+
+.jtb-debug-lock-btn.active:hover {
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.45) 0%, rgba(217, 119, 6, 0.4) 100%) !important;
+}
+
+/* --------------------------------------------------------------------------
+   22.5 WEAKEST COMPONENT INDICATOR (Tooltip)
+   -------------------------------------------------------------------------- */
+
+.jtb-debug-weak-component {
+    display: inline-flex !important;
+    align-items: center !important;
+    padding: 3px 8px !important;
+    background: rgba(148, 163, 184, 0.15) !important;
+    color: #94a3b8 !important;
+    border-radius: 3px !important;
+    font-weight: 500 !important;
+    font-size: 9px !important;
+    font-family: 'SF Mono', monospace !important;
+    border: 1px dashed rgba(148, 163, 184, 0.4) !important;
+    margin-left: 4px !important;
+}
+
+/* ==========================================================================
+   STAGE 23: CROSS-STAGE DRIFT DETECTOR (Temporal Stability Engine)
+   DEV_MODE only - detects layout drift between generations
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   23.1 TEMPORAL GROUP CONTAINER
+   -------------------------------------------------------------------------- */
+
+.jtb-debug-temporal {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+    margin-left: 6px !important;
+    padding: 2px 6px !important;
+    background: rgba(30, 41, 59, 0.6) !important;
+    border-radius: 4px !important;
+    border: 1px solid rgba(71, 85, 105, 0.4) !important;
+}
+
+/* --------------------------------------------------------------------------
+   23.2 STABILITY SCORE BADGE
+   -------------------------------------------------------------------------- */
+
+.jtb-debug-stability {
+    display: inline-flex !important;
+    align-items: center !important;
+    padding: 3px 8px !important;
+    border-radius: 3px !important;
+    font-weight: 700 !important;
+    font-size: 9px !important;
+    font-family: 'SF Mono', 'Monaco', 'Consolas', monospace !important;
+    letter-spacing: 0.3px !important;
+    border: 1px solid !important;
+    cursor: help !important;
+}
+
+/* Stability STABLE (>= 85) - Green */
+.jtb-debug-stability-stable {
+    background: linear-gradient(135deg, rgba(34, 197, 94, 0.25) 0%, rgba(22, 163, 74, 0.2) 100%) !important;
+    color: #86efac !important;
+    border-color: rgba(34, 197, 94, 0.4) !important;
+}
+
+/* Stability UNSTABLE (60-84) - Yellow */
+.jtb-debug-stability-unstable {
+    background: linear-gradient(135deg, rgba(234, 179, 8, 0.25) 0%, rgba(202, 138, 4, 0.2) 100%) !important;
+    color: #fde047 !important;
+    border-color: rgba(234, 179, 8, 0.4) !important;
+}
+
+/* Stability CHAOTIC (< 60) - Red */
+.jtb-debug-stability-chaotic {
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.25) 0%, rgba(220, 38, 38, 0.2) 100%) !important;
+    color: #fca5a5 !important;
+    border-color: rgba(239, 68, 68, 0.4) !important;
+}
+
+/* --------------------------------------------------------------------------
+   23.3 DRIFT COUNT BADGE
+   -------------------------------------------------------------------------- */
+
+.jtb-debug-drift-count {
+    display: inline-flex !important;
+    align-items: center !important;
+    padding: 3px 6px !important;
+    background: rgba(99, 102, 241, 0.2) !important;
+    color: #a5b4fc !important;
+    border-radius: 3px !important;
+    font-weight: 600 !important;
+    font-size: 9px !important;
+    font-family: 'SF Mono', monospace !important;
+    border: 1px solid rgba(99, 102, 241, 0.4) !important;
+    cursor: help !important;
+}
+
+/* --------------------------------------------------------------------------
+   23.4 DRIFT SEVERITY INDICATORS (for future inline use)
+   -------------------------------------------------------------------------- */
+
+.jtb-debug-drift-high {
+    color: #fca5a5 !important;
+    background: rgba(239, 68, 68, 0.2) !important;
+    border-color: rgba(239, 68, 68, 0.4) !important;
+}
+
+.jtb-debug-drift-medium {
+    color: #fde047 !important;
+    background: rgba(234, 179, 8, 0.2) !important;
+    border-color: rgba(234, 179, 8, 0.4) !important;
+}
+
+.jtb-debug-drift-low {
+    color: #86efac !important;
+    background: rgba(34, 197, 94, 0.15) !important;
+    border-color: rgba(34, 197, 94, 0.3) !important;
+}
+
+/* --------------------------------------------------------------------------
+   23.5 TEMPORAL WARNING BADGES
+   -------------------------------------------------------------------------- */
+
+.jtb-debug-temporal-instability {
+    display: inline-flex !important;
+    align-items: center !important;
+    padding: 4px 10px !important;
+    background: linear-gradient(135deg, #d97706 0%, #b45309 100%) !important;
+    color: #ffffff !important;
+    border-radius: 4px !important;
+    font-weight: 700 !important;
+    font-size: 10px !important;
+    letter-spacing: 0.5px !important;
+    text-transform: uppercase !important;
+    border: 1px solid #f59e0b !important;
+    cursor: help !important;
+    animation: temporal-instability-pulse 2.5s infinite !important;
+}
+
+@keyframes temporal-instability-pulse {
+    0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(217, 119, 6, 0.4); }
+    50% { opacity: 0.85; box-shadow: 0 0 0 4px rgba(217, 119, 6, 0); }
+}
+
+.jtb-debug-chaotic-gen {
+    display: inline-flex !important;
+    align-items: center !important;
+    padding: 4px 10px !important;
+    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%) !important;
+    color: #ffffff !important;
+    border-radius: 4px !important;
+    font-weight: 700 !important;
+    font-size: 10px !important;
+    letter-spacing: 0.5px !important;
+    text-transform: uppercase !important;
+    border: 1px solid #ef4444 !important;
+    cursor: help !important;
+    animation: chaotic-gen-pulse 1.5s infinite !important;
+}
+
+@keyframes chaotic-gen-pulse {
+    0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.5); }
+    50% { opacity: 0.9; box-shadow: 0 0 0 5px rgba(220, 38, 38, 0); }
+}
+
+/* --------------------------------------------------------------------------
+   23.6 TIMELINE BUTTON
+   -------------------------------------------------------------------------- */
+
+.jtb-debug-timeline-btn {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+    padding: 4px 10px !important;
+    background: rgba(59, 130, 246, 0.2) !important;
+    color: #60a5fa !important;
+    border: 1px solid rgba(59, 130, 246, 0.4) !important;
+    border-radius: 4px !important;
+    font-size: 10px !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+    transition: all 0.15s ease !important;
+}
+
+.jtb-debug-timeline-btn:hover {
+    background: rgba(59, 130, 246, 0.35) !important;
+    color: #93c5fd !important;
+    border-color: rgba(59, 130, 246, 0.6) !important;
+}
+
+/* --------------------------------------------------------------------------
+   23.7 TIMELINE POPUP
+   -------------------------------------------------------------------------- */
+
+.jtb-debug-timeline-popup {
+    position: fixed !important;
+    top: 80px !important;
+    right: 20px !important;
+    width: 280px !important;
+    max-height: 400px !important;
+    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%) !important;
+    border: 1px solid rgba(99, 102, 241, 0.3) !important;
+    border-radius: 8px !important;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.05) inset !important;
+    z-index: 10001 !important;
+    overflow: hidden !important;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif !important;
+}
+
+.jtb-debug-timeline-header {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    padding: 12px 14px !important;
+    background: rgba(30, 41, 59, 0.8) !important;
+    border-bottom: 1px solid rgba(71, 85, 105, 0.4) !important;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    color: #e2e8f0 !important;
+}
+
+.jtb-debug-timeline-close {
+    width: 24px !important;
+    height: 24px !important;
+    border: none !important;
+    background: rgba(239, 68, 68, 0.2) !important;
+    color: #f87171 !important;
+    border-radius: 4px !important;
+    cursor: pointer !important;
+    font-size: 16px !important;
+    line-height: 1 !important;
+    transition: all 0.15s ease !important;
+}
+
+.jtb-debug-timeline-close:hover {
+    background: rgba(239, 68, 68, 0.4) !important;
+    color: #fecaca !important;
+}
+
+.jtb-debug-timeline-entries {
+    max-height: 320px !important;
+    overflow-y: auto !important;
+    padding: 8px !important;
+}
+
+.jtb-debug-timeline-entry {
+    padding: 10px 12px !important;
+    margin-bottom: 6px !important;
+    background: rgba(30, 41, 59, 0.5) !important;
+    border: 1px solid rgba(71, 85, 105, 0.3) !important;
+    border-radius: 6px !important;
+    transition: all 0.15s ease !important;
+}
+
+.jtb-debug-timeline-entry:last-child {
+    margin-bottom: 0 !important;
+}
+
+.jtb-debug-timeline-entry.latest {
+    background: rgba(59, 130, 246, 0.15) !important;
+    border-color: rgba(59, 130, 246, 0.4) !important;
+}
+
+.jtb-debug-timeline-entry:hover {
+    background: rgba(51, 65, 85, 0.6) !important;
+}
+
+.jtb-debug-timeline-time {
+    font-size: 10px !important;
+    font-weight: 600 !important;
+    color: #94a3b8 !important;
+    margin-bottom: 6px !important;
+}
+
+.jtb-debug-timeline-entry.latest .jtb-debug-timeline-time {
+    color: #60a5fa !important;
+}
+
+.jtb-debug-timeline-stats {
+    display: flex !important;
+    gap: 8px !important;
+    margin-bottom: 4px !important;
+}
+
+.jtb-debug-timeline-score,
+.jtb-debug-timeline-cons,
+.jtb-debug-timeline-sections {
+    font-size: 10px !important;
+    font-weight: 600 !important;
+    font-family: 'SF Mono', monospace !important;
+    padding: 2px 6px !important;
+    border-radius: 3px !important;
+}
+
+.jtb-debug-timeline-score.good { background: rgba(34, 197, 94, 0.2) !important; color: #86efac !important; }
+.jtb-debug-timeline-score.warn { background: rgba(234, 179, 8, 0.2) !important; color: #fde047 !important; }
+.jtb-debug-timeline-score.bad { background: rgba(239, 68, 68, 0.2) !important; color: #fca5a5 !important; }
+
+.jtb-debug-timeline-cons.good { background: rgba(34, 197, 94, 0.15) !important; color: #86efac !important; }
+.jtb-debug-timeline-cons.warn { background: rgba(234, 179, 8, 0.15) !important; color: #fde047 !important; }
+.jtb-debug-timeline-cons.bad { background: rgba(239, 68, 68, 0.15) !important; color: #fca5a5 !important; }
+
+.jtb-debug-timeline-sections {
+    background: rgba(148, 163, 184, 0.15) !important;
+    color: #94a3b8 !important;
+}
+
+.jtb-debug-timeline-sig {
+    font-size: 9px !important;
+    font-family: 'SF Mono', monospace !important;
+    color: #64748b !important;
+    padding-top: 4px !important;
+    border-top: 1px dashed rgba(71, 85, 105, 0.3) !important;
+}
+
+/* Timeline popup scrollbar */
+.jtb-debug-timeline-entries::-webkit-scrollbar {
+    width: 4px !important;
+}
+
+.jtb-debug-timeline-entries::-webkit-scrollbar-track {
+    background: transparent !important;
+}
+
+.jtb-debug-timeline-entries::-webkit-scrollbar-thumb {
+    background: rgba(99, 102, 241, 0.3) !important;
+    border-radius: 2px !important;
+}
+
+.jtb-debug-timeline-entries::-webkit-scrollbar-thumb:hover {
+    background: rgba(99, 102, 241, 0.5) !important;
+}
+
+/* ==========================================================================
+   STAGE 24: DECISION GATES + AUTO-LOCK (Stability-Aware Hardening)
+   DEV_MODE only - unified health signal, gate rules, auto-lock policy
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   24.1 HEALTH STRIP (Compact Metrics Bar)
+   -------------------------------------------------------------------------- */
+
+.jtb-debug-health-strip {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+    padding: 4px 8px !important;
+    background: rgba(15, 23, 42, 0.8) !important;
+    border: 1px solid rgba(51, 65, 85, 0.6) !important;
+    border-radius: 6px !important;
+    margin: 4px 0 !important;
+}
+
+.jtb-debug-hs-item {
+    display: inline-flex !important;
+    align-items: center !important;
+    padding: 2px 6px !important;
+    border-radius: 3px !important;
+    font-size: 9px !important;
+    font-weight: 600 !important;
+    font-family: 'SF Mono', 'Monaco', 'Consolas', monospace !important;
+    letter-spacing: 0.2px !important;
+    cursor: help !important;
+}
+
+/* CONS variants */
+.jtb-debug-hs-cons-high {
+    background: rgba(34, 197, 94, 0.2) !important;
+    color: #86efac !important;
+}
+
+.jtb-debug-hs-cons-medium {
+    background: rgba(234, 179, 8, 0.2) !important;
+    color: #fde047 !important;
+}
+
+.jtb-debug-hs-cons-low {
+    background: rgba(239, 68, 68, 0.2) !important;
+    color: #fca5a5 !important;
+}
+
+/* STAB variants */
+.jtb-debug-hs-stab-stable {
+    background: rgba(34, 197, 94, 0.2) !important;
+    color: #86efac !important;
+}
+
+.jtb-debug-hs-stab-unstable {
+    background: rgba(234, 179, 8, 0.2) !important;
+    color: #fde047 !important;
+}
+
+.jtb-debug-hs-stab-chaotic {
+    background: rgba(239, 68, 68, 0.2) !important;
+    color: #fca5a5 !important;
+}
+
+/* DRIFT */
+.jtb-debug-hs-drift {
+    background: rgba(99, 102, 241, 0.15) !important;
+    color: #a5b4fc !important;
+}
+
+/* CONF variants */
+.jtb-debug-hs-conf-high {
+    background: rgba(34, 197, 94, 0.15) !important;
+    color: #86efac !important;
+}
+
+.jtb-debug-hs-conf-medium {
+    background: rgba(234, 179, 8, 0.15) !important;
+    color: #fde047 !important;
+}
+
+.jtb-debug-hs-conf-low {
+    background: rgba(239, 68, 68, 0.15) !important;
+    color: #fca5a5 !important;
+}
+
+/* --------------------------------------------------------------------------
+   24.2 GATE BADGES
+   -------------------------------------------------------------------------- */
+
+.jtb-debug-gate {
+    padding: 3px 8px !important;
+    border-radius: 4px !important;
+    font-weight: 700 !important;
+    border: 1px solid !important;
+}
+
+/* Gate OK */
+.jtb-debug-gate-ok {
+    background: linear-gradient(135deg, rgba(34, 197, 94, 0.25) 0%, rgba(22, 163, 74, 0.2) 100%) !important;
+    color: #86efac !important;
+    border-color: rgba(34, 197, 94, 0.4) !important;
+}
+
+/* Gate LOW_CONSISTENCY */
+.jtb-debug-gate-low-consistency {
+    background: linear-gradient(135deg, rgba(234, 179, 8, 0.25) 0%, rgba(202, 138, 4, 0.2) 100%) !important;
+    color: #fde047 !important;
+    border-color: rgba(234, 179, 8, 0.4) !important;
+}
+
+/* Gate CHAOTIC */
+.jtb-debug-gate-chaotic {
+    background: linear-gradient(135deg, rgba(249, 115, 22, 0.25) 0%, rgba(234, 88, 12, 0.2) 100%) !important;
+    color: #fdba74 !important;
+    border-color: rgba(249, 115, 22, 0.4) !important;
+}
+
+/* Gate FAIL */
+.jtb-debug-gate-fail {
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.3) 0%, rgba(220, 38, 38, 0.25) 100%) !important;
+    color: #fca5a5 !important;
+    border-color: rgba(239, 68, 68, 0.5) !important;
+}
+
+/* --------------------------------------------------------------------------
+   24.3 STOP BADGE (Hard Fail)
+   -------------------------------------------------------------------------- */
+
+.jtb-debug-stop-badge {
+    display: inline-flex !important;
+    align-items: center !important;
+    padding: 5px 12px !important;
+    background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%) !important;
+    color: #ffffff !important;
+    border-radius: 4px !important;
+    font-weight: 800 !important;
+    font-size: 11px !important;
+    letter-spacing: 0.5px !important;
+    text-transform: uppercase !important;
+    border: 1px solid #ef4444 !important;
+    cursor: help !important;
+    animation: stop-badge-pulse 1.2s infinite !important;
+    margin-left: 6px !important;
+}
+
+@keyframes stop-badge-pulse {
+    0%, 100% {
+        opacity: 1;
+        box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.6);
+    }
+    50% {
+        opacity: 0.9;
+        box-shadow: 0 0 0 6px rgba(220, 38, 38, 0);
+    }
+}
+
+/* Reduced motion: disable pulse */
+@media (prefers-reduced-motion: reduce) {
+    .jtb-debug-stop-badge {
+        animation: none !important;
+    }
+}
+
+/* --------------------------------------------------------------------------
+   24.4 CHAOTIC BADGE
+   -------------------------------------------------------------------------- */
+
+.jtb-debug-chaotic-badge {
+    display: inline-flex !important;
+    align-items: center !important;
+    padding: 4px 10px !important;
+    background: linear-gradient(135deg, #ea580c 0%, #c2410c 100%) !important;
+    color: #ffffff !important;
+    border-radius: 4px !important;
+    font-weight: 700 !important;
+    font-size: 10px !important;
+    letter-spacing: 0.5px !important;
+    text-transform: uppercase !important;
+    border: 1px solid #f97316 !important;
+    cursor: help !important;
+    margin-left: 6px !important;
+}
+
+/* --------------------------------------------------------------------------
+   24.5 LOW CONSISTENCY BADGE
+   -------------------------------------------------------------------------- */
+
+.jtb-debug-lowcons-badge {
+    display: inline-flex !important;
+    align-items: center !important;
+    padding: 4px 10px !important;
+    background: linear-gradient(135deg, #ca8a04 0%, #a16207 100%) !important;
+    color: #ffffff !important;
+    border-radius: 4px !important;
+    font-weight: 700 !important;
+    font-size: 10px !important;
+    letter-spacing: 0.5px !important;
+    text-transform: uppercase !important;
+    border: 1px solid #eab308 !important;
+    cursor: help !important;
+    margin-left: 6px !important;
+}
+
+/* --------------------------------------------------------------------------
+   24.6 RECOMMENDATION TEXT
+   -------------------------------------------------------------------------- */
+
+.jtb-debug-rec {
+    display: inline-flex !important;
+    align-items: center !important;
+    padding: 3px 8px !important;
+    background: rgba(71, 85, 105, 0.3) !important;
+    color: #94a3b8 !important;
+    border-radius: 3px !important;
+    font-size: 9px !important;
+    font-weight: 500 !important;
+    font-style: italic !important;
+    margin-left: 4px !important;
+    cursor: help !important;
+}
+
+.jtb-debug-rec-applied {
+    background: rgba(34, 197, 94, 0.15) !important;
+    color: #86efac !important;
+    font-style: normal !important;
+}
+
+/* --------------------------------------------------------------------------
+   24.7 AUTO-LOCK BUTTON STATE
+   -------------------------------------------------------------------------- */
+
+.jtb-debug-lock-btn.auto-applied {
+    background: linear-gradient(135deg, rgba(34, 197, 94, 0.3) 0%, rgba(22, 163, 74, 0.25) 100%) !important;
+    color: #86efac !important;
+    border-color: rgba(34, 197, 94, 0.5) !important;
+}
+
+.jtb-debug-lock-btn.auto-applied:hover {
+    background: linear-gradient(135deg, rgba(34, 197, 94, 0.4) 0%, rgba(22, 163, 74, 0.35) 100%) !important;
+}
+
+/* ==========================================================================
+   STAGE 25: PREVIEW PARITY GUARD + CACHE BUST + SINGLE SOURCE OF TRUTH
+   DEV_MODE only - parity verification, asset cache control, state management
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   25.1 PARITY BADGE
+   -------------------------------------------------------------------------- */
+
+.jtb-debug-parity-badge {
+    display: inline-flex !important;
+    align-items: center !important;
+    padding: 4px 10px !important;
+    border-radius: 4px !important;
+    font-weight: 700 !important;
+    font-size: 10px !important;
+    letter-spacing: 0.5px !important;
+    text-transform: uppercase !important;
+    cursor: help !important;
+    margin-left: 6px !important;
+    white-space: nowrap !important;
+}
+
+/* PARITY FAIL - orange/red warning */
+.jtb-debug-parity-fail {
+    background: linear-gradient(135deg, #f97316 0%, #ea580c 100%) !important;
+    color: #ffffff !important;
+    border: 1px solid #fb923c !important;
+    animation: parity-fail-pulse 2s infinite !important;
+}
+
+@keyframes parity-fail-pulse {
+    0%, 100% {
+        opacity: 1;
+        box-shadow: 0 0 0 0 rgba(249, 115, 22, 0.5);
+    }
+    50% {
+        opacity: 0.95;
+        box-shadow: 0 0 0 4px rgba(249, 115, 22, 0);
+    }
+}
+
+/* PARITY OK - green success (optional, for explicit confirmation) */
+.jtb-debug-parity-ok {
+    background: linear-gradient(135deg, rgba(34, 197, 94, 0.25) 0%, rgba(22, 163, 74, 0.2) 100%) !important;
+    color: #86efac !important;
+    border: 1px solid rgba(34, 197, 94, 0.4) !important;
+}
+
+/* Reduced motion: disable pulse */
+@media (prefers-reduced-motion: reduce) {
+    .jtb-debug-parity-fail {
+        animation: none !important;
+    }
+}
+
+/* --------------------------------------------------------------------------
+   25.2 CACHE BUST INDICATOR (DEV_MODE only)
+   -------------------------------------------------------------------------- */
+
+.jtb-debug-cache-indicator {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+    padding: 2px 6px !important;
+    background: rgba(99, 102, 241, 0.15) !important;
+    color: #a5b4fc !important;
+    border-radius: 3px !important;
+    font-size: 8px !important;
+    font-weight: 500 !important;
+    font-family: 'SF Mono', 'Monaco', 'Consolas', monospace !important;
+    cursor: help !important;
+}
+
+.jtb-debug-cache-indicator::before {
+    content: '🔄' !important;
+    font-size: 7px !important;
+}
+
+/* --------------------------------------------------------------------------
+   25.3 SOURCE INDICATOR (shows current data source)
+   -------------------------------------------------------------------------- */
+
+.jtb-debug-source-indicator {
+    display: inline-flex !important;
+    align-items: center !important;
+    padding: 2px 6px !important;
+    background: rgba(71, 85, 105, 0.2) !important;
+    color: #94a3b8 !important;
+    border-radius: 3px !important;
+    font-size: 8px !important;
+    font-weight: 500 !important;
+    font-family: 'SF Mono', 'Monaco', 'Consolas', monospace !important;
+}
+
+.jtb-debug-source-indicator.source-fresh {
+    background: rgba(34, 197, 94, 0.15) !important;
+    color: #86efac !important;
+}
+
+.jtb-debug-source-indicator.source-stale {
+    background: rgba(234, 179, 8, 0.15) !important;
+    color: #fde047 !important;
+}
+
+/* ==========================================================================
+   STAGE 26: AI PREVIEW DIFF MODE + FREEZE BASELINE + WHY-CHANGED EXPLAINER
+   DEV_MODE only - baseline comparison, delta visualization, change explanations
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   26.1 BASELINE CONTROLS ROW
+   -------------------------------------------------------------------------- */
+
+.jtb-debug-baseline-row {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    align-items: center !important;
+    gap: 6px !important;
+    padding: 6px 10px !important;
+    margin-top: 6px !important;
+    background: rgba(15, 23, 42, 0.6) !important;
+    border: 1px solid rgba(71, 85, 105, 0.4) !important;
+    border-radius: 6px !important;
+}
+
+.jtb-debug-baseline-controls {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+}
+
+/* --------------------------------------------------------------------------
+   26.2 BASELINE BUTTONS
+   -------------------------------------------------------------------------- */
+
+.jtb-debug-baseline-btn {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 4px 10px !important;
+    background: rgba(51, 65, 85, 0.5) !important;
+    color: #cbd5e1 !important;
+    border: 1px solid rgba(71, 85, 105, 0.5) !important;
+    border-radius: 4px !important;
+    font-size: 10px !important;
+    font-weight: 600 !important;
+    font-family: 'SF Mono', 'Monaco', 'Consolas', monospace !important;
+    cursor: pointer !important;
+    transition: all 0.15s ease !important;
+}
+
+.jtb-debug-baseline-btn:hover {
+    background: rgba(71, 85, 105, 0.6) !important;
+    border-color: rgba(100, 116, 139, 0.6) !important;
+    color: #f1f5f9 !important;
+}
+
+/* Freeze button - ice blue */
+.jtb-debug-freeze-btn {
+    background: linear-gradient(135deg, rgba(56, 189, 248, 0.25) 0%, rgba(14, 165, 233, 0.2) 100%) !important;
+    color: #7dd3fc !important;
+    border-color: rgba(56, 189, 248, 0.4) !important;
+}
+
+.jtb-debug-freeze-btn:hover {
+    background: linear-gradient(135deg, rgba(56, 189, 248, 0.35) 0%, rgba(14, 165, 233, 0.3) 100%) !important;
+    color: #bae6fd !important;
+}
+
+/* Reset button - slate gray */
+.jtb-debug-reset-btn {
+    background: rgba(100, 116, 139, 0.3) !important;
+    color: #94a3b8 !important;
+    border-color: rgba(100, 116, 139, 0.4) !important;
+}
+
+.jtb-debug-reset-btn:hover {
+    background: rgba(100, 116, 139, 0.45) !important;
+    color: #cbd5e1 !important;
+}
+
+/* Diff toggle button */
+.jtb-debug-diff-toggle {
+    background: rgba(71, 85, 105, 0.4) !important;
+    color: #94a3b8 !important;
+    border-color: rgba(71, 85, 105, 0.5) !important;
+}
+
+.jtb-debug-diff-toggle.jtb-debug-diff-on {
+    background: linear-gradient(135deg, rgba(168, 85, 247, 0.3) 0%, rgba(139, 92, 246, 0.25) 100%) !important;
+    color: #c4b5fd !important;
+    border-color: rgba(168, 85, 247, 0.5) !important;
+}
+
+.jtb-debug-diff-toggle.jtb-debug-diff-on:hover {
+    background: linear-gradient(135deg, rgba(168, 85, 247, 0.4) 0%, rgba(139, 92, 246, 0.35) 100%) !important;
+    color: #ddd6fe !important;
+}
+
+/* --------------------------------------------------------------------------
+   26.3 BASELINE STATUS BADGE
+   -------------------------------------------------------------------------- */
+
+.jtb-debug-baseline-badge {
+    display: inline-flex !important;
+    align-items: center !important;
+    padding: 3px 8px !important;
+    background: linear-gradient(135deg, rgba(34, 197, 94, 0.2) 0%, rgba(22, 163, 74, 0.15) 100%) !important;
+    color: #86efac !important;
+    border: 1px solid rgba(34, 197, 94, 0.35) !important;
+    border-radius: 4px !important;
+    font-size: 9px !important;
+    font-weight: 600 !important;
+    font-family: 'SF Mono', 'Monaco', 'Consolas', monospace !important;
+    letter-spacing: 0.3px !important;
+    cursor: help !important;
+}
+
+/* NO BASELINE warning */
+.jtb-debug-no-baseline {
+    display: inline-flex !important;
+    align-items: center !important;
+    padding: 3px 8px !important;
+    background: rgba(234, 179, 8, 0.15) !important;
+    color: #fde047 !important;
+    border: 1px solid rgba(234, 179, 8, 0.3) !important;
+    border-radius: 4px !important;
+    font-size: 9px !important;
+    font-weight: 600 !important;
+    font-family: 'SF Mono', 'Monaco', 'Consolas', monospace !important;
+    cursor: help !important;
+}
+
+/* --------------------------------------------------------------------------
+   26.4 DIFF CHIPS
+   -------------------------------------------------------------------------- */
+
+.jtb-debug-diff-chips {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 3px !important;
+    margin-left: 6px !important;
+}
+
+.jtb-debug-diff-chip {
+    display: inline-flex !important;
+    align-items: center !important;
+    padding: 2px 6px !important;
+    border-radius: 3px !important;
+    font-size: 8px !important;
+    font-weight: 700 !important;
+    font-family: 'SF Mono', 'Monaco', 'Consolas', monospace !important;
+    letter-spacing: 0.2px !important;
+    cursor: help !important;
+    border: 1px solid transparent !important;
+}
+
+/* Positive delta (green) - improvement */
+.jtb-debug-diff-chip.positive {
+    background: rgba(34, 197, 94, 0.2) !important;
+    color: #86efac !important;
+    border-color: rgba(34, 197, 94, 0.35) !important;
+}
+
+/* Negative delta (red) - regression */
+.jtb-debug-diff-chip.negative {
+    background: rgba(239, 68, 68, 0.2) !important;
+    color: #fca5a5 !important;
+    border-color: rgba(239, 68, 68, 0.35) !important;
+}
+
+/* Neutral delta (gray) - no change */
+.jtb-debug-diff-chip.neutral {
+    background: rgba(71, 85, 105, 0.25) !important;
+    color: #94a3b8 !important;
+    border-color: rgba(71, 85, 105, 0.3) !important;
+}
+
+/* --------------------------------------------------------------------------
+   26.5 WHY-CHANGED CONTAINER
+   -------------------------------------------------------------------------- */
+
+.jtb-debug-why-container {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    align-items: center !important;
+    gap: 4px !important;
+    margin-top: 4px !important;
+    width: 100% !important;
+}
+
+.jtb-debug-why-label {
+    display: inline-flex !important;
+    align-items: center !important;
+    padding: 2px 5px !important;
+    background: rgba(99, 102, 241, 0.15) !important;
+    color: #a5b4fc !important;
+    border-radius: 3px !important;
+    font-size: 8px !important;
+    font-weight: 700 !important;
+    font-family: 'SF Mono', 'Monaco', 'Consolas', monospace !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+}
+
+.jtb-debug-why-chip {
+    display: inline-flex !important;
+    align-items: center !important;
+    padding: 2px 6px !important;
+    background: rgba(71, 85, 105, 0.3) !important;
+    color: #cbd5e1 !important;
+    border: 1px solid rgba(100, 116, 139, 0.3) !important;
+    border-radius: 3px !important;
+    font-size: 8px !important;
+    font-weight: 500 !important;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+    cursor: help !important;
+    max-width: 220px !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+}
+
+.jtb-debug-why-chip:hover {
+    background: rgba(71, 85, 105, 0.45) !important;
+    color: #f1f5f9 !important;
+}
+
+/* --------------------------------------------------------------------------
+   26.6 HIGH CONTRAST MODE
+   -------------------------------------------------------------------------- */
+
+@media (prefers-contrast: more) {
+    .jtb-debug-baseline-badge {
+        border-width: 2px !important;
+        border-color: rgba(34, 197, 94, 0.6) !important;
+    }
+
+    .jtb-debug-no-baseline {
+        border-width: 2px !important;
+        border-color: rgba(234, 179, 8, 0.6) !important;
+    }
+
+    .jtb-debug-diff-chip.positive {
+        border-width: 2px !important;
+        border-color: rgba(34, 197, 94, 0.6) !important;
+    }
+
+    .jtb-debug-diff-chip.negative {
+        border-width: 2px !important;
+        border-color: rgba(239, 68, 68, 0.6) !important;
+    }
+
+    .jtb-debug-why-chip {
+        border-width: 2px !important;
+        border-color: rgba(100, 116, 139, 0.5) !important;
+    }
+}
+
+/* --------------------------------------------------------------------------
+   26.7 REDUCED MOTION
+   -------------------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+    .jtb-debug-baseline-btn,
+    .jtb-debug-diff-chip,
+    .jtb-debug-why-chip {
+        transition: none !important;
+    }
+}

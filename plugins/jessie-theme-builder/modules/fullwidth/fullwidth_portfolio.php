@@ -25,6 +25,36 @@ class JTB_Module_FullwidthPortfolio extends JTB_Element
     public bool $use_position = false;
     public bool $use_filters = false;
 
+    // === UNIFIED THEME SYSTEM ===
+    protected string $module_prefix = 'fullwidth_portfolio';
+
+    /**
+     * Declarative style configuration
+     */
+    protected array $style_config = [
+        'gap_width' => [
+            'property' => 'gap',
+            'selector' => '.jtb-portfolio-grid',
+            'unit' => 'px'
+        ],
+        'overlay_color' => [
+            'property' => 'background',
+            'selector' => '.jtb-portfolio-overlay'
+        ],
+        'title_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-portfolio-title'
+        ],
+        'category_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-portfolio-category'
+        ],
+        'icon_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-portfolio-icon'
+        ]
+    ];
+
     public function getSlug(): string
     {
         return 'fullwidth_portfolio';
@@ -136,6 +166,9 @@ class JTB_Module_FullwidthPortfolio extends JTB_Element
 
     public function render(array $attrs, string $content = ''): string
     {
+        // Apply default styles from design system
+        $attrs = JTB_Default_Styles::mergeWithDefaults($this->getSlug(), $attrs);
+
         $columns = $attrs['columns'] ?? '4';
         $layout = $attrs['layout'] ?? 'grid';
         $showTitle = $attrs['show_title'] ?? true;
@@ -208,6 +241,9 @@ class JTB_Module_FullwidthPortfolio extends JTB_Element
     public function generateCss(array $attrs, string $selector): string
     {
         $css = '';
+
+        // Use declarative style_config system
+        $css .= $this->generateStyleConfigCss($attrs, $selector);
 
         $columns = $attrs['columns'] ?? '4';
         $gapWidth = $attrs['gap_width'] ?? 0;

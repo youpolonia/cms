@@ -25,6 +25,37 @@ class JTB_Module_Signup extends JTB_Element
     public bool $use_position = false;
     public bool $use_filters = false;
 
+    // === UNIFIED THEME SYSTEM ===
+    protected string $module_prefix = 'signup';
+
+    /**
+     * Declarative style configuration
+     */
+    protected array $style_config = [
+        'form_field_bg_color' => [
+            'property' => 'background-color',
+            'selector' => '.jtb-form-field input'
+        ],
+        'form_field_text_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-form-field input'
+        ],
+        'form_field_border_color' => [
+            'property' => 'border-color',
+            'selector' => '.jtb-form-field input'
+        ],
+        'button_bg_color' => [
+            'property' => 'background-color',
+            'selector' => '.jtb-signup-submit',
+            'hover' => true
+        ],
+        'button_text_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-signup-submit',
+            'hover' => true
+        ]
+    ];
+
     public function getSlug(): string
     {
         return 'signup';
@@ -132,6 +163,9 @@ class JTB_Module_Signup extends JTB_Element
 
     public function render(array $attrs, string $content = ''): string
     {
+        // Apply default styles from design system
+        $attrs = JTB_Default_Styles::mergeWithDefaults($this->getSlug(), $attrs);
+
         $title = $this->esc($attrs['title'] ?? 'Subscribe to Our Newsletter');
         $description = $attrs['content'] ?? '';
         $buttonText = $this->esc($attrs['button_text'] ?? 'Subscribe');
@@ -198,9 +232,16 @@ class JTB_Module_Signup extends JTB_Element
         return $this->renderWrapper($innerHtml, $attrs);
     }
 
+    /**
+     * Generate CSS for Signup module
+     * Base styles are in jtb-base-modules.css
+     */
     public function generateCss(array $attrs, string $selector): string
     {
         $css = '';
+
+        // Use declarative style_config system
+        $css .= $this->generateStyleConfigCss($attrs, $selector);
 
         $layout = $attrs['layout'] ?? 'stacked';
 
@@ -211,44 +252,20 @@ class JTB_Module_Signup extends JTB_Element
             $css .= $selector . ' .jtb-form-submit { flex-shrink: 0; }' . "\n";
         }
 
-        // Form fields
-        $fieldBg = $attrs['form_field_bg_color'] ?? '#ffffff';
-        $fieldText = $attrs['form_field_text_color'] ?? '#666666';
-        $fieldBorder = $attrs['form_field_border_color'] ?? '#bbb';
-
+        // Form fields base styles
         $css .= $selector . ' .jtb-form-field { margin-bottom: 15px; }' . "\n";
 
         $css .= $selector . ' .jtb-form-field input { ';
-        $css .= 'width: 100%; ';
-        $css .= 'padding: 12px 15px; ';
-        $css .= 'background-color: ' . $fieldBg . '; ';
-        $css .= 'color: ' . $fieldText . '; ';
-        $css .= 'border: 1px solid ' . $fieldBorder . '; ';
-        $css .= 'box-sizing: border-box; ';
-        $css .= 'font-size: 14px; ';
+        $css .= 'width: 100%; padding: 12px 15px; box-sizing: border-box; font-size: 14px; border: 1px solid; ';
         $css .= '}' . "\n";
 
-        // Button
-        $btnBg = $attrs['button_bg_color'] ?? '#2ea3f2';
-        $btnText = $attrs['button_text_color'] ?? '#ffffff';
-
+        // Button base styles
         $css .= $selector . ' .jtb-signup-submit { ';
         if ($layout === 'stacked') {
             $css .= 'width: 100%; ';
         }
-        $css .= 'background-color: ' . $btnBg . '; ';
-        $css .= 'color: ' . $btnText . '; ';
-        $css .= 'border: none; ';
-        $css .= 'padding: 12px 30px; ';
-        $css .= 'cursor: pointer; ';
-        $css .= 'font-size: 14px; ';
-        $css .= 'transition: all 0.3s ease; ';
-        $css .= 'white-space: nowrap; ';
+        $css .= 'border: none; padding: 12px 30px; cursor: pointer; font-size: 14px; transition: all 0.3s ease; white-space: nowrap; ';
         $css .= '}' . "\n";
-
-        if (!empty($attrs['button_bg_color__hover'])) {
-            $css .= $selector . ' .jtb-signup-submit:hover { background-color: ' . $attrs['button_bg_color__hover'] . '; }' . "\n";
-        }
 
         // Success
         $css .= $selector . ' .jtb-signup-success { padding: 20px; background: #d4edda; color: #155724; border-radius: 5px; text-align: center; }' . "\n";
@@ -257,6 +274,7 @@ class JTB_Module_Signup extends JTB_Element
         $css .= $selector . ' .jtb-signup-header { margin-bottom: 20px; text-align: center; }' . "\n";
         $css .= $selector . ' .jtb-signup-title { margin-bottom: 10px; }' . "\n";
 
+        // Parent class handles common styles
         $css .= parent::generateCss($attrs, $selector);
 
         return $css;

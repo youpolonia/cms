@@ -15,13 +15,62 @@ class JTB_Module_Post_Title extends JTB_Element
     public string $slug = 'post_title';
     public string $name = 'Post Title';
     public string $icon = 'type';
-    public string $category = 'theme';
+    public string $category = 'dynamic';
 
     public bool $use_background = true;
     public bool $use_spacing = true;
     public bool $use_border = true;
     public bool $use_box_shadow = true;
     public bool $use_animation = true;
+    public bool $use_typography = true;
+
+    protected string $module_prefix = 'post_title';
+
+    protected array $style_config = [
+        'title_font_size' => [
+            'property' => 'font-size',
+            'selector' => '.jtb-title',
+            'unit' => 'px',
+            'responsive' => true
+        ],
+        'title_font_weight' => [
+            'property' => 'font-weight',
+            'selector' => '.jtb-title'
+        ],
+        'title_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-title',
+            'hover' => true
+        ],
+        'title_line_height' => [
+            'property' => 'line-height',
+            'selector' => '.jtb-title',
+            'unit' => 'em'
+        ],
+        'meta_font_size' => [
+            'property' => 'font-size',
+            'selector' => '.jtb-post-meta',
+            'unit' => 'px'
+        ],
+        'meta_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-post-meta'
+        ],
+        'meta_link_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-post-meta a',
+            'hover' => true
+        ],
+        'meta_spacing' => [
+            'property' => 'margin-top',
+            'selector' => '.jtb-post-meta',
+            'unit' => 'px'
+        ],
+        'text_alignment' => [
+            'property' => 'text-align',
+            'responsive' => true
+        ]
+    ];
 
     public function getSlug(): string
     {
@@ -142,6 +191,9 @@ class JTB_Module_Post_Title extends JTB_Element
 
     public function render(array $attrs, string $content = ''): string
     {
+        // Apply default styles from design system
+        $attrs = JTB_Default_Styles::mergeWithDefaults($this->getSlug(), $attrs);
+
         $id = $attrs['id'] ?? 'post_title_' . uniqid();
         $showTitle = $attrs['show_title'] ?? true;
         $showMeta = $attrs['show_meta'] ?? true;
@@ -154,19 +206,51 @@ class JTB_Module_Post_Title extends JTB_Element
             $titleLevel = 'h1';
         }
 
+        // Get dynamic data
+        $isPreview = JTB_Dynamic_Context::isPreviewMode();
+        $title = JTB_Dynamic_Context::getPostTitle();
+        $authorName = JTB_Dynamic_Context::getAuthorName();
+        $authorUrl = JTB_Dynamic_Context::getAuthorUrl();
+        $postDate = JTB_Dynamic_Context::getPostDate();
+        $categories = JTB_Dynamic_Context::getPostCategories();
+
+        // Fallback to placeholders if no data (builder preview)
+        if (empty($title) || $isPreview) {
+            $title = JTB_Dynamic_Context::getPlaceholder('title');
+        }
+        if (empty($authorName)) {
+            $authorName = JTB_Dynamic_Context::getPlaceholder('author');
+            $authorUrl = '#';
+        }
+        if (empty($postDate)) {
+            $postDate = JTB_Dynamic_Context::getPlaceholder('date');
+        }
+        if (empty($categories)) {
+            $categories = [JTB_Dynamic_Context::getPlaceholder('category')];
+        }
+
         $classes = ['jtb-post-title', 'jtb-align-' . $this->esc($alignment)];
 
         $html = '<div id="' . $this->esc($id) . '" class="' . implode(' ', $classes) . '">';
 
         if ($showTitle) {
             $html .= '<' . $titleLevel . ' class="jtb-title">';
-            $html .= 'Your Dynamic Post Title Will Display Here';
+            $html .= $this->esc($title);
             $html .= '</' . $titleLevel . '>';
         }
 
         if ($showMeta) {
             $html .= '<div class="jtb-post-meta">';
-            $html .= 'By <a href="#">Author</a> | ' . date('F j, Y') . ' | In <a href="#">Category</a>';
+            $html .= 'By <a href="' . $this->esc($authorUrl) . '">' . $this->esc($authorName) . '</a>';
+            $html .= ' | ' . $this->esc($postDate);
+            if (!empty($categories)) {
+                $catLinks = [];
+                foreach ($categories as $cat) {
+                    $catSlug = strtolower(str_replace(' ', '-', $cat));
+                    $catLinks[] = '<a href="/category/' . $this->esc($catSlug) . '">' . $this->esc($cat) . '</a>';
+                }
+                $html .= ' | In ' . implode(', ', $catLinks);
+            }
             $html .= '</div>';
         }
 
@@ -178,6 +262,7 @@ class JTB_Module_Post_Title extends JTB_Element
     public function generateCss(array $attrs, string $selector): string
     {
         $css = parent::generateCss($attrs, $selector);
+        $css .= $this->generateStyleConfigCss($attrs, $selector);
 
         // Title styling
         $titleSize = $attrs['title_font_size'] ?? 36;

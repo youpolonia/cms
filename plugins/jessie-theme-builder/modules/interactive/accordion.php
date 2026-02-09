@@ -26,6 +26,53 @@ class JTB_Module_Accordion extends JTB_Element
     public bool $use_position = false;
     public bool $use_filters = false;
 
+    // === UNIFIED THEME SYSTEM ===
+    protected string $module_prefix = 'accordion';
+
+    /**
+     * Declarative style configuration
+     */
+    protected array $style_config = [
+        // Icon
+        'icon_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-accordion-icon',
+            'hover' => true
+        ],
+        'icon_size' => [
+            'property' => 'font-size',
+            'selector' => '.jtb-accordion-icon',
+            'unit' => 'px'
+        ],
+        // Open state
+        'open_toggle_text_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-accordion-item.jtb-open .jtb-accordion-title'
+        ],
+        'open_toggle_bg_color' => [
+            'property' => 'background-color',
+            'selector' => '.jtb-accordion-item.jtb-open .jtb-accordion-header'
+        ],
+        // Closed state
+        'closed_toggle_text_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-accordion-item:not(.jtb-open) .jtb-accordion-title'
+        ],
+        'closed_toggle_bg_color' => [
+            'property' => 'background-color',
+            'selector' => '.jtb-accordion-item:not(.jtb-open) .jtb-accordion-header'
+        ],
+        // Content
+        'content_padding' => [
+            'property' => 'padding',
+            'selector' => '.jtb-accordion-content'
+        ],
+        'content_background' => [
+            'property' => 'background-color',
+            'selector' => '.jtb-accordion-content'
+        ]
+    ];
+
     public function getSlug(): string
     {
         return 'accordion';
@@ -110,6 +157,9 @@ class JTB_Module_Accordion extends JTB_Element
 
     public function render(array $attrs, string $content = ''): string
     {
+        // Apply default styles from design system
+        $attrs = JTB_Default_Styles::mergeWithDefaults($this->getSlug(), $attrs);
+
         $iconStyle = $attrs['toggle_icon'] ?? 'arrow';
         $iconPosition = $attrs['toggle_icon_position'] ?? 'right';
 
@@ -124,77 +174,24 @@ class JTB_Module_Accordion extends JTB_Element
         return $this->renderWrapper($innerHtml, $attrs);
     }
 
+    /**
+     * Generate CSS for Accordion module
+     * Base styles are in jtb-base-modules.css
+     */
     public function generateCss(array $attrs, string $selector): string
     {
         $css = '';
 
-        // Base accordion styles
-        $css .= $selector . ' .jtb-accordion-item { margin-bottom: 0; border: 1px solid #d9d9d9; }' . "\n";
-        $css .= $selector . ' .jtb-accordion-item:not(:first-child) { border-top: none; }' . "\n";
+        // Use declarative style_config system
+        $css .= $this->generateStyleConfigCss($attrs, $selector);
 
-        // Toggle header
-        $css .= $selector . ' .jtb-accordion-header { ';
-        $css .= 'display: flex; ';
-        $css .= 'align-items: center; ';
-        $css .= 'padding: 15px 20px; ';
-        $css .= 'cursor: pointer; ';
-        $css .= 'transition: all 0.3s ease; ';
-        $css .= '}' . "\n";
-
-        // Icon position
-        if (($attrs['toggle_icon_position'] ?? 'right') === 'right') {
-            $css .= $selector . ' .jtb-accordion-header { justify-content: space-between; }' . "\n";
-        } else {
+        // Icon position special handling (changes flex direction)
+        if (($attrs['toggle_icon_position'] ?? 'right') === 'left') {
             $css .= $selector . ' .jtb-accordion-header { flex-direction: row-reverse; justify-content: flex-end; }' . "\n";
             $css .= $selector . ' .jtb-accordion-title { margin-left: 15px; }' . "\n";
         }
 
-        // Title
-        $css .= $selector . ' .jtb-accordion-title { margin: 0; flex-grow: 1; }' . "\n";
-
-        // Icon
-        $iconColor = $attrs['icon_color'] ?? '#666666';
-        $iconSize = $attrs['icon_size'] ?? 16;
-        $css .= $selector . ' .jtb-accordion-icon { ';
-        $css .= 'color: ' . $iconColor . '; ';
-        $css .= 'font-size: ' . $iconSize . 'px; ';
-        $css .= 'transition: transform 0.3s ease; ';
-        $css .= '}' . "\n";
-
-        // Icon rotation when open
-        $css .= $selector . ' .jtb-accordion-item.jtb-open .jtb-accordion-icon { transform: rotate(180deg); }' . "\n";
-        $css .= $selector . '.jtb-accordion-icon-plus .jtb-accordion-item.jtb-open .jtb-accordion-icon { transform: rotate(45deg); }' . "\n";
-
-        // Content area
-        $css .= $selector . ' .jtb-accordion-content { ';
-        $css .= 'display: none; ';
-        $css .= 'padding: 20px; ';
-        $css .= 'border-top: 1px solid #d9d9d9; ';
-        $css .= '}' . "\n";
-
-        $css .= $selector . ' .jtb-accordion-item.jtb-open .jtb-accordion-content { display: block; }' . "\n";
-
-        // Open toggle styles
-        if (!empty($attrs['open_toggle_text_color'])) {
-            $css .= $selector . ' .jtb-accordion-item.jtb-open .jtb-accordion-title { color: ' . $attrs['open_toggle_text_color'] . '; }' . "\n";
-        }
-        if (!empty($attrs['open_toggle_bg_color'])) {
-            $css .= $selector . ' .jtb-accordion-item.jtb-open .jtb-accordion-header { background-color: ' . $attrs['open_toggle_bg_color'] . '; }' . "\n";
-        }
-
-        // Closed toggle styles
-        if (!empty($attrs['closed_toggle_text_color'])) {
-            $css .= $selector . ' .jtb-accordion-item:not(.jtb-open) .jtb-accordion-title { color: ' . $attrs['closed_toggle_text_color'] . '; }' . "\n";
-        }
-        if (!empty($attrs['closed_toggle_bg_color'])) {
-            $css .= $selector . ' .jtb-accordion-item:not(.jtb-open) .jtb-accordion-header { background-color: ' . $attrs['closed_toggle_bg_color'] . '; }' . "\n";
-        }
-
-        // Hover states
-        if (!empty($attrs['icon_color__hover'])) {
-            $css .= $selector . ' .jtb-accordion-header:hover .jtb-accordion-icon { color: ' . $attrs['icon_color__hover'] . '; }' . "\n";
-        }
-
+        // Parent class handles common styles
         $css .= parent::generateCss($attrs, $selector);
 
         return $css;

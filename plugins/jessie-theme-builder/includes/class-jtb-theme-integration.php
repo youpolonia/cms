@@ -279,8 +279,10 @@ class JTB_Theme_Integration
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= htmlspecialchars($title) ?></title>
     <link rel="stylesheet" href="<?= $pluginUrl ?>/assets/css/frontend.css">
+    <link rel="stylesheet" href="<?= $pluginUrl ?>/assets/css/jtb-base-modules.css">
     <link rel="stylesheet" href="<?= $pluginUrl ?>/assets/css/animations.css">
     <?php self::outputCss(); ?>
+    <?= JTB_CSS_Output::render() ?>
 </head>
 <body class="jtb-page">
     <?php if (self::hasHeader()): ?>
@@ -403,17 +405,51 @@ class JTB_Theme_Integration
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= htmlspecialchars($pageTitle) ?></title>
 
-    <?php // SEO Meta ?>
-    <?php if ($post && !empty($post['excerpt'])): ?>
-    <meta name="description" content="<?= htmlspecialchars(substr(strip_tags($post['excerpt']), 0, 160)) ?>">
-    <?php endif; ?>
+    <?php // JTB SEO Engine ?>
+    <?php
+    JTB_SEO::init();
 
-    <?php // Open Graph ?>
-    <meta property="og:title" content="<?= htmlspecialchars($pageTitle) ?>">
-    <meta property="og:type" content="<?= JTB_Dynamic_Context::isSinglePost() ? 'article' : 'website' ?>">
-    <?php if ($post && !empty($post['featured_image'])): ?>
-    <meta property="og:image" content="<?= htmlspecialchars($post['featured_image']) ?>">
-    <?php endif; ?>
+    // Set basic meta
+    JTB_SEO::setTitle($pageTitle);
+    if ($post && !empty($post['excerpt'])) {
+        JTB_SEO::setDescription($post['excerpt']);
+    }
+
+    // Open Graph
+    JTB_SEO::setOpenGraph([
+        'title' => $pageTitle,
+        'type' => JTB_Dynamic_Context::isSinglePost() ? 'article' : 'website',
+        'image' => $post['featured_image'] ?? null,
+        'site_name' => $site['title'] ?? ''
+    ]);
+
+    // Twitter Card
+    JTB_SEO::setTwitterCard([
+        'title' => $pageTitle,
+        'image' => $post['featured_image'] ?? null
+    ]);
+
+    // Article schema for posts
+    if (JTB_Dynamic_Context::isSinglePost() && $post) {
+        JTB_SEO::addArticleSchema([
+            'title' => $post['title'] ?? '',
+            'description' => $post['excerpt'] ?? '',
+            'image' => $post['featured_image'] ?? null,
+            'published' => $post['created_at'] ?? date('c'),
+            'modified' => $post['updated_at'] ?? $post['created_at'] ?? date('c'),
+            'author' => $post['author'] ?? null,
+            'publisher' => ['name' => $site['title'] ?? '', 'logo' => $site['logo'] ?? null]
+        ]);
+    }
+
+    // Website schema
+    JTB_SEO::addWebsiteSchema([
+        'name' => $site['title'] ?? '',
+        'url' => JTB_Dynamic_Context::getSiteUrl()
+    ]);
+
+    echo JTB_SEO::render();
+    ?>
 
     <?php // Fonts ?>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -424,6 +460,7 @@ class JTB_Theme_Integration
 
     <?php // Stylesheets ?>
     <link rel="stylesheet" href="<?= $pluginUrl ?>/assets/css/frontend.css">
+    <link rel="stylesheet" href="<?= $pluginUrl ?>/assets/css/jtb-base-modules.css">
     <link rel="stylesheet" href="<?= $pluginUrl ?>/assets/css/animations.css">
 
     <?php // Global Theme CSS ?>
@@ -436,19 +473,25 @@ class JTB_Theme_Integration
     <style id="jtb-template-css"><?= $templateCss ?></style>
     <?php endif; ?>
 
+    <?php // JTB CSS Output - moduły renderowane przez JTB_Renderer ?>
+    <?= JTB_CSS_Output::render() ?>
+
     <?php $this->doAction('jtb_head'); ?>
 </head>
 <body class="<?= htmlspecialchars($bodyClasses) ?>">
+    <?php // Accessibility: Skip link for keyboard users ?>
+    <a href="#main-content" class="jtb-skip-link">Skip to main content</a>
+
     <?php $this->doAction('jtb_body_start'); ?>
 
     <?php if (self::hasHeader()): ?>
-    <header class="jtb-site-header <?= $this->getHeaderClasses($headerOptions) ?>"
+    <header class="jtb-site-header <?= $this->getHeaderClasses($headerOptions) ?>" role="banner"
         <?= $this->getHeaderDataAttributes($headerOptions) ?>>
         <?= self::renderHeader() ?>
     </header>
     <?php endif; ?>
 
-    <main class="jtb-site-main" role="main">
+    <main id="main-content" class="jtb-site-main" role="main">
         <?= self::renderBody($this->getPageContent($context, $post)) ?>
     </main>
 

@@ -15,7 +15,7 @@ class JTB_Module_Site_Logo extends JTB_Element
     public string $slug = 'site_logo';
     public string $name = 'Site Logo';
     public string $icon = 'image';
-    public string $category = 'theme';
+    public string $category = 'header';
 
     public bool $use_background = false;
     public bool $use_spacing = true;
@@ -23,6 +23,28 @@ class JTB_Module_Site_Logo extends JTB_Element
     public bool $use_box_shadow = true;
     public bool $use_animation = true;
     public bool $use_transform = true;
+
+    protected string $module_prefix = 'site_logo';
+
+    protected array $style_config = [
+        'logo_width' => [
+            'property' => 'width',
+            'selector' => '.jtb-logo-img',
+            'unit' => 'px',
+            'responsive' => true
+        ],
+        'logo_max_height' => [
+            'property' => 'max-height',
+            'selector' => '.jtb-logo-img',
+            'unit' => 'px'
+        ],
+        'logo_opacity' => [
+            'property' => 'opacity',
+            'selector' => '.jtb-logo-img',
+            'transform' => 'divide100',
+            'hover' => true
+        ]
+    ];
 
     public function getSlug(): string
     {
@@ -106,17 +128,37 @@ class JTB_Module_Site_Logo extends JTB_Element
 
     public function render(array $attrs, string $content = ''): string
     {
+        // Apply default styles from design system
+        $attrs = JTB_Default_Styles::mergeWithDefaults($this->getSlug(), $attrs);
+
         $id = $attrs['id'] ?? 'site_logo_' . uniqid();
-        $logo = $attrs['logo'] ?? '';
-        $logoUrl = $attrs['logo_url'] ?? '/';
-        $logoAlt = $attrs['logo_alt'] ?? 'Site Logo';
         $alignment = $attrs['alignment'] ?? 'left';
         $openNewTab = !empty($attrs['open_in_new_tab']);
         $targetAttr = $openNewTab ? ' target="_blank" rel="noopener noreferrer"' : '';
 
+        // Get logo from attrs or fallback to site settings
+        $logo = $attrs['logo'] ?? '';
+        $logoUrl = $attrs['logo_url'] ?? '/';
+        $logoAlt = $attrs['logo_alt'] ?? '';
+
+        // If no logo in attrs, try to get from site settings
+        if (empty($logo)) {
+            $logo = JTB_Dynamic_Context::getSiteLogo();
+        }
+        if (empty($logoAlt)) {
+            $logoAlt = JTB_Dynamic_Context::getSiteTitle() ?: 'Site Logo';
+        }
+
+        $isPreview = JTB_Dynamic_Context::isPreviewMode();
+
         $html = '<div id="' . $this->esc($id) . '" class="jtb-site-logo jtb-align-' . $this->esc($alignment) . '">';
 
-        if ($logo) {
+        if ($logo && !$isPreview) {
+            $html .= '<a href="' . $this->esc($logoUrl) . '" class="jtb-logo-link"' . $targetAttr . '>';
+            $html .= '<img src="' . $this->esc($logo) . '" alt="' . $this->esc($logoAlt) . '" class="jtb-logo-img">';
+            $html .= '</a>';
+        } elseif ($logo) {
+            // In preview mode, show the logo but indicate it's from settings
             $html .= '<a href="' . $this->esc($logoUrl) . '" class="jtb-logo-link"' . $targetAttr . '>';
             $html .= '<img src="' . $this->esc($logo) . '" alt="' . $this->esc($logoAlt) . '" class="jtb-logo-img">';
             $html .= '</a>';
@@ -135,6 +177,7 @@ class JTB_Module_Site_Logo extends JTB_Element
     public function generateCss(array $attrs, string $selector): string
     {
         $css = parent::generateCss($attrs, $selector);
+        $css .= $this->generateStyleConfigCss($attrs, $selector);
 
         $logoWidth = $attrs['logo_width'] ?? 150;
         $logoMaxHeight = $attrs['logo_max_height'] ?? 0;

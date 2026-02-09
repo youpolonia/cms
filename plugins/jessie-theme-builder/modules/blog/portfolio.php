@@ -25,6 +25,34 @@ class JTB_Module_Portfolio extends JTB_Element
     public bool $use_position = false;
     public bool $use_filters = true;
 
+    // === UNIFIED THEME SYSTEM ===
+    protected string $module_prefix = 'portfolio';
+
+    /**
+     * Declarative style configuration
+     */
+    protected array $style_config = [
+        'gutter' => [
+            'property' => 'gap',
+            'selector' => '.jtb-portfolio-container',
+            'unit' => 'px'
+        ],
+        'hover_overlay_color' => [
+            'property' => 'background',
+            'selector' => '.jtb-portfolio-overlay'
+        ],
+        'zoom_icon_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-portfolio-zoom'
+        ],
+        'title_font_size' => [
+            'property' => 'font-size',
+            'selector' => '.jtb-portfolio-title',
+            'unit' => 'px',
+            'responsive' => true
+        ]
+    ];
+
     public function getSlug(): string
     {
         return 'portfolio';
@@ -115,6 +143,9 @@ class JTB_Module_Portfolio extends JTB_Element
 
     public function render(array $attrs, string $content = ''): string
     {
+        // Apply default styles from design system
+        $attrs = JTB_Default_Styles::mergeWithDefaults($this->getSlug(), $attrs);
+
         $postsNumber = $attrs['posts_number'] ?? 8;
         $showTitle = $attrs['show_title'] ?? true;
         $showCategories = $attrs['show_categories'] ?? true;
@@ -169,18 +200,21 @@ class JTB_Module_Portfolio extends JTB_Element
         return $this->renderWrapper($innerHtml, $attrs);
     }
 
+    /**
+     * Generate CSS for Portfolio module
+     * Base styles are in jtb-base-modules.css
+     */
     public function generateCss(array $attrs, string $selector): string
     {
         $css = '';
 
+        // Use declarative style_config system
+        $css .= $this->generateStyleConfigCss($attrs, $selector);
+
         $columns = $attrs['columns'] ?? '4';
-        $gutter = $attrs['gutter'] ?? 10;
-        $overlayColor = $attrs['hover_overlay_color'] ?? 'rgba(0,0,0,0.7)';
-        $zoomColor = $attrs['zoom_icon_color'] ?? '#ffffff';
-        $titleSize = $attrs['title_font_size'] ?? 18;
 
         // Grid
-        $css .= $selector . ' .jtb-portfolio-container { display: grid; gap: ' . $gutter . 'px; }' . "\n";
+        $css .= $selector . ' .jtb-portfolio-container { display: grid; }' . "\n";
         $css .= $selector . ' .jtb-portfolio-cols-2 { grid-template-columns: repeat(2, 1fr); }' . "\n";
         $css .= $selector . ' .jtb-portfolio-cols-3 { grid-template-columns: repeat(3, 1fr); }' . "\n";
         $css .= $selector . ' .jtb-portfolio-cols-4 { grid-template-columns: repeat(4, 1fr); }' . "\n";
@@ -197,34 +231,30 @@ class JTB_Module_Portfolio extends JTB_Element
         $css .= $selector . ' .jtb-portfolio-placeholder { background: #f0f0f0; padding-bottom: 100%; }' . "\n";
 
         // Overlay
-        $css .= $selector . ' .jtb-portfolio-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: ' . $overlayColor . '; display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease; }' . "\n";
+        $css .= $selector . ' .jtb-portfolio-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease; }' . "\n";
         $css .= $selector . ' .jtb-portfolio-item:hover .jtb-portfolio-overlay { opacity: 1; }' . "\n";
 
         // Overlay content
         $css .= $selector . ' .jtb-portfolio-overlay-content { text-align: center; color: #fff; padding: 20px; }' . "\n";
 
         // Title
-        $css .= $selector . ' .jtb-portfolio-title { margin: 0 0 10px; font-size: ' . $titleSize . 'px; }' . "\n";
+        $css .= $selector . ' .jtb-portfolio-title { margin: 0 0 10px; }' . "\n";
 
         // Categories
         $css .= $selector . ' .jtb-portfolio-categories { font-size: 13px; opacity: 0.8; margin-bottom: 15px; }' . "\n";
 
         // Zoom icon
-        $css .= $selector . ' .jtb-portfolio-zoom { display: inline-flex; width: 40px; height: 40px; border: 2px solid ' . $zoomColor . '; color: ' . $zoomColor . '; font-size: 24px; align-items: center; justify-content: center; border-radius: 50%; }' . "\n";
+        $zoomColor = $attrs['zoom_icon_color'] ?? '#ffffff';
+        $css .= $selector . ' .jtb-portfolio-zoom { display: inline-flex; width: 40px; height: 40px; border: 2px solid ' . $zoomColor . '; font-size: 24px; align-items: center; justify-content: center; border-radius: 50%; }' . "\n";
 
         // Responsive
-        if (!empty($attrs['columns__tablet'])) {
-            $css .= '@media (max-width: 980px) { ' . $selector . ' .jtb-portfolio-container { grid-template-columns: repeat(' . $attrs['columns__tablet'] . ', 1fr); } }' . "\n";
-        } else {
-            $css .= '@media (max-width: 980px) { ' . $selector . ' .jtb-portfolio-container { grid-template-columns: repeat(3, 1fr); } }' . "\n";
-        }
+        $tabletCols = $attrs['columns__tablet'] ?? '3';
+        $phoneCols = $attrs['columns__phone'] ?? '2';
 
-        if (!empty($attrs['columns__phone'])) {
-            $css .= '@media (max-width: 767px) { ' . $selector . ' .jtb-portfolio-container { grid-template-columns: repeat(' . $attrs['columns__phone'] . ', 1fr); } }' . "\n";
-        } else {
-            $css .= '@media (max-width: 767px) { ' . $selector . ' .jtb-portfolio-container { grid-template-columns: repeat(2, 1fr); } }' . "\n";
-        }
+        $css .= '@media (max-width: 980px) { ' . $selector . ' .jtb-portfolio-container { grid-template-columns: repeat(' . $tabletCols . ', 1fr); } }' . "\n";
+        $css .= '@media (max-width: 767px) { ' . $selector . ' .jtb-portfolio-container { grid-template-columns: repeat(' . $phoneCols . ', 1fr); } }' . "\n";
 
+        // Parent class handles common styles
         $css .= parent::generateCss($attrs, $selector);
 
         return $css;

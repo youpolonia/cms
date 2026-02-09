@@ -6,13 +6,7 @@
 $pageTitle = '404 Not Found';
 http_response_code(404);
 
-// Load Theme Builder functions for custom 404 template
-if (!function_exists('tb_render_site_template')) {
-    $tbDatabasePath = dirname(__DIR__, 3) . '/core/theme-builder/database.php';
-    if (file_exists($tbDatabasePath)) {
-        require_once $tbDatabasePath;
-    }
-}
+// Legacy TB loader removed — JTB uses jtb-frontend-boot.php in header layout
 
 // Try to get TB 404 template
 $tb404 = null;

@@ -32,12 +32,6 @@ require_once CMS_ROOT . '/core/ai_insights.php';
 cms_session_start('admin');
 csrf_boot('admin');
 
-// DEV_MODE gate
-if (!defined('DEV_MODE') || !DEV_MODE) {
-    http_response_code(403);
-    echo 'Forbidden';
-    exit;
-}
 
 cms_require_admin_role();
 

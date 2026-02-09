@@ -25,6 +25,38 @@ class JTB_Module_Login extends JTB_Element
     public bool $use_position = false;
     public bool $use_filters = false;
 
+    // === UNIFIED THEME SYSTEM ===
+    protected string $module_prefix = 'login';
+
+    /**
+     * Declarative style configuration
+     */
+    protected array $style_config = [
+        'form_field_bg_color' => [
+            'property' => 'background-color',
+            'selector' => '.jtb-form-field input[type="text"], .jtb-form-field input[type="password"]'
+        ],
+        'form_field_text_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-form-field input[type="text"], .jtb-form-field input[type="password"]'
+        ],
+        'form_field_border_color' => [
+            'property' => 'border-color',
+            'selector' => '.jtb-form-field input[type="text"], .jtb-form-field input[type="password"]',
+            'hover' => true
+        ],
+        'button_bg_color' => [
+            'property' => 'background-color',
+            'selector' => '.jtb-login-submit',
+            'hover' => true
+        ],
+        'button_text_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-login-submit',
+            'hover' => true
+        ]
+    ];
+
     public function getSlug(): string
     {
         return 'login';
@@ -103,6 +135,9 @@ class JTB_Module_Login extends JTB_Element
 
     public function render(array $attrs, string $content = ''): string
     {
+        // Apply default styles from design system
+        $attrs = JTB_Default_Styles::mergeWithDefaults($this->getSlug(), $attrs);
+
         $title = $this->esc($attrs['title'] ?? 'Login');
         $usernameLabel = $this->esc($attrs['username_label'] ?? 'Username');
         $passwordLabel = $this->esc($attrs['password_label'] ?? 'Password');
@@ -151,54 +186,36 @@ class JTB_Module_Login extends JTB_Element
         return $this->renderWrapper($innerHtml, $attrs);
     }
 
+    /**
+     * Generate CSS for Login module
+     * Base styles are in jtb-base-modules.css
+     */
     public function generateCss(array $attrs, string $selector): string
     {
         $css = '';
 
-        // Form fields
-        $fieldBg = $attrs['form_field_bg_color'] ?? '#ffffff';
-        $fieldText = $attrs['form_field_text_color'] ?? '#666666';
-        $fieldBorder = $attrs['form_field_border_color'] ?? '#bbb';
+        // Use declarative style_config system
+        $css .= $this->generateStyleConfigCss($attrs, $selector);
 
+        // Form fields base styles
         $css .= $selector . ' .jtb-form-field { margin-bottom: 20px; }' . "\n";
         $css .= $selector . ' .jtb-form-field label { display: block; margin-bottom: 5px; font-weight: 500; }' . "\n";
 
         $css .= $selector . ' .jtb-form-field input[type="text"], ' . $selector . ' .jtb-form-field input[type="password"] { ';
-        $css .= 'width: 100%; ';
-        $css .= 'padding: 12px 15px; ';
-        $css .= 'background-color: ' . $fieldBg . '; ';
-        $css .= 'color: ' . $fieldText . '; ';
-        $css .= 'border: 1px solid ' . $fieldBorder . '; ';
-        $css .= 'box-sizing: border-box; ';
-        $css .= 'font-size: 14px; ';
+        $css .= 'width: 100%; padding: 12px 15px; box-sizing: border-box; font-size: 14px; border: 1px solid; ';
         $css .= '}' . "\n";
 
         // Checkbox
         $css .= $selector . ' .jtb-form-checkbox label { display: flex; align-items: center; gap: 8px; font-weight: normal; }' . "\n";
 
-        // Button
-        $btnBg = $attrs['button_bg_color'] ?? '#2ea3f2';
-        $btnText = $attrs['button_text_color'] ?? '#ffffff';
-
-        $css .= $selector . ' .jtb-login-submit { ';
-        $css .= 'width: 100%; ';
-        $css .= 'background-color: ' . $btnBg . '; ';
-        $css .= 'color: ' . $btnText . '; ';
-        $css .= 'border: none; ';
-        $css .= 'padding: 12px 30px; ';
-        $css .= 'cursor: pointer; ';
-        $css .= 'font-size: 14px; ';
-        $css .= 'transition: all 0.3s ease; ';
-        $css .= '}' . "\n";
-
-        if (!empty($attrs['button_bg_color__hover'])) {
-            $css .= $selector . ' .jtb-login-submit:hover { background-color: ' . $attrs['button_bg_color__hover'] . '; }' . "\n";
-        }
+        // Button base styles
+        $css .= $selector . ' .jtb-login-submit { width: 100%; border: none; padding: 12px 30px; cursor: pointer; font-size: 14px; transition: all 0.3s ease; }' . "\n";
 
         // Links
         $css .= $selector . ' .jtb-login-links { text-align: center; margin-top: 15px; }' . "\n";
         $css .= $selector . ' .jtb-login-links a { font-size: 13px; color: #666; }' . "\n";
 
+        // Parent class handles common styles
         $css .= parent::generateCss($attrs, $selector);
 
         return $css;

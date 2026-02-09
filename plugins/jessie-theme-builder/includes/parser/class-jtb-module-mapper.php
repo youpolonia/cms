@@ -84,8 +84,8 @@ class JTB_Module_Mapper
                 'src' => ['type' => 'string', 'attr' => 'src'],
                 'alt' => ['type' => 'string', 'attr' => 'alt'],
                 'title_text' => ['type' => 'string', 'attr' => 'title'],
-                'url' => ['type' => 'string', 'attr' => 'data-jtb-attr-url', 'selector' => 'a@href'],
-                'url_new_window' => ['type' => 'bool', 'selector' => 'a@target'],
+                'link_url' => ['type' => 'string', 'attr' => 'data-jtb-attr-url', 'selector' => 'a@href'],
+                'link_target' => ['type' => 'bool', 'selector' => 'a@target'],
                 'show_in_lightbox' => ['type' => 'bool', 'attr' => 'data-jtb-attr-lightbox'],
             ]
         ],
@@ -95,9 +95,9 @@ class JTB_Module_Mapper
             'classes' => ['btn', 'button', 'cta-button'],
             'category' => 'content',
             'fields' => [
-                'button_text' => ['type' => 'text_content'],
-                'button_url' => ['type' => 'string', 'attr' => 'href'],
-                'url_new_window' => ['type' => 'bool', 'attr' => 'target'],
+                'text' => ['type' => 'text_content'],
+                'link_url' => ['type' => 'string', 'attr' => 'href'],
+                'link_target' => ['type' => 'bool', 'attr' => 'target'],
                 'button_alignment' => ['type' => 'string', 'attr' => 'data-jtb-attr-alignment'],
                 'custom_icon' => ['type' => 'string', 'attr' => 'data-jtb-attr-icon'],
                 'icon_position' => ['type' => 'string', 'attr' => 'data-jtb-attr-icon-position'],
@@ -118,7 +118,7 @@ class JTB_Module_Mapper
                 'icon_color' => ['type' => 'color', 'attr' => 'data-jtb-attr-icon-color'],
                 'use_circle' => ['type' => 'bool', 'attr' => 'data-jtb-attr-use-circle'],
                 'image_placement' => ['type' => 'string', 'attr' => 'data-jtb-attr-placement'],
-                'url' => ['type' => 'string', 'selector' => 'a@href'],
+                'link_url' => ['type' => 'string', 'selector' => 'a@href'],
                 'header_level' => ['type' => 'string', 'attr' => 'data-jtb-attr-header-level'],
                 'text_orientation' => ['type' => 'string', 'attr' => 'data-jtb-attr-text-align'],
             ]
@@ -153,7 +153,7 @@ class JTB_Module_Mapper
                 'title' => ['type' => 'string', 'selector' => 'h1,h2,h3,h4'],
                 'content' => ['type' => 'html', 'selector' => 'p,.content'],
                 'button_text' => ['type' => 'string', 'selector' => '.btn,button,a.button'],
-                'button_url' => ['type' => 'string', 'selector' => '.btn@href,button@data-url,a.button@href'],
+                'link_url' => ['type' => 'string', 'selector' => '.btn@href,button@data-url,a.button@href'],
             ]
         ],
         'number_counter' => [
@@ -222,7 +222,7 @@ class JTB_Module_Mapper
                 'author' => ['type' => 'string', 'selector' => '.author,.name,cite'],
                 'job_title' => ['type' => 'string', 'selector' => '.job,.position,.role'],
                 'company' => ['type' => 'string', 'selector' => '.company,.organization'],
-                'url' => ['type' => 'string', 'selector' => 'a@href'],
+                'link_url' => ['type' => 'string', 'selector' => 'a@href'],
                 'portrait_url' => ['type' => 'string', 'selector' => 'img@src,.avatar@src'],
                 'content' => ['type' => 'html', 'selector' => '.content,.quote,p'],
                 'quote_icon' => ['type' => 'string', 'attr' => 'data-jtb-attr-quote-icon'],
@@ -258,7 +258,7 @@ class JTB_Module_Mapper
                 'per' => ['type' => 'string', 'selector' => '.period,.per'],
                 'content' => ['type' => 'html', 'selector' => 'ul,.features'],
                 'button_text' => ['type' => 'string', 'selector' => '.btn,button,a.button'],
-                'button_url' => ['type' => 'string', 'selector' => '.btn@href,a.button@href'],
+                'link_url' => ['type' => 'string', 'selector' => '.btn@href,a.button@href'],
                 'featured' => ['type' => 'bool', 'attr' => 'data-jtb-attr-featured', 'class' => 'featured'],
                 'featured_text' => ['type' => 'string', 'selector' => '.badge,.ribbon'],
             ]
@@ -469,7 +469,7 @@ class JTB_Module_Mapper
                 'content' => ['type' => 'html', 'selector' => '.content,p'],
                 'image' => ['type' => 'string', 'selector' => 'img@src', 'attr' => 'data-jtb-attr-image'],
                 'button_text' => ['type' => 'string', 'selector' => '.btn,button,a.button'],
-                'button_url' => ['type' => 'string', 'selector' => '.btn@href,a.button@href'],
+                'link_url' => ['type' => 'string', 'selector' => '.btn@href,a.button@href'],
             ]
         ],
         'video_slider' => [
@@ -675,7 +675,7 @@ class JTB_Module_Mapper
             'fields' => [
                 'src' => ['type' => 'string', 'selector' => 'img@src'],
                 'alt' => ['type' => 'string', 'selector' => 'img@alt'],
-                'url' => ['type' => 'string', 'selector' => 'a@href'],
+                'link_url' => ['type' => 'string', 'selector' => 'a@href'],
             ]
         ],
         'fullwidth_menu' => [
@@ -713,7 +713,7 @@ class JTB_Module_Mapper
                 'subhead' => ['type' => 'string', 'selector' => '.subtitle,p'],
                 'background_image' => ['type' => 'string', 'attr' => 'data-jtb-attr-bg-image'],
                 'button_text' => ['type' => 'string', 'selector' => '.btn,a.button'],
-                'button_url' => ['type' => 'string', 'selector' => '.btn@href'],
+                'link_url' => ['type' => 'string', 'selector' => '.btn@href'],
             ]
         ],
         'fullwidth_portfolio' => [

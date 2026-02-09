@@ -15,13 +15,50 @@ class JTB_Module_Social_Icons extends JTB_Element
     public string $slug = 'social_icons';
     public string $name = 'Social Icons';
     public string $icon = 'share-2';
-    public string $category = 'theme';
+    public string $category = 'header';
 
     public bool $use_background = true;
     public bool $use_spacing = true;
     public bool $use_border = true;
     public bool $use_box_shadow = true;
     public bool $use_animation = true;
+    public bool $use_typography = true;
+
+    protected string $module_prefix = 'social_icons';
+
+    protected array $style_config = [
+        'icon_size' => [
+            'property' => 'width',
+            'selector' => '.jtb-social-icon svg',
+            'unit' => 'px',
+            'responsive' => true
+        ],
+        'icon_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-social-icon',
+            'hover' => true
+        ],
+        'icon_bg_color' => [
+            'property' => 'background',
+            'selector' => '.jtb-social-icon',
+            'hover' => true
+        ],
+        'icon_border_radius' => [
+            'property' => 'border-radius',
+            'selector' => '.jtb-social-icon',
+            'unit' => 'px'
+        ],
+        'icon_padding' => [
+            'property' => 'padding',
+            'selector' => '.jtb-social-icon',
+            'unit' => 'px'
+        ],
+        'spacing' => [
+            'property' => 'gap',
+            'selector' => '.jtb-social-icons-list',
+            'unit' => 'px'
+        ]
+    ];
 
     public function getSlug(): string
     {
@@ -166,12 +203,17 @@ class JTB_Module_Social_Icons extends JTB_Element
 
     public function render(array $attrs, string $content = ''): string
     {
+        // Apply default styles from design system
+        $attrs = JTB_Default_Styles::mergeWithDefaults($this->getSlug(), $attrs);
+
         $id = $attrs['id'] ?? 'social_icons_' . uniqid();
         $iconStyle = $attrs['icon_style'] ?? 'outline';
         $openNewTab = $attrs['open_in_new_tab'] ?? true;
+        $useFromSettings = $attrs['use_site_settings'] ?? false;
 
         $icons = $this->getSocialIcons();
 
+        // Get networks from attrs or site settings
         $networks = [
             'facebook' => $attrs['facebook_url'] ?? '',
             'twitter' => $attrs['twitter_url'] ?? '',
@@ -184,6 +226,16 @@ class JTB_Module_Social_Icons extends JTB_Element
             'dribbble' => $attrs['dribbble_url'] ?? '',
             'behance' => $attrs['behance_url'] ?? ''
         ];
+
+        // If use_site_settings is enabled, try to get from site settings
+        if ($useFromSettings) {
+            $siteNetworks = JTB_Dynamic_Context::getSiteSocial();
+            foreach ($siteNetworks as $name => $url) {
+                if (!empty($url) && isset($networks[$name])) {
+                    $networks[$name] = $url;
+                }
+            }
+        }
 
         $targetAttr = $openNewTab ? ' target="_blank" rel="noopener noreferrer"' : '';
 
@@ -219,6 +271,7 @@ class JTB_Module_Social_Icons extends JTB_Element
     public function generateCss(array $attrs, string $selector): string
     {
         $css = parent::generateCss($attrs, $selector);
+        $css .= $this->generateStyleConfigCss($attrs, $selector);
 
         $iconStyle = $attrs['icon_style'] ?? 'outline';
         $iconColor = $attrs['icon_color'] ?? '#333333';

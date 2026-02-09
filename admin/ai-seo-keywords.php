@@ -17,7 +17,6 @@ csrf_boot('admin');
 require_once CMS_ROOT . '/admin/includes/permissions.php';
 cms_require_admin_role();
 
-if (!defined('DEV_MODE') || !DEV_MODE) { http_response_code(403); exit('Forbidden'); }
 
 require_once CMS_ROOT . '/core/ai_seo_assistant.php';
 

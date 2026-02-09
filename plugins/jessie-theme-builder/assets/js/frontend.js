@@ -8,6 +8,9 @@
 (function() {
     'use strict';
 
+    // Global observer reference for cleanup
+    let jtbMainObserver = null;
+
     const JTBFrontend = {
         // Configuration
         config: {
@@ -39,6 +42,72 @@
             this.initSmoothScroll();
             this.initLazyLoad();
             this.bindEvents();
+            this.initMutationObserver();
+        },
+
+        /**
+         * MutationObserver for dynamically added content (preview, AJAX)
+         * Re-initializes interactive modules when new content is injected
+         */
+        initMutationObserver() {
+            // Skip if MutationObserver not supported
+            if (typeof MutationObserver === 'undefined') return;
+
+            // Disconnect previous observer if exists (prevent duplicates)
+            if (jtbMainObserver) {
+                jtbMainObserver.disconnect();
+                jtbMainObserver = null;
+            }
+
+            const self = this;
+
+            jtbMainObserver = new MutationObserver((mutations) => {
+                let shouldReinit = false;
+
+                for (const mutation of mutations) {
+                    if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
+                        for (const node of mutation.addedNodes) {
+                            if (node.nodeType === 1) { // Element node
+                                // Check if new content contains interactive modules
+                                if (node.classList && (
+                                    node.classList.contains('jtb-slider-container') ||
+                                    node.classList.contains('jtb-module-slider') ||
+                                    node.querySelector && node.querySelector('.jtb-slider-container, .jtb-tabs, .jtb-accordion')
+                                )) {
+                                    shouldReinit = true;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    if (shouldReinit) break;
+                }
+
+                if (shouldReinit) {
+                    // Debounce re-initialization
+                    clearTimeout(self._reinitTimeout);
+                    self._reinitTimeout = setTimeout(() => {
+                        self.reinitSliders();
+                        self.initTabs();
+                        self.initAccordions();
+                        self.initCounters();
+                    }, 100);
+                }
+            });
+
+            // Observe the entire document for changes
+            jtbMainObserver.observe(document.body, {
+                childList: true,
+                subtree: true
+            });
+
+            // Cleanup on page unload to prevent memory leaks
+            window.addEventListener('beforeunload', () => {
+                if (jtbMainObserver) {
+                    jtbMainObserver.disconnect();
+                    jtbMainObserver = null;
+                }
+            });
         },
 
         /**
@@ -147,21 +216,35 @@
         // ========================================
 
         initMobileMenu() {
-            const menuToggles = document.querySelectorAll('.jtb-mobile-menu-toggle');
-            const mobileMenu = document.querySelector('.jtb-mobile-menu');
+            // Hamburger buttons (can be multiple menus on page)
+            const hamburgers = document.querySelectorAll('.jtb-hamburger');
+            const closeButtons = document.querySelectorAll('.jtb-mobile-menu-close');
+            const overlays = document.querySelectorAll('.jtb-mobile-menu-overlay');
 
-            menuToggles.forEach(toggle => {
-                toggle.addEventListener('click', (e) => {
+            // Open mobile menu
+            hamburgers.forEach(hamburger => {
+                hamburger.addEventListener('click', (e) => {
                     e.preventDefault();
-                    this.toggleMobileMenu();
+                    const menuId = hamburger.getAttribute('aria-controls');
+                    const menu = menuId ? document.getElementById(menuId) : document.querySelector('.jtb-mobile-menu');
+                    if (menu) {
+                        this.openMobileMenu(menu, hamburger);
+                    }
                 });
             });
 
-            // Close on click outside
-            document.addEventListener('click', (e) => {
-                if (this.mobileMenuOpen && !e.target.closest('.jtb-mobile-menu') && !e.target.closest('.jtb-mobile-menu-toggle')) {
+            // Close button
+            closeButtons.forEach(closeBtn => {
+                closeBtn.addEventListener('click', () => {
                     this.closeMobileMenu();
-                }
+                });
+            });
+
+            // Close on overlay click
+            overlays.forEach(overlay => {
+                overlay.addEventListener('click', () => {
+                    this.closeMobileMenu();
+                });
             });
 
             // Close on escape
@@ -170,26 +253,73 @@
                     this.closeMobileMenu();
                 }
             });
+
+            // Mobile dropdown toggles
+            this.initMobileDropdowns();
         },
 
-        toggleMobileMenu() {
-            this.mobileMenuOpen = !this.mobileMenuOpen;
-            document.body.classList.toggle('jtb-mobile-menu-open', this.mobileMenuOpen);
+        initMobileDropdowns() {
+            const toggles = document.querySelectorAll('.jtb-mobile-nav-toggle');
 
-            const menu = document.querySelector('.jtb-mobile-menu');
-            if (menu) {
-                menu.classList.toggle('open', this.mobileMenuOpen);
+            toggles.forEach(toggle => {
+                toggle.addEventListener('click', () => {
+                    const isExpanded = toggle.getAttribute('aria-expanded') === 'true';
+                    const dropdown = toggle.nextElementSibling;
+
+                    // Close other dropdowns
+                    toggles.forEach(t => {
+                        if (t !== toggle) {
+                            t.setAttribute('aria-expanded', 'false');
+                            const d = t.nextElementSibling;
+                            if (d) d.classList.remove('open');
+                        }
+                    });
+
+                    // Toggle this one
+                    toggle.setAttribute('aria-expanded', !isExpanded);
+                    if (dropdown) {
+                        dropdown.classList.toggle('open', !isExpanded);
+                    }
+                });
+            });
+        },
+
+        openMobileMenu(menu, trigger) {
+            this.mobileMenuOpen = true;
+            this.activeMobileMenu = menu;
+            this.activeTrigger = trigger;
+
+            menu.classList.add('open');
+            menu.setAttribute('aria-hidden', 'false');
+            trigger.setAttribute('aria-expanded', 'true');
+            document.body.classList.add('jtb-mobile-menu-open');
+
+            // Focus first focusable element
+            const firstFocusable = menu.querySelector('a, button');
+            if (firstFocusable) {
+                setTimeout(() => firstFocusable.focus(), 100);
             }
         },
 
         closeMobileMenu() {
-            this.mobileMenuOpen = false;
-            document.body.classList.remove('jtb-mobile-menu-open');
+            if (!this.mobileMenuOpen) return;
 
-            const menu = document.querySelector('.jtb-mobile-menu');
+            this.mobileMenuOpen = false;
+
+            const menu = this.activeMobileMenu || document.querySelector('.jtb-mobile-menu.open');
             if (menu) {
                 menu.classList.remove('open');
+                menu.setAttribute('aria-hidden', 'true');
             }
+
+            if (this.activeTrigger) {
+                this.activeTrigger.setAttribute('aria-expanded', 'false');
+                this.activeTrigger.focus();
+            }
+
+            document.body.classList.remove('jtb-mobile-menu-open');
+            this.activeMobileMenu = null;
+            this.activeTrigger = null;
         },
 
         // ========================================
@@ -282,6 +412,10 @@
 
         initTabs() {
             document.querySelectorAll('.jtb-tabs').forEach(tabContainer => {
+                // Skip if already initialized
+                if (tabContainer.dataset.jtbTabsInit) return;
+                tabContainer.dataset.jtbTabsInit = 'true';
+
                 const tabNavs = tabContainer.querySelectorAll('.jtb-tab-nav');
                 const tabPanes = tabContainer.querySelectorAll('.jtb-tab-pane');
 
@@ -309,6 +443,10 @@
 
         initAccordions() {
             document.querySelectorAll('.jtb-accordion').forEach(accordion => {
+                // Skip if already initialized
+                if (accordion.dataset.jtbAccordionInit) return;
+                accordion.dataset.jtbAccordionInit = 'true';
+
                 const items = accordion.querySelectorAll('.jtb-accordion-item');
                 const allowMultiple = accordion.dataset.multiple === 'true';
 
@@ -344,18 +482,31 @@
         // ========================================
 
         initSliders() {
-            document.querySelectorAll('.jtb-slider').forEach(slider => {
+            // Support both class names for compatibility
+            document.querySelectorAll('.jtb-slider-container, .jtb-slider').forEach(slider => {
+                // Skip if already initialized
+                if (slider.dataset.jtbSliderInit) return;
+                slider.dataset.jtbSliderInit = 'true';
                 this.initSlider(slider);
             });
         },
 
+        /**
+         * Re-initialize sliders (call after dynamic content injection)
+         */
+        reinitSliders() {
+            this.initSliders();
+        },
+
         initSlider(container) {
-            const slides = container.querySelectorAll('.jtb-slide');
+            // Support both class names: .jtb-slider-slide (PHP) and .jtb-slide (legacy)
+            const slides = container.querySelectorAll('.jtb-slider-slide, .jtb-slide');
             if (slides.length < 2) return;
 
             let currentIndex = 0;
-            const autoplay = container.dataset.autoplay === 'true';
-            const interval = parseInt(container.dataset.interval) || 5000;
+            // Support both data attributes: data-auto (PHP) and data-autoplay (legacy)
+            const autoplay = container.dataset.auto === 'true' || container.dataset.autoplay === 'true';
+            const interval = parseInt(container.dataset.speed || container.dataset.interval) || 5000;
 
             const showSlide = (index) => {
                 slides.forEach((slide, i) => {
@@ -379,9 +530,46 @@
             if (prevBtn) prevBtn.addEventListener('click', prevSlide);
             if (nextBtn) nextBtn.addEventListener('click', nextSlide);
 
-            // Autoplay
+            // Autoplay with proper cleanup
             if (autoplay) {
-                setInterval(nextSlide, interval);
+                let intervalId = setInterval(nextSlide, interval);
+
+                // Store interval ID on container for cleanup
+                container._jtbIntervalId = intervalId;
+
+                // Pause on hover (UX improvement)
+                container.addEventListener('mouseenter', () => {
+                    if (container._jtbIntervalId) {
+                        clearInterval(container._jtbIntervalId);
+                        container._jtbIntervalId = null;
+                    }
+                });
+
+                container.addEventListener('mouseleave', () => {
+                    if (!container._jtbIntervalId) {
+                        container._jtbIntervalId = setInterval(nextSlide, interval);
+                    }
+                });
+
+                // Cleanup when slider is removed from DOM
+                const cleanupObserver = new MutationObserver((mutations) => {
+                    for (const mutation of mutations) {
+                        for (const node of mutation.removedNodes) {
+                            if (node === container || (node.contains && node.contains(container))) {
+                                if (container._jtbIntervalId) {
+                                    clearInterval(container._jtbIntervalId);
+                                    container._jtbIntervalId = null;
+                                }
+                                cleanupObserver.disconnect();
+                                return;
+                            }
+                        }
+                    }
+                });
+
+                if (container.parentNode) {
+                    cleanupObserver.observe(container.parentNode, { childList: true, subtree: true });
+                }
             }
 
             // Show first slide

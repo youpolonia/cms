@@ -68,6 +68,12 @@ try {
     <!-- Media Gallery CSS -->
     <link rel="stylesheet" href="<?php echo $esc($pluginUrl); ?>/assets/css/media-gallery.css?v=<?php echo time(); ?>">
 
+    <!-- Unified Theme System - Base Module Styles -->
+    <link rel="stylesheet" href="<?php echo $esc($pluginUrl); ?>/assets/css/jtb-base-modules.css?v=<?php echo time(); ?>">
+
+    <!-- AI Panel CSS -->
+    <link rel="stylesheet" href="<?php echo $esc($pluginUrl); ?>/assets/css/ai-panel.css?v=<?php echo time(); ?>">
+
     <style>
         /* Preview button styles */
         .jtb-preview-button {
@@ -150,9 +156,25 @@ try {
 
             <div class="jtb-header-center">
                 <div class="jtb-device-switcher">
-                    <button class="jtb-device-btn active" data-device="desktop" title="Desktop">🖥️</button>
-                    <button class="jtb-device-btn" data-device="tablet" title="Tablet">📱</button>
-                    <button class="jtb-device-btn" data-device="phone" title="Phone">📲</button>
+                    <button class="jtb-device-btn active" data-device="desktop" title="Desktop">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                            <line x1="8" y1="21" x2="16" y2="21"></line>
+                            <line x1="12" y1="17" x2="12" y2="21"></line>
+                        </svg>
+                    </button>
+                    <button class="jtb-device-btn" data-device="tablet" title="Tablet">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="4" y="2" width="16" height="20" rx="2" ry="2"></rect>
+                            <line x1="12" y1="18" x2="12.01" y2="18"></line>
+                        </svg>
+                    </button>
+                    <button class="jtb-device-btn" data-device="phone" title="Phone">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
+                            <line x1="12" y1="18" x2="12.01" y2="18"></line>
+                        </svg>
+                    </button>
                 </div>
             </div>
 
@@ -198,12 +220,17 @@ try {
     jtb_render_media_gallery_modal($csrfToken, $pexelsApiKey);
     ?>
 
+    <!-- AI Panel -->
+    <?php require_once dirname(__DIR__) . '/views/ai-panel.php'; ?>
+
     <!-- JavaScript -->
     <script src="<?php echo $esc($pluginUrl); ?>/assets/js/feather-icons.js?v=<?php echo time(); ?>"></script>
     <script src="<?php echo $esc($pluginUrl); ?>/assets/js/builder.js?v=<?php echo time(); ?>"></script>
     <script src="<?php echo $esc($pluginUrl); ?>/assets/js/settings-panel.js?v=<?php echo time(); ?>"></script>
     <script src="<?php echo $esc($pluginUrl); ?>/assets/js/fields.js?v=<?php echo time(); ?>"></script>
     <script src="<?php echo $esc($pluginUrl); ?>/assets/js/media-gallery.js?v=<?php echo time(); ?>"></script>
+    <script src="<?php echo $esc($pluginUrl); ?>/assets/js/ai-panel-render.js?v=<?php echo time(); ?>"></script>
+    <script src="<?php echo $esc($pluginUrl); ?>/assets/js/ai-panel.js?v=<?php echo time(); ?>"></script>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -247,13 +274,22 @@ try {
             }
 
             JTB.init({
-                postId: importedContent ? 0 : <?php echo (int) $postId; ?>,
+                postId: <?php echo (int) $postId; ?>,
                 postType: '<?php echo $esc($postType ?? 'page'); ?>',
                 csrfToken: '<?php echo $esc($csrfToken); ?>',
                 apiUrl: '/api/jtb',
                 pexelsApiKey: '<?php echo $esc($pexelsApiKey); ?>',
-                content: importedContent // If set, JTB will use this instead of loading from API
+                content: importedContent || undefined // Only pass if truthy, otherwise load from API
             });
+
+            // Initialize AI Panel
+            if (typeof JTB_AI !== 'undefined') {
+                JTB_AI.init({
+                    csrfToken: '<?php echo $esc($csrfToken); ?>',
+                    apiUrl: '/api/jtb/ai',
+                    pageId: <?php echo (int) $postId; ?>
+                });
+            }
         });
     </script>
 

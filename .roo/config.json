@@ -1,8 +1,0 @@
-{
-  "providers": {
-    "default": "deepseek",
-    "deepseek": {
-      "model": "deepseek-chat"
-    }
-  }
-}

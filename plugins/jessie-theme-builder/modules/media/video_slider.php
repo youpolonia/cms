@@ -26,6 +26,29 @@ class JTB_Module_VideoSlider extends JTB_Element
     public bool $use_position = false;
     public bool $use_filters = false;
 
+    // === UNIFIED THEME SYSTEM ===
+    protected string $module_prefix = 'video_slider';
+
+    /**
+     * Declarative style configuration
+     */
+    protected array $style_config = [
+        'arrow_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-video-slider-arrow',
+            'hover' => true
+        ],
+        'thumbnail_width' => [
+            'property' => 'width',
+            'selector' => '.jtb-video-slider-thumb',
+            'unit' => 'px'
+        ],
+        'play_icon_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-video-play-overlay'
+        ]
+    ];
+
     public function getSlug(): string
     {
         return 'video_slider';
@@ -73,6 +96,9 @@ class JTB_Module_VideoSlider extends JTB_Element
 
     public function render(array $attrs, string $content = ''): string
     {
+        // Apply default styles from design system
+        $attrs = JTB_Default_Styles::mergeWithDefaults($this->getSlug(), $attrs);
+
         $showArrows = $attrs['show_arrows'] ?? true;
         $showThumbnails = $attrs['show_thumbnails'] ?? true;
 
@@ -98,19 +124,25 @@ class JTB_Module_VideoSlider extends JTB_Element
         return $this->renderWrapper($innerHtml, $attrs);
     }
 
+    /**
+     * Generate CSS for Video Slider module
+     * Base styles are in jtb-base-modules.css
+     */
     public function generateCss(array $attrs, string $selector): string
     {
         $css = '';
+
+        // Use declarative style_config system
+        $css .= $this->generateStyleConfigCss($attrs, $selector);
 
         // Container
         $css .= $selector . ' .jtb-video-slider-main { position: relative; }' . "\n";
         $css .= $selector . ' .jtb-video-slider-track { overflow: hidden; }' . "\n";
 
-        // Arrows
-        $arrowColor = $attrs['arrow_color'] ?? '#ffffff';
+        // Arrows base styles
         $css .= $selector . ' .jtb-video-slider-arrow { ';
         $css .= 'position: absolute; top: 50%; transform: translateY(-50%); ';
-        $css .= 'background: rgba(0,0,0,0.5); color: ' . $arrowColor . '; ';
+        $css .= 'background: rgba(0,0,0,0.5); ';
         $css .= 'border: none; width: 50px; height: 50px; font-size: 30px; cursor: pointer; ';
         $css .= 'z-index: 10; border-radius: 50%; ';
         $css .= '}' . "\n";
@@ -118,19 +150,17 @@ class JTB_Module_VideoSlider extends JTB_Element
         $css .= $selector . ' .jtb-video-slider-prev { left: 20px; }' . "\n";
         $css .= $selector . ' .jtb-video-slider-next { right: 20px; }' . "\n";
 
-        // Thumbnails
-        $thumbWidth = $attrs['thumbnail_width'] ?? 100;
+        // Thumbnails base styles
         $css .= $selector . ' .jtb-video-slider-thumbnails { display: flex; gap: 10px; margin-top: 15px; justify-content: center; }' . "\n";
-        $css .= $selector . ' .jtb-video-slider-thumb { width: ' . $thumbWidth . 'px; cursor: pointer; opacity: 0.6; transition: opacity 0.3s; }' . "\n";
+        $css .= $selector . ' .jtb-video-slider-thumb { cursor: pointer; opacity: 0.6; transition: opacity 0.3s; }' . "\n";
         $css .= $selector . ' .jtb-video-slider-thumb.jtb-active { opacity: 1; }' . "\n";
 
-        // Play icon
-        $playColor = $attrs['play_icon_color'] ?? '#ffffff';
+        // Play icon base styles
         $css .= $selector . ' .jtb-video-play-overlay { ';
-        $css .= 'position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); ';
-        $css .= 'color: ' . $playColor . '; font-size: 60px; ';
+        $css .= 'position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 60px; ';
         $css .= '}' . "\n";
 
+        // Parent class handles common styles
         $css .= parent::generateCss($attrs, $selector);
 
         return $css;

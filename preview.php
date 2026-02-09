@@ -62,55 +62,11 @@ try {
     
     switch ($type) {
         // ========================================
-        // THEME BUILDER PAGES
+        // LEGACY THEME BUILDER (removed — use JTB)
         // ========================================
         case 'tb':
         case 'theme-builder':
-            require_once __DIR__ . '/core/theme-builder/renderer.php';
-            
-            $tbData = null;
-            
-            // Try session first (unsaved changes)
-            if ($useSession && $id > 0) {
-                $sessionKey = 'tb_preview_' . $id;
-                if (isset($_SESSION[$sessionKey]) && is_array($_SESSION[$sessionKey])) {
-                    $tbData = $_SESSION[$sessionKey]['content'] ?? null;
-                    // Get title from DB
-                    $stmt = $pdo->prepare("SELECT title FROM tb_pages WHERE id = ?");
-                    $stmt->execute([$id]);
-                    $row = $stmt->fetch(\PDO::FETCH_ASSOC);
-                    $title = $row['title'] ?? 'Preview';
-                }
-            }
-            
-            // Load from database if no session data
-            if (!$tbData) {
-                if ($id > 0) {
-                    $stmt = $pdo->prepare("SELECT id, title, slug, content_json FROM tb_pages WHERE id = ?");
-                    $stmt->execute([$id]);
-                } elseif (!empty($slug)) {
-                    $stmt = $pdo->prepare("SELECT id, title, slug, content_json FROM tb_pages WHERE slug = ?");
-                    $stmt->execute([$slug]);
-                } else {
-                    throw new Exception('Provide id or slug parameter for TB preview');
-                }
-                
-                $row = $stmt->fetch(\PDO::FETCH_ASSOC);
-                if (!$row) {
-                    throw new Exception('Theme Builder page not found');
-                }
-                
-                $title = $row['title'] ?? 'Preview';
-                $tbData = json_decode($row['content_json'], true);
-                
-                if (!$tbData) {
-                    throw new Exception('Invalid Theme Builder content');
-                }
-            }
-            
-            // Render with Theme Builder
-            $content = tb_render_page($tbData, ['preview_mode' => true]);
-            $renderMode = 'tb';
+            throw new \Exception('Legacy Theme Builder has been removed. Use JTB (Jessie Theme Builder) instead.');
             break;
             
         // ========================================
@@ -207,67 +163,9 @@ try {
             $renderMode = 'html';
             break;
             
-        // ========================================
-        // SITE TEMPLATES (header, footer, etc.)
-        // ========================================
+        // Legacy template preview — removed (JTB has its own preview system)
         case 'template':
-            require_once __DIR__ . '/core/theme-builder/renderer.php';
-            
-            $tbData = null;
-            $templateType = '';
-            
-            // Try session first (unsaved changes from editor)
-            if ($useSession) {
-                // Check for existing template preview
-                if ($id > 0) {
-                    $sessionKey = 'tb_template_preview_' . $id;
-                    if (isset($_SESSION[$sessionKey]) && is_array($_SESSION[$sessionKey])) {
-                        $tbData = $_SESSION[$sessionKey]['content'] ?? null;
-                        $templateType = $_SESSION[$sessionKey]['template_type'] ?? '';
-                    }
-                }
-                // Check for new template preview
-                if (!$tbData && isset($_SESSION['tb_template_preview_new']) && is_array($_SESSION['tb_template_preview_new'])) {
-                    $tbData = $_SESSION['tb_template_preview_new']['content'] ?? null;
-                    $templateType = $_SESSION['tb_template_preview_new']['template_type'] ?? '';
-                }
-            }
-            
-            // Load from database if no session data
-            if (!$tbData && $id > 0) {
-                $stmt = $pdo->prepare("SELECT id, name, type, content_json, is_active FROM tb_site_templates WHERE id = ?");
-                $stmt->execute([$id]);
-                $row = $stmt->fetch(\PDO::FETCH_ASSOC);
-                
-                if (!$row) {
-                    throw new Exception('Template not found');
-                }
-                
-                $title = ($row['name'] ?? 'Template') . ' (' . ($row['type'] ?? 'unknown') . ')';
-                $tbData = json_decode($row['content_json'], true);
-                $templateType = $row['type'] ?? '';
-            } elseif ($tbData) {
-                // Using session data - set title from template type
-                $title = 'Preview (' . ($templateType ?: 'template') . ')';
-                if ($id > 0) {
-                    // Get name from DB for better title
-                    $stmt = $pdo->prepare("SELECT name, type FROM tb_site_templates WHERE id = ?");
-                    $stmt->execute([$id]);
-                    $row = $stmt->fetch(\PDO::FETCH_ASSOC);
-                    if ($row) {
-                        $title = ($row['name'] ?? 'Template') . ' (' . ($row['type'] ?? 'unknown') . ')';
-                    }
-                }
-            } else {
-                throw new Exception('No template data available. Provide id parameter or save preview first.');
-            }
-            
-            if ($tbData) {
-                $content = tb_render_page($tbData, ['preview_mode' => true]);
-            } else {
-                $content = '<p>Empty template</p>';
-            }
-            $renderMode = 'tb';
+            throw new \Exception('Legacy template preview removed. Use JTB template preview instead.');
             break;
             
         default:

@@ -25,6 +25,18 @@ class JTB_Module_Column extends JTB_Element
     public bool $use_position = false;
     public bool $use_filters = false;
 
+    // === UNIFIED THEME SYSTEM ===
+    protected string $module_prefix = 'column';
+
+    protected array $style_config = [
+        'content_width' => [
+            'property' => 'width',
+            'selector' => '> *',
+            'unit' => '%',
+            'responsive' => true
+        ]
+    ];
+
     public function getSlug(): string
     {
         return 'column';
@@ -73,6 +85,9 @@ class JTB_Module_Column extends JTB_Element
 
     public function render(array $attrs, string $content = ''): string
     {
+        // Apply default styles from design system
+        $attrs = JTB_Default_Styles::mergeWithDefaults($this->getSlug(), $attrs);
+
         $id = $attrs['_id'] ?? $this->generateId();
 
         // Column classes

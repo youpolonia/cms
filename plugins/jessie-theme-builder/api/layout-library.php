@@ -10,8 +10,7 @@ defined('CMS_ROOT') or die('Direct access not allowed');
 
 header('Content-Type: application/json');
 
-// Load class
-require_once __DIR__ . '/../includes/class-jtb-layout-library.php';
+// Class is loaded by router
 
 try {
     $layouts = JTB_Layout_Library::getLayouts();

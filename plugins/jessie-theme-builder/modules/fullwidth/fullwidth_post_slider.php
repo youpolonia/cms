@@ -25,6 +25,49 @@ class JTB_Module_FullwidthPostSlider extends JTB_Element
     public bool $use_position = false;
     public bool $use_filters = false;
 
+    // === UNIFIED THEME SYSTEM ===
+    protected string $module_prefix = 'fullwidth_post_slider';
+
+    /**
+     * Declarative style configuration
+     */
+    protected array $style_config = [
+        'slider_height' => [
+            'property' => 'height',
+            'selector' => '.jtb-post-slider-wrapper',
+            'unit' => 'px',
+            'responsive' => true
+        ],
+        'overlay_color' => [
+            'property' => 'background',
+            'selector' => '.jtb-post-slide-overlay'
+        ],
+        'title_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-post-slide-title'
+        ],
+        'meta_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-post-slide-meta, .jtb-post-category, .jtb-post-date'
+        ],
+        'excerpt_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-post-slide-excerpt'
+        ],
+        'arrows_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-post-slider-arrow'
+        ],
+        'dots_color' => [
+            'property' => 'background',
+            'selector' => '.jtb-post-slider-pagination .jtb-slider-dot'
+        ],
+        'dots_active_color' => [
+            'property' => 'background',
+            'selector' => '.jtb-post-slider-pagination .jtb-slider-dot.active'
+        ]
+    ];
+
     public function getSlug(): string
     {
         return 'fullwidth_post_slider';
@@ -156,6 +199,9 @@ class JTB_Module_FullwidthPostSlider extends JTB_Element
 
     public function render(array $attrs, string $content = ''): string
     {
+        // Apply default styles from design system
+        $attrs = JTB_Default_Styles::mergeWithDefaults($this->getSlug(), $attrs);
+
         $postsNumber = $attrs['posts_number'] ?? 5;
         $showArrows = $attrs['show_arrows'] ?? true;
         $showPagination = $attrs['show_pagination'] ?? true;
@@ -273,6 +319,9 @@ class JTB_Module_FullwidthPostSlider extends JTB_Element
     public function generateCss(array $attrs, string $selector): string
     {
         $css = '';
+
+        // Use declarative style_config system
+        $css .= $this->generateStyleConfigCss($attrs, $selector);
 
         $sliderHeight = $attrs['slider_height'] ?? 500;
         $overlayColor = $attrs['overlay_color'] ?? 'rgba(0,0,0,0.4)';

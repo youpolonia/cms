@@ -6,7 +6,6 @@ define('CMS_ROOT', dirname(__DIR__));
 require_once CMS_ROOT . '/config.php';
 require_once __DIR__ . '/../includes/init.php'; // Must be before permissions check - starts session
 
-if (!defined('DEV_MODE') || !DEV_MODE) { http_response_code(403); exit; }
 
 require_once CMS_ROOT . '/core/session_boot.php';
 cms_session_start('admin');

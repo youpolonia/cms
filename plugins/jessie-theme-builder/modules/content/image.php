@@ -25,6 +25,27 @@ class JTB_Module_Image extends JTB_Element
     public bool $use_position = false;
     public bool $use_filters = true;
 
+    // === UNIFIED THEME SYSTEM ===
+    protected string $module_prefix = 'image';
+
+    /**
+     * Declarative style configuration
+     */
+    protected array $style_config = [
+        'width' => [
+            'property' => 'width',
+            'selector' => '.jtb-image-img',
+            'unit' => '%',
+            'responsive' => true
+        ],
+        'max_width' => [
+            'property' => 'max-width',
+            'selector' => '.jtb-image-img',
+            'unit' => 'px',
+            'responsive' => true
+        ]
+    ];
+
     public function getSlug(): string
     {
         return 'image';
@@ -102,6 +123,9 @@ class JTB_Module_Image extends JTB_Element
 
     public function render(array $attrs, string $content = ''): string
     {
+        // Apply default styles from design system
+        $attrs = JTB_Default_Styles::mergeWithDefaults($this->getSlug(), $attrs);
+
         $src = $attrs['src'] ?? '';
         $alt = $attrs['alt'] ?? '';
         $title = $attrs['title'] ?? '';
@@ -126,84 +150,120 @@ class JTB_Module_Image extends JTB_Element
         return $this->renderWrapper($innerHtml, $attrs);
     }
 
+    /**
+     * Generate CSS for Image module
+     * Base styles are in jtb-base-modules.css
+     */
     public function generateCss(array $attrs, string $selector): string
     {
         $css = '';
 
-        // Alignment
+        // Use declarative style_config system
+        $css .= $this->generateStyleConfigCss($attrs, $selector);
+
+        // Alignment (special handling for text-align mapping)
         $align = $attrs['align'] ?? '';
         if (!empty($align)) {
-            if ($align === 'center') {
-                $css .= $selector . ' .jtb-image-inner { text-align: center; }' . "\n";
-            } elseif ($align === 'right') {
-                $css .= $selector . ' .jtb-image-inner { text-align: right; }' . "\n";
-            } else {
-                $css .= $selector . ' .jtb-image-inner { text-align: left; }' . "\n";
-            }
-        }
-
-        // Width
-        if (!empty($attrs['width'])) {
-            $css .= $selector . ' .jtb-image-img { width: ' . (int) $attrs['width'] . '%; }' . "\n";
-        }
-
-        // Max width
-        if (!empty($attrs['max_width'])) {
-            $css .= $selector . ' .jtb-image-img { max-width: ' . (int) $attrs['max_width'] . 'px; }' . "\n";
-        }
-
-        // Force fullwidth
-        if (!empty($attrs['force_fullwidth'])) {
-            $css .= $selector . ' .jtb-image-img { width: 100%; max-width: none; }' . "\n";
+            $css .= $selector . ' .jtb-image-inner { text-align: ' . $align . '; }' . "\n";
         }
 
         // Responsive alignment
         if (!empty($attrs['align__tablet'])) {
-            $alignTablet = $attrs['align__tablet'];
-            $textAlign = ($alignTablet === 'center') ? 'center' : (($alignTablet === 'right') ? 'right' : 'left');
-            $css .= '@media (max-width: 980px) {' . "\n";
-            $css .= '  ' . $selector . ' .jtb-image-inner { text-align: ' . $textAlign . '; }' . "\n";
-            $css .= '}' . "\n";
+            $css .= '@media (max-width: 980px) { ' . $selector . ' .jtb-image-inner { text-align: ' . $attrs['align__tablet'] . '; } }' . "\n";
         }
-
         if (!empty($attrs['align__phone'])) {
-            $alignPhone = $attrs['align__phone'];
-            $textAlign = ($alignPhone === 'center') ? 'center' : (($alignPhone === 'right') ? 'right' : 'left');
-            $css .= '@media (max-width: 767px) {' . "\n";
-            $css .= '  ' . $selector . ' .jtb-image-inner { text-align: ' . $textAlign . '; }' . "\n";
-            $css .= '}' . "\n";
+            $css .= '@media (max-width: 767px) { ' . $selector . ' .jtb-image-inner { text-align: ' . $attrs['align__phone'] . '; } }' . "\n";
         }
 
-        // Responsive width
-        if (!empty($attrs['width__tablet'])) {
-            $css .= '@media (max-width: 980px) {' . "\n";
-            $css .= '  ' . $selector . ' .jtb-image-img { width: ' . (int) $attrs['width__tablet'] . '%; }' . "\n";
-            $css .= '}' . "\n";
+        // Force fullwidth override
+        if (!empty($attrs['force_fullwidth'])) {
+            $css .= $selector . ' .jtb-image-img { width: 100%; max-width: none; }' . "\n";
         }
 
-        if (!empty($attrs['width__phone'])) {
-            $css .= '@media (max-width: 767px) {' . "\n";
-            $css .= '  ' . $selector . ' .jtb-image-img { width: ' . (int) $attrs['width__phone'] . '%; }' . "\n";
-            $css .= '}' . "\n";
+        // FIX 2026-02-03: Apply border-radius directly to <img> element
+        // Border-radius on wrapper doesn't affect the image inside
+        $borderRadius = $this->extractBorderRadius($attrs);
+        if (!empty($borderRadius)) {
+            $css .= $selector . ' .jtb-image-img { border-radius: ' . $borderRadius . '; }' . "\n";
+            // Also apply overflow:hidden to wrapper if image has link
+            $css .= $selector . ' .jtb-image-link { overflow: hidden; border-radius: ' . $borderRadius . '; }' . "\n";
         }
 
-        // Responsive max width
-        if (!empty($attrs['max_width__tablet'])) {
-            $css .= '@media (max-width: 980px) {' . "\n";
-            $css .= '  ' . $selector . ' .jtb-image-img { max-width: ' . (int) $attrs['max_width__tablet'] . 'px; }' . "\n";
-            $css .= '}' . "\n";
+        // FIX 2026-02-03: Apply border styles directly to <img> element
+        $borderWidth = $this->extractBorderWidth($attrs);
+        $borderStyle = $attrs['border_style'] ?? ($attrs['border']['style'] ?? 'none');
+        $borderColor = $attrs['border_color'] ?? ($attrs['border']['color'] ?? '');
+
+        if ($borderStyle !== 'none' && !empty($borderColor)) {
+            $borderCss = '';
+            if (!empty($borderWidth)) {
+                $borderCss .= 'border-width: ' . $borderWidth . '; ';
+            }
+            $borderCss .= 'border-style: ' . $borderStyle . '; ';
+            $borderCss .= 'border-color: ' . $borderColor . ';';
+            $css .= $selector . ' .jtb-image-img { ' . $borderCss . ' }' . "\n";
         }
 
-        if (!empty($attrs['max_width__phone'])) {
-            $css .= '@media (max-width: 767px) {' . "\n";
-            $css .= '  ' . $selector . ' .jtb-image-img { max-width: ' . (int) $attrs['max_width__phone'] . 'px; }' . "\n";
-            $css .= '}' . "\n";
-        }
-
-        // Parent CSS
-        $css .= parent::generateCss($attrs, $selector);
+        // Parent class handles common styles (spacing, background, etc.)
+        // But we skip border generation for the wrapper since we apply it to img
+        $css .= $this->generateBackgroundCss($attrs, $selector);
+        $css .= $this->generateSpacingCss($attrs, $selector);
+        $css .= $this->generateBoxShadowCss($attrs, $selector);
+        $css .= $this->generateFiltersCss($attrs, $selector);
+        $css .= $this->generateTransformCss($attrs, $selector);
+        $css .= $this->generateCustomCss($attrs, $selector);
 
         return $css;
+    }
+
+    /**
+     * Extract border-radius value from various attribute formats
+     */
+    private function extractBorderRadius(array $attrs): string
+    {
+        // Check combined border object first
+        if (!empty($attrs['border']) && is_array($attrs['border']) && isset($attrs['border']['radius'])) {
+            return (int)$attrs['border']['radius'] . 'px';
+        }
+
+        // Check separate border_radius field
+        if (!empty($attrs['border_radius'])) {
+            $radius = $attrs['border_radius'];
+            if (is_array($radius)) {
+                if (isset($radius['top_left'])) {
+                    return ($radius['top_left'] ?? 0) . 'px ' . ($radius['top_right'] ?? 0) . 'px ' . ($radius['bottom_right'] ?? 0) . 'px ' . ($radius['bottom_left'] ?? 0) . 'px';
+                }
+            } elseif (is_numeric($radius)) {
+                return (int)$radius . 'px';
+            } elseif (is_string($radius)) {
+                return $radius;
+            }
+        }
+
+        return '';
+    }
+
+    /**
+     * Extract border-width value from various attribute formats
+     */
+    private function extractBorderWidth(array $attrs): string
+    {
+        // Check combined border object first
+        if (!empty($attrs['border']) && is_array($attrs['border']) && isset($attrs['border']['width'])) {
+            return (int)$attrs['border']['width'] . 'px';
+        }
+
+        // Check separate border_width field
+        if (!empty($attrs['border_width'])) {
+            $width = $attrs['border_width'];
+            if (is_array($width)) {
+                return ($width['top'] ?? 0) . 'px ' . ($width['right'] ?? 0) . 'px ' . ($width['bottom'] ?? 0) . 'px ' . ($width['left'] ?? 0) . 'px';
+            } elseif (is_numeric($width)) {
+                return (int)$width . 'px';
+            }
+        }
+
+        return '';
     }
 }
 

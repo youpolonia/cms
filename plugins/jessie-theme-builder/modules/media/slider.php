@@ -26,6 +26,39 @@ class JTB_Module_Slider extends JTB_Element
     public bool $use_position = false;
     public bool $use_filters = false;
 
+    // === UNIFIED THEME SYSTEM ===
+    protected string $module_prefix = 'slider';
+
+    /**
+     * Declarative style configuration
+     */
+    protected array $style_config = [
+        'arrow_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-slider-arrow',
+            'hover' => true
+        ],
+        'arrow_bg_color' => [
+            'property' => 'background',
+            'selector' => '.jtb-slider-arrow',
+            'hover' => true
+        ],
+        'dot_color' => [
+            'property' => 'background',
+            'selector' => '.jtb-slider-dot'
+        ],
+        'dot_active_color' => [
+            'property' => 'background',
+            'selector' => '.jtb-slider-dot.jtb-active'
+        ],
+        'slider_height' => [
+            'property' => 'height',
+            'selector' => '.jtb-slider-track',
+            'unit' => 'px',
+            'responsive' => true
+        ]
+    ];
+
     public function getSlug(): string
     {
         return 'slider';
@@ -110,6 +143,9 @@ class JTB_Module_Slider extends JTB_Element
 
     public function render(array $attrs, string $content = ''): string
     {
+        // Apply default styles from design system
+        $attrs = JTB_Default_Styles::mergeWithDefaults($this->getSlug(), $attrs);
+
         $showArrows = $attrs['show_arrows'] ?? true;
         $showDots = $attrs['show_dots'] ?? true;
         $auto = !empty($attrs['auto']);
@@ -143,96 +179,47 @@ class JTB_Module_Slider extends JTB_Element
         return $this->renderWrapper($innerHtml, $attrs);
     }
 
+    /**
+     * Generate CSS for Slider module
+     * Base styles are in jtb-base-modules.css
+     */
     public function generateCss(array $attrs, string $selector): string
     {
         $css = '';
 
-        $height = $attrs['slider_height'] ?? 500;
+        // Use declarative style_config system
+        $css .= $this->generateStyleConfigCss($attrs, $selector);
 
         // Container
         $css .= $selector . ' .jtb-slider-container { position: relative; overflow: hidden; }' . "\n";
 
         // Track
-        $css .= $selector . ' .jtb-slider-track { ';
-        $css .= 'display: flex; ';
-        $css .= 'transition: transform 0.5s ease; ';
-        $css .= 'height: ' . $height . 'px; ';
-        $css .= '}' . "\n";
+        $css .= $selector . ' .jtb-slider-track { display: flex; transition: transform 0.5s ease; }' . "\n";
 
         // Slides
-        $css .= $selector . ' .jtb-slider-slide { ';
-        $css .= 'flex: 0 0 100%; ';
-        $css .= 'width: 100%; ';
-        $css .= 'position: relative; ';
-        $css .= '}' . "\n";
+        $css .= $selector . ' .jtb-slider-slide { flex: 0 0 100%; width: 100%; position: relative; }' . "\n";
 
-        // Arrows
-        $arrowColor = $attrs['arrow_color'] ?? '#ffffff';
-        $arrowBg = $attrs['arrow_bg_color'] ?? 'rgba(0,0,0,0.3)';
-
+        // Arrows base styles
         $css .= $selector . ' .jtb-slider-arrow { ';
-        $css .= 'position: absolute; ';
-        $css .= 'top: 50%; ';
-        $css .= 'transform: translateY(-50%); ';
-        $css .= 'background: ' . $arrowBg . '; ';
-        $css .= 'color: ' . $arrowColor . '; ';
-        $css .= 'border: none; ';
-        $css .= 'width: 50px; ';
-        $css .= 'height: 50px; ';
-        $css .= 'font-size: 30px; ';
-        $css .= 'cursor: pointer; ';
-        $css .= 'z-index: 10; ';
-        $css .= 'transition: all 0.3s ease; ';
-        $css .= 'display: flex; ';
-        $css .= 'align-items: center; ';
-        $css .= 'justify-content: center; ';
-        $css .= 'border-radius: 50%; ';
+        $css .= 'position: absolute; top: 50%; transform: translateY(-50%); ';
+        $css .= 'border: none; width: 50px; height: 50px; font-size: 30px; cursor: pointer; ';
+        $css .= 'z-index: 10; transition: all 0.3s ease; display: flex; align-items: center; ';
+        $css .= 'justify-content: center; border-radius: 50%; ';
         $css .= '}' . "\n";
 
         $css .= $selector . ' .jtb-slider-prev { left: 20px; }' . "\n";
         $css .= $selector . ' .jtb-slider-next { right: 20px; }' . "\n";
 
-        // Arrow hover
-        if (!empty($attrs['arrow_color__hover'])) {
-            $css .= $selector . ' .jtb-slider-arrow:hover { color: ' . $attrs['arrow_color__hover'] . '; }' . "\n";
-        }
-        if (!empty($attrs['arrow_bg_color__hover'])) {
-            $css .= $selector . ' .jtb-slider-arrow:hover { background: ' . $attrs['arrow_bg_color__hover'] . '; }' . "\n";
-        }
-
-        // Dots
-        $dotColor = $attrs['dot_color'] ?? 'rgba(255,255,255,0.5)';
-        $dotActiveColor = $attrs['dot_active_color'] ?? '#ffffff';
-
+        // Dots base styles
         $css .= $selector . ' .jtb-slider-dots { ';
-        $css .= 'position: absolute; ';
-        $css .= 'bottom: 20px; ';
-        $css .= 'left: 50%; ';
-        $css .= 'transform: translateX(-50%); ';
-        $css .= 'display: flex; ';
-        $css .= 'gap: 10px; ';
+        $css .= 'position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); display: flex; gap: 10px; ';
         $css .= '}' . "\n";
 
         $css .= $selector . ' .jtb-slider-dot { ';
-        $css .= 'width: 12px; ';
-        $css .= 'height: 12px; ';
-        $css .= 'border-radius: 50%; ';
-        $css .= 'background: ' . $dotColor . '; ';
-        $css .= 'cursor: pointer; ';
-        $css .= 'transition: background 0.3s ease; ';
-        $css .= 'border: none; ';
+        $css .= 'width: 12px; height: 12px; border-radius: 50%; cursor: pointer; transition: background 0.3s ease; border: none; ';
         $css .= '}' . "\n";
 
-        $css .= $selector . ' .jtb-slider-dot.jtb-active { background: ' . $dotActiveColor . '; }' . "\n";
-
-        // Responsive height
-        if (!empty($attrs['slider_height__tablet'])) {
-            $css .= '@media (max-width: 980px) { ' . $selector . ' .jtb-slider-track { height: ' . $attrs['slider_height__tablet'] . 'px; } }' . "\n";
-        }
-        if (!empty($attrs['slider_height__phone'])) {
-            $css .= '@media (max-width: 767px) { ' . $selector . ' .jtb-slider-track { height: ' . $attrs['slider_height__phone'] . 'px; } }' . "\n";
-        }
-
+        // Parent class handles common styles
         $css .= parent::generateCss($attrs, $selector);
 
         return $css;

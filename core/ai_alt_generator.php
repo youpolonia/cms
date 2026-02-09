@@ -15,6 +15,7 @@ if (!defined('CMS_ROOT')) {
 }
 
 require_once CMS_ROOT . '/core/ai_hf.php';
+require_once CMS_ROOT . '/core/ai_content.php';
 require_once CMS_ROOT . '/core/media_library.php';
 
 /**
@@ -91,15 +92,31 @@ Requirements:
 - Be SEO-friendly
 - Return ONLY the ALT text, nothing else (no quotes, no explanation)";
 
-    $result = ai_hf_generate_text($prompt, [
-        'params' => [
-            'max_new_tokens' => 60,
-            'temperature' => 0.7,
-        ]
+    // Auto-detect provider
+    $provider = '';
+    $model = '';
+    $aiSettings = ai_config_load_full();
+    if (!empty($aiSettings['providers'])) {
+        foreach ($aiSettings['providers'] as $pName => $pConfig) {
+            if (!empty($pConfig['enabled']) && !empty($pConfig['api_key'])) {
+                $provider = $pName;
+                $model = $pConfig['default_model'] ?? '';
+                break;
+            }
+        }
+    }
+
+    if (empty($provider)) {
+        $fallback = ai_alt_generate_fallback($cleanedName, $keyword);
+        return ['ok' => true, 'alt_text' => $fallback, 'source' => 'fallback'];
+    }
+
+    $result = ai_universal_generate($provider, $model, 'You are an SEO expert. Return ONLY the alt text, nothing else.', $prompt, [
+        'max_tokens' => 60,
+        'temperature' => 0.7,
     ]);
 
     if (!$result['ok']) {
-        // Fallback: generate from filename
         $fallback = ai_alt_generate_fallback($cleanedName, $keyword);
         return [
             'ok' => true,
@@ -108,7 +125,7 @@ Requirements:
         ];
     }
 
-    $altText = trim($result['text']);
+    $altText = trim($result['content'] ?? $result['text'] ?? '');
     $altText = trim($altText, '"\'');
 
     // Remove common AI prefixes if present

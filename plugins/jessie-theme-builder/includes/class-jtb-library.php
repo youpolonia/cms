@@ -119,8 +119,8 @@ class JTB_Library
             return null;
         }
 
-        $row['content'] = json_decode($row['content'], true);
-        $row['tags'] = json_decode($row['tags'], true) ?? [];
+        $row['content'] = $row['content'] ? json_decode($row['content'], true) : null;
+        $row['tags'] = $row['tags'] ? json_decode($row['tags'], true) : [];
         $row['is_premade'] = (bool)$row['is_premade'];
         $row['is_featured'] = (bool)$row['is_featured'];
 
@@ -199,8 +199,8 @@ class JTB_Library
         $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
 
         foreach ($rows as &$row) {
-            $row['content'] = json_decode($row['content'], true);
-            $row['tags'] = json_decode($row['tags'], true) ?? [];
+            $row['content'] = $row['content'] ? json_decode($row['content'], true) : null;
+            $row['tags'] = $row['tags'] ? json_decode($row['tags'], true) : [];
             $row['is_premade'] = (bool)$row['is_premade'];
             $row['is_featured'] = (bool)$row['is_featured'];
         }

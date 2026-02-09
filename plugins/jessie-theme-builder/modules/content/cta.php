@@ -25,6 +25,69 @@ class JTB_Module_Cta extends JTB_Element
     public bool $use_position = false;
     public bool $use_filters = false;
 
+    // === UNIFIED THEME SYSTEM ===
+    protected string $module_prefix = 'cta';
+
+    /**
+     * Declarative style configuration
+     */
+    protected array $style_config = [
+        // Text alignment
+        'text_orientation' => [
+            'property' => 'text-align',
+            'selector' => '.jtb-cta-container',
+            'responsive' => true
+        ],
+        // Background
+        'promo_color' => [
+            'property' => 'background-color',
+            'selector' => '',  // applies to module root
+            'hover' => true
+        ],
+        // Button
+        'button_bg_color' => [
+            'property' => 'background-color',
+            'selector' => '.jtb-cta-button',
+            'hover' => true
+        ],
+        'button_text_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-cta-button',
+            'hover' => true
+        ],
+        'button_border_color' => [
+            'property' => 'border-color',
+            'selector' => '.jtb-cta-button',
+            'hover' => true
+        ],
+        'button_border_width' => [
+            'property' => 'border-width',
+            'selector' => '.jtb-cta-button',
+            'unit' => 'px'
+        ],
+        'button_border_radius' => [
+            'property' => 'border-radius',
+            'selector' => '.jtb-cta-button',
+            'unit' => 'px'
+        ],
+        // Title
+        'title_font_size' => [
+            'property' => 'font-size',
+            'selector' => '.jtb-cta-title',
+            'unit' => 'px',
+            'responsive' => true
+        ],
+        'title_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-cta-title'
+        ],
+        // Content
+        'content_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-cta-content'
+        ]
+    ];
+
     public function getSlug(): string
     {
         return 'cta';
@@ -53,11 +116,11 @@ class JTB_Module_Cta extends JTB_Element
                 'type' => 'text',
                 'default' => 'Click Here'
             ],
-            'button_url' => [
+            'link_url' => [
                 'label' => 'Button Link URL',
                 'type' => 'text'
             ],
-            'url_new_window' => [
+            'link_target' => [
                 'label' => 'Open in New Tab',
                 'type' => 'toggle',
                 'default' => false
@@ -151,11 +214,14 @@ class JTB_Module_Cta extends JTB_Element
 
     public function render(array $attrs, string $content = ''): string
     {
+        // Apply default styles from design system
+        $attrs = JTB_Default_Styles::mergeWithDefaults($this->getSlug(), $attrs);
+
         $title = $this->esc($attrs['title'] ?? 'Call To Action');
         $bodyContent = $attrs['content'] ?? '';
         $buttonText = $this->esc($attrs['button_text'] ?? 'Click Here');
-        $buttonUrl = $attrs['button_url'] ?? '#';
-        $newWindow = !empty($attrs['url_new_window']) ? ' target="_blank" rel="noopener"' : '';
+        $buttonUrl = $attrs['link_url'] ?? '#';
+        $newWindow = !empty($attrs['link_target']) ? ' target="_blank" rel="noopener"' : '';
         $headerLevel = $attrs['header_level'] ?? 'h2';
         $buttonIcon = $attrs['button_icon'] ?? '';
         $iconPlacement = $attrs['button_icon_placement'] ?? 'right';
@@ -187,63 +253,29 @@ class JTB_Module_Cta extends JTB_Element
         return $this->renderWrapper($innerHtml, $attrs);
     }
 
+    /**
+     * Generate CSS for CTA module
+     * Base styles are in jtb-base-modules.css
+     */
     public function generateCss(array $attrs, string $selector): string
     {
         $css = '';
 
-        // Background color
+        // Use declarative style_config system
+        $css .= $this->generateStyleConfigCss($attrs, $selector);
+
+        // Background color only if use_background_color is enabled
         if (!empty($attrs['use_background_color']) && !empty($attrs['promo_color'])) {
-            $css .= $selector . ' { background-color: ' . $attrs['promo_color'] . '; }' . "\n";
+            if ($this->isDifferentFromDefault('cta_background', $attrs['promo_color'])) {
+                $css .= $selector . ' { background-color: ' . $attrs['promo_color'] . '; }' . "\n";
+            }
         }
 
         if (!empty($attrs['promo_color__hover'])) {
             $css .= $selector . ':hover { background-color: ' . $attrs['promo_color__hover'] . '; }' . "\n";
         }
 
-        // Text alignment
-        if (!empty($attrs['text_orientation'])) {
-            $css .= $selector . ' .jtb-cta-container { text-align: ' . $attrs['text_orientation'] . '; }' . "\n";
-        }
-
-        // Button styling
-        $btnBg = $attrs['button_bg_color'] ?? '#2ea3f2';
-        $btnText = $attrs['button_text_color'] ?? '#ffffff';
-        $btnBorderWidth = $attrs['button_border_width'] ?? 2;
-        $btnBorderColor = $attrs['button_border_color'] ?? '#2ea3f2';
-        $btnBorderRadius = $attrs['button_border_radius'] ?? 3;
-
-        $css .= $selector . ' .jtb-cta-button { ';
-        $css .= 'background-color: ' . $btnBg . '; ';
-        $css .= 'color: ' . $btnText . '; ';
-        $css .= 'border: ' . $btnBorderWidth . 'px solid ' . $btnBorderColor . '; ';
-        $css .= 'border-radius: ' . $btnBorderRadius . 'px; ';
-        $css .= 'padding: 12px 24px; ';
-        $css .= 'display: inline-flex; ';
-        $css .= 'align-items: center; ';
-        $css .= 'gap: 8px; ';
-        $css .= 'text-decoration: none; ';
-        $css .= 'transition: all 0.3s ease; ';
-        $css .= '}' . "\n";
-
-        // Button hover
-        if (!empty($attrs['button_bg_color__hover'])) {
-            $css .= $selector . ' .jtb-cta-button:hover { background-color: ' . $attrs['button_bg_color__hover'] . '; }' . "\n";
-        }
-        if (!empty($attrs['button_text_color__hover'])) {
-            $css .= $selector . ' .jtb-cta-button:hover { color: ' . $attrs['button_text_color__hover'] . '; }' . "\n";
-        }
-        if (!empty($attrs['button_border_color__hover'])) {
-            $css .= $selector . ' .jtb-cta-button:hover { border-color: ' . $attrs['button_border_color__hover'] . '; }' . "\n";
-        }
-
-        // Responsive
-        if (!empty($attrs['text_orientation__tablet'])) {
-            $css .= '@media (max-width: 980px) { ' . $selector . ' .jtb-cta-container { text-align: ' . $attrs['text_orientation__tablet'] . '; } }' . "\n";
-        }
-        if (!empty($attrs['text_orientation__phone'])) {
-            $css .= '@media (max-width: 767px) { ' . $selector . ' .jtb-cta-container { text-align: ' . $attrs['text_orientation__phone'] . '; } }' . "\n";
-        }
-
+        // Parent class handles common styles
         $css .= parent::generateCss($attrs, $selector);
 
         return $css;

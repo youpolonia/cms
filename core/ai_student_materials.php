@@ -18,6 +18,7 @@ if (!defined('CMS_ROOT')) {
 }
 
 require_once CMS_ROOT . '/core/ai_hf.php';
+require_once CMS_ROOT . '/core/ai_content.php';
 
 /**
  * Material types
@@ -314,18 +315,34 @@ function ai_materials_generate(string $type, array $params = []): array
         default => 1000,
     };
 
-    $result = ai_hf_generate_text($prompt, [
-        'params' => [
-            'max_new_tokens' => $maxTokens,
-            'temperature' => 0.7,
-        ]
+    // Auto-detect provider
+    $provider = '';
+    $model = '';
+    $aiSettings = ai_config_load_full();
+    if (!empty($aiSettings['providers'])) {
+        foreach ($aiSettings['providers'] as $pName => $pConfig) {
+            if (!empty($pConfig['enabled']) && !empty($pConfig['api_key'])) {
+                $provider = $pName;
+                $model = $pConfig['default_model'] ?? '';
+                break;
+            }
+        }
+    }
+
+    if (empty($provider)) {
+        return ['ok' => false, 'error' => 'No AI provider configured'];
+    }
+
+    $result = ai_universal_generate($provider, $model, 'You are an experienced teacher creating educational materials.', $prompt, [
+        'max_tokens' => $maxTokens,
+        'temperature' => 0.7,
     ]);
 
     if (!$result['ok']) {
         return ['ok' => false, 'error' => $result['error'] ?? 'AI generation failed'];
     }
 
-    $content = trim($result['text']);
+    $content = trim($result['content'] ?? $result['text'] ?? '');
 
     // Clean up common AI artifacts
     $content = preg_replace('/^(Here\'s|Here is|I\'ve created|Below is)\s+[^:]+:\s*/i', '', $content);

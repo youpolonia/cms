@@ -25,6 +25,27 @@ class JTB_Module_Audio extends JTB_Element
     public bool $use_position = false;
     public bool $use_filters = false;
 
+    // === UNIFIED THEME SYSTEM ===
+    protected string $module_prefix = 'audio';
+
+    /**
+     * Declarative style configuration
+     */
+    protected array $style_config = [
+        'player_bg_color' => [
+            'property' => 'background-color',
+            'selector' => '.jtb-audio-container'
+        ],
+        'player_text_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-audio-container'
+        ],
+        'progress_color' => [
+            'property' => '--audio-progress-color',
+            'selector' => '.jtb-audio-container'
+        ]
+    ];
+
     public function getSlug(): string
     {
         return 'audio';
@@ -89,6 +110,9 @@ class JTB_Module_Audio extends JTB_Element
 
     public function render(array $attrs, string $content = ''): string
     {
+        // Apply default styles from design system
+        $attrs = JTB_Default_Styles::mergeWithDefaults($this->getSlug(), $attrs);
+
         $audioUrl = $attrs['audio'] ?? '';
         $title = $this->esc($attrs['title'] ?? '');
         $artist = $this->esc($attrs['artist'] ?? '');
@@ -136,31 +160,23 @@ class JTB_Module_Audio extends JTB_Element
         return $this->renderWrapper($innerHtml, $attrs);
     }
 
+    /**
+     * Generate CSS for Audio module
+     * Base styles are in jtb-base-modules.css
+     */
     public function generateCss(array $attrs, string $selector): string
     {
         $css = '';
 
-        $bgColor = $attrs['player_bg_color'] ?? '#222222';
-        $textColor = $attrs['player_text_color'] ?? '#ffffff';
-        $progressColor = $attrs['progress_color'] ?? '#2ea3f2';
+        // Use declarative style_config system
+        $css .= $this->generateStyleConfigCss($attrs, $selector);
 
-        $css .= $selector . ' .jtb-audio-container { ';
-        $css .= 'background-color: ' . $bgColor . '; ';
-        $css .= 'color: ' . $textColor . '; ';
-        $css .= 'padding: 20px; ';
-        $css .= 'border-radius: 8px; ';
-        $css .= '}' . "\n";
+        // Container base styles
+        $css .= $selector . ' .jtb-audio-container { padding: 20px; border-radius: 8px; }' . "\n";
 
         // Artwork
-        $css .= $selector . ' .jtb-audio-artwork { ';
-        $css .= 'margin-bottom: 15px; ';
-        $css .= 'text-align: center; ';
-        $css .= '}' . "\n";
-
-        $css .= $selector . ' .jtb-audio-artwork img { ';
-        $css .= 'max-width: 200px; ';
-        $css .= 'border-radius: 8px; ';
-        $css .= '}' . "\n";
+        $css .= $selector . ' .jtb-audio-artwork { margin-bottom: 15px; text-align: center; }' . "\n";
+        $css .= $selector . ' .jtb-audio-artwork img { max-width: 200px; border-radius: 8px; }' . "\n";
 
         // Meta
         $css .= $selector . ' .jtb-audio-meta { margin-bottom: 15px; text-align: center; }' . "\n";
@@ -171,9 +187,7 @@ class JTB_Module_Audio extends JTB_Element
         // Audio player
         $css .= $selector . ' .jtb-audio-player { width: 100%; }' . "\n";
 
-        // Custom audio styling
-        $css .= $selector . ' .jtb-audio-player::-webkit-media-controls-panel { background-color: ' . $bgColor . '; }' . "\n";
-
+        // Parent class handles common styles
         $css .= parent::generateCss($attrs, $selector);
 
         return $css;

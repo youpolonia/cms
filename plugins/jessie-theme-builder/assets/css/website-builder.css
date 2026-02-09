@@ -1,0 +1,1021 @@
+/**
+ * Website Builder Styles
+ * Unified Theme Builder - build entire website in one interface
+ *
+ * @package JessieThemeBuilder
+ * @since 1.0.0
+ */
+
+/* ==========================================================================
+   CSS Variables
+   ========================================================================== */
+
+.jtb-website-builder {
+    --sidebar-width: 260px;
+    --settings-width: 380px;
+    --header-height: 56px;
+    --region-label-bg: rgba(0, 0, 0, 0.6);
+    --region-active-color: var(--accent, #3b82f6);
+    --region-preview-opacity: 0.5;
+    --sitemap-hover-bg: rgba(59, 130, 246, 0.08);
+    --sitemap-active-bg: rgba(59, 130, 246, 0.12);
+
+    /* Dark theme defaults (admin is always dark) */
+    --bg-primary: #0f172a;
+    --bg-secondary: #1e293b;
+    --bg-tertiary: #334155;
+    --text-primary: #f1f5f9;
+    --text-secondary: #cbd5e1;
+    --text-muted: #64748b;
+    --border: #334155;
+    --border-dark: #475569;
+}
+
+/* ==========================================================================
+   Layout Structure
+   ========================================================================== */
+
+.jtb-website-builder {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden;
+    background: var(--bg-primary, #f8fafc);
+}
+
+.jtb-website-builder .jtb-main {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+}
+
+/* ==========================================================================
+   Header
+   ========================================================================== */
+
+.jtb-website-builder .jtb-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: var(--header-height);
+    padding: 0 20px;
+    background: var(--bg-secondary, #1e293b);
+    border-bottom: 1px solid var(--border, #e2e8f0);
+    flex-shrink: 0;
+}
+
+.jtb-website-builder .jtb-header-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.jtb-website-builder .jtb-header-center {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.jtb-website-builder .jtb-header-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.jtb-website-builder .jtb-back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 12px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-secondary, #64748b);
+    text-decoration: none;
+    border-radius: 6px;
+    transition: all 0.15s ease;
+}
+
+.jtb-website-builder .jtb-back-btn:hover {
+    background: var(--bg-tertiary, #f1f5f9);
+    color: var(--text-primary, #1e293b);
+}
+
+.jtb-website-builder .jtb-header-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-primary, #1e293b);
+    margin: 0;
+}
+
+/* Device Switcher */
+.jtb-website-builder .jtb-device-switcher {
+    display: flex;
+    background: var(--bg-tertiary, #f1f5f9);
+    border-radius: 8px;
+    padding: 3px;
+}
+
+.jtb-website-builder .jtb-device-switcher button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 32px;
+    border: none;
+    background: transparent;
+    border-radius: 6px;
+    cursor: pointer;
+    color: var(--text-muted, #94a3b8);
+    transition: all 0.15s ease;
+}
+
+.jtb-website-builder .jtb-device-switcher button:hover {
+    color: var(--text-primary, #1e293b);
+}
+
+.jtb-website-builder .jtb-device-switcher button.active {
+    background: var(--bg-secondary, #1e293b);
+    color: var(--accent, #3b82f6);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.jtb-website-builder .jtb-device-switcher button svg {
+    width: 18px;
+    height: 18px;
+}
+
+/* Header Buttons */
+.jtb-website-builder .jtb-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-primary, #1e293b);
+    background: var(--bg-secondary, #1e293b);
+    border: 1px solid var(--border, #e2e8f0);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.jtb-website-builder .jtb-btn:hover {
+    background: var(--bg-tertiary, #f1f5f9);
+    border-color: var(--border-dark, #cbd5e1);
+}
+
+.jtb-website-builder .jtb-btn-primary {
+    background: var(--accent, #3b82f6);
+    border-color: var(--accent, #3b82f6);
+    color: #fff;
+}
+
+.jtb-website-builder .jtb-btn-primary:hover {
+    background: var(--accent-dark, #2563eb);
+    border-color: var(--accent-dark, #2563eb);
+}
+
+/* ==========================================================================
+   Site Map Sidebar
+   ========================================================================== */
+
+.jtb-sitemap-panel {
+    width: var(--sidebar-width);
+    background: var(--bg-secondary, #1e293b);
+    border-right: 1px solid var(--border, #e2e8f0);
+    overflow-y: auto;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.jtb-sitemap-section {
+    border-bottom: 1px solid var(--border, #e2e8f0);
+}
+
+.jtb-sitemap-section:last-of-type {
+    border-bottom: none;
+}
+
+.jtb-sitemap-section h3 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 16px;
+    margin: 0;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-muted, #94a3b8);
+    background: var(--bg-tertiary, #f8fafc);
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.15s ease;
+}
+
+.jtb-sitemap-section h3:hover {
+    background: var(--bg-tertiary, #f1f5f9);
+}
+
+.jtb-sitemap-section h3 .jtb-section-icon {
+    font-size: 14px;
+}
+
+.jtb-sitemap-section h3 .jtb-section-toggle {
+    margin-left: auto;
+    width: 16px;
+    height: 16px;
+    color: var(--text-muted, #94a3b8);
+    transition: transform 0.2s ease;
+}
+
+.jtb-sitemap-section.is-collapsed h3 .jtb-section-toggle {
+    transform: rotate(-90deg);
+}
+
+.jtb-sitemap-section.is-collapsed .jtb-sitemap-list {
+    display: none;
+}
+
+/* Site Map List */
+.jtb-sitemap-list {
+    list-style: none;
+    margin: 0;
+    padding: 8px 0;
+}
+
+.jtb-sitemap-list li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 16px 10px 20px;
+    font-size: 13px;
+    color: var(--text-primary, #1e293b);
+    cursor: pointer;
+    border-left: 3px solid transparent;
+    transition: all 0.15s ease;
+}
+
+.jtb-sitemap-list li:hover {
+    background: var(--sitemap-hover-bg);
+}
+
+.jtb-sitemap-list li.active {
+    background: var(--sitemap-active-bg);
+    border-left-color: var(--accent, #3b82f6);
+    color: var(--accent, #3b82f6);
+    font-weight: 500;
+}
+
+.jtb-sitemap-list li .jtb-item-icon {
+    width: 16px;
+    height: 16px;
+    color: var(--text-muted, #94a3b8);
+    flex-shrink: 0;
+}
+
+.jtb-sitemap-list li.active .jtb-item-icon {
+    color: var(--accent, #3b82f6);
+}
+
+.jtb-sitemap-list li .jtb-item-name {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Badge */
+.jtb-sitemap-list .jtb-badge {
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 6px;
+    border-radius: 4px;
+    background: var(--success, #10b981);
+    color: #fff;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.jtb-sitemap-list .jtb-badge-default {
+    background: var(--success, #10b981);
+}
+
+/* Add Item */
+.jtb-sitemap-list .jtb-add-item {
+    color: var(--text-muted, #94a3b8);
+    font-style: italic;
+}
+
+.jtb-sitemap-list .jtb-add-item:hover {
+    color: var(--accent, #3b82f6);
+    background: var(--sitemap-hover-bg);
+}
+
+.jtb-sitemap-list .jtb-add-item .jtb-item-icon {
+    color: inherit;
+}
+
+/* AI Generate Website Button */
+.jtb-ai-generate-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin: 16px;
+    padding: 14px 20px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #fff;
+    background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 50%, #3b82f6 100%);
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+}
+
+.jtb-ai-generate-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(99, 102, 241, 0.4);
+}
+
+.jtb-ai-generate-btn:active {
+    transform: translateY(0);
+}
+
+.jtb-ai-generate-btn svg {
+    width: 20px;
+    height: 20px;
+}
+
+.jtb-ai-generate-btn.is-generating {
+    pointer-events: none;
+    opacity: 0.8;
+}
+
+.jtb-ai-generate-btn.is-generating svg {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* ==========================================================================
+   Canvas Container
+   ========================================================================== */
+
+.jtb-canvas-container {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    background: var(--bg-primary, #f8fafc);
+    position: relative;
+}
+
+.jtb-canvas {
+    min-height: 100%;
+    padding: 20px;
+}
+
+/* Responsive Canvas */
+.jtb-canvas-container[data-device="tablet"] .jtb-canvas {
+    max-width: 768px;
+    margin: 0 auto;
+    box-shadow: 0 0 0 1px var(--border, #e2e8f0);
+    background: #fff;
+}
+
+.jtb-canvas-container[data-device="phone"] .jtb-canvas {
+    max-width: 375px;
+    margin: 0 auto;
+    box-shadow: 0 0 0 1px var(--border, #e2e8f0);
+    background: #fff;
+}
+
+/* ==========================================================================
+   Canvas Regions
+   ========================================================================== */
+
+.jtb-canvas-region {
+    position: relative;
+    min-height: 80px;
+    margin-bottom: 16px;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+
+.jtb-canvas-region:last-child {
+    margin-bottom: 0;
+}
+
+/* Region Label */
+.jtb-region-label {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #fff;
+    background: var(--region-label-bg);
+    border-radius: 4px;
+    z-index: 10;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.jtb-canvas-region:hover .jtb-region-label,
+.jtb-canvas-region.is-active .jtb-region-label {
+    opacity: 1;
+}
+
+.jtb-canvas-region.is-active .jtb-region-label {
+    background: var(--region-active-color);
+}
+
+/* Region Content */
+.jtb-region-content {
+    min-height: 80px;
+    border: 2px dashed transparent;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+
+.jtb-canvas-region:hover .jtb-region-content {
+    border-color: var(--border, #e2e8f0);
+}
+
+.jtb-canvas-region.is-active .jtb-region-content {
+    border-color: var(--region-active-color);
+    border-style: solid;
+}
+
+/* Preview State (non-editable) */
+.jtb-canvas-region.is-preview {
+    opacity: var(--region-preview-opacity);
+    cursor: pointer;
+}
+
+.jtb-canvas-region.is-preview::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: transparent;
+    z-index: 5;
+}
+
+.jtb-canvas-region.is-preview:hover {
+    opacity: 0.7;
+}
+
+.jtb-canvas-region.is-preview .jtb-region-content {
+    pointer-events: none;
+}
+
+/* Empty Region */
+.jtb-region-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    min-height: 120px;
+    padding: 30px;
+    text-align: center;
+    color: var(--text-muted, #94a3b8);
+}
+
+.jtb-region-empty svg {
+    width: 32px;
+    height: 32px;
+    opacity: 0.5;
+}
+
+.jtb-region-empty span {
+    font-size: 13px;
+}
+
+/* Body Placeholder */
+.jtb-body-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    min-height: 300px;
+    padding: 40px;
+    background: var(--bg-secondary, #1e293b);
+    border: 2px dashed var(--border, #e2e8f0);
+    border-radius: 8px;
+    color: var(--text-muted, #94a3b8);
+    text-align: center;
+}
+
+.jtb-body-placeholder svg {
+    width: 48px;
+    height: 48px;
+    opacity: 0.4;
+}
+
+.jtb-body-placeholder p {
+    font-size: 14px;
+    margin: 0;
+}
+
+/* ==========================================================================
+   Settings Panel
+   ========================================================================== */
+
+.jtb-website-builder .jtb-settings-panel {
+    width: var(--settings-width);
+    background: var(--bg-secondary, #1e293b);
+    border-left: 1px solid var(--border, #e2e8f0);
+    overflow-y: auto;
+    flex-shrink: 0;
+}
+
+.jtb-settings-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    padding: 40px;
+    text-align: center;
+    color: var(--text-muted, #94a3b8);
+}
+
+.jtb-settings-empty svg {
+    width: 48px;
+    height: 48px;
+    margin-bottom: 16px;
+    opacity: 0.4;
+}
+
+.jtb-settings-empty p {
+    font-size: 14px;
+    margin: 0;
+}
+
+/* ==========================================================================
+   AI Generate Website Modal
+   ========================================================================== */
+
+.jtb-ai-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.2s ease;
+}
+
+.jtb-ai-modal-overlay.is-visible {
+    opacity: 1;
+    visibility: visible;
+}
+
+.jtb-ai-modal {
+    width: 100%;
+    max-width: 560px;
+    max-height: 90vh;
+    background: var(--bg-secondary, #1e293b);
+    border-radius: 16px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    transform: scale(0.95) translateY(20px);
+    transition: transform 0.2s ease;
+    overflow: hidden;
+}
+
+.jtb-ai-modal-overlay.is-visible .jtb-ai-modal {
+    transform: scale(1) translateY(0);
+}
+
+/* Modal Header */
+.jtb-ai-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 24px;
+    background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 50%, #3b82f6 100%);
+    color: #fff;
+}
+
+.jtb-ai-modal-header h2 {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0;
+}
+
+.jtb-ai-modal-header h2 svg {
+    width: 24px;
+    height: 24px;
+}
+
+.jtb-ai-modal-close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    border-radius: 8px;
+    color: #fff;
+    cursor: pointer;
+    transition: background 0.15s ease;
+}
+
+.jtb-ai-modal-close:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.jtb-ai-modal-close svg {
+    width: 18px;
+    height: 18px;
+}
+
+/* Modal Body */
+.jtb-ai-modal-body {
+    padding: 24px;
+    overflow-y: auto;
+    max-height: calc(90vh - 140px);
+}
+
+/* Form Group */
+.jtb-ai-form-group {
+    margin-bottom: 20px;
+}
+
+.jtb-ai-form-group:last-child {
+    margin-bottom: 0;
+}
+
+.jtb-ai-form-group label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-primary, #1e293b);
+    margin-bottom: 8px;
+}
+
+.jtb-ai-form-group label span {
+    font-weight: 400;
+    color: var(--text-muted, #94a3b8);
+}
+
+/* Textarea */
+.jtb-ai-prompt-textarea {
+    width: 100%;
+    min-height: 100px;
+    padding: 12px 14px;
+    font-size: 14px;
+    font-family: inherit;
+    line-height: 1.5;
+    color: var(--text-primary, #1e293b);
+    background: var(--bg-primary, #f8fafc);
+    border: 1px solid var(--border, #e2e8f0);
+    border-radius: 8px;
+    resize: vertical;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.jtb-ai-prompt-textarea:focus {
+    outline: none;
+    border-color: var(--accent, #3b82f6);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.jtb-ai-prompt-textarea::placeholder {
+    color: var(--text-muted, #94a3b8);
+}
+
+/* Select */
+.jtb-ai-select {
+    width: 100%;
+    padding: 10px 14px;
+    font-size: 14px;
+    font-family: inherit;
+    color: var(--text-primary, #1e293b);
+    background: var(--bg-primary, #f8fafc);
+    border: 1px solid var(--border, #e2e8f0);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: border-color 0.15s ease;
+}
+
+.jtb-ai-select:focus {
+    outline: none;
+    border-color: var(--accent, #3b82f6);
+}
+
+/* Row */
+.jtb-ai-form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+/* Checkbox Group */
+.jtb-ai-checkbox-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.jtb-ai-checkbox-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background: var(--bg-primary, #f8fafc);
+    border: 1px solid var(--border, #e2e8f0);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.jtb-ai-checkbox-item:hover {
+    border-color: var(--accent, #3b82f6);
+}
+
+.jtb-ai-checkbox-item input {
+    width: 16px;
+    height: 16px;
+    margin: 0;
+    cursor: pointer;
+}
+
+.jtb-ai-checkbox-item input:checked + span {
+    color: var(--accent, #3b82f6);
+    font-weight: 500;
+}
+
+.jtb-ai-checkbox-item span {
+    font-size: 13px;
+    color: var(--text-primary, #1e293b);
+}
+
+/* Modal Footer */
+.jtb-ai-modal-footer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 12px;
+    padding: 16px 24px;
+    background: var(--bg-tertiary, #f8fafc);
+    border-top: 1px solid var(--border, #e2e8f0);
+}
+
+.jtb-ai-modal-footer .jtb-btn {
+    min-width: 100px;
+}
+
+.jtb-ai-modal-footer .jtb-btn-generate {
+    background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 50%, #3b82f6 100%);
+    border: none;
+    color: #fff;
+    padding: 10px 24px;
+}
+
+.jtb-ai-modal-footer .jtb-btn-generate:hover {
+    opacity: 0.9;
+}
+
+.jtb-ai-modal-footer .jtb-btn-generate:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* ==========================================================================
+   Loading States
+   ========================================================================== */
+
+.jtb-loading-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    background: rgba(255, 255, 255, 0.9);
+    z-index: 100;
+}
+
+.jtb-loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid var(--border, #e2e8f0);
+    border-top-color: var(--accent, #3b82f6);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+.jtb-loading-text {
+    font-size: 14px;
+    color: var(--text-secondary, #64748b);
+}
+
+/* ==========================================================================
+   Notifications / Toast
+   ========================================================================== */
+
+.jtb-toast-container {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.jtb-toast {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 18px;
+    min-width: 280px;
+    max-width: 400px;
+    background: var(--bg-secondary, #1e293b);
+    border-radius: 10px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+    transform: translateX(120%);
+    transition: transform 0.3s ease;
+}
+
+.jtb-toast.is-visible {
+    transform: translateX(0);
+}
+
+.jtb-toast-icon {
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+}
+
+.jtb-toast-message {
+    flex: 1;
+    font-size: 14px;
+    color: var(--text-primary, #1e293b);
+}
+
+.jtb-toast-close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    background: transparent;
+    border: none;
+    color: var(--text-muted, #94a3b8);
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background 0.15s ease;
+}
+
+.jtb-toast-close:hover {
+    background: var(--bg-tertiary, #f1f5f9);
+}
+
+/* Toast Types */
+.jtb-toast.jtb-toast-success .jtb-toast-icon {
+    color: var(--success, #10b981);
+}
+
+.jtb-toast.jtb-toast-error .jtb-toast-icon {
+    color: var(--error, #ef4444);
+}
+
+.jtb-toast.jtb-toast-warning .jtb-toast-icon {
+    color: var(--warning, #f59e0b);
+}
+
+.jtb-toast.jtb-toast-info .jtb-toast-icon {
+    color: var(--info, #3b82f6);
+}
+
+/* ==========================================================================
+   Theme Settings Panel (in Site Map)
+   ========================================================================== */
+
+.jtb-theme-settings-list li[data-id="colors"] .jtb-item-icon { color: #f43f5e; }
+.jtb-theme-settings-list li[data-id="typography"] .jtb-item-icon { color: #8b5cf6; }
+.jtb-theme-settings-list li[data-id="layout"] .jtb-item-icon { color: #3b82f6; }
+.jtb-theme-settings-list li[data-id="buttons"] .jtb-item-icon { color: #10b981; }
+
+/* ==========================================================================
+   Responsive Design
+   ========================================================================== */
+
+@media (max-width: 1400px) {
+    .jtb-website-builder {
+        --sidebar-width: 220px;
+        --settings-width: 340px;
+    }
+}
+
+@media (max-width: 1200px) {
+    .jtb-website-builder {
+        --sidebar-width: 200px;
+        --settings-width: 300px;
+    }
+
+    .jtb-sitemap-section h3 {
+        padding: 12px 14px;
+        font-size: 11px;
+    }
+
+    .jtb-sitemap-list li {
+        padding: 8px 14px 8px 18px;
+        font-size: 12px;
+    }
+}
+
+@media (max-width: 992px) {
+    .jtb-website-builder .jtb-settings-panel {
+        position: fixed;
+        right: 0;
+        top: var(--header-height);
+        height: calc(100vh - var(--header-height));
+        transform: translateX(100%);
+        transition: transform 0.3s ease;
+        z-index: 100;
+        box-shadow: -10px 0 30px rgba(0, 0, 0, 0.1);
+    }
+
+    .jtb-website-builder .jtb-settings-panel.is-open {
+        transform: translateX(0);
+    }
+}
+
+/* ==========================================================================
+   Dark Mode Support
+   ========================================================================== */
+
+@media (prefers-color-scheme: dark) {
+    .jtb-website-builder {
+        --bg-primary: #0f172a;
+        --bg-secondary: #1e293b;
+        --bg-tertiary: #334155;
+        --text-primary: #f1f5f9;
+        --text-secondary: #cbd5e1;
+        --text-muted: #64748b;
+        --border: #334155;
+        --border-dark: #475569;
+        --region-label-bg: rgba(0, 0, 0, 0.8);
+    }
+
+    .jtb-ai-modal {
+        background: var(--bg-secondary);
+    }
+
+    .jtb-ai-modal-body {
+        color: var(--text-primary);
+    }
+
+    .jtb-toast {
+        background: var(--bg-secondary);
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+    }
+
+    .jtb-loading-overlay {
+        background: rgba(15, 23, 42, 0.9);
+    }
+}
+
+/* ==========================================================================
+   Utility Classes
+   ========================================================================== */
+
+.jtb-hidden {
+    display: none !important;
+}
+
+.jtb-invisible {
+    visibility: hidden !important;
+}
+
+.jtb-no-scroll {
+    overflow: hidden !important;
+}

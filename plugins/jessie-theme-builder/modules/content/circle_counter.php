@@ -25,6 +25,42 @@ class JTB_Module_CircleCounter extends JTB_Element
     public bool $use_position = false;
     public bool $use_filters = false;
 
+    // === UNIFIED THEME SYSTEM ===
+    protected string $module_prefix = 'circle_counter';
+
+    /**
+     * Declarative style configuration
+     */
+    protected array $style_config = [
+        'text_orientation' => [
+            'property' => 'text-align',
+            'selector' => '.jtb-circle-counter-container',
+            'responsive' => true
+        ],
+        'bar_bg_color' => [
+            'property' => 'stroke',
+            'selector' => '.jtb-circle-bg'
+        ],
+        'circle_color' => [
+            'property' => 'stroke',
+            'selector' => '.jtb-circle-progress'
+        ],
+        'number_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-circle-counter-number-wrap'
+        ],
+        'number_font_size' => [
+            'property' => 'font-size',
+            'selector' => '.jtb-circle-counter-number-wrap',
+            'unit' => 'px',
+            'responsive' => true
+        ],
+        'title_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-circle-counter-title'
+        ]
+    ];
+
     public function getSlug(): string
     {
         return 'circle_counter';
@@ -120,6 +156,9 @@ class JTB_Module_CircleCounter extends JTB_Element
 
     public function render(array $attrs, string $content = ''): string
     {
+        // Apply default styles from design system
+        $attrs = JTB_Default_Styles::mergeWithDefaults($this->getSlug(), $attrs);
+
         $title = $this->esc($attrs['title'] ?? 'Circle Counter');
         $number = intval($attrs['number'] ?? 50);
         $size = $attrs['circle_size'] ?? 200;
@@ -146,49 +185,33 @@ class JTB_Module_CircleCounter extends JTB_Element
         return $this->renderWrapper($innerHtml, $attrs);
     }
 
+    /**
+     * Generate CSS for Circle Counter module
+     * Base styles are in jtb-base-modules.css
+     */
     public function generateCss(array $attrs, string $selector): string
     {
         $css = '';
 
-        // Text alignment
-        if (!empty($attrs['text_orientation'])) {
-            $css .= $selector . ' .jtb-circle-counter-container { text-align: ' . $attrs['text_orientation'] . '; }' . "\n";
-        }
+        // Use declarative style_config system
+        $css .= $this->generateStyleConfigCss($attrs, $selector);
 
-        // Circle wrap positioning
+        // Circle wrap positioning (base styles)
         $css .= $selector . ' .jtb-circle-counter-wrap { position: relative; display: inline-block; }' . "\n";
 
         // Number positioning
-        $css .= $selector . ' .jtb-circle-counter-number-wrap { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); }' . "\n";
+        $css .= $selector . ' .jtb-circle-counter-number-wrap { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-weight: bold; }' . "\n";
 
-        // Circle background
-        if (!empty($attrs['bar_bg_color'])) {
-            $css .= $selector . ' .jtb-circle-bg { stroke: ' . $attrs['bar_bg_color'] . '; }' . "\n";
-        }
-
-        // Circle progress
+        // Circle progress special handling (opacity + transition)
         if (!empty($attrs['circle_color'])) {
             $opacity = ($attrs['circle_color_alpha'] ?? 100) / 100;
-            $css .= $selector . ' .jtb-circle-progress { stroke: ' . $attrs['circle_color'] . '; stroke-opacity: ' . $opacity . '; stroke-linecap: round; transition: stroke-dashoffset 1.5s ease-in-out; }' . "\n";
+            $css .= $selector . ' .jtb-circle-progress { stroke-opacity: ' . $opacity . '; stroke-linecap: round; transition: stroke-dashoffset 1.5s ease-in-out; }' . "\n";
         }
 
-        // Number color and size
-        if (!empty($attrs['number_color'])) {
-            $css .= $selector . ' .jtb-circle-counter-number-wrap { color: ' . $attrs['number_color'] . '; }' . "\n";
-        }
-
-        if (!empty($attrs['number_font_size'])) {
-            $css .= $selector . ' .jtb-circle-counter-number-wrap { font-size: ' . $attrs['number_font_size'] . 'px; font-weight: bold; }' . "\n";
-        }
-
-        // Title
-        if (!empty($attrs['title_color'])) {
-            $css .= $selector . ' .jtb-circle-counter-title { color: ' . $attrs['title_color'] . '; }' . "\n";
-        }
-
+        // Title margin
         $css .= $selector . ' .jtb-circle-counter-title { margin-top: 15px; }' . "\n";
 
-        // Responsive
+        // Responsive circle size
         if (!empty($attrs['circle_size__tablet'])) {
             $css .= '@media (max-width: 980px) { ' . $selector . ' .jtb-circle-counter-svg { width: ' . $attrs['circle_size__tablet'] . 'px; height: ' . $attrs['circle_size__tablet'] . 'px; } }' . "\n";
         }
@@ -196,6 +219,7 @@ class JTB_Module_CircleCounter extends JTB_Element
             $css .= '@media (max-width: 767px) { ' . $selector . ' .jtb-circle-counter-svg { width: ' . $attrs['circle_size__phone'] . 'px; height: ' . $attrs['circle_size__phone'] . 'px; } }' . "\n";
         }
 
+        // Parent class handles common styles
         $css .= parent::generateCss($attrs, $selector);
 
         return $css;

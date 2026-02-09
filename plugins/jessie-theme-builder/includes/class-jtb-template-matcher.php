@@ -404,12 +404,24 @@ class JTB_Template_Matcher
 
     /**
      * Get post data by ID
+     * Updated 2026-02-04: Fixed for Jessie CMS (articles table instead of posts)
      */
     private static function getPostData(int $id): ?array
     {
         try {
             $db = \core\Database::connection();
-            $stmt = $db->prepare("SELECT id, title, slug, type FROM posts WHERE id = ?");
+
+            // First try articles table (Jessie CMS)
+            $stmt = $db->prepare("SELECT id, title, slug, 'post' as type FROM articles WHERE id = ?");
+            $stmt->execute([$id]);
+            $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+            if ($result) {
+                return $result;
+            }
+
+            // Then try pages table
+            $stmt = $db->prepare("SELECT id, title, slug, 'page' as type FROM pages WHERE id = ?");
             $stmt->execute([$id]);
             return $stmt->fetch(\PDO::FETCH_ASSOC) ?: null;
         } catch (\Exception $e) {

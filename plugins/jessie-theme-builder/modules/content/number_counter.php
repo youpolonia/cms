@@ -25,6 +25,40 @@ class JTB_Module_NumberCounter extends JTB_Element
     public bool $use_position = false;
     public bool $use_filters = false;
 
+    // === UNIFIED THEME SYSTEM ===
+    protected string $module_prefix = 'number_counter';
+
+    /**
+     * Declarative style configuration
+     */
+    protected array $style_config = [
+        'text_orientation' => [
+            'property' => 'text-align',
+            'selector' => '.jtb-number-counter-container',
+            'responsive' => true
+        ],
+        'number_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-number-counter-number-wrap'
+        ],
+        'number_font_size' => [
+            'property' => 'font-size',
+            'selector' => '.jtb-number-counter-number-wrap',
+            'unit' => 'px',
+            'responsive' => true
+        ],
+        'title_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-number-counter-title'
+        ],
+        'title_font_size' => [
+            'property' => 'font-size',
+            'selector' => '.jtb-number-counter-title',
+            'unit' => 'px',
+            'responsive' => true
+        ]
+    ];
+
     public function getSlug(): string
     {
         return 'number_counter';
@@ -113,6 +147,9 @@ class JTB_Module_NumberCounter extends JTB_Element
 
     public function render(array $attrs, string $content = ''): string
     {
+        // Apply default styles from design system
+        $attrs = JTB_Default_Styles::mergeWithDefaults($this->getSlug(), $attrs);
+
         $title = $this->esc($attrs['title'] ?? 'Number Counter');
         $number = $this->esc($attrs['number'] ?? '100');
         $percentSign = !empty($attrs['percent_sign']) ? '%' : '';
@@ -139,41 +176,23 @@ class JTB_Module_NumberCounter extends JTB_Element
         return $this->renderWrapper($innerHtml, $attrs);
     }
 
+    /**
+     * Generate CSS for Number Counter module
+     * Base styles are in jtb-base-modules.css
+     */
     public function generateCss(array $attrs, string $selector): string
     {
         $css = '';
 
-        // Text alignment
-        if (!empty($attrs['text_orientation'])) {
-            $css .= $selector . ' .jtb-number-counter-container { text-align: ' . $attrs['text_orientation'] . '; }' . "\n";
-        }
+        // Use declarative style_config system
+        $css .= $this->generateStyleConfigCss($attrs, $selector);
 
-        // Number styling
-        if (!empty($attrs['number_color'])) {
-            $css .= $selector . ' .jtb-number-counter-number-wrap { color: ' . $attrs['number_color'] . '; }' . "\n";
-        }
-
+        // Number font-weight (not in style_config)
         if (!empty($attrs['number_font_size'])) {
-            $css .= $selector . ' .jtb-number-counter-number-wrap { font-size: ' . $attrs['number_font_size'] . 'px; font-weight: bold; }' . "\n";
+            $css .= $selector . ' .jtb-number-counter-number-wrap { font-weight: bold; }' . "\n";
         }
 
-        // Title styling
-        if (!empty($attrs['title_color'])) {
-            $css .= $selector . ' .jtb-number-counter-title { color: ' . $attrs['title_color'] . '; }' . "\n";
-        }
-
-        if (!empty($attrs['title_font_size'])) {
-            $css .= $selector . ' .jtb-number-counter-title { font-size: ' . $attrs['title_font_size'] . 'px; }' . "\n";
-        }
-
-        // Responsive
-        if (!empty($attrs['number_font_size__tablet'])) {
-            $css .= '@media (max-width: 980px) { ' . $selector . ' .jtb-number-counter-number-wrap { font-size: ' . $attrs['number_font_size__tablet'] . 'px; } }' . "\n";
-        }
-        if (!empty($attrs['number_font_size__phone'])) {
-            $css .= '@media (max-width: 767px) { ' . $selector . ' .jtb-number-counter-number-wrap { font-size: ' . $attrs['number_font_size__phone'] . 'px; } }' . "\n";
-        }
-
+        // Parent class handles common styles
         $css .= parent::generateCss($attrs, $selector);
 
         return $css;

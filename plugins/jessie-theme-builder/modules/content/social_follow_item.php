@@ -26,6 +26,19 @@ class JTB_Module_SocialFollowItem extends JTB_Element
     public bool $use_position = false;
     public bool $use_filters = false;
 
+    protected string $module_prefix = 'social_follow_item';
+
+    protected array $style_config = [
+        'background_color' => [
+            'property' => 'background',
+            'hover' => true
+        ],
+        'icon_color' => [
+            'property' => 'color',
+            'hover' => true
+        ]
+    ];
+
     private array $networks = [
         'facebook' => ['label' => 'Facebook', 'color' => '#1877f2', 'icon' => 'facebook'],
         'twitter' => ['label' => 'Twitter/X', 'color' => '#1da1f2', 'icon' => 'twitter'],
@@ -116,6 +129,9 @@ class JTB_Module_SocialFollowItem extends JTB_Element
 
     public function render(array $attrs, string $content = ''): string
     {
+        // Apply default styles from design system
+        $attrs = JTB_Default_Styles::mergeWithDefaults($this->getSlug(), $attrs);
+
         $network = $attrs['social_network'] ?? 'facebook';
         $url = $attrs['url'] ?? '#';
         $customLabel = $attrs['content'] ?? '';
@@ -152,6 +168,7 @@ class JTB_Module_SocialFollowItem extends JTB_Element
     public function generateCss(array $attrs, string $selector): string
     {
         $css = parent::generateCss($attrs, $selector);
+        $css .= $this->generateStyleConfigCss($attrs, $selector);
 
         $network = $attrs['social_network'] ?? 'facebook';
         $networkData = $this->networks[$network] ?? $this->networks['facebook'];

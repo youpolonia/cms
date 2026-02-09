@@ -31,6 +31,7 @@ $pluginPath = dirname(__DIR__);
 // Load dependencies
 require_once $pluginPath . '/includes/class-jtb-theme-settings.php';
 require_once $pluginPath . '/includes/class-jtb-css-generator.php';
+require_once $pluginPath . '/includes/class-jtb-style-system.php';
 require_once $pluginPath . '/includes/class-jtb-element.php';
 
 // Create table if not exists

@@ -72,28 +72,62 @@ function jtb_render_media_gallery_modal(string $csrfToken = '', string $pexelsAp
                 <div class="jtb-media-tab-content" id="jtb-media-tab-library">
                     <div class="jtb-media-grid" id="jtb-media-grid">
                         <?php
-                        if ($mediaDir && is_dir($mediaDir)) {
-                            $files = @scandir($mediaDir, SCANDIR_SORT_DESCENDING);
-                            if ($files) {
-                                $count = 0;
-                                foreach ($files as $file) {
-                                    if ($file === '.' || $file === '..' || $file === 'thumbs' || is_dir($mediaDir . $file)) continue;
-                                    $ext = strtolower(pathinfo($file, PATHINFO_EXTENSION));
-                                    if (!in_array($ext, ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg'])) continue;
-                                    $url = '/uploads/media/' . htmlspecialchars($file, ENT_QUOTES, 'UTF-8');
-                                    echo '<div class="jtb-media-item" data-url="' . $url . '">';
-                                    echo '<img src="' . $url . '" alt="" loading="lazy">';
-                                    echo '<div class="jtb-media-filename">' . htmlspecialchars($file, ENT_QUOTES, 'UTF-8') . '</div>';
-                                    echo '<div class="jtb-media-checkbox"></div>';
-                                    echo '</div>';
-                                    if (++$count >= 100) break;
-                                }
-                                if ($count === 0) {
-                                    echo '<div class="jtb-media-empty">No images found in library</div>';
+                        // FIXED 2026-02-03: Scan multiple upload directories
+                        $mediaDirs = [
+                            ['path' => CMS_ROOT . '/uploads/media/', 'url' => '/uploads/media/'],
+                            ['path' => CMS_ROOT . '/uploads/ai-images/', 'url' => '/uploads/ai-images/'],
+                            ['path' => CMS_ROOT . '/uploads/jtb/', 'url' => '/uploads/jtb/'],
+                        ];
+
+                        $allFiles = [];
+                        $allowedExts = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg'];
+
+                        foreach ($mediaDirs as $dir) {
+                            if (is_dir($dir['path'])) {
+                                $iterator = new RecursiveIteratorIterator(
+                                    new RecursiveDirectoryIterator($dir['path'], RecursiveDirectoryIterator::SKIP_DOTS)
+                                );
+                                foreach ($iterator as $file) {
+                                    if ($file->isFile()) {
+                                        $ext = strtolower($file->getExtension());
+                                        $filename = $file->getFilename();
+                                        // Skip thumbnails
+                                        if (strpos($filename, '_thumb') !== false) continue;
+                                        if (!in_array($ext, $allowedExts)) continue;
+
+                                        $relativePath = str_replace($dir['path'], '', $file->getPathname());
+                                        $relativePath = str_replace('\\', '/', $relativePath);
+
+                                        $allFiles[] = [
+                                            'filename' => $filename,
+                                            'url' => $dir['url'] . $relativePath,
+                                            'mtime' => $file->getMTime()
+                                        ];
+                                    }
                                 }
                             }
-                        } else {
-                            echo '<div class="jtb-media-empty">Media directory not found</div>';
+                        }
+
+                        // Sort by modification time (newest first)
+                        usort($allFiles, function($a, $b) {
+                            return $b['mtime'] - $a['mtime'];
+                        });
+
+                        // Render files
+                        $count = 0;
+                        foreach ($allFiles as $fileInfo) {
+                            $url = htmlspecialchars($fileInfo['url'], ENT_QUOTES, 'UTF-8');
+                            $filename = htmlspecialchars($fileInfo['filename'], ENT_QUOTES, 'UTF-8');
+                            echo '<div class="jtb-media-item" data-url="' . $url . '">';
+                            echo '<img src="' . $url . '" alt="" loading="lazy">';
+                            echo '<div class="jtb-media-filename">' . $filename . '</div>';
+                            echo '<div class="jtb-media-checkbox"></div>';
+                            echo '</div>';
+                            if (++$count >= 100) break;
+                        }
+
+                        if ($count === 0) {
+                            echo '<div class="jtb-media-empty">No images found in library</div>';
                         }
                         ?>
                     </div>

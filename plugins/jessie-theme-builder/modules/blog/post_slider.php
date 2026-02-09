@@ -25,6 +25,29 @@ class JTB_Module_PostSlider extends JTB_Element
     public bool $use_position = false;
     public bool $use_filters = false;
 
+    // === UNIFIED THEME SYSTEM ===
+    protected string $module_prefix = 'post_slider';
+
+    /**
+     * Declarative style configuration
+     */
+    protected array $style_config = [
+        'content_text_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-post-slide-content'
+        ],
+        'overlay_color' => [
+            'property' => 'background',
+            'selector' => '.jtb-post-slide-overlay'
+        ],
+        'slider_height' => [
+            'property' => 'min-height',
+            'selector' => '.jtb-post-slide',
+            'unit' => 'px',
+            'responsive' => true
+        ]
+    ];
+
     public function getSlug(): string
     {
         return 'post_slider';
@@ -123,6 +146,9 @@ class JTB_Module_PostSlider extends JTB_Element
 
     public function render(array $attrs, string $content = ''): string
     {
+        // Apply default styles from design system
+        $attrs = JTB_Default_Styles::mergeWithDefaults($this->getSlug(), $attrs);
+
         $showArrows = $attrs['show_arrows'] ?? true;
         $showPagination = $attrs['show_pagination'] ?? true;
         $showMeta = $attrs['show_meta'] ?? true;
@@ -190,13 +216,18 @@ class JTB_Module_PostSlider extends JTB_Element
         return $this->renderWrapper($innerHtml, $attrs);
     }
 
+    /**
+     * Generate CSS for Post Slider module
+     * Base styles are in jtb-base-modules.css
+     */
     public function generateCss(array $attrs, string $selector): string
     {
         $css = '';
 
-        $height = $attrs['slider_height'] ?? 500;
+        // Use declarative style_config system
+        $css .= $this->generateStyleConfigCss($attrs, $selector);
+
         $textColor = $attrs['content_text_color'] ?? '#ffffff';
-        $overlayColor = $attrs['overlay_color'] ?? 'rgba(0,0,0,0.5)';
         $imagePlacement = $attrs['image_placement'] ?? 'background';
 
         // Container
@@ -204,13 +235,13 @@ class JTB_Module_PostSlider extends JTB_Element
         $css .= $selector . ' .jtb-post-slider-track { display: flex; transition: transform 0.5s ease; }' . "\n";
 
         // Slide
-        $css .= $selector . ' .jtb-post-slide { flex: 0 0 100%; min-height: ' . $height . 'px; position: relative; display: flex; align-items: center; justify-content: center; }' . "\n";
+        $css .= $selector . ' .jtb-post-slide { flex: 0 0 100%; position: relative; display: flex; align-items: center; justify-content: center; }' . "\n";
 
         // Background image style
         if ($imagePlacement === 'background') {
             $css .= $selector . ' .jtb-post-slide-bg { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: #333 center/cover no-repeat; }' . "\n";
-            $css .= $selector . ' .jtb-post-slide-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: ' . $overlayColor . '; }' . "\n";
-            $css .= $selector . ' .jtb-post-slide-content { position: relative; z-index: 1; text-align: center; max-width: 800px; padding: 40px; color: ' . $textColor . '; }' . "\n";
+            $css .= $selector . ' .jtb-post-slide-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; }' . "\n";
+            $css .= $selector . ' .jtb-post-slide-content { position: relative; z-index: 1; text-align: center; max-width: 800px; padding: 40px; }' . "\n";
         } else {
             // Side/top image layouts
             $css .= $selector . ' .jtb-post-slide-image { flex: 0 0 50%; }' . "\n";
@@ -250,14 +281,10 @@ class JTB_Module_PostSlider extends JTB_Element
         $css .= $selector . ' .jtb-post-slider-dot { width: 12px; height: 12px; border-radius: 50%; background: rgba(255,255,255,0.5); cursor: pointer; border: none; }' . "\n";
         $css .= $selector . ' .jtb-post-slider-dot.jtb-active { background: #fff; }' . "\n";
 
-        // Responsive
-        if (!empty($attrs['slider_height__tablet'])) {
-            $css .= '@media (max-width: 980px) { ' . $selector . ' .jtb-post-slide { min-height: ' . $attrs['slider_height__tablet'] . 'px; } }' . "\n";
-        }
-        if (!empty($attrs['slider_height__phone'])) {
-            $css .= '@media (max-width: 767px) { ' . $selector . ' .jtb-post-slide { min-height: ' . $attrs['slider_height__phone'] . 'px; } ' . $selector . ' .jtb-post-slide-title { font-size: 24px; } }' . "\n";
-        }
+        // Responsive phone title
+        $css .= '@media (max-width: 767px) { ' . $selector . ' .jtb-post-slide-title { font-size: 24px; } }' . "\n";
 
+        // Parent class handles common styles
         $css .= parent::generateCss($attrs, $selector);
 
         return $css;

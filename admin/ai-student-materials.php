@@ -23,11 +23,6 @@ require_once CMS_ROOT . '/core/ai_student_materials.php';
 cms_session_start('admin');
 csrf_boot('admin');
 
-if (!defined('DEV_MODE') || !DEV_MODE) {
-    http_response_code(403);
-    echo 'Forbidden';
-    exit;
-}
 
 cms_require_admin_role();
 
@@ -169,7 +164,7 @@ require_once CMS_ROOT . '/admin/includes/navigation.php';
                 </div>
             </div>
             <div class="card-body">
-                <div class="bg-light p-3 rounded" style="white-space: pre-wrap; font-family: monospace;">
+                <div style="background:var(--bg3);padding:12px;border-radius:8px;color:var(--text)" style="white-space: pre-wrap; font-family: monospace;">
 <?= esc($viewMaterial['content']) ?>
                 </div>
                 <?php if ($difficultyAnalysis): ?>
@@ -311,7 +306,7 @@ require_once CMS_ROOT . '/admin/includes/navigation.php';
                         <button class="btn btn-sm btn-light" onclick="copyMaterial()">📋 Copy</button>
                     </div>
                     <div class="card-body">
-                        <div class="bg-light p-3 rounded mb-3" id="generated-content" style="white-space: pre-wrap; font-family: monospace; max-height: 500px; overflow-y: auto;">
+                        <div style="background:var(--bg3);padding:12px;border-radius:8px;color:var(--text);margin-bottom:12px" id="generated-content" style="white-space: pre-wrap; font-family: monospace; max-height: 500px; overflow-y: auto;">
 <?= esc($generatedMaterial['content']) ?>
                         </div>
 

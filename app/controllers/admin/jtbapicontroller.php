@@ -248,4 +248,18 @@ class JtbApiController
             ]
         ]);
     }
+
+    /**
+     * Route to JTB AI endpoints (delegated to plugin router)
+     */
+    public function aiRouter(): void
+    {
+        // Debug log
+        file_put_contents('/tmp/jtb_controller_debug.log', '[' . date('Y-m-d H:i:s') . '] aiRouter called! URI: ' . ($_SERVER['REQUEST_URI'] ?? 'none') . "\n", FILE_APPEND);
+        
+        $pluginPath = \CMS_ROOT . '/plugins/jessie-theme-builder';
+        
+        // Include the plugin router which handles all AI endpoints
+        require_once $pluginPath . '/api/router.php';
+    }
 }

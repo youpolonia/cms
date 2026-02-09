@@ -25,6 +25,50 @@ class JTB_Module_Shop extends JTB_Element
     public bool $use_position = false;
     public bool $use_filters = false;
 
+    // === UNIFIED THEME SYSTEM ===
+    protected string $module_prefix = 'shop';
+
+    /**
+     * Declarative style configuration
+     */
+    protected array $style_config = [
+        'title_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-product-title a',
+            'hover' => true
+        ],
+        'price_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-price-current'
+        ],
+        'sale_price_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-price-sale'
+        ],
+        'rating_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-product-rating'
+        ],
+        'sale_badge_bg' => [
+            'property' => 'background',
+            'selector' => '.jtb-product-sale-badge'
+        ],
+        'sale_badge_text' => [
+            'property' => 'color',
+            'selector' => '.jtb-product-sale-badge'
+        ],
+        'button_bg_color' => [
+            'property' => 'background',
+            'selector' => '.jtb-add-to-cart',
+            'hover' => true
+        ],
+        'button_text_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-add-to-cart',
+            'hover' => true
+        ]
+    ];
+
     public function getSlug(): string
     {
         return 'shop';
@@ -144,6 +188,9 @@ class JTB_Module_Shop extends JTB_Element
 
     public function render(array $attrs, string $content = ''): string
     {
+        // Apply default styles from design system
+        $attrs = JTB_Default_Styles::mergeWithDefaults($this->getSlug(), $attrs);
+
         $columns = $attrs['columns'] ?? '4';
         $postsNumber = $attrs['posts_number'] ?? 8;
         $showTitle = $attrs['show_title'] ?? true;
@@ -251,19 +298,19 @@ class JTB_Module_Shop extends JTB_Element
         return $this->renderWrapper($innerHtml, $attrs);
     }
 
+    /**
+     * Generate CSS for Shop module
+     * Base styles are in jtb-base-modules.css
+     */
     public function generateCss(array $attrs, string $selector): string
     {
         $css = '';
 
-        $columns = $attrs['columns'] ?? '4';
-        $titleColor = $attrs['title_color'] ?? '#333333';
-        $priceColor = $attrs['price_color'] ?? '#2ea3f2';
-        $salePriceColor = $attrs['sale_price_color'] ?? '#e74c3c';
-        $ratingColor = $attrs['rating_color'] ?? '#f5a623';
-        $saleBadgeBg = $attrs['sale_badge_bg'] ?? '#e74c3c';
-        $saleBadgeText = $attrs['sale_badge_text'] ?? '#ffffff';
+        // Use declarative style_config system
+        $css .= $this->generateStyleConfigCss($attrs, $selector);
+
         $buttonBg = $attrs['button_bg_color'] ?? '#2ea3f2';
-        $buttonText = $attrs['button_text_color'] ?? '#ffffff';
+        $priceColor = $attrs['price_color'] ?? '#2ea3f2';
 
         // Grid
         $css .= $selector . ' .jtb-products-grid { display: grid; gap: 30px; }' . "\n";
@@ -283,84 +330,36 @@ class JTB_Module_Shop extends JTB_Element
         $css .= $selector . ' .jtb-product-item:hover .jtb-product-image img { transform: scale(1.05); }' . "\n";
 
         // Sale badge
-        $css .= $selector . ' .jtb-product-sale-badge { '
-            . 'position: absolute; '
-            . 'top: 10px; '
-            . 'left: 10px; '
-            . 'background: ' . $saleBadgeBg . '; '
-            . 'color: ' . $saleBadgeText . '; '
-            . 'padding: 5px 10px; '
-            . 'font-size: 12px; '
-            . 'font-weight: bold; '
-            . 'text-transform: uppercase; '
-            . '}' . "\n";
+        $css .= $selector . ' .jtb-product-sale-badge { position: absolute; top: 10px; left: 10px; padding: 5px 10px; font-size: 12px; font-weight: bold; text-transform: uppercase; }' . "\n";
 
         // Actions
-        $css .= $selector . ' .jtb-product-actions { '
-            . 'position: absolute; '
-            . 'top: 10px; '
-            . 'right: 10px; '
-            . 'display: flex; '
-            . 'flex-direction: column; '
-            . 'gap: 5px; '
-            . 'opacity: 0; '
-            . 'transform: translateX(10px); '
-            . 'transition: all 0.3s ease; '
-            . '}' . "\n";
+        $css .= $selector . ' .jtb-product-actions { position: absolute; top: 10px; right: 10px; display: flex; flex-direction: column; gap: 5px; opacity: 0; transform: translateX(10px); transition: all 0.3s ease; }' . "\n";
         $css .= $selector . ' .jtb-product-item:hover .jtb-product-actions { opacity: 1; transform: translateX(0); }' . "\n";
-        $css .= $selector . ' .jtb-product-action { '
-            . 'width: 35px; '
-            . 'height: 35px; '
-            . 'background: #ffffff; '
-            . 'display: flex; '
-            . 'align-items: center; '
-            . 'justify-content: center; '
-            . 'text-decoration: none; '
-            . 'border-radius: 50%; '
-            . 'box-shadow: 0 2px 5px rgba(0,0,0,0.1); '
-            . 'transition: all 0.3s ease; '
-            . '}' . "\n";
+        $css .= $selector . ' .jtb-product-action { width: 35px; height: 35px; background: #ffffff; display: flex; align-items: center; justify-content: center; text-decoration: none; border-radius: 50%; box-shadow: 0 2px 5px rgba(0,0,0,0.1); transition: all 0.3s ease; }' . "\n";
         $css .= $selector . ' .jtb-product-action svg { width: 16px; height: 16px; }' . "\n";
         $css .= $selector . ' .jtb-product-action:hover { background: ' . $buttonBg . '; color: #fff; }' . "\n";
 
         // Rating
-        $css .= $selector . ' .jtb-product-rating { color: ' . $ratingColor . '; margin-bottom: 8px; font-size: 14px; display: flex; align-items: center; justify-content: center; gap: 2px; }' . "\n";
+        $css .= $selector . ' .jtb-product-rating { margin-bottom: 8px; font-size: 14px; display: flex; align-items: center; justify-content: center; gap: 2px; }' . "\n";
         $css .= $selector . ' .jtb-star { width: 14px; height: 14px; }' . "\n";
         $css .= $selector . ' .jtb-rating-count { color: #999; font-size: 12px; margin-left: 5px; }' . "\n";
 
         // Title
         $css .= $selector . ' .jtb-product-title { margin: 0 0 10px; font-size: 16px; }' . "\n";
-        $css .= $selector . ' .jtb-product-title a { color: ' . $titleColor . '; text-decoration: none; transition: color 0.3s ease; }' . "\n";
-
-        if (!empty($attrs['title_color__hover'])) {
-            $css .= $selector . ' .jtb-product-title a:hover { color: ' . $attrs['title_color__hover'] . '; }' . "\n";
-        } else {
+        $css .= $selector . ' .jtb-product-title a { text-decoration: none; transition: color 0.3s ease; }' . "\n";
+        if (empty($attrs['title_color__hover'])) {
             $css .= $selector . ' .jtb-product-title a:hover { color: ' . $priceColor . '; }' . "\n";
         }
 
         // Price
         $css .= $selector . ' .jtb-product-price { margin-bottom: 15px; }' . "\n";
-        $css .= $selector . ' .jtb-price-current { color: ' . $priceColor . '; font-size: 18px; font-weight: bold; }' . "\n";
+        $css .= $selector . ' .jtb-price-current { font-size: 18px; font-weight: bold; }' . "\n";
         $css .= $selector . ' .jtb-price-original { color: #999; text-decoration: line-through; margin-right: 10px; }' . "\n";
-        $css .= $selector . ' .jtb-price-sale { color: ' . $salePriceColor . '; font-size: 18px; font-weight: bold; }' . "\n";
+        $css .= $selector . ' .jtb-price-sale { font-size: 18px; font-weight: bold; }' . "\n";
 
         // Add to cart
-        $css .= $selector . ' .jtb-add-to-cart { '
-            . 'background: ' . $buttonBg . '; '
-            . 'color: ' . $buttonText . '; '
-            . 'border: none; '
-            . 'padding: 10px 25px; '
-            . 'cursor: pointer; '
-            . 'font-size: 14px; '
-            . 'transition: all 0.3s ease; '
-            . 'opacity: 0; '
-            . 'transform: translateY(10px); '
-            . '}' . "\n";
+        $css .= $selector . ' .jtb-add-to-cart { border: none; padding: 10px 25px; cursor: pointer; font-size: 14px; transition: all 0.3s ease; opacity: 0; transform: translateY(10px); }' . "\n";
         $css .= $selector . ' .jtb-product-item:hover .jtb-add-to-cart { opacity: 1; transform: translateY(0); }' . "\n";
-
-        if (!empty($attrs['button_bg_color__hover'])) {
-            $css .= $selector . ' .jtb-add-to-cart:hover { background: ' . $attrs['button_bg_color__hover'] . '; }' . "\n";
-        }
 
         // Responsive
         $css .= '@media (max-width: 980px) {' . "\n";
@@ -372,6 +371,7 @@ class JTB_Module_Shop extends JTB_Element
         $css .= '  ' . $selector . ' .jtb-products-grid { grid-template-columns: repeat(2, 1fr) !important; }' . "\n";
         $css .= '}' . "\n";
 
+        // Parent class handles common styles
         $css .= parent::generateCss($attrs, $selector);
 
         return $css;

@@ -25,6 +25,38 @@ class JTB_Module_Sidebar extends JTB_Element
     public bool $use_position = false;
     public bool $use_filters = false;
 
+    // === UNIFIED THEME SYSTEM ===
+    protected string $module_prefix = 'sidebar';
+
+    /**
+     * Declarative style configuration
+     */
+    protected array $style_config = [
+        'widget_title_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-widget-title'
+        ],
+        'widget_title_font_size' => [
+            'property' => 'font-size',
+            'selector' => '.jtb-widget-title',
+            'unit' => 'px'
+        ],
+        'widget_text_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-widget-content'
+        ],
+        'widget_link_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-widget-content a',
+            'hover' => true
+        ],
+        'widget_spacing' => [
+            'property' => 'margin-bottom',
+            'selector' => '.jtb-widget',
+            'unit' => 'px'
+        ]
+    ];
+
     public function getSlug(): string
     {
         return 'sidebar';
@@ -86,6 +118,9 @@ class JTB_Module_Sidebar extends JTB_Element
 
     public function render(array $attrs, string $content = ''): string
     {
+        // Apply default styles from design system
+        $attrs = JTB_Default_Styles::mergeWithDefaults($this->getSlug(), $attrs);
+
         $area = $attrs['area'] ?? 'sidebar-1';
 
         // Sample widgets - search icon SVG
@@ -127,39 +162,30 @@ class JTB_Module_Sidebar extends JTB_Element
         return $this->renderWrapper($innerHtml, $attrs);
     }
 
+    /**
+     * Generate CSS for Sidebar module
+     * Base styles are in jtb-base-modules.css
+     */
     public function generateCss(array $attrs, string $selector): string
     {
         $css = '';
 
-        $titleColor = $attrs['widget_title_color'] ?? '#333333';
-        $titleSize = $attrs['widget_title_font_size'] ?? 18;
-        $textColor = $attrs['widget_text_color'] ?? '#666666';
-        $linkColor = $attrs['widget_link_color'] ?? '#2ea3f2';
-        $widgetSpacing = $attrs['widget_spacing'] ?? 30;
+        // Use declarative style_config system
+        $css .= $this->generateStyleConfigCss($attrs, $selector);
 
-        // Widget
-        $css .= $selector . ' .jtb-widget { margin-bottom: ' . $widgetSpacing . 'px; }' . "\n";
+        $linkColor = $attrs['widget_link_color'] ?? '#2ea3f2';
+
+        // Widget last-child
         $css .= $selector . ' .jtb-widget:last-child { margin-bottom: 0; }' . "\n";
 
         // Title
-        $css .= $selector . ' .jtb-widget-title { '
-            . 'color: ' . $titleColor . '; '
-            . 'font-size: ' . $titleSize . 'px; '
-            . 'margin: 0 0 15px; '
-            . 'padding-bottom: 10px; '
-            . 'border-bottom: 1px solid #eee; '
-            . '}' . "\n";
+        $css .= $selector . ' .jtb-widget-title { margin: 0 0 15px; padding-bottom: 10px; border-bottom: 1px solid #eee; }' . "\n";
 
         // Content
-        $css .= $selector . ' .jtb-widget-content { color: ' . $textColor . '; }' . "\n";
         $css .= $selector . ' .jtb-widget-content ul { list-style: none; margin: 0; padding: 0; }' . "\n";
         $css .= $selector . ' .jtb-widget-content li { padding: 8px 0; border-bottom: 1px solid #f0f0f0; }' . "\n";
         $css .= $selector . ' .jtb-widget-content li:last-child { border-bottom: none; }' . "\n";
-        $css .= $selector . ' .jtb-widget-content a { color: ' . $linkColor . '; text-decoration: none; transition: color 0.3s ease; }' . "\n";
-
-        if (!empty($attrs['widget_link_color__hover'])) {
-            $css .= $selector . ' .jtb-widget-content a:hover { color: ' . $attrs['widget_link_color__hover'] . '; }' . "\n";
-        }
+        $css .= $selector . ' .jtb-widget-content a { text-decoration: none; transition: color 0.3s ease; }' . "\n";
 
         // Search widget
         $css .= $selector . ' .jtb-widget-search-form { display: flex; }' . "\n";
@@ -167,6 +193,7 @@ class JTB_Module_Sidebar extends JTB_Element
         $css .= $selector . ' .jtb-widget-search-form button { padding: 10px 15px; background: ' . $linkColor . '; color: #fff; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; }' . "\n";
         $css .= $selector . ' .jtb-widget-search-form button svg { width: 14px; height: 14px; }' . "\n";
 
+        // Parent class handles common styles
         $css .= parent::generateCss($attrs, $selector);
 
         return $css;

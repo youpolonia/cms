@@ -65,8 +65,13 @@ function ai_n8n_generate_workflow(array $spec): array
     // Build user prompt
     $userPrompt = ai_n8n_build_user_prompt($description, $name, $triggerType, $integrations);
 
-    // Call OpenAI API
-    $result = ai_n8n_call_openai($aiConfig, $systemPrompt, $userPrompt);
+    // Call AI via multi-provider universal generate
+    $provider = $aiConfig['provider'] ?? 'openai';
+    $model = $aiConfig['model'] ?? '';
+    $result = ai_universal_generate($provider, $model, $systemPrompt, $userPrompt, [
+        'max_tokens' => 4000,
+        'temperature' => 0.3
+    ]);
 
     if (!$result['ok']) {
         return [
@@ -211,107 +216,7 @@ function ai_n8n_build_user_prompt(string $description, string $name, string $tri
     return $prompt;
 }
 
-/**
- * Call OpenAI API for workflow generation
- *
- * @param array $config AI configuration
- * @param string $systemPrompt System prompt
- * @param string $userPrompt User prompt
- * @return array Result with ok, content, error
- */
-function ai_n8n_call_openai(array $config, string $systemPrompt, string $userPrompt): array
-{
-    $apiKey = $config['api_key'] ?? '';
-    $model = $config['model'] ?? 'gpt-4o-mini';
-    $baseUrl = $config['base_url'] ?? 'https://api.openai.com/v1';
-
-    // Use gpt-4o-mini for better JSON generation
-    if (strpos($model, 'gpt') === false) {
-        $model = 'gpt-4o-mini';
-    }
-
-    $endpoint = rtrim($baseUrl, '/') . '/chat/completions';
-
-    $payload = [
-        'model' => $model,
-        'messages' => [
-            ['role' => 'system', 'content' => $systemPrompt],
-            ['role' => 'user', 'content' => $userPrompt]
-        ],
-        'temperature' => 0.3,
-        'max_tokens' => 4000,
-        'response_format' => ['type' => 'json_object']
-    ];
-
-    $ch = curl_init($endpoint);
-    if ($ch === false) {
-        return [
-            'ok' => false,
-            'content' => null,
-            'error' => 'Failed to initialize cURL'
-        ];
-    }
-
-    curl_setopt_array($ch, [
-        CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_POST => true,
-        CURLOPT_POSTFIELDS => json_encode($payload),
-        CURLOPT_HTTPHEADER => [
-            'Content-Type: application/json',
-            'Authorization: Bearer ' . $apiKey
-        ],
-        CURLOPT_TIMEOUT => 60
-    ]);
-
-    $response = curl_exec($ch);
-    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    $curlError = curl_error($ch);
-    curl_close($ch);
-
-    if ($response === false) {
-        error_log('[AI_N8N] cURL error: ' . $curlError);
-        return [
-            'ok' => false,
-            'content' => null,
-            'error' => 'Connection error: ' . $curlError
-        ];
-    }
-
-    if ($httpCode !== 200) {
-        $errorData = json_decode($response, true);
-        $errorMsg = $errorData['error']['message'] ?? ('HTTP ' . $httpCode);
-        error_log('[AI_N8N] OpenAI API error: ' . $errorMsg);
-        return [
-            'ok' => false,
-            'content' => null,
-            'error' => 'OpenAI API error: ' . $errorMsg
-        ];
-    }
-
-    $data = json_decode($response, true);
-    if (!is_array($data)) {
-        return [
-            'ok' => false,
-            'content' => null,
-            'error' => 'Invalid JSON response from OpenAI'
-        ];
-    }
-
-    $content = $data['choices'][0]['message']['content'] ?? null;
-    if ($content === null || trim($content) === '') {
-        return [
-            'ok' => false,
-            'content' => null,
-            'error' => 'Empty response from OpenAI'
-        ];
-    }
-
-    return [
-        'ok' => true,
-        'content' => trim($content),
-        'error' => null
-    ];
-}
+// ai_n8n_call_openai() removed — now uses ai_universal_generate() in ai_n8n_generate_workflow()
 
 /**
  * Get human-readable language name from code

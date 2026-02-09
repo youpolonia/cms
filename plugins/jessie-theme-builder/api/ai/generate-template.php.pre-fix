@@ -1,0 +1,519 @@
+<?php
+/**
+ * JTB AI Template Generation API
+ *
+ * Generates header, footer, or body templates using AI.
+ * Uses SPECIALIZED prompts for templates (NOT Page Builder prompts).
+ *
+ * POST /api/jtb/ai/generate-template
+ *
+ * @package JessieThemeBuilder
+ */
+
+namespace JessieThemeBuilder;
+
+defined('CMS_ROOT') or die('Direct access not allowed');
+
+// Early debug log
+file_put_contents('/tmp/jtb_template_ai.log', "[" . date('Y-m-d H:i:s') . "] generate-template.php STARTED\n", FILE_APPEND);
+file_put_contents('/tmp/jtb_template_ai.log', "[" . date('Y-m-d H:i:s') . "] Method: " . $_SERVER['REQUEST_METHOD'] . "\n", FILE_APPEND);
+file_put_contents('/tmp/jtb_template_ai.log', "[" . date('Y-m-d H:i:s') . "] Raw input: " . file_get_contents('php://input') . "\n", FILE_APPEND);
+
+// Ensure method is POST
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    jtb_json_response(false, [], 'Method not allowed', 405);
+    exit;
+}
+
+// Parse request
+$input = file_get_contents('php://input');
+$data = json_decode($input, true);
+
+if (!$data) {
+    $data = $_POST;
+}
+
+if (empty($data)) {
+    jtb_json_response(false, [], 'Invalid request data', 400);
+    exit;
+}
+
+// Get parameters
+$type = $data['type'] ?? $data['template_type'] ?? '';
+$prompt = $data['prompt'] ?? '';
+$style = $data['style'] ?? 'modern';
+$industry = $data['industry'] ?? 'general';
+$templateStyle = $data['template_style'] ?? 'classic';  // classic, centered, split, minimal, mega, transparent
+$templateOptions = $data['template_options'] ?? [];
+
+// Merge template_style into options for convenience
+$templateOptions['templateStyle'] = $templateStyle;
+
+// Validate type
+$validTypes = ['header', 'footer', 'body'];
+if (!in_array($type, $validTypes)) {
+    jtb_json_response(false, [], 'Invalid template type. Must be: header, footer, or body', 400);
+    exit;
+}
+
+// Validate prompt
+if (empty($prompt)) {
+    jtb_json_response(false, [], 'Prompt is required for AI generation', 400);
+    exit;
+}
+
+// Set response header
+header('Content-Type: application/json');
+
+// Check if AI Core is available
+if (!class_exists(__NAMESPACE__ . '\\JTB_AI_Core')) {
+    jtb_json_response(false, [], 'AI Core class not loaded', 500);
+    exit;
+}
+
+$ai = JTB_AI_Core::getInstance();
+
+if (!$ai->isConfigured()) {
+    jtb_json_response(false, [], 'AI is not configured. Please configure an AI provider in settings.', 500);
+    exit;
+}
+
+// Debug log function that writes to a dedicated file
+function jtb_debug_log($message) {
+    $logFile = '/tmp/jtb_template_ai.log';
+    $timestamp = date('Y-m-d H:i:s');
+    file_put_contents($logFile, "[$timestamp] $message\n", FILE_APPEND | LOCK_EX);
+}
+
+try {
+    $startTime = microtime(true);
+
+    jtb_debug_log("=== START Template AI Generation ===");
+    jtb_debug_log("Type: $type, Style: $style, Industry: $industry, TemplateStyle: $templateStyle");
+    jtb_debug_log("Options: " . json_encode($templateOptions));
+
+    // Build system prompt for template generation
+    $systemPrompt = buildTemplateSystemPrompt($type);
+
+    // Build user prompt with all options
+    $userPrompt = buildTemplateUserPrompt($type, $prompt, $style, $industry, $templateOptions);
+
+    // Log user prompt
+    jtb_debug_log("User Prompt:\n$userPrompt");
+
+    // Call AI
+    $response = $ai->query($userPrompt, [
+        'system_prompt' => $systemPrompt,
+        'temperature' => 0.7,
+        'max_tokens' => 4000
+    ]);
+
+    jtb_debug_log("AI Response received. OK: " . ($response['ok'] ? 'true' : 'false'));
+
+    if (!$response['ok']) {
+        jtb_debug_log("AI query FAILED: " . ($response['error'] ?? 'unknown error'));
+        jtb_debug_log("Full response: " . json_encode($response));
+        throw new \Exception($response['error'] ?? 'AI query failed');
+    }
+
+    // Parse JSON from response
+    // AI Core returns 'text' key, not 'content'
+    $content = $response['text'] ?? '';
+
+    // Log raw content for debugging
+    jtb_debug_log("Raw AI response length: " . strlen($content));
+    jtb_debug_log("Raw AI response (first 2000 chars):\n" . substr($content, 0, 2000));
+
+    $layout = parseJsonFromResponse($content);
+
+    if (!$layout || empty($layout['sections'])) {
+        jtb_debug_log("FAILED to parse response as JSON");
+        throw new \Exception('Failed to parse AI response as valid template JSON. Raw response: ' . substr($content, 0, 200));
+    }
+
+    jtb_debug_log("Successfully parsed JSON with " . count($layout['sections']) . " sections");
+
+    $timeMs = round((microtime(true) - $startTime) * 1000);
+
+    jtb_json_response(true, [
+        'content' => $layout['sections'],
+        'layout' => $layout,
+        'type' => $type,
+        'stats' => [
+            'time_ms' => $timeMs,
+            'provider' => $response['provider'] ?? 'unknown',
+            'sections_count' => count($layout['sections'])
+        ]
+    ]);
+
+} catch (\Exception $e) {
+    error_log('JTB AI generate-template error: ' . $e->getMessage());
+    jtb_json_response(false, [], 'Generation error: ' . $e->getMessage(), 500);
+}
+
+/**
+ * Build system prompt for template generation
+ */
+function buildTemplateSystemPrompt(string $type): string
+{
+    $modulesDocs = getTemplateModulesDocs($type);
+
+    return <<<SYSTEM
+You are an expert web designer generating JTB (Jessie Theme Builder) templates.
+You MUST output ONLY valid JSON - no explanations, no markdown, no code blocks.
+
+OUTPUT FORMAT - Return ONLY this JSON structure:
+{
+  "sections": [
+    {
+      "type": "section",
+      "attrs": {
+        "padding": {"top": 20, "right": 0, "bottom": 20, "left": 0},
+        "background_color": "#ffffff"
+      },
+      "children": [
+        {
+          "type": "row",
+          "attrs": {"columns": "1_4,3_4"},
+          "children": [
+            {
+              "type": "column",
+              "attrs": {},
+              "children": [
+                {"type": "MODULE_TYPE", "attrs": {...}}
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+
+AVAILABLE MODULES FOR {$type} TEMPLATES:
+{$modulesDocs}
+
+COLUMN LAYOUTS (row "columns" attribute):
+- "1" = single full-width column
+- "1_2,1_2" = two equal columns (50%, 50%)
+- "1_3,2_3" = one third + two thirds
+- "2_3,1_3" = two thirds + one third
+- "1_4,3_4" = quarter + three quarters
+- "3_4,1_4" = three quarters + quarter
+- "1_3,1_3,1_3" = three equal columns
+- "1_4,1_4,1_4,1_4" = four equal columns
+
+CRITICAL RULES:
+1. Output ONLY JSON - no text before or after
+2. Every section must have type, attrs, children
+3. Every row must have columns attribute matching number of column children
+4. Use ONLY the modules listed above
+5. Include proper padding and colors for professional look
+SYSTEM;
+}
+
+/**
+ * Get module documentation for specific template type
+ */
+function getTemplateModulesDocs(string $type): string
+{
+    $docs = [
+        'header' => <<<DOCS
+MODULES FOR HEADERS:
+
+1. site-logo - Company logo
+   Required attrs: {"logo_url": "https://via.placeholder.com/150x50", "alt": "Company Logo"}
+   Optional: max_height (number), link_url (string)
+
+2. menu - Navigation menu
+   Required attrs: {"menu_items": [{"label": "Home", "url": "/"}, {"label": "About", "url": "/about"}, {"label": "Services", "url": "/services"}, {"label": "Contact", "url": "/contact"}]}
+   Optional: orientation ("horizontal"|"vertical"), mobile_toggle (boolean)
+
+3. button - CTA button
+   Required attrs: {"text": "Get Started", "link_url": "#contact"}
+   Optional: button_style ("primary"|"secondary"|"outline"), size ("small"|"medium"|"large")
+
+4. search-form - Search input (icon or full)
+   Attrs: {"placeholder": "Search...", "button_text": "Search", "style": "icon"|"full"}
+
+5. social-icons - Social media links
+   Required attrs: {"icons": [{"platform": "facebook", "url": "#"}, {"platform": "twitter", "url": "#"}, {"platform": "linkedin", "url": "#"}]}
+   Platforms: facebook, twitter, instagram, linkedin, youtube, tiktok
+
+6. text - Simple text (for phone/email in topbar)
+   Required attrs: {"content": "Call us: +1 234 567 890"}
+
+HEADER STYLES REFERENCE:
+- classic: Logo left, menu right, clean layout. Use columns "1_4,3_4"
+- centered: Logo center, menu split on both sides. Use columns "1_3,1_3,1_3"
+- split: Menu left, logo center, CTA right. Use columns "1_3,1_3,1_3"
+- minimal: Small logo, minimal menu, lots of whitespace. Use columns "1_2,1_2"
+- mega: Large header with multiple nav levels. Can use 2 rows
+- transparent: For hero overlays, use transparent background with light text
+DOCS,
+
+        'footer' => <<<DOCS
+1. site-logo - Company logo (usually smaller version)
+   Required attrs: {"logo_url": "https://via.placeholder.com/120x40", "alt": "Company Logo"}
+
+2. menu - Footer navigation links
+   Required attrs: {"menu_items": [{"label": "Privacy", "url": "/privacy"}, {"label": "Terms", "url": "/terms"}]}
+   Optional: orientation ("vertical" for footer columns)
+
+3. text - Text content (company description, copyright)
+   Required attrs: {"content": "© 2024 Company Name. All rights reserved."}
+
+4. heading - Section titles in footer
+   Required attrs: {"text": "Quick Links", "level": "h4"}
+
+5. social-icons - Social media links
+   Required attrs: {"icons": [{"platform": "facebook", "url": "#"}, {"platform": "twitter", "url": "#"}]}
+
+6. contact_form - Newsletter signup
+   Attrs: {"fields": [{"type": "email", "label": "Email", "placeholder": "Enter your email"}], "submit_text": "Subscribe"}
+
+7. blurb - Contact info with icon
+   Required attrs: {"title": "Address", "content": "123 Main St, City", "icon": "map-pin"}
+   Icons: map-pin, phone, mail, clock
+DOCS,
+
+        'body' => <<<DOCS
+1. post-title - Dynamic post/page title
+   Attrs: {"level": "h1", "show_link": false}
+
+2. post-content - Dynamic post/page content
+   Attrs: {} (no required attrs - renders full content)
+
+3. post-meta - Post date, author, categories
+   Attrs: {"show_date": true, "show_author": true, "show_categories": true}
+
+4. featured-image - Post featured image
+   Attrs: {"size": "large", "show_caption": true}
+
+5. author-box - Author bio with avatar
+   Attrs: {"show_avatar": true, "show_bio": true, "show_social": true}
+
+6. related-posts - Related posts grid
+   Attrs: {"count": 3, "columns": 3, "show_image": true, "show_excerpt": true}
+
+7. comments - Comments section
+   Attrs: {"show_form": true, "show_count": true}
+
+8. breadcrumbs - Navigation breadcrumbs
+   Attrs: {"separator": "/", "show_home": true}
+
+9. post-navigation - Previous/Next post links
+   Attrs: {"show_thumbnails": true}
+
+10. sidebar - Widget area
+    Attrs: {"widget_area": "default-sidebar"}
+DOCS
+    ];
+
+    return $docs[$type] ?? $docs['body'];
+}
+
+/**
+ * Build user prompt with all options
+ */
+function buildTemplateUserPrompt(string $type, string $prompt, string $style, string $industry, array $options): string
+{
+    $userPrompt = "Generate a {$type} template.\n\n";
+    $userPrompt .= "USER REQUEST: {$prompt}\n\n";
+    $userPrompt .= "VISUAL STYLE: {$style}\n";
+    $userPrompt .= "INDUSTRY: {$industry}\n\n";
+
+    // Add type-specific requirements
+    if ($type === 'header' && !empty($options)) {
+        $userPrompt .= "HEADER SPECIFICATIONS:\n";
+        $userPrompt .= "- Header style: " . ($options['templateStyle'] ?? 'classic') . "\n";
+        $userPrompt .= "- Logo position: " . ($options['logoPosition'] ?? 'left') . "\n";
+        $userPrompt .= "- Navigation style: " . ($options['navStyle'] ?? 'horizontal') . "\n";
+
+        $features = [];
+        if (!empty($options['sticky'])) $features[] = 'sticky header';
+        if (!empty($options['search'])) $features[] = 'search icon';
+        if (!empty($options['cta'])) $features[] = 'CTA button';
+        if (!empty($options['social'])) $features[] = 'social icons';
+        if (!empty($options['topbar'])) $features[] = 'top bar with phone/email';
+
+        if ($features) {
+            $userPrompt .= "- Required features: " . implode(', ', $features) . "\n";
+        }
+
+        // Structure guidance based on header style and options
+        $headerStyle = $options['templateStyle'] ?? 'classic';
+        $logoPos = $options['logoPosition'] ?? 'left';
+
+        $userPrompt .= "\nSTRUCTURE REQUIREMENTS:\n";
+
+        // Top bar section if requested
+        if (!empty($options['topbar'])) {
+            $userPrompt .= "SECTION 1 - TOP BAR:\n";
+            $userPrompt .= "- Dark background (#1f2937), small padding (10px)\n";
+            $userPrompt .= "- Single row with columns '1_2,1_2'\n";
+            $userPrompt .= "- Left: text module with phone/email\n";
+            $userPrompt .= "- Right: social-icons module\n\n";
+        }
+
+        $userPrompt .= (!empty($options['topbar']) ? "SECTION 2 - " : "SECTION 1 - ") . "MAIN HEADER:\n";
+
+        // Header style specific structure
+        switch ($headerStyle) {
+            case 'centered':
+                $userPrompt .= "- Use columns '1_3,1_3,1_3'\n";
+                $userPrompt .= "- Left column: menu module OR empty\n";
+                $userPrompt .= "- Center column: site-logo module (centered)\n";
+                $userPrompt .= "- Right column: ";
+                $extras = [];
+                if (!empty($options['search'])) $extras[] = 'search-form';
+                if (!empty($options['cta'])) $extras[] = 'button (CTA)';
+                if (!empty($options['social'])) $extras[] = 'social-icons';
+                $userPrompt .= ($extras ? implode(' + ', $extras) : 'menu module') . "\n";
+                break;
+
+            case 'split':
+                $userPrompt .= "- Use columns '1_3,1_3,1_3'\n";
+                $userPrompt .= "- Left column: first half of menu items\n";
+                $userPrompt .= "- Center column: site-logo module\n";
+                $userPrompt .= "- Right column: second half of menu items + CTA button\n";
+                break;
+
+            case 'minimal':
+                $userPrompt .= "- Use columns '1_2,1_2' with lots of whitespace\n";
+                $userPrompt .= "- Left: site-logo (smaller size, max_height: 40)\n";
+                $userPrompt .= "- Right: menu with minimal items (3-4 max)\n";
+                break;
+
+            case 'mega':
+                $userPrompt .= "- Use 2 rows if needed for mega navigation\n";
+                $userPrompt .= "- Row 1: logo + primary actions (search, CTA)\n";
+                $userPrompt .= "- Row 2: full-width menu with dropdown-ready structure\n";
+                break;
+
+            case 'transparent':
+                $userPrompt .= "- Background: transparent or rgba(0,0,0,0.2)\n";
+                $userPrompt .= "- Text/icon colors: white (#ffffff)\n";
+                $userPrompt .= "- Position: absolute (for overlay on hero)\n";
+                if ($logoPos === 'left') {
+                    $userPrompt .= "- Use columns '1_4,3_4'\n";
+                } else {
+                    $userPrompt .= "- Use columns '1_3,1_3,1_3'\n";
+                }
+                break;
+
+            default: // classic
+                if ($logoPos === 'left') {
+                    $userPrompt .= "- Use columns '1_4,3_4'\n";
+                    $userPrompt .= "- Left column: site-logo module\n";
+                    $userPrompt .= "- Right column: menu module";
+                    if (!empty($options['cta'])) $userPrompt .= " + button (CTA)";
+                    if (!empty($options['search'])) $userPrompt .= " + search-form";
+                    $userPrompt .= "\n";
+                } elseif ($logoPos === 'center') {
+                    $userPrompt .= "- Use columns '1_3,1_3,1_3'\n";
+                    $userPrompt .= "- Left: menu module\n";
+                    $userPrompt .= "- Center: site-logo module\n";
+                    $userPrompt .= "- Right: CTA/social/search\n";
+                } elseif ($logoPos === 'right') {
+                    $userPrompt .= "- Use columns '3_4,1_4'\n";
+                    $userPrompt .= "- Left: menu module";
+                    if (!empty($options['cta'])) $userPrompt .= " + button (CTA)";
+                    $userPrompt .= "\n";
+                    $userPrompt .= "- Right: site-logo module\n";
+                }
+        }
+
+        // Sticky header note
+        if (!empty($options['sticky'])) {
+            $userPrompt .= "\nSTICKY HEADER: Add attrs to main header section: {\"custom_class\": \"jtb-sticky-header\"}\n";
+        }
+
+    } elseif ($type === 'footer' && !empty($options)) {
+        $userPrompt .= "FOOTER SPECIFICATIONS:\n";
+        $userPrompt .= "- Number of columns: " . ($options['columns'] ?? '4') . "\n";
+        $userPrompt .= "- Background style: " . ($options['background'] ?? 'dark') . "\n";
+
+        $elements = [];
+        if (!empty($options['logo'])) $elements[] = 'company logo';
+        if (!empty($options['menu'])) $elements[] = 'navigation links';
+        if (!empty($options['social'])) $elements[] = 'social icons';
+        if (!empty($options['newsletter'])) $elements[] = 'newsletter signup form';
+        if (!empty($options['contact'])) $elements[] = 'contact information';
+        if (!empty($options['copyright'])) $elements[] = 'copyright bar (separate section at bottom)';
+
+        if ($elements) {
+            $userPrompt .= "- Required elements: " . implode(', ', $elements) . "\n";
+        }
+
+        $cols = $options['columns'] ?? '4';
+        $userPrompt .= "\nSTRUCTURE:\n";
+        $userPrompt .= "- Main footer section with {$cols} columns\n";
+        if (!empty($options['copyright'])) {
+            $userPrompt .= "- Separate copyright section at bottom (single column, centered text)\n";
+        }
+
+    } elseif ($type === 'body' && !empty($options)) {
+        $userPrompt .= "BODY TEMPLATE SPECIFICATIONS:\n";
+        $userPrompt .= "- Layout: " . ($options['layout'] ?? 'full') . "\n";
+        $userPrompt .= "- Featured image style: " . ($options['featuredImage'] ?? 'large') . "\n";
+
+        $elements = [];
+        if (!empty($options['title'])) $elements[] = 'post-title';
+        if (!empty($options['meta'])) $elements[] = 'post-meta';
+        if (!empty($options['content'])) $elements[] = 'post-content';
+        if (!empty($options['author'])) $elements[] = 'author-box';
+        if (!empty($options['related'])) $elements[] = 'related-posts';
+        if (!empty($options['comments'])) $elements[] = 'comments';
+        if (!empty($options['breadcrumbs'])) $elements[] = 'breadcrumbs';
+        if (!empty($options['navigation'])) $elements[] = 'post-navigation';
+
+        if ($elements) {
+            $userPrompt .= "- Required modules: " . implode(', ', $elements) . "\n";
+        }
+
+        $layout = $options['layout'] ?? 'full';
+        $userPrompt .= "\nSTRUCTURE:\n";
+        if ($layout === 'sidebar_right') {
+            $userPrompt .= "- Use columns '2_3,1_3' - content left, sidebar right\n";
+        } elseif ($layout === 'sidebar_left') {
+            $userPrompt .= "- Use columns '1_3,2_3' - sidebar left, content right\n";
+        } else {
+            $userPrompt .= "- Use single column '1' for full width content\n";
+        }
+    }
+
+    $userPrompt .= "\nGenerate the complete JSON template now.";
+
+    return $userPrompt;
+}
+
+/**
+ * Parse JSON from AI response (handles markdown code blocks)
+ */
+function parseJsonFromResponse(string $content): ?array
+{
+    // Try direct JSON parse first
+    $decoded = json_decode($content, true);
+    if ($decoded && isset($decoded['sections'])) {
+        return $decoded;
+    }
+
+    // Try to extract from markdown code block
+    if (preg_match('/```(?:json)?\s*\n?([\s\S]*?)\n?```/', $content, $matches)) {
+        $decoded = json_decode($matches[1], true);
+        if ($decoded && isset($decoded['sections'])) {
+            return $decoded;
+        }
+    }
+
+    // Try to find JSON object in response
+    if (preg_match('/\{[\s\S]*"sections"[\s\S]*\}/', $content, $matches)) {
+        $decoded = json_decode($matches[0], true);
+        if ($decoded && isset($decoded['sections'])) {
+            return $decoded;
+        }
+    }
+
+    return null;
+}

@@ -26,6 +26,62 @@ class JTB_Module_Gallery extends JTB_Element
     public bool $use_position = false;
     public bool $use_filters = true;
 
+    // === UNIFIED THEME SYSTEM ===
+    protected string $module_prefix = 'gallery';
+
+    /**
+     * Declarative style configuration
+     * Maps attribute names to CSS properties and selectors
+     * Base styles are in jtb-base-modules.css, this only handles customizations
+     */
+    protected array $style_config = [
+        // Grid/Layout
+        'gutter' => [
+            'property' => 'gap',
+            'selector' => '.jtb-gallery-container',
+            'unit' => 'px'
+        ],
+        'columns' => [
+            'property' => '--gallery-columns',
+            'selector' => '.jtb-gallery-container',
+            'responsive' => true
+        ],
+        // Image styling
+        'image_border_radius' => [
+            'property' => 'border-radius',
+            'selector' => '.jtb-gallery-image-wrap',
+            'unit' => 'px'
+        ],
+        // Overlay
+        'overlay_color' => [
+            'property' => 'background-color',
+            'selector' => '.jtb-gallery-overlay'
+        ],
+        'overlay_icon_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-gallery-icon'
+        ],
+        // Typography
+        'title_font_size' => [
+            'property' => 'font-size',
+            'selector' => '.jtb-gallery-title',
+            'unit' => 'px'
+        ],
+        'caption_font_size' => [
+            'property' => 'font-size',
+            'selector' => '.jtb-gallery-caption',
+            'unit' => 'px'
+        ],
+        'title_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-gallery-title'
+        ],
+        'caption_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-gallery-caption'
+        ]
+    ];
+
     public function getSlug(): string
     {
         return 'gallery';
@@ -193,6 +249,9 @@ class JTB_Module_Gallery extends JTB_Element
 
     public function render(array $attrs, string $content = ''): string
     {
+        // Apply default styles from design system
+        $attrs = JTB_Default_Styles::mergeWithDefaults($this->getSlug(), $attrs);
+
         $source = $attrs['gallery_source'] ?? 'custom';
         $layout = $attrs['gallery_layout'] ?? 'grid';
         $columns = $attrs['columns'] ?? '3';
@@ -275,88 +334,40 @@ class JTB_Module_Gallery extends JTB_Element
         return $this->renderWrapper($innerHtml, $attrs);
     }
 
+    /**
+     * Generate CSS for Gallery module
+     *
+     * Base styles are defined in jtb-base-modules.css using CSS variables.
+     * This method only generates CSS for values that differ from defaults.
+     *
+     * The style_config declarative system handles:
+     * - gutter, columns, image_border_radius
+     * - overlay_color, overlay_icon_color
+     * - title_font_size, caption_font_size, title_color, caption_color
+     */
     public function generateCss(array $attrs, string $selector): string
     {
         $css = '';
 
-        $gutter = $attrs['gutter'] ?? 10;
+        // Use declarative style_config system for mapped properties
+        $css .= $this->generateStyleConfigCss($attrs, $selector);
+
+        // Handle columns as CSS variable for grid-template-columns
         $columns = $attrs['columns'] ?? 3;
-        $borderRadius = $attrs['image_border_radius'] ?? 0;
+        if ($this->isDifferentFromDefault('gallery_columns', $columns)) {
+            $css .= $selector . ' .jtb-gallery-container { --gallery-columns: ' . intval($columns) . '; }' . "\n";
+        }
 
-        // Grid layout
-        $css .= $selector . ' .jtb-gallery-grid { ';
-        $css .= 'display: grid; ';
-        $css .= 'grid-template-columns: repeat(' . $columns . ', 1fr); ';
-        $css .= 'gap: ' . $gutter . 'px; ';
-        $css .= '}' . "\n";
-
-        // Gallery item
-        $css .= $selector . ' .jtb-gallery-item { position: relative; overflow: hidden; }' . "\n";
-
-        // Image wrap
-        $css .= $selector . ' .jtb-gallery-image-wrap { ';
-        $css .= 'position: relative; ';
-        $css .= 'overflow: hidden; ';
-        $css .= 'border-radius: ' . $borderRadius . 'px; ';
-        $css .= '}' . "\n";
-
-        $css .= $selector . ' .jtb-gallery-image-wrap img { ';
-        $css .= 'width: 100%; ';
-        $css .= 'height: auto; ';
-        $css .= 'display: block; ';
-        $css .= 'transition: transform 0.3s ease; ';
-        $css .= '}' . "\n";
-
-        // Hover zoom
-        $css .= $selector . ' .jtb-gallery-item:hover .jtb-gallery-image-wrap img { transform: scale(1.05); }' . "\n";
-
-        // Overlay
-        $overlayColor = $attrs['overlay_color'] ?? 'rgba(0,0,0,0.5)';
-        $overlayIconColor = $attrs['overlay_icon_color'] ?? '#ffffff';
-
-        $css .= $selector . ' .jtb-gallery-overlay { ';
-        $css .= 'position: absolute; ';
-        $css .= 'top: 0; ';
-        $css .= 'left: 0; ';
-        $css .= 'right: 0; ';
-        $css .= 'bottom: 0; ';
-        $css .= 'background-color: ' . $overlayColor . '; ';
-        $css .= 'display: flex; ';
-        $css .= 'align-items: center; ';
-        $css .= 'justify-content: center; ';
-        $css .= 'opacity: 0; ';
-        $css .= 'transition: opacity 0.3s ease; ';
-        $css .= '}' . "\n";
-
-        $css .= $selector . ' .jtb-gallery-item:hover .jtb-gallery-overlay { opacity: 1; }' . "\n";
-
-        $css .= $selector . ' .jtb-gallery-icon { ';
-        $css .= 'color: ' . $overlayIconColor . '; ';
-        $css .= 'font-size: 32px; ';
-        $css .= 'font-weight: bold; ';
-        $css .= '}' . "\n";
-
-        // Meta
-        $titleSize = $attrs['title_font_size'] ?? 14;
-        $captionSize = $attrs['caption_font_size'] ?? 12;
-
-        $css .= $selector . ' .jtb-gallery-meta { padding: 10px 0; }' . "\n";
-        $css .= $selector . ' .jtb-gallery-title { font-size: ' . $titleSize . 'px; font-weight: bold; }' . "\n";
-        $css .= $selector . ' .jtb-gallery-caption { font-size: ' . $captionSize . 'px; color: #666; }' . "\n";
-
-        // Responsive columns
+        // Responsive columns (these need special handling for grid)
         if (!empty($attrs['columns__tablet'])) {
-            $css .= '@media (max-width: 980px) { ' . $selector . ' .jtb-gallery-grid { grid-template-columns: repeat(' . $attrs['columns__tablet'] . ', 1fr); } }' . "\n";
-        } else {
-            $css .= '@media (max-width: 980px) { ' . $selector . ' .jtb-gallery-grid { grid-template-columns: repeat(2, 1fr); } }' . "\n";
+            $css .= '@media (max-width: 980px) { ' . $selector . ' .jtb-gallery-container { --gallery-columns: ' . intval($attrs['columns__tablet']) . '; } }' . "\n";
         }
 
         if (!empty($attrs['columns__phone'])) {
-            $css .= '@media (max-width: 767px) { ' . $selector . ' .jtb-gallery-grid { grid-template-columns: repeat(' . $attrs['columns__phone'] . ', 1fr); } }' . "\n";
-        } else {
-            $css .= '@media (max-width: 767px) { ' . $selector . ' .jtb-gallery-grid { grid-template-columns: 1fr; } }' . "\n";
+            $css .= '@media (max-width: 767px) { ' . $selector . ' .jtb-gallery-container { --gallery-columns: ' . intval($attrs['columns__phone']) . '; } }' . "\n";
         }
 
+        // Parent class handles common styles (background, spacing, border, etc.)
         $css .= parent::generateCss($attrs, $selector);
 
         return $css;

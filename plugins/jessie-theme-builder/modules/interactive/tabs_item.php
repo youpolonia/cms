@@ -26,6 +26,14 @@ class JTB_Module_TabsItem extends JTB_Element
     public bool $use_position = false;
     public bool $use_filters = false;
 
+    // === UNIFIED THEME SYSTEM ===
+    protected string $module_prefix = 'tabs_item';
+
+    /**
+     * Declarative style configuration
+     */
+    protected array $style_config = [];
+
     public function getSlug(): string
     {
         return 'tabs_item';
@@ -54,6 +62,9 @@ class JTB_Module_TabsItem extends JTB_Element
 
     public function render(array $attrs, string $content = ''): string
     {
+        // Apply default styles from design system
+        $attrs = JTB_Default_Styles::mergeWithDefaults($this->getSlug(), $attrs);
+
         $title = $this->esc($attrs['title'] ?? 'Tab Title');
         $bodyContent = $attrs['content'] ?? '<p>Your tab content goes here.</p>';
 
@@ -67,9 +78,21 @@ class JTB_Module_TabsItem extends JTB_Element
         return $html;
     }
 
+    /**
+     * Generate CSS for Tabs Item module
+     * Base styles are in jtb-base-modules.css
+     */
     public function generateCss(array $attrs, string $selector): string
     {
-        return parent::generateCss($attrs, $selector);
+        $css = '';
+
+        // Use declarative style_config system
+        $css .= $this->generateStyleConfigCss($attrs, $selector);
+
+        // Parent class handles common styles
+        $css .= parent::generateCss($attrs, $selector);
+
+        return $css;
     }
 }
 

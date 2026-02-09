@@ -27,6 +27,10 @@ $templateName = $template['name'] ?? 'New ' . ucfirst($templateType) . ' Templat
     <link rel="stylesheet" href="<?= htmlspecialchars($pluginUrl) ?>/assets/css/template-manager.css?v=<?= time() ?>">
     <link rel="stylesheet" href="<?= htmlspecialchars($pluginUrl) ?>/assets/css/animations.css?v=<?= time() ?>">
     <link rel="stylesheet" href="<?= htmlspecialchars($pluginUrl) ?>/assets/css/media-gallery.css?v=<?= time() ?>">
+    <!-- Full AI Panel Styles (same as Page Builder) -->
+    <link rel="stylesheet" href="<?= htmlspecialchars($pluginUrl) ?>/assets/css/ai-panel.css?v=<?= time() ?>">
+    <!-- Unified Theme System - Base Module Styles -->
+    <link rel="stylesheet" href="<?= htmlspecialchars($pluginUrl) ?>/assets/css/jtb-base-modules.css?v=<?= time() ?>">
 </head>
 <body class="jtb-builder-page">
     <div class="jtb-builder">
@@ -42,10 +46,26 @@ $templateName = $template['name'] ?? 'New ' . ucfirst($templateType) . ' Templat
                     <?= ucfirst($templateType) ?>
                 </span>
             </div>
-            <div class="jtb-header-center">
-                <button class="jtb-device-btn active" data-device="desktop" title="Desktop">🖥️</button>
-                <button class="jtb-device-btn" data-device="tablet" title="Tablet">📱</button>
-                <button class="jtb-device-btn" data-device="phone" title="Phone">📱</button>
+            <div class="jtb-header-center jtb-device-switcher">
+                <button class="jtb-device-btn active" data-device="desktop" title="Desktop">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                        <line x1="8" y1="21" x2="16" y2="21"></line>
+                        <line x1="12" y1="17" x2="12" y2="21"></line>
+                    </svg>
+                </button>
+                <button class="jtb-device-btn" data-device="tablet" title="Tablet">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="4" y="2" width="16" height="20" rx="2" ry="2"></rect>
+                        <line x1="12" y1="18" x2="12.01" y2="18"></line>
+                    </svg>
+                </button>
+                <button class="jtb-device-btn" data-device="phone" title="Phone">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
+                        <line x1="12" y1="18" x2="12.01" y2="18"></line>
+                    </svg>
+                </button>
             </div>
             <div class="jtb-header-right">
                 <button class="jtb-btn" id="conditionsBtn" onclick="JTBTemplateEditor.toggleConditions()">
@@ -62,7 +82,7 @@ $templateName = $template['name'] ?? 'New ' . ucfirst($templateType) . ' Templat
         <!-- Main -->
         <div class="jtb-main jtb-main-no-sidebar">
             <!-- Canvas (Full Width) -->
-            <main class="jtb-canvas" id="canvas">
+            <main class="jtb-canvas jtb-preview-desktop" id="canvas">
                 <div class="jtb-canvas-inner" id="canvasInner">
                     <!-- Content rendered here -->
                     <?php if (empty($content['content'])): ?>
@@ -201,6 +221,13 @@ $templateName = $template['name'] ?? 'New ' . ucfirst($templateType) . ' Templat
     <!-- Notifications -->
     <div class="jtb-notifications" id="notifications"></div>
 
+    <!-- Full AI Panel (same as Page Builder) -->
+    <?php
+    // Use TEMPLATE-SPECIFIC AI Panel (NOT Page Builder AI Panel!)
+    // This panel has header/footer/body specific options
+    require_once dirname(__DIR__) . '/views/ai-panel-template.php';
+    ?>
+
     <!-- Media Gallery Modal -->
     <?php
     require_once dirname(__DIR__) . '/includes/jtb-media-gallery.php';
@@ -228,16 +255,35 @@ $templateName = $template['name'] ?? 'New ' . ucfirst($templateType) . ' Templat
 
         // CSRF token for API calls
         window.JTB_CSRF_TOKEN = '<?= htmlspecialchars($csrfToken ?? '') ?>';
+
+        // AI Panel context for templates (tells AI panel we're in template mode)
+        window.JTB_AI_CONTEXT = {
+            mode: 'template',
+            templateType: <?= json_encode($templateType) ?>,
+            templateId: <?= $templateId ? (int) $templateId : 'null' ?>
+        };
     </script>
     <script src="<?= htmlspecialchars($pluginUrl) ?>/assets/js/builder.js"></script>
     <script src="<?= htmlspecialchars($pluginUrl) ?>/assets/js/settings-panel.js"></script>
     <script src="<?= htmlspecialchars($pluginUrl) ?>/assets/js/fields.js"></script>
     <script src="<?= htmlspecialchars($pluginUrl) ?>/assets/js/media-gallery.js?v=<?= time() ?>"></script>
     <script src="<?= htmlspecialchars($pluginUrl) ?>/assets/js/conditions-builder.js"></script>
+    <!-- Full AI Panel JS (same as Page Builder) -->
+    <script src="<?= htmlspecialchars($pluginUrl) ?>/assets/js/ai-panel.js?v=<?= time() ?>"></script>
     <script src="<?= htmlspecialchars($pluginUrl) ?>/assets/js/template-editor.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             JTBTemplateEditor.init(window.JTB_TEMPLATE_DATA);
+
+            // Initialize AI Panel with template context
+            if (typeof JTB_AI !== 'undefined' && typeof JTB_AI.init === 'function') {
+                JTB_AI.init({
+                    mode: 'template',
+                    templateType: window.JTB_AI_CONTEXT.templateType,
+                    templateId: window.JTB_AI_CONTEXT.templateId,
+                    csrfToken: window.JTB_CSRF_TOKEN
+                });
+            }
         });
     </script>
 </body>

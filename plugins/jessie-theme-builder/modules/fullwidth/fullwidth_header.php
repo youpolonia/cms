@@ -25,6 +25,74 @@ class JTB_Module_FullwidthHeader extends JTB_Element
     public bool $use_position = false;
     public bool $use_filters = true;
 
+    // === UNIFIED THEME SYSTEM ===
+    protected string $module_prefix = 'fullwidth_header';
+
+    /**
+     * Declarative style configuration
+     */
+    protected array $style_config = [
+        'background_overlay_color' => [
+            'property' => 'background',
+            'selector' => '.jtb-header-overlay'
+        ],
+        'title_text_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-header-title'
+        ],
+        'content_text_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-header-description'
+        ],
+        'title_font_size' => [
+            'property' => 'font-size',
+            'selector' => '.jtb-header-title',
+            'unit' => 'px',
+            'responsive' => true
+        ],
+        'subhead_font_size' => [
+            'property' => 'font-size',
+            'selector' => '.jtb-header-subhead',
+            'unit' => 'px',
+            'responsive' => true
+        ],
+        'header_height' => [
+            'property' => 'min-height',
+            'selector' => '.jtb-fullwidth-header-container',
+            'unit' => 'px',
+            'responsive' => true
+        ],
+        'button_one_bg_color' => [
+            'property' => 'background-color',
+            'selector' => '.jtb-header-button-one',
+            'hover' => true
+        ],
+        'button_one_text_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-header-button-one',
+            'hover' => true
+        ],
+        'button_two_bg_color' => [
+            'property' => 'background-color',
+            'selector' => '.jtb-header-button-two',
+            'hover' => true
+        ],
+        'button_two_text_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-header-button-two',
+            'hover' => true
+        ],
+        'button_two_border_color' => [
+            'property' => 'border-color',
+            'selector' => '.jtb-header-button-two',
+            'hover' => true
+        ],
+        'scroll_down_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-scroll-icon'
+        ]
+    ];
+
     public function getSlug(): string
     {
         return 'fullwidth_header';
@@ -196,6 +264,9 @@ class JTB_Module_FullwidthHeader extends JTB_Element
 
     public function render(array $attrs, string $content = ''): string
     {
+        // Apply default styles from design system
+        $attrs = JTB_Default_Styles::mergeWithDefaults($this->getSlug(), $attrs);
+
         $title = $this->esc($attrs['title'] ?? 'Your Title Goes Here');
         $subhead = $this->esc($attrs['subhead'] ?? '');
         $bodyContent = $attrs['content'] ?? '';
@@ -267,6 +338,9 @@ class JTB_Module_FullwidthHeader extends JTB_Element
     public function generateCss(array $attrs, string $selector): string
     {
         $css = '';
+
+        // Use declarative style_config system
+        $css .= $this->generateStyleConfigCss($attrs, $selector);
 
         $fullscreen = !empty($attrs['header_fullscreen']);
         $height = $attrs['header_height'] ?? 500;

@@ -26,6 +26,38 @@ class JTB_Module_AccordionItem extends JTB_Element
     public bool $use_position = false;
     public bool $use_filters = false;
 
+    // === UNIFIED THEME SYSTEM ===
+    protected string $module_prefix = 'accordion_item';
+
+    /**
+     * Declarative style configuration
+     */
+    protected array $style_config = [
+        'title_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-accordion-title',
+            'hover' => true
+        ],
+        'title_font_size' => [
+            'property' => 'font-size',
+            'selector' => '.jtb-accordion-title',
+            'unit' => 'px'
+        ],
+        'icon_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-accordion-icon'
+        ],
+        'header_bg_color' => [
+            'property' => 'background-color',
+            'selector' => '.jtb-accordion-header',
+            'hover' => true
+        ],
+        'content_bg_color' => [
+            'property' => 'background-color',
+            'selector' => '.jtb-accordion-content'
+        ]
+    ];
+
     public function getSlug(): string
     {
         return 'accordion_item';
@@ -103,6 +135,9 @@ class JTB_Module_AccordionItem extends JTB_Element
 
     public function render(array $attrs, string $content = ''): string
     {
+        // Apply default styles from design system
+        $attrs = JTB_Default_Styles::mergeWithDefaults($this->getSlug(), $attrs);
+
         $title = $this->esc($attrs['title'] ?? 'Accordion Title');
         $bodyContent = $attrs['content'] ?? '<p>Your accordion content goes here.</p>';
         $isOpen = !empty($attrs['open']);
@@ -132,75 +167,42 @@ class JTB_Module_AccordionItem extends JTB_Element
         return $html;
     }
 
+    /**
+     * Generate CSS for Accordion Item module
+     * Base styles are in jtb-base-modules.css
+     */
     public function generateCss(array $attrs, string $selector): string
     {
-        $css = parent::generateCss($attrs, $selector);
+        $css = '';
 
-        // Header styling
-        $titleColor = $attrs['title_color'] ?? '#333333';
-        $titleSize = $attrs['title_font_size'] ?? 16;
-        $iconColor = $attrs['icon_color'] ?? '#666666';
-        $headerBg = $attrs['header_bg_color'] ?? '#f8f9fa';
-        $contentBg = $attrs['content_bg_color'] ?? '#ffffff';
+        // Use declarative style_config system
+        $css .= $this->generateStyleConfigCss($attrs, $selector);
 
         // Accordion item container
-        $css .= $selector . ' { ';
-        $css .= 'border: 1px solid #e0e0e0; ';
-        $css .= 'border-radius: 4px; ';
-        $css .= 'margin-bottom: 10px; ';
-        $css .= 'overflow: hidden; ';
-        $css .= '}' . "\n";
+        $css .= $selector . ' { border: 1px solid #e0e0e0; border-radius: 4px; margin-bottom: 10px; overflow: hidden; }' . "\n";
 
         // Header
-        $css .= $selector . ' .jtb-accordion-header { ';
-        $css .= 'display: flex; ';
-        $css .= 'justify-content: space-between; ';
-        $css .= 'align-items: center; ';
-        $css .= 'padding: 15px 20px; ';
-        $css .= 'background-color: ' . $headerBg . '; ';
-        $css .= 'cursor: pointer; ';
-        $css .= 'transition: background-color 0.3s ease; ';
-        $css .= '}' . "\n";
+        $css .= $selector . ' .jtb-accordion-header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; cursor: pointer; transition: background-color 0.3s ease; }' . "\n";
 
-        // Header hover
-        if (!empty($attrs['header_bg_color__hover'])) {
-            $css .= $selector . ' .jtb-accordion-header:hover { background-color: ' . $attrs['header_bg_color__hover'] . '; }' . "\n";
-        } else {
+        // Header hover fallback
+        if (empty($attrs['header_bg_color__hover'])) {
             $css .= $selector . ' .jtb-accordion-header:hover { filter: brightness(0.97); }' . "\n";
         }
 
         // Title
-        $css .= $selector . ' .jtb-accordion-title { ';
-        $css .= 'margin: 0; ';
-        $css .= 'font-size: ' . intval($titleSize) . 'px; ';
-        $css .= 'font-weight: 600; ';
-        $css .= 'color: ' . $titleColor . '; ';
-        $css .= 'transition: color 0.3s ease; ';
-        $css .= '}' . "\n";
-
-        if (!empty($attrs['title_color__hover'])) {
-            $css .= $selector . ' .jtb-accordion-header:hover .jtb-accordion-title { color: ' . $attrs['title_color__hover'] . '; }' . "\n";
-        }
+        $css .= $selector . ' .jtb-accordion-title { margin: 0; font-weight: 600; transition: color 0.3s ease; }' . "\n";
 
         // Icon
-        $css .= $selector . ' .jtb-accordion-icon { ';
-        $css .= 'color: ' . $iconColor . '; ';
-        $css .= 'display: flex; ';
-        $css .= 'align-items: center; ';
-        $css .= 'transition: transform 0.3s ease; ';
-        $css .= '}' . "\n";
+        $css .= $selector . ' .jtb-accordion-icon { display: flex; align-items: center; transition: transform 0.3s ease; }' . "\n";
 
         // Icon rotation when open
         $css .= $selector . '.jtb-open .jtb-accordion-icon { transform: rotate(180deg); }' . "\n";
 
-        // Content
-        $css .= $selector . ' .jtb-accordion-content { ';
-        $css .= 'background-color: ' . $contentBg . '; ';
-        $css .= '}' . "\n";
+        // Content inner
+        $css .= $selector . ' .jtb-accordion-content-inner { padding: 20px; }' . "\n";
 
-        $css .= $selector . ' .jtb-accordion-content-inner { ';
-        $css .= 'padding: 20px; ';
-        $css .= '}' . "\n";
+        // Parent class handles common styles
+        $css .= parent::generateCss($attrs, $selector);
 
         return $css;
     }

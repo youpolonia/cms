@@ -25,6 +25,75 @@ class JTB_Module_Button extends JTB_Element
     public bool $use_position = false;
     public bool $use_filters = false;
 
+    // === UNIFIED THEME SYSTEM ===
+    protected string $module_prefix = 'button';
+
+    /**
+     * Declarative style configuration
+     * Maps attribute names to CSS properties and selectors
+     * Base button styles are in jtb-base-modules.css
+     */
+    protected array $style_config = [
+        // Button alignment (handled specially in generateCss due to justify)
+        // Typography
+        'font_size' => [
+            'property' => 'font-size',
+            'selector' => '.jtb-button',
+            'unit' => 'px',
+            'responsive' => true
+        ],
+        'font_weight' => [
+            'property' => 'font-weight',
+            'selector' => '.jtb-button'
+        ],
+        'letter_spacing' => [
+            'property' => 'letter-spacing',
+            'selector' => '.jtb-button',
+            'unit' => 'px'
+        ],
+        'text_transform' => [
+            'property' => 'text-transform',
+            'selector' => '.jtb-button'
+        ],
+        'text_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-button',
+            'hover' => true
+        ],
+        // Background (handled specially for gradient support)
+        'background_color' => [
+            'property' => 'background-color',
+            'selector' => '.jtb-button',
+            'hover' => true
+        ],
+        // Border
+        'border_color' => [
+            'property' => 'border-color',
+            'selector' => '.jtb-button',
+            'hover' => true
+        ],
+        // Padding
+        'button_padding_tb' => [
+            'property' => '--button-padding-tb',
+            'selector' => '.jtb-button'
+        ],
+        'button_padding_lr' => [
+            'property' => '--button-padding-lr',
+            'selector' => '.jtb-button'
+        ],
+        // Icon
+        'icon_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-button-icon',
+            'hover' => true
+        ],
+        'icon_size' => [
+            'property' => 'font-size',
+            'selector' => '.jtb-button-icon',
+            'unit' => 'px'
+        ]
+    ];
+
     public function getSlug(): string
     {
         return 'button';
@@ -94,6 +163,9 @@ class JTB_Module_Button extends JTB_Element
 
     public function render(array $attrs, string $content = ''): string
     {
+        // Apply default styles from design system
+        $attrs = JTB_Default_Styles::mergeWithDefaults($this->getSlug(), $attrs);
+
         $text = $attrs['text'] ?? 'Click Here';
         $linkUrl = $attrs['link_url'] ?? '#';
         $linkTarget = !empty($attrs['link_target']) ? ' target="_blank" rel="noopener noreferrer"' : '';
@@ -124,24 +196,60 @@ class JTB_Module_Button extends JTB_Element
         return $this->renderWrapper($innerHtml, $attrs);
     }
 
+    /**
+     * Generate CSS for Button module
+     *
+     * Base styles are in jtb-base-modules.css.
+     * This handles module-specific customizations.
+     */
     public function generateCss(array $attrs, string $selector): string
     {
         $css = '';
 
-        // Alignment
+        // Use declarative style_config system for mapped properties
+        $css .= $this->generateStyleConfigCss($attrs, $selector);
+
+        // Alignment - special handling for justify
+        $css .= $this->generateAlignmentCss($attrs, $selector);
+
+        // Background - special handling for gradients
+        $css .= $this->generateButtonBackgroundCss($attrs, $selector . ' .jtb-button');
+
+        // Border - complex structure
+        $css .= $this->generateButtonBorderCss($attrs, $selector . ' .jtb-button');
+
+        // Box shadow - presets and custom
+        $css .= $this->generateButtonBoxShadowCss($attrs, $selector . ' .jtb-button');
+
+        // Font family (special handling)
+        if (!empty($attrs['font_family'])) {
+            $css .= $selector . " .jtb-button { font-family: '{$attrs['font_family']}', sans-serif; }\n";
+        }
+
+        // Parent CSS (spacing, transform)
+        $css .= parent::generateSpacingCss($attrs, $selector);
+        $css .= parent::generateTransformCss($attrs, $selector);
+
+        return $css;
+    }
+
+    /**
+     * Generate alignment CSS with special handling for justify
+     */
+    protected function generateAlignmentCss(array $attrs, string $selector): string
+    {
+        $css = '';
         $align = $attrs['align'] ?? 'left';
-        if ($align === 'center') {
-            $css .= $selector . ' .jtb-button-wrapper { text-align: center; }' . "\n";
-        } elseif ($align === 'right') {
-            $css .= $selector . ' .jtb-button-wrapper { text-align: right; }' . "\n";
-        } elseif ($align === 'justify') {
+
+        // Desktop
+        if ($align === 'justify') {
             $css .= $selector . ' .jtb-button-wrapper { display: block; }' . "\n";
             $css .= $selector . ' .jtb-button { display: block; width: 100%; text-align: center; }' . "\n";
         } else {
-            $css .= $selector . ' .jtb-button-wrapper { text-align: left; }' . "\n";
+            $css .= $selector . ' .jtb-button-wrapper { text-align: ' . $align . '; }' . "\n";
         }
 
-        // Responsive alignment
+        // Tablet responsive
         if (!empty($attrs['align__tablet'])) {
             $alignTablet = $attrs['align__tablet'];
             $css .= '@media (max-width: 980px) {' . "\n";
@@ -149,13 +257,13 @@ class JTB_Module_Button extends JTB_Element
                 $css .= '  ' . $selector . ' .jtb-button-wrapper { display: block; }' . "\n";
                 $css .= '  ' . $selector . ' .jtb-button { display: block; width: 100%; text-align: center; }' . "\n";
             } else {
-                $textAlign = ($alignTablet === 'center') ? 'center' : (($alignTablet === 'right') ? 'right' : 'left');
-                $css .= '  ' . $selector . ' .jtb-button-wrapper { text-align: ' . $textAlign . '; }' . "\n";
+                $css .= '  ' . $selector . ' .jtb-button-wrapper { text-align: ' . $alignTablet . '; }' . "\n";
                 $css .= '  ' . $selector . ' .jtb-button { display: inline-flex; width: auto; }' . "\n";
             }
             $css .= '}' . "\n";
         }
 
+        // Phone responsive
         if (!empty($attrs['align__phone'])) {
             $alignPhone = $attrs['align__phone'];
             $css .= '@media (max-width: 767px) {' . "\n";
@@ -163,90 +271,24 @@ class JTB_Module_Button extends JTB_Element
                 $css .= '  ' . $selector . ' .jtb-button-wrapper { display: block; }' . "\n";
                 $css .= '  ' . $selector . ' .jtb-button { display: block; width: 100%; text-align: center; }' . "\n";
             } else {
-                $textAlign = ($alignPhone === 'center') ? 'center' : (($alignPhone === 'right') ? 'right' : 'left');
-                $css .= '  ' . $selector . ' .jtb-button-wrapper { text-align: ' . $textAlign . '; }' . "\n";
+                $css .= '  ' . $selector . ' .jtb-button-wrapper { text-align: ' . $alignPhone . '; }' . "\n";
                 $css .= '  ' . $selector . ' .jtb-button { display: inline-flex; width: auto; }' . "\n";
             }
             $css .= '}' . "\n";
         }
 
-        // Apply design options to button element
-        $buttonSelector = $selector . ' .jtb-button';
-
-        // Typography for button
-        if ($this->use_typography) {
-            $css .= $this->generateButtonTypographyCss($attrs, $buttonSelector);
-        }
-
-        // Background for button
-        $css .= $this->generateButtonBackgroundCss($attrs, $buttonSelector);
-
-        // Border for button
-        $css .= $this->generateButtonBorderCss($attrs, $buttonSelector);
-
-        // Box shadow for button
-        $css .= $this->generateButtonBoxShadowCss($attrs, $buttonSelector);
-
-        // Parent CSS (for the wrapper)
-        $css .= parent::generateSpacingCss($attrs, $selector);
-        $css .= parent::generateTransformCss($attrs, $selector);
-
         return $css;
     }
 
-    protected function generateButtonTypographyCss(array $attrs, string $selector): string
-    {
-        $css = '';
-        $rules = [];
-
-        if (!empty($attrs['font_family'])) {
-            $rules[] = "font-family: '{$attrs['font_family']}', sans-serif";
-        }
-
-        if (!empty($attrs['font_size'])) {
-            $rules[] = 'font-size: ' . $attrs['font_size'] . 'px';
-        }
-
-        if (!empty($attrs['font_weight'])) {
-            $rules[] = 'font-weight: ' . $attrs['font_weight'];
-        }
-
-        if (!empty($attrs['letter_spacing'])) {
-            $rules[] = 'letter-spacing: ' . $attrs['letter_spacing'] . 'px';
-        }
-
-        if (!empty($attrs['text_transform'])) {
-            $rules[] = 'text-transform: ' . $attrs['text_transform'];
-        }
-
-        if (!empty($attrs['text_color'])) {
-            $rules[] = 'color: ' . $attrs['text_color'];
-        }
-
-        if (!empty($rules)) {
-            $css .= $selector . ' { ' . implode('; ', $rules) . '; }' . "\n";
-        }
-
-        // Hover state
-        if (!empty($attrs['text_color__hover'])) {
-            $css .= $selector . ':hover { color: ' . $attrs['text_color__hover'] . '; }' . "\n";
-        }
-
-        return $css;
-    }
-
+    /**
+     * Generate background CSS with gradient support
+     */
     protected function generateButtonBackgroundCss(array $attrs, string $selector): string
     {
         $css = '';
         $bgType = $attrs['background_type'] ?? 'none';
 
-        if ($bgType === 'color' && !empty($attrs['background_color'])) {
-            $css .= $selector . ' { background-color: ' . $attrs['background_color'] . '; }' . "\n";
-
-            if (!empty($attrs['background_color__hover'])) {
-                $css .= $selector . ':hover { background-color: ' . $attrs['background_color__hover'] . '; }' . "\n";
-            }
-        } elseif ($bgType === 'gradient') {
+        if ($bgType === 'gradient') {
             $start = $attrs['background_gradient_start'] ?? '#ffffff';
             $end = $attrs['background_gradient_end'] ?? '#000000';
             $type = $attrs['background_gradient_type'] ?? 'linear';
@@ -258,10 +300,14 @@ class JTB_Module_Button extends JTB_Element
                 $css .= $selector . " { background: radial-gradient(circle, {$start}, {$end}); }\n";
             }
         }
+        // Note: solid background_color is handled by style_config
 
         return $css;
     }
 
+    /**
+     * Generate border CSS with complex structure
+     */
     protected function generateButtonBorderCss(array $attrs, string $selector): string
     {
         $css = '';
@@ -278,10 +324,6 @@ class JTB_Module_Button extends JTB_Element
             $rules[] = 'border-style: ' . $attrs['border_style'];
         }
 
-        if (!empty($attrs['border_color'])) {
-            $rules[] = 'border-color: ' . $attrs['border_color'];
-        }
-
         if (!empty($attrs['border_radius'])) {
             $radius = $attrs['border_radius'];
             if (is_array($radius)) {
@@ -293,13 +335,12 @@ class JTB_Module_Button extends JTB_Element
             $css .= $selector . ' { ' . implode('; ', $rules) . '; }' . "\n";
         }
 
-        if (!empty($attrs['border_color__hover'])) {
-            $css .= $selector . ':hover { border-color: ' . $attrs['border_color__hover'] . '; }' . "\n";
-        }
-
         return $css;
     }
 
+    /**
+     * Generate box shadow CSS with presets
+     */
     protected function generateButtonBoxShadowCss(array $attrs, string $selector): string
     {
         $css = '';

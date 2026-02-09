@@ -16,10 +16,6 @@ require_once CMS_ROOT . '/admin/includes/permissions.php';
 cms_session_start('admin');
 csrf_boot('admin');
 
-if (!defined('DEV_MODE') || DEV_MODE !== true) {
-    http_response_code(403);
-    exit('403 Forbidden');
-}
 
 cms_require_admin_role();
 

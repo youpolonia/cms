@@ -26,6 +26,30 @@ class JTB_Module_Row extends JTB_Element
     public bool $use_filters = false;
     public bool $use_sizing = true;
 
+    // === UNIFIED THEME SYSTEM ===
+    protected string $module_prefix = 'row';
+
+    protected array $style_config = [
+        'column_gap' => [
+            'property' => '--row-column-gap',
+            'selector' => '',
+            'unit' => 'px',
+            'responsive' => true
+        ],
+        'row_gap' => [
+            'property' => '--row-row-gap',
+            'selector' => '',
+            'unit' => 'px',
+            'responsive' => true
+        ],
+        'max_width' => [
+            'property' => 'max-width',
+            'selector' => '',
+            'unit' => 'px',
+            'responsive' => true
+        ]
+    ];
+
     public function getSlug(): string
     {
         return 'row';
@@ -116,6 +140,9 @@ class JTB_Module_Row extends JTB_Element
 
     public function render(array $attrs, string $content = ''): string
     {
+        // Apply default styles from design system
+        $attrs = JTB_Default_Styles::mergeWithDefaults($this->getSlug(), $attrs);
+
         $id = $attrs['_id'] ?? $this->generateId();
         $columns = $attrs['columns'] ?? '1';
 

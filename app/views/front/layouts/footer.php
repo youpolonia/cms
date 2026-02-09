@@ -4,38 +4,14 @@
  * Supports Theme Builder custom footers with Display Conditions
  */
 
-// Load Theme Builder functions for dynamic footer
-if (!function_exists('tb_render_site_template')) {
-    $tbDatabasePath = dirname(__DIR__, 4) . '/core/theme-builder/database.php';
-    if (file_exists($tbDatabasePath)) {
-        require_once $tbDatabasePath;
-    }
-}
-
-// Get current page context for Display Conditions (reuse from header if available)
-if (!isset($pageContext)) {
-    $currentPath = $_SERVER['REQUEST_URI'] ?? '/';
-    $urlPath = trim(parse_url($currentPath, PHP_URL_PATH) ?? '/', '/');
-    // Extract actual slug from URL patterns like /page/slug or just /slug
-    if (preg_match('#^page/(.+)$#', $urlPath, $m)) {
-        $pageSlug = $m[1];
-    } else {
-        $pageSlug = $urlPath;
-    }
-    // Also check if page data is available from controller
-    if (isset($page['slug']) && !empty($page['slug'])) {
-        $pageSlug = $page['slug'];
-    }
-    $pageContext = [
-        'slug' => $pageSlug ?: 'home',
-        'category' => $pageCategory ?? ''
-    ];
-}
-
-// Try to get TB Footer matching current page conditions
+// JTB frontend boot is already loaded by header.php
+// Try to get JTB Footer
 $tbFooter = null;
-if (function_exists('tb_render_site_template')) {
-    $tbFooter = tb_render_site_template('footer', $pageContext);
+if (class_exists('\\JessieThemeBuilder\\JTB_Theme_Integration')) {
+    $jtbFooter = \JessieThemeBuilder\JTB_Theme_Integration::renderFooter();
+    if (!empty($jtbFooter)) {
+        $tbFooter = $jtbFooter;
+    }
 }
 ?>
     </main>

@@ -22,10 +22,6 @@ require_once CMS_ROOT . '/core/ai_model_selector.php';
 require_once CMS_ROOT . '/core/n8n_client.php';
 
 // DEV_MODE check
-if (!defined('DEV_MODE') || DEV_MODE !== true) {
-    http_response_code(403);
-    exit('Access denied');
-}
 
 // Start session and require admin
 cms_session_start('admin');

@@ -25,6 +25,64 @@ class JTB_Module_Testimonial extends JTB_Element
     public bool $use_position = false;
     public bool $use_filters = true;
 
+    // === UNIFIED THEME SYSTEM ===
+    protected string $module_prefix = 'testimonial';
+
+    /**
+     * Declarative style configuration
+     */
+    protected array $style_config = [
+        // Text alignment
+        'text_orientation' => [
+            'property' => 'text-align',
+            'selector' => '.jtb-testimonial-container',
+            'responsive' => true
+        ],
+        // Portrait
+        'portrait_width' => [
+            'property' => 'width',
+            'selector' => '.jtb-testimonial-portrait img',
+            'unit' => 'px'
+        ],
+        'portrait_height' => [
+            'property' => 'height',
+            'selector' => '.jtb-testimonial-portrait img',
+            'unit' => 'px'
+        ],
+        'portrait_border_radius' => [
+            'property' => 'border-radius',
+            'selector' => '.jtb-testimonial-portrait img',
+            'unit' => '%'
+        ],
+        // Quote icon
+        'quote_icon_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-testimonial-quote-icon'
+        ],
+        'quote_icon_size' => [
+            'property' => 'font-size',
+            'selector' => '.jtb-testimonial-quote-icon',
+            'unit' => 'px'
+        ],
+        // Typography colors
+        'author_name_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-testimonial-author-name'
+        ],
+        'position_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-testimonial-position'
+        ],
+        'company_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-testimonial-company'
+        ],
+        'body_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-testimonial-content'
+        ]
+    ];
+
     public function getSlug(): string
     {
         return 'testimonial';
@@ -53,11 +111,11 @@ class JTB_Module_Testimonial extends JTB_Element
                 'type' => 'text',
                 'default' => 'Company Name'
             ],
-            'url' => [
+            'link_url' => [
                 'label' => 'Author/Company URL',
                 'type' => 'text'
             ],
-            'url_new_window' => [
+            'link_target' => [
                 'label' => 'Open in New Tab',
                 'type' => 'toggle',
                 'default' => false
@@ -149,11 +207,14 @@ class JTB_Module_Testimonial extends JTB_Element
 
     public function render(array $attrs, string $content = ''): string
     {
+        // Apply default styles from design system
+        $attrs = JTB_Default_Styles::mergeWithDefaults($this->getSlug(), $attrs);
+
         $author = $this->esc($attrs['author'] ?? 'John Doe');
         $jobTitle = $this->esc($attrs['job_title'] ?? '');
         $company = $this->esc($attrs['company'] ?? '');
-        $url = $attrs['url'] ?? '';
-        $newWindow = !empty($attrs['url_new_window']) ? ' target="_blank" rel="noopener"' : '';
+        $url = $attrs['link_url'] ?? '';
+        $newWindow = !empty($attrs['link_target']) ? ' target="_blank" rel="noopener"' : '';
         $portrait = $attrs['portrait_url'] ?? '';
         $showQuote = ($attrs['quote_icon'] ?? 'on') === 'on';
         $bodyContent = $attrs['content'] ?? '<p>Your testimonial text goes here.</p>';
@@ -208,68 +269,21 @@ class JTB_Module_Testimonial extends JTB_Element
         return $this->renderWrapper($innerHtml, $attrs);
     }
 
+    /**
+     * Generate CSS for Testimonial module
+     * Base styles are in jtb-base-modules.css
+     */
     public function generateCss(array $attrs, string $selector): string
     {
         $css = '';
 
-        // Text alignment
-        if (!empty($attrs['text_orientation'])) {
-            $css .= $selector . ' .jtb-testimonial-container { text-align: ' . $attrs['text_orientation'] . '; }' . "\n";
-        }
+        // Use declarative style_config system
+        $css .= $this->generateStyleConfigCss($attrs, $selector);
 
-        // Portrait styling
-        $portraitWidth = $attrs['portrait_width'] ?? 90;
-        $portraitHeight = $attrs['portrait_height'] ?? 90;
-        $portraitRadius = $attrs['portrait_border_radius'] ?? 50;
+        // Portrait object-fit (always needed for proper image display)
+        $css .= $selector . ' .jtb-testimonial-portrait img { object-fit: cover; }' . "\n";
 
-        $css .= $selector . ' .jtb-testimonial-portrait img { ';
-        $css .= 'width: ' . $portraitWidth . 'px; ';
-        $css .= 'height: ' . $portraitHeight . 'px; ';
-        $css .= 'border-radius: ' . $portraitRadius . '%; ';
-        $css .= 'object-fit: cover; ';
-        $css .= '}' . "\n";
-
-        // Quote icon
-        if (!empty($attrs['quote_icon_color'])) {
-            $css .= $selector . ' .jtb-testimonial-quote-icon { color: ' . $attrs['quote_icon_color'] . '; }' . "\n";
-        }
-
-        $quoteSize = $attrs['quote_icon_size'] ?? 32;
-        $css .= $selector . ' .jtb-testimonial-quote-icon { font-size: ' . $quoteSize . 'px; font-family: Georgia, serif; line-height: 1; }' . "\n";
-
-        // Author name
-        if (!empty($attrs['author_name_color'])) {
-            $css .= $selector . ' .jtb-testimonial-author-name { color: ' . $attrs['author_name_color'] . '; }' . "\n";
-        }
-
-        $css .= $selector . ' .jtb-testimonial-author-name { font-weight: bold; display: block; }' . "\n";
-
-        // Position
-        if (!empty($attrs['position_color'])) {
-            $css .= $selector . ' .jtb-testimonial-position { color: ' . $attrs['position_color'] . '; }' . "\n";
-        }
-
-        // Company
-        if (!empty($attrs['company_color'])) {
-            $css .= $selector . ' .jtb-testimonial-company { color: ' . $attrs['company_color'] . '; }' . "\n";
-        }
-
-        // Body
-        if (!empty($attrs['body_color'])) {
-            $css .= $selector . ' .jtb-testimonial-content { color: ' . $attrs['body_color'] . '; }' . "\n";
-        }
-
-        $css .= $selector . ' .jtb-testimonial-content { margin: 15px 0; font-style: italic; }' . "\n";
-        $css .= $selector . ' .jtb-testimonial-meta { font-size: 0.9em; opacity: 0.8; }' . "\n";
-
-        // Responsive
-        if (!empty($attrs['text_orientation__tablet'])) {
-            $css .= '@media (max-width: 980px) { ' . $selector . ' .jtb-testimonial-container { text-align: ' . $attrs['text_orientation__tablet'] . '; } }' . "\n";
-        }
-        if (!empty($attrs['text_orientation__phone'])) {
-            $css .= '@media (max-width: 767px) { ' . $selector . ' .jtb-testimonial-container { text-align: ' . $attrs['text_orientation__phone'] . '; } }' . "\n";
-        }
-
+        // Parent class handles common styles
         $css .= parent::generateCss($attrs, $selector);
 
         return $css;

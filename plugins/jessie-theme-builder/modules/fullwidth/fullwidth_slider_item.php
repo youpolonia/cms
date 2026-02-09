@@ -26,6 +26,62 @@ class JTB_Module_FullwidthSliderItem extends JTB_Element
     public bool $use_position = false;
     public bool $use_filters = true;
 
+    // === UNIFIED THEME SYSTEM ===
+    protected string $module_prefix = 'fullwidth_slider_item';
+
+    /**
+     * Declarative style configuration
+     */
+    protected array $style_config = [
+        'bg_overlay_color' => [
+            'property' => 'background',
+            'selector' => '.jtb-slide-overlay'
+        ],
+        'heading_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-slide-title'
+        ],
+        'subheading_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-slide-subheading'
+        ],
+        'content_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-slide-description'
+        ],
+        'heading_font_size' => [
+            'property' => 'font-size',
+            'selector' => '.jtb-slide-title',
+            'unit' => 'px',
+            'responsive' => true
+        ],
+        'button_bg_color' => [
+            'property' => 'background',
+            'selector' => '.jtb-slide-button-one',
+            'hover' => true
+        ],
+        'button_text_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-slide-button-one',
+            'hover' => true
+        ],
+        'button_two_bg_color' => [
+            'property' => 'background',
+            'selector' => '.jtb-slide-button-two',
+            'hover' => true
+        ],
+        'button_two_text_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-slide-button-two',
+            'hover' => true
+        ],
+        'button_two_border_color' => [
+            'property' => 'border-color',
+            'selector' => '.jtb-slide-button-two',
+            'hover' => true
+        ]
+    ];
+
     public function getSlug(): string
     {
         return 'fullwidth_slider_item';
@@ -57,7 +113,7 @@ class JTB_Module_FullwidthSliderItem extends JTB_Element
                 'type' => 'text',
                 'default' => 'Learn More'
             ],
-            'button_url' => [
+            'link_url' => [
                 'label' => 'Button URL',
                 'type' => 'text'
             ],
@@ -160,11 +216,14 @@ class JTB_Module_FullwidthSliderItem extends JTB_Element
 
     public function render(array $attrs, string $content = ''): string
     {
+        // Apply default styles from design system
+        $attrs = JTB_Default_Styles::mergeWithDefaults($this->getSlug(), $attrs);
+
         $heading = $this->esc($attrs['heading'] ?? 'Your Slide Title');
         $subheading = $this->esc($attrs['subheading'] ?? '');
         $bodyContent = $attrs['content'] ?? '';
         $btnText = $this->esc($attrs['button_text'] ?? '');
-        $btnUrl = $attrs['button_url'] ?? '';
+        $btnUrl = $attrs['link_url'] ?? '';
         $btn2Text = $this->esc($attrs['button_two_text'] ?? '');
         $btn2Url = $attrs['button_two_url'] ?? '';
         $bgImage = $attrs['bg_image'] ?? '';
@@ -217,6 +276,9 @@ class JTB_Module_FullwidthSliderItem extends JTB_Element
     public function generateCss(array $attrs, string $selector): string
     {
         $css = '';
+
+        // Use declarative style_config system
+        $css .= $this->generateStyleConfigCss($attrs, $selector);
 
         $overlayColor = $attrs['bg_overlay_color'] ?? 'rgba(0,0,0,0.3)';
         $headingColor = $attrs['heading_color'] ?? '#ffffff';

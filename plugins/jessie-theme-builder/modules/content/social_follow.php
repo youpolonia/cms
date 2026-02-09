@@ -26,6 +26,31 @@ class JTB_Module_SocialFollow extends JTB_Element
     public bool $use_position = false;
     public bool $use_filters = false;
 
+    // === UNIFIED THEME SYSTEM ===
+    protected string $module_prefix = 'social_follow';
+
+    /**
+     * Declarative style configuration
+     */
+    protected array $style_config = [
+        'icon_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-social-follow-icon',
+            'hover' => true
+        ],
+        'icon_bg_color' => [
+            'property' => 'background-color',
+            'selector' => '.jtb-social-follow-icon',
+            'hover' => true
+        ],
+        'icon_size' => [
+            'property' => 'font-size',
+            'selector' => '.jtb-social-follow-icon',
+            'unit' => 'px',
+            'responsive' => true
+        ]
+    ];
+
     public function getSlug(): string
     {
         return 'social_follow';
@@ -145,6 +170,9 @@ class JTB_Module_SocialFollow extends JTB_Element
 
     public function render(array $attrs, string $content = ''): string
     {
+        // Apply default styles from design system
+        $attrs = JTB_Default_Styles::mergeWithDefaults($this->getSlug(), $attrs);
+
         $networks = [
             'facebook' => ['url' => $attrs['facebook_url'] ?? '', 'label' => 'Facebook', 'brand' => '#1877f2'],
             'twitter' => ['url' => $attrs['twitter_url'] ?? '', 'label' => 'Twitter', 'brand' => '#1da1f2'],
@@ -182,42 +210,37 @@ class JTB_Module_SocialFollow extends JTB_Element
         return $this->renderWrapper($innerHtml, $attrs);
     }
 
+    /**
+     * Generate CSS for Social Follow module
+     * Base styles are in jtb-base-modules.css
+     */
     public function generateCss(array $attrs, string $selector): string
     {
         $css = '';
+
+        // Use declarative style_config system
+        $css .= $this->generateStyleConfigCss($attrs, $selector);
 
         // Container alignment
         $alignment = $attrs['alignment'] ?? 'center';
         $justify = $alignment === 'left' ? 'flex-start' : ($alignment === 'right' ? 'flex-end' : 'center');
 
         $css .= $selector . ' .jtb-social-follow-container { ';
-        $css .= 'display: flex; ';
-        $css .= 'flex-wrap: wrap; ';
-        $css .= 'justify-content: ' . $justify . '; ';
+        $css .= 'display: flex; flex-wrap: wrap; justify-content: ' . $justify . '; ';
         $css .= 'gap: ' . ($attrs['icon_spacing'] ?? 10) . 'px; ';
         $css .= '}' . "\n";
 
-        // Icon styling
+        // Icon base styling
+        $iconStyle = $attrs['icon_style'] ?? 'icons_only';
         $iconSizeRaw = $attrs['icon_size'] ?? 24;
-        // Parse icon size - could be "18px" or just 18
         $iconSize = is_numeric($iconSizeRaw) ? (int)$iconSizeRaw : (int)preg_replace('/[^0-9]/', '', $iconSizeRaw);
         if ($iconSize <= 0) $iconSize = 24;
 
-        $iconColor = $attrs['icon_color'] ?? '#666666';
-        $iconStyle = $attrs['icon_style'] ?? 'icons_only';
-        $iconBg = $attrs['icon_bg_color'] ?? '#eeeeee';
-
         $css .= $selector . ' .jtb-social-follow-icon { ';
-        $css .= 'display: inline-flex; ';
-        $css .= 'align-items: center; ';
-        $css .= 'justify-content: center; ';
-        $css .= 'font-size: ' . $iconSize . 'px; ';
-        $css .= 'color: ' . $iconColor . '; ';
-        $css .= 'text-decoration: none; ';
-        $css .= 'transition: all 0.3s ease; ';
+        $css .= 'display: inline-flex; align-items: center; justify-content: center; ';
+        $css .= 'text-decoration: none; transition: all 0.3s ease; ';
 
         if ($iconStyle !== 'icons_only') {
-            $css .= 'background-color: ' . $iconBg . '; ';
             $padding = max(8, round($iconSize * 0.4));
             $css .= 'padding: ' . $padding . 'px; ';
 
@@ -229,15 +252,6 @@ class JTB_Module_SocialFollow extends JTB_Element
         }
 
         $css .= '}' . "\n";
-
-        // Hover states
-        if (!empty($attrs['icon_color__hover'])) {
-            $css .= $selector . ' .jtb-social-follow-icon:hover { color: ' . $attrs['icon_color__hover'] . '; }' . "\n";
-        }
-
-        if (!empty($attrs['icon_bg_color__hover']) && $iconStyle !== 'icons_only') {
-            $css .= $selector . ' .jtb-social-follow-icon:hover { background-color: ' . $attrs['icon_bg_color__hover'] . '; }' . "\n";
-        }
 
         // Brand colors on hover (optional)
         if (!empty($attrs['use_brand_colors'])) {
@@ -252,14 +266,7 @@ class JTB_Module_SocialFollow extends JTB_Element
             $css .= $selector . ' .jtb-social-behance:hover { color: #1769ff; }' . "\n";
         }
 
-        // Responsive
-        if (!empty($attrs['icon_size__tablet'])) {
-            $css .= '@media (max-width: 980px) { ' . $selector . ' .jtb-social-follow-icon { font-size: ' . $attrs['icon_size__tablet'] . 'px; } }' . "\n";
-        }
-        if (!empty($attrs['icon_size__phone'])) {
-            $css .= '@media (max-width: 767px) { ' . $selector . ' .jtb-social-follow-icon { font-size: ' . $attrs['icon_size__phone'] . 'px; } }' . "\n";
-        }
-
+        // Responsive alignment
         if (!empty($attrs['alignment__tablet'])) {
             $justify = $attrs['alignment__tablet'] === 'left' ? 'flex-start' : ($attrs['alignment__tablet'] === 'right' ? 'flex-end' : 'center');
             $css .= '@media (max-width: 980px) { ' . $selector . ' .jtb-social-follow-container { justify-content: ' . $justify . '; } }' . "\n";
@@ -269,6 +276,7 @@ class JTB_Module_SocialFollow extends JTB_Element
             $css .= '@media (max-width: 767px) { ' . $selector . ' .jtb-social-follow-container { justify-content: ' . $justify . '; } }' . "\n";
         }
 
+        // Parent class handles common styles
         $css .= parent::generateCss($attrs, $selector);
 
         return $css;

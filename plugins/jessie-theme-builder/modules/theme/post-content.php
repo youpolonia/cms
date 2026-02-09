@@ -15,13 +15,44 @@ class JTB_Module_Post_Content extends JTB_Element
     public string $slug = 'post_content';
     public string $name = 'Post Content';
     public string $icon = 'file-text';
-    public string $category = 'theme';
+    public string $category = 'dynamic';
 
     public bool $use_background = true;
     public bool $use_spacing = true;
     public bool $use_border = true;
     public bool $use_box_shadow = true;
     public bool $use_animation = true;
+    public bool $use_typography = true;
+
+    protected string $module_prefix = 'post_content';
+
+    protected array $style_config = [
+        'text_color' => [
+            'property' => 'color'
+        ],
+        'heading_color' => [
+            'property' => 'color',
+            'selector' => 'h1, h2, h3, h4, h5, h6'
+        ],
+        'link_color' => [
+            'property' => 'color',
+            'selector' => 'a',
+            'hover' => true
+        ],
+        'font_size' => [
+            'property' => 'font-size',
+            'unit' => 'px',
+            'responsive' => true
+        ],
+        'line_height' => [
+            'property' => 'line-height',
+            'unit' => 'em'
+        ],
+        'max_width' => [
+            'property' => 'max-width',
+            'unit' => 'px'
+        ]
+    ];
 
     public function getSlug(): string
     {
@@ -103,14 +134,29 @@ class JTB_Module_Post_Content extends JTB_Element
 
     public function render(array $attrs, string $content = ''): string
     {
+        // Apply default styles from design system
+        $attrs = JTB_Default_Styles::mergeWithDefaults($this->getSlug(), $attrs);
+
         $id = $attrs['id'] ?? 'post_content_' . uniqid();
 
+        // Get dynamic content
+        $isPreview = JTB_Dynamic_Context::isPreviewMode();
+        $postContent = JTB_Dynamic_Context::getPostContent();
+
         $html = '<div id="' . $this->esc($id) . '" class="jtb-post-content">';
-        $html .= '<div class="jtb-content-placeholder">';
-        $html .= '<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>';
-        $html .= '<strong>Post Content</strong>';
-        $html .= '<span>Your dynamic post content will be displayed here.</span>';
-        $html .= '</div>';
+
+        // Show placeholder in builder preview or if no content
+        if (empty($postContent) || $isPreview) {
+            $html .= '<div class="jtb-content-placeholder">';
+            $html .= '<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>';
+            $html .= '<strong>Post Content</strong>';
+            $html .= '<span>Your dynamic post content will be displayed here.</span>';
+            $html .= '</div>';
+        } else {
+            // Render actual post content (allow HTML from post)
+            $html .= '<div class="jtb-content-inner">' . $postContent . '</div>';
+        }
+
         $html .= '</div>';
 
         return $html;
@@ -119,6 +165,7 @@ class JTB_Module_Post_Content extends JTB_Element
     public function generateCss(array $attrs, string $selector): string
     {
         $css = parent::generateCss($attrs, $selector);
+        $css .= $this->generateStyleConfigCss($attrs, $selector);
 
         // Main styling
         $textColor = $attrs['text_color'] ?? '#333333';

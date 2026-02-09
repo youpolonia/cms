@@ -1,9 +1,0 @@
-inline_commands:
-  deny:
-    - artisan
-    - composer
-    - php artisan
-    - php vendor
-    - schema
-    - migrate
-    - rm

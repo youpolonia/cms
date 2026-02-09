@@ -26,6 +26,53 @@ class JTB_Module_ContactForm extends JTB_Element
     public bool $use_position = false;
     public bool $use_filters = false;
 
+    // === UNIFIED THEME SYSTEM ===
+    protected string $module_prefix = 'contact_form';
+
+    /**
+     * Declarative style configuration
+     */
+    protected array $style_config = [
+        'form_field_bg_color' => [
+            'property' => 'background-color',
+            'selector' => '.jtb-form-field input, .jtb-form-field textarea'
+        ],
+        'form_field_text_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-form-field input, .jtb-form-field textarea'
+        ],
+        'form_field_border_color' => [
+            'property' => 'border-color',
+            'selector' => '.jtb-form-field input, .jtb-form-field textarea',
+            'hover' => true
+        ],
+        'form_field_border_width' => [
+            'property' => 'border-width',
+            'selector' => '.jtb-form-field input, .jtb-form-field textarea',
+            'unit' => 'px'
+        ],
+        'form_field_border_radius' => [
+            'property' => 'border-radius',
+            'selector' => '.jtb-form-field input, .jtb-form-field textarea',
+            'unit' => 'px'
+        ],
+        'button_bg_color' => [
+            'property' => 'background-color',
+            'selector' => '.jtb-contact-submit',
+            'hover' => true
+        ],
+        'button_text_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-contact-submit',
+            'hover' => true
+        ],
+        'button_border_radius' => [
+            'property' => 'border-radius',
+            'selector' => '.jtb-contact-submit',
+            'unit' => 'px'
+        ]
+    ];
+
     public function getSlug(): string
     {
         return 'contact_form';
@@ -148,6 +195,9 @@ class JTB_Module_ContactForm extends JTB_Element
 
     public function render(array $attrs, string $content = ''): string
     {
+        // Apply default styles from design system
+        $attrs = JTB_Default_Styles::mergeWithDefaults($this->getSlug(), $attrs);
+
         $title = $this->esc($attrs['title'] ?? 'Contact Us');
         $submitText = $this->esc($attrs['submit_button_text'] ?? 'Submit');
         $successMessage = $this->esc($attrs['success_message'] ?? 'Thanks for contacting us!');
@@ -199,67 +249,35 @@ class JTB_Module_ContactForm extends JTB_Element
         return $this->renderWrapper($innerHtml, $attrs);
     }
 
+    /**
+     * Generate CSS for Contact Form module
+     * Base styles are in jtb-base-modules.css
+     */
     public function generateCss(array $attrs, string $selector): string
     {
         $css = '';
 
-        // Form fields
-        $fieldBg = $attrs['form_field_bg_color'] ?? '#ffffff';
-        $fieldText = $attrs['form_field_text_color'] ?? '#666666';
-        $fieldBorder = $attrs['form_field_border_color'] ?? '#bbb';
-        $fieldBorderWidth = $attrs['form_field_border_width'] ?? 1;
-        $fieldBorderRadius = $attrs['form_field_border_radius'] ?? 0;
+        // Use declarative style_config system
+        $css .= $this->generateStyleConfigCss($attrs, $selector);
 
+        // Form fields base styles
         $css .= $selector . ' .jtb-form-field { margin-bottom: 20px; }' . "\n";
-
         $css .= $selector . ' .jtb-form-field label { display: block; margin-bottom: 5px; font-weight: 500; }' . "\n";
 
         $css .= $selector . ' .jtb-form-field input, ' . $selector . ' .jtb-form-field textarea { ';
-        $css .= 'width: 100%; ';
-        $css .= 'padding: 12px 15px; ';
-        $css .= 'background-color: ' . $fieldBg . '; ';
-        $css .= 'color: ' . $fieldText . '; ';
-        $css .= 'border: ' . $fieldBorderWidth . 'px solid ' . $fieldBorder . '; ';
-        $css .= 'border-radius: ' . $fieldBorderRadius . 'px; ';
-        $css .= 'font-size: 14px; ';
-        $css .= 'transition: border-color 0.3s ease; ';
-        $css .= 'box-sizing: border-box; ';
+        $css .= 'width: 100%; padding: 12px 15px; font-size: 14px; transition: border-color 0.3s ease; box-sizing: border-box; border-style: solid; ';
         $css .= '}' . "\n";
 
         // Focus state
-        if (!empty($attrs['form_field_border_color__hover'])) {
-            $css .= $selector . ' .jtb-form-field input:focus, ' . $selector . ' .jtb-form-field textarea:focus { border-color: ' . $attrs['form_field_border_color__hover'] . '; outline: none; }' . "\n";
-        } else {
-            $css .= $selector . ' .jtb-form-field input:focus, ' . $selector . ' .jtb-form-field textarea:focus { border-color: #2ea3f2; outline: none; }' . "\n";
-        }
+        $css .= $selector . ' .jtb-form-field input:focus, ' . $selector . ' .jtb-form-field textarea:focus { outline: none; }' . "\n";
 
-        // Button
-        $btnBg = $attrs['button_bg_color'] ?? '#2ea3f2';
-        $btnText = $attrs['button_text_color'] ?? '#ffffff';
-        $btnRadius = $attrs['button_border_radius'] ?? 3;
-
-        $css .= $selector . ' .jtb-contact-submit { ';
-        $css .= 'background-color: ' . $btnBg . '; ';
-        $css .= 'color: ' . $btnText . '; ';
-        $css .= 'border: none; ';
-        $css .= 'padding: 12px 30px; ';
-        $css .= 'border-radius: ' . $btnRadius . 'px; ';
-        $css .= 'cursor: pointer; ';
-        $css .= 'font-size: 14px; ';
-        $css .= 'transition: all 0.3s ease; ';
-        $css .= '}' . "\n";
-
-        // Button hover
-        if (!empty($attrs['button_bg_color__hover'])) {
-            $css .= $selector . ' .jtb-contact-submit:hover { background-color: ' . $attrs['button_bg_color__hover'] . '; }' . "\n";
-        }
-        if (!empty($attrs['button_text_color__hover'])) {
-            $css .= $selector . ' .jtb-contact-submit:hover { color: ' . $attrs['button_text_color__hover'] . '; }' . "\n";
-        }
+        // Button base styles
+        $css .= $selector . ' .jtb-contact-submit { border: none; padding: 12px 30px; cursor: pointer; font-size: 14px; transition: all 0.3s ease; }' . "\n";
 
         // Success message
         $css .= $selector . ' .jtb-contact-form-success { padding: 20px; background: #d4edda; color: #155724; border-radius: 5px; text-align: center; }' . "\n";
 
+        // Parent class handles common styles
         $css .= parent::generateCss($attrs, $selector);
 
         return $css;

@@ -25,6 +25,63 @@ class JTB_Module_TeamMember extends JTB_Element
     public bool $use_position = false;
     public bool $use_filters = true;
 
+    // === UNIFIED THEME SYSTEM ===
+    protected string $module_prefix = 'team_member';
+
+    /**
+     * Declarative style configuration
+     */
+    protected array $style_config = [
+        // Text alignment
+        'text_orientation' => [
+            'property' => 'text-align',
+            'selector' => '.jtb-team-member-container',
+            'responsive' => true
+        ],
+        // Image
+        'image_border_radius' => [
+            'property' => 'border-radius',
+            'selector' => '.jtb-team-member-image img',
+            'unit' => '%'
+        ],
+        // Name
+        'name_font_size' => [
+            'property' => 'font-size',
+            'selector' => '.jtb-team-member-name',
+            'unit' => 'px'
+        ],
+        'name_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-team-member-name'
+        ],
+        // Position
+        'position_font_size' => [
+            'property' => 'font-size',
+            'selector' => '.jtb-team-member-position',
+            'unit' => 'px'
+        ],
+        'position_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-team-member-position'
+        ],
+        // Bio
+        'bio_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-team-member-bio'
+        ],
+        // Social icons
+        'icon_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-social-icon',
+            'hover' => true
+        ],
+        'icon_size' => [
+            'property' => 'font-size',
+            'selector' => '.jtb-social-icon',
+            'unit' => 'px'
+        ]
+    ];
+
     public function getSlug(): string
     {
         return 'team_member';
@@ -128,6 +185,9 @@ class JTB_Module_TeamMember extends JTB_Element
 
     public function render(array $attrs, string $content = ''): string
     {
+        // Apply default styles from design system
+        $attrs = JTB_Default_Styles::mergeWithDefaults($this->getSlug(), $attrs);
+
         $name = $this->esc($attrs['name'] ?? 'John Doe');
         $position = $this->esc($attrs['position'] ?? 'CEO');
         $image = $attrs['image_url'] ?? '';
@@ -191,34 +251,18 @@ class JTB_Module_TeamMember extends JTB_Element
         return $this->renderWrapper($innerHtml, $attrs);
     }
 
+    /**
+     * Generate CSS for Team Member module
+     * Base styles are in jtb-base-modules.css
+     */
     public function generateCss(array $attrs, string $selector): string
     {
         $css = '';
 
-        // Text alignment
-        if (!empty($attrs['text_orientation'])) {
-            $css .= $selector . ' .jtb-team-member-container { text-align: ' . $attrs['text_orientation'] . '; }' . "\n";
-        }
+        // Use declarative style_config system
+        $css .= $this->generateStyleConfigCss($attrs, $selector);
 
-        // Image styling
-        $imageRadius = $attrs['image_border_radius'] ?? 0;
-        $css .= $selector . ' .jtb-team-member-image img { ';
-        $css .= 'width: 100%; ';
-        $css .= 'border-radius: ' . $imageRadius . '%; ';
-        $css .= '}' . "\n";
-
-        // Position styling
-        $css .= $selector . ' .jtb-team-member-position { font-size: 0.9em; color: #666; margin-bottom: 10px; }' . "\n";
-
-        // Bio styling
-        $css .= $selector . ' .jtb-team-member-bio { margin-bottom: 15px; }' . "\n";
-
-        // Social icons
-        $iconColor = $attrs['icon_color'] ?? '#2ea3f2';
-        $iconSize = $attrs['icon_size'] ?? 20;
-
-        $css .= $selector . ' .jtb-team-member-social { display: flex; gap: 10px; justify-content: center; }' . "\n";
-
+        // Social icons justify content based on text alignment
         if (!empty($attrs['text_orientation'])) {
             $justify = $attrs['text_orientation'];
             if ($justify === 'left') {
@@ -229,24 +273,7 @@ class JTB_Module_TeamMember extends JTB_Element
             $css .= $selector . ' .jtb-team-member-social { justify-content: ' . $justify . '; }' . "\n";
         }
 
-        $css .= $selector . ' .jtb-social-icon { ';
-        $css .= 'color: ' . $iconColor . '; ';
-        $css .= 'font-size: ' . $iconSize . 'px; ';
-        $css .= 'transition: color 0.3s ease; ';
-        $css .= '}' . "\n";
-
-        if (!empty($attrs['icon_color__hover'])) {
-            $css .= $selector . ' .jtb-social-icon:hover { color: ' . $attrs['icon_color__hover'] . '; }' . "\n";
-        }
-
-        // Responsive
-        if (!empty($attrs['text_orientation__tablet'])) {
-            $css .= '@media (max-width: 980px) { ' . $selector . ' .jtb-team-member-container { text-align: ' . $attrs['text_orientation__tablet'] . '; } }' . "\n";
-        }
-        if (!empty($attrs['text_orientation__phone'])) {
-            $css .= '@media (max-width: 767px) { ' . $selector . ' .jtb-team-member-container { text-align: ' . $attrs['text_orientation__phone'] . '; } }' . "\n";
-        }
-
+        // Parent class handles common styles
         $css .= parent::generateCss($attrs, $selector);
 
         return $css;

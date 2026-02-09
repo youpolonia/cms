@@ -125,6 +125,7 @@ const JTBConditionsBuilder = {
 
     /**
      * Handle page type change
+     * Updated 2026-02-04: Added object label update and better error handling
      */
     async onPageTypeChange() {
         const select = document.getElementById('conditionPageType');
@@ -132,27 +133,56 @@ const JTBConditionsBuilder = {
         const hasObjects = selectedOption.dataset.hasObjects === 'true';
         const objectWrapper = document.getElementById('objectSelectWrapper');
         const objectSelect = document.getElementById('conditionObjectId');
+        const objectLabel = document.getElementById('objectSelectLabel');
 
         if (hasObjects) {
             objectWrapper.style.display = 'block';
 
+            // Update label based on page type
+            const pageTypeConfig = this.pageTypes[select.value];
+            if (objectLabel && pageTypeConfig && pageTypeConfig.object_label) {
+                objectLabel.textContent = pageTypeConfig.object_label;
+            }
+
+            // Show loading state
+            objectSelect.innerHTML = '<option value="">Loading...</option>';
+            objectSelect.disabled = true;
+
             // Load objects for this type
             try {
-                const response = await fetch(`/api/jtb/conditions-objects?type=${select.value}`, { credentials: 'include' });
+                const response = await fetch(`/api/jtb/conditions-objects?type=${select.value}`, {
+                    credentials: 'include',
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+
                 const result = await response.json();
 
                 objectSelect.innerHTML = '<option value="">All</option>';
+                objectSelect.disabled = false;
 
-                if (result.success && result.objects) {
+                if (result.success && result.objects && result.objects.length > 0) {
                     result.objects.forEach(obj => {
                         const option = document.createElement('option');
                         option.value = obj.id;
-                        option.textContent = obj.name;
+                        option.textContent = obj.name || `ID: ${obj.id}`;
                         objectSelect.appendChild(option);
                     });
+                } else if (result.objects && result.objects.length === 0) {
+                    objectSelect.innerHTML = '<option value="">No items found</option>';
+                } else if (result.error) {
+                    console.error('API error:', result.error);
+                    objectSelect.innerHTML = '<option value="">Error loading items</option>';
                 }
             } catch (error) {
                 console.error('Error loading objects:', error);
+                objectSelect.innerHTML = '<option value="">Error loading items</option>';
+                objectSelect.disabled = false;
             }
         } else {
             objectWrapper.style.display = 'none';

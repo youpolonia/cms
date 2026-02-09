@@ -37,14 +37,22 @@ class JTB_Registry
 
     /**
      * Get a module instance by slug
+     * Normalizes slug: converts hyphens to underscores for compatibility
+     * (AI may generate 'site-logo' but module is registered as 'site_logo')
      */
     public static function get(string $slug): ?JTB_Element
     {
-        if (!isset(self::$modules[$slug])) {
+        // Normalize slug: convert hyphens to underscores
+        $normalizedSlug = str_replace('-', '_', $slug);
+
+        // Try normalized slug first, then original
+        $lookupSlug = isset(self::$modules[$normalizedSlug]) ? $normalizedSlug : $slug;
+
+        if (!isset(self::$modules[$lookupSlug])) {
             return null;
         }
 
-        $className = self::$modules[$slug];
+        $className = self::$modules[$lookupSlug];
         return new $className();
     }
 
@@ -126,10 +134,14 @@ class JTB_Registry
 
     /**
      * Check if module exists
+     * Normalizes slug: converts hyphens to underscores for compatibility
      */
     public static function exists(string $slug): bool
     {
-        return isset(self::$modules[$slug]);
+        // Normalize slug: convert hyphens to underscores
+        $normalizedSlug = str_replace('-', '_', $slug);
+
+        return isset(self::$modules[$slug]) || isset(self::$modules[$normalizedSlug]);
     }
 
     /**

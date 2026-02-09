@@ -1,4 +1,6 @@
 <?php
+file_put_contents('/tmp/jtb_root.log', 'ROOT: ' . ($_SERVER['REQUEST_URI'] ?? 'none') . "\n", FILE_APPEND);
+
 /**
  * CMS Main Entry Point
  * Handles both legacy routes and MVC admin routes
@@ -9,7 +11,6 @@ $_debug_uri = $_SERVER['REQUEST_URI'] ?? 'unknown';
 $_debug_method = $_SERVER['REQUEST_METHOD'] ?? 'unknown';
 $_debug_session = session_status() === PHP_SESSION_ACTIVE ? 'ACTIVE' : (session_status() === PHP_SESSION_NONE ? 'NONE' : 'DISABLED');
 $_debug_cookie = isset($_COOKIE['CMSSESSID_ADMIN']) ? 'SET' : 'MISSING';
-@file_put_contents(__DIR__ . '/logs/index_debug.log', date('Y-m-d H:i:s') . " INDEX.PHP: [{$_debug_method}] {$_debug_uri} | Session: {$_debug_session} | Cookie: {$_debug_cookie}\n", FILE_APPEND);
 
 use Core\Router as router;
 
@@ -133,10 +134,8 @@ if (session_status() === PHP_SESSION_NONE) {
 $_debug_logged_in = \Core\Session::isLoggedIn() ? 'YES' : 'NO';
 $_debug_admin_id = $_SESSION['admin_id'] ?? 'null';
 $_debug_admin_role = $_SESSION['admin_role'] ?? 'null';
-@file_put_contents(__DIR__ . '/logs/index_debug.log', date('Y-m-d H:i:s') . " SESSION_CHECK: LoggedIn={$_debug_logged_in} admin_id={$_debug_admin_id} admin_role={$_debug_admin_role}\n", FILE_APPEND);
 
 // DEBUG DEEP
-@file_put_contents(__DIR__ . '/logs/index_debug.log', date('Y-m-d H:i:s') . " BEFORE_ROUTE_REGISTRATION\n", FILE_APPEND);
 
 // ============================================================
 // ROUTE REGISTRATION
@@ -167,7 +166,6 @@ if (file_exists($routeFile)) {
 }
 
 // DEBUG DEEP
-@file_put_contents(__DIR__ . '/logs/index_debug.log', date('Y-m-d H:i:s') . " AFTER_LEGACY_ROUTES\n", FILE_APPEND);
 
 // Load MVC admin routes from config/routes.php LAST (higher priority - overwrites legacy)
 $mvcRoutesFile = CMS_CONFIG . '/routes.php';
@@ -254,7 +252,6 @@ if (file_exists($mvcRoutesFile)) {
 }
 
 // DEBUG DEEP
-@file_put_contents(__DIR__ . '/logs/index_debug.log', date('Y-m-d H:i:s') . " AFTER_MVC_ROUTES\n", FILE_APPEND);
 
 // Guarded optional load of custom web routes (DEV only)
 if (defined('DEV_MODE') && DEV_MODE === true) {
@@ -265,17 +262,13 @@ if (defined('DEV_MODE') && DEV_MODE === true) {
 // ============================================================
 // REQUEST DISPATCH
 // ============================================================
-@file_put_contents(__DIR__ . '/logs/index_debug.log', date('Y-m-d H:i:s') . " BEFORE_VALIDATOR\n", FILE_APPEND);
 $validator = new ValidationMiddleware(null);
-@file_put_contents(__DIR__ . '/logs/index_debug.log', date('Y-m-d H:i:s') . " AFTER_VALIDATOR\n", FILE_APPEND);
 $method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
 $uri = $_SERVER['REQUEST_URI'] ?? '/';
 $qpos = strpos($uri, '?');
 if ($qpos !== false) { $uri = substr($uri, 0, $qpos); }
 if ($uri === '' || $uri === '/index.php') { $uri = '/'; }
-@file_put_contents(__DIR__ . '/logs/index_debug.log', date('Y-m-d H:i:s') . " BEFORE_VALIDATE uri=$uri\n", FILE_APPEND);
 $validation_ok = $validator->validate($method, $uri);
-@file_put_contents(__DIR__ . '/logs/index_debug.log', date('Y-m-d H:i:s') . " AFTER_VALIDATE ok=" . ($validation_ok ? 'yes' : 'no') . "\n", FILE_APPEND);
 if (!$validation_ok) { http_response_code(400); }
 // DEBUG JTB
 
@@ -289,7 +282,7 @@ $jtbQpos = strpos($jtbUri, "?");
 if ($jtbQpos !== false) { $jtbUri = substr($jtbUri, 0, $jtbQpos); }
 
 // JTB API Routes
-if (preg_match('#^/api/jtb/([\w-]+)(?:/(\d+))?$#', $jtbUri, $jtbMatches)) {
+if (preg_match('#^/api/jtb/(?:ai/)?([\w-]+)(?:/(\d+))?$#', $jtbUri, $jtbMatches)) {
     require_once CMS_ROOT . '/plugins/jessie-theme-builder/api/router.php';
     exit;
 }
@@ -344,25 +337,41 @@ if (preg_match('#^/admin/jtb/global-modules/?$#', $jtbUri)) {
     exit;
 }
 
-// AI Theme Builder 5.0 Routes
-require_once CMS_ROOT . '/app/routes/aitb5.php';
+
+// JTB Website Builder - Unified Theme Builder
+if (preg_match('#^/admin/jtb/website-builder/?$#', $jtbUri)) {
+    require_once CMS_ROOT . '/plugins/jessie-theme-builder/controllers/template-controller.php';
+    (new \JessieThemeBuilder\TemplateController())->websiteBuilder();
+    exit;
+}
+
+
+// JTB Website Editor - Unified click-to-edit editor (NEW 2026-02-07)
+if (preg_match('#^/admin/jtb/website-editor/?$#', $jtbUri)) {
+    require_once CMS_ROOT . '/plugins/jessie-theme-builder/views/website-editor.php';
+    exit;
+}
+
+// JTB Website Preview
+if (preg_match('#^/preview/website/?$#', $uri)) {
+    require_once CMS_ROOT . '/plugins/jessie-theme-builder/preview-website.php';
+    exit;
+}
+
+// AI Theme Builder 5.0 Routes — REMOVED (legacy TB5)
+// require_once CMS_ROOT . '/app/routes/aitb5.php';
 // END JTB ROUTES
 
 
 
-@file_put_contents(__DIR__ . '/logs/index_debug.log', date('Y-m-d H:i:s') . " PRE_DISPATCH router_exists=" . (class_exists(router::class) ? 'yes' : 'no') . "\n", FILE_APPEND);
 
 if (class_exists(router::class) && method_exists(router::class, 'dispatch')) {
     try {
-        @file_put_contents('/tmp/router_debug.log', date('Y-m-d H:i:s') . " CALLING_DISPATCH\n", FILE_APPEND);
         router::dispatch();
-        @file_put_contents('/tmp/router_debug.log', date('Y-m-d H:i:s') . " DISPATCH_DONE\n", FILE_APPEND);
     } catch (\Throwable $e) {
-        @file_put_contents('/tmp/router_debug.log', date('Y-m-d H:i:s') . " DISPATCH_ERROR: " . $e->getMessage() . "\n", FILE_APPEND);
         error_log('[CMS] Dispatch error: ' . $e->getMessage());
         http_response_code(500);
     }
 } else {
-    @file_put_contents('/tmp/router_debug.log', date('Y-m-d H:i:s') . " NO_ROUTER_CLASS\n", FILE_APPEND);
     http_response_code(404);
 }

@@ -25,6 +25,19 @@ class JTB_Module_Video extends JTB_Element
     public bool $use_position = false;
     public bool $use_filters = true;
 
+    // === UNIFIED THEME SYSTEM ===
+    protected string $module_prefix = 'video';
+
+    /**
+     * Declarative style configuration
+     */
+    protected array $style_config = [
+        'play_icon_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-video-play-icon'
+        ]
+    ];
+
     public function getSlug(): string
     {
         return 'video';
@@ -94,6 +107,9 @@ class JTB_Module_Video extends JTB_Element
 
     public function render(array $attrs, string $content = ''): string
     {
+        // Apply default styles from design system
+        $attrs = JTB_Default_Styles::mergeWithDefaults($this->getSlug(), $attrs);
+
         $src = $attrs['src'] ?? '';
         $webm = $attrs['src_webm'] ?? '';
         $poster = $attrs['image_src'] ?? '';
@@ -161,9 +177,16 @@ class JTB_Module_Video extends JTB_Element
         return $this->renderWrapper($innerHtml, $attrs);
     }
 
+    /**
+     * Generate CSS for Video module
+     * Base styles are in jtb-base-modules.css
+     */
     public function generateCss(array $attrs, string $selector): string
     {
         $css = '';
+
+        // Use declarative style_config system
+        $css .= $this->generateStyleConfigCss($attrs, $selector);
 
         // Aspect ratio container
         $css .= $selector . ' .jtb-video-container { position: relative; width: 100%; overflow: hidden; }' . "\n";
@@ -177,27 +200,15 @@ class JTB_Module_Video extends JTB_Element
 
         // Video/iframe positioning
         $css .= $selector . ' .jtb-video-iframe, ' . $selector . ' .jtb-video-player { ';
-        $css .= 'position: absolute; ';
-        $css .= 'top: 0; ';
-        $css .= 'left: 0; ';
-        $css .= 'width: 100%; ';
-        $css .= 'height: 100%; ';
+        $css .= 'position: absolute; top: 0; left: 0; width: 100%; height: 100%; ';
         $css .= '}' . "\n";
 
         // Placeholder
         $css .= $selector . ' .jtb-video-placeholder { ';
-        $css .= 'position: absolute; ';
-        $css .= 'top: 50%; ';
-        $css .= 'left: 50%; ';
-        $css .= 'transform: translate(-50%, -50%); ';
-        $css .= 'color: #999; ';
+        $css .= 'position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #999; ';
         $css .= '}' . "\n";
 
-        // Play icon overlay
-        if (!empty($attrs['play_icon_color'])) {
-            $css .= $selector . ' .jtb-video-play-icon { color: ' . $attrs['play_icon_color'] . '; }' . "\n";
-        }
-
+        // Parent class handles common styles
         $css .= parent::generateCss($attrs, $selector);
 
         return $css;

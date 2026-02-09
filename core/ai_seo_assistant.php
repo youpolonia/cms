@@ -260,90 +260,45 @@ function ai_seo_assistant_analyze(array $spec): array
         $prompt .= "- Return STRICT JSON with these keys if possible; if you are unsure, still fill them with best-effort estimates\n";
         $prompt .= "- Be specific, actionable and practical\n";
 
-        // Load AI configuration
-        $aiConfig = ai_config_load();
-        if (empty($aiConfig['api_key'])) {
-            ai_seo_log_error('AI API key not configured');
+        // Use multi-provider AI via ai_universal_generate()
+        $aiSettings = ai_config_load_full();
+        $provider = '';
+        $model = '';
+        if (!empty($aiSettings['providers'])) {
+            foreach ($aiSettings['providers'] as $pName => $pConfig) {
+                if (!empty($pConfig['enabled']) && !empty($pConfig['api_key'])) {
+                    $provider = $pName;
+                    $model = $pConfig['default_model'] ?? '';
+                    break;
+                }
+            }
+        }
+        if (empty($provider)) {
+            ai_seo_log_error('No AI provider configured');
             ai_seo_log_complete($logStartTime, false);
             return [
                 'ok' => false,
-                'error' => 'AI API key not configured. Please configure OpenAI in config/ai_settings.json'
+                'error' => 'No AI provider configured. Please configure AI settings.'
             ];
         }
 
-        $apiKey = $aiConfig['api_key'];
-        $model = $aiConfig['model'] ?? 'gpt-4o-mini';
-        $baseUrl = $aiConfig['base_url'] ?? 'https://api.openai.com/v1';
-        $endpoint = rtrim($baseUrl, '/') . '/chat/completions';
-
-        $payload = [
-            'model' => $model,
-            'messages' => [
-                ['role' => 'system', 'content' => 'You are an expert SEO consultant. Always respond with valid JSON only, no markdown formatting.'],
-                ['role' => 'user', 'content' => $prompt]
-            ],
-            'temperature' => 0.35,
-            'max_tokens' => 4000
-        ];
-
-        $ch = curl_init($endpoint);
-        if ($ch === false) {
-            ai_seo_log_error('Failed to initialize cURL');
-            ai_seo_log_complete($logStartTime, false);
-            return [
-                'ok' => false,
-                'error' => 'Failed to initialize HTTP client.'
-            ];
-        }
-
-        curl_setopt_array($ch, [
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_POST => true,
-            CURLOPT_POSTFIELDS => json_encode($payload),
-            CURLOPT_HTTPHEADER => [
-                'Content-Type: application/json',
-                'Authorization: Bearer ' . $apiKey
-            ],
-            CURLOPT_TIMEOUT => 120
+        $systemPrompt = 'You are an expert SEO consultant. Always respond with valid JSON only, no markdown formatting.';
+        $aiResult = ai_universal_generate($provider, $model, $systemPrompt, $prompt, [
+            'max_tokens' => 4000,
+            'temperature' => 0.35
         ]);
 
-        $response = curl_exec($ch);
-        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        $curlError = curl_error($ch);
-        curl_close($ch);
-
-        if ($response === false) {
-            error_log('AI SEO Assistant: cURL error - ' . $curlError);
-            ai_seo_log_error('cURL error', ['error' => $curlError]);
+        if (!$aiResult['ok']) {
+            ai_seo_log_error('AI generation failed', ['error' => $aiResult['error'] ?? 'Unknown']);
             ai_seo_log_complete($logStartTime, false);
             return [
                 'ok' => false,
-                'error' => 'Network error while contacting AI service.'
-            ];
-        }
-
-        if ($httpCode !== 200) {
-            error_log('AI SEO Assistant: OpenAI API error - HTTP ' . $httpCode . ' - ' . $response);
-            ai_seo_log_error('OpenAI API error', ['http_code' => $httpCode, 'response' => substr($response, 0, 500)]);
-            ai_seo_log_complete($logStartTime, false);
-            return [
-                'ok' => false,
-                'error' => 'AI service returned error (HTTP ' . $httpCode . '). Please try again.'
-            ];
-        }
-
-        $responseData = json_decode($response, true);
-        if (!is_array($responseData) || !isset($responseData['choices'][0]['message']['content'])) {
-            ai_seo_log_error('Invalid OpenAI response structure');
-            ai_seo_log_complete($logStartTime, false);
-            return [
-                'ok' => false,
-                'error' => 'Invalid response from AI service.'
+                'error' => $aiResult['error'] ?? 'AI generation failed. Please try again.'
             ];
         }
 
         $wasCached = false;
-        $text = trim($responseData['choices'][0]['message']['content']);
+        $text = trim($aiResult['content'] ?? '');
 
         $text = preg_replace('/^json:\s*/i', '', $text);
         $text = preg_replace('/^```json\s*/i', '', $text);
@@ -1037,83 +992,42 @@ function ai_seo_assistant_generate_content(array $analysis, array $context = [])
         $prompt .= "Begin writing the article now:\n\n";
 
         // Load AI configuration
-        $aiConfig = ai_config_load();
-        if (empty($aiConfig['api_key'])) {
+        // Use multi-provider AI via ai_universal_generate()
+        $aiSettings = ai_config_load_full();
+        $provider = '';
+        $model = '';
+        if (!empty($aiSettings['providers'])) {
+            foreach ($aiSettings['providers'] as $pName => $pConfig) {
+                if (!empty($pConfig['enabled']) && !empty($pConfig['api_key'])) {
+                    $provider = $pName;
+                    $model = $pConfig['default_model'] ?? '';
+                    break;
+                }
+            }
+        }
+        if (empty($provider)) {
             return [
                 'ok' => false,
                 'content' => '',
-                'error' => 'AI API key not configured. Please configure OpenAI in config/ai_settings.json'
+                'error' => 'No AI provider configured.'
             ];
         }
 
-        $apiKey = $aiConfig['api_key'];
-        $model = $aiConfig['model'] ?? 'gpt-4o-mini';
-        $baseUrl = $aiConfig['base_url'] ?? 'https://api.openai.com/v1';
-        $endpoint = rtrim($baseUrl, '/') . '/chat/completions';
-
-        $payload = [
-            'model' => $model,
-            'messages' => [
-                ['role' => 'system', 'content' => 'You are an expert SEO content writer. Write high-quality, engaging content.'],
-                ['role' => 'user', 'content' => $prompt]
-            ],
-            'temperature' => 0.7,
-            'max_tokens' => 4000
-        ];
-
-        $ch = curl_init($endpoint);
-        if ($ch === false) {
-            return [
-                'ok' => false,
-                'content' => '',
-                'error' => 'Failed to initialize HTTP client.'
-            ];
-        }
-
-        curl_setopt_array($ch, [
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_POST => true,
-            CURLOPT_POSTFIELDS => json_encode($payload),
-            CURLOPT_HTTPHEADER => [
-                'Content-Type: application/json',
-                'Authorization: Bearer ' . $apiKey
-            ],
-            CURLOPT_TIMEOUT => 120
+        $systemPrompt = 'You are an expert SEO content writer. Write high-quality, engaging content.';
+        $aiResult = ai_universal_generate($provider, $model, $systemPrompt, $prompt, [
+            'max_tokens' => 4000,
+            'temperature' => 0.7
         ]);
 
-        $response = curl_exec($ch);
-        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        $curlError = curl_error($ch);
-        curl_close($ch);
-
-        if ($response === false) {
-            error_log('AI SEO Assistant content generation: cURL error - ' . $curlError);
+        if (!$aiResult['ok']) {
             return [
                 'ok' => false,
                 'content' => '',
-                'error' => 'Network error while contacting AI service.'
+                'error' => $aiResult['error'] ?? 'AI generation failed.'
             ];
         }
 
-        if ($httpCode !== 200) {
-            error_log('AI SEO Assistant content generation: OpenAI API error - HTTP ' . $httpCode);
-            return [
-                'ok' => false,
-                'content' => '',
-                'error' => 'AI service returned error (HTTP ' . $httpCode . '). Please try again.'
-            ];
-        }
-
-        $responseData = json_decode($response, true);
-        if (!is_array($responseData) || !isset($responseData['choices'][0]['message']['content'])) {
-            return [
-                'ok' => false,
-                'content' => '',
-                'error' => 'Invalid response from AI service.'
-            ];
-        }
-
-        $content = trim($responseData['choices'][0]['message']['content']);
+        $content = trim($aiResult['content'] ?? '');
 
         if ($content === '') {
             return [

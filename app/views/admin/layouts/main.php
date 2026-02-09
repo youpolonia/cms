@@ -1000,8 +1000,6 @@ function isActive(string $path): string {
                         <span class="nav-item-text">More AI</span>
                     </button>
                     <div id="ai-more" class="nav-submenu">
-                        <a href="/admin/ai-designer" class="nav-item">🎨 AI Designer 4.0</a>
-                        <a href="/admin/ai-theme-builder.php" class="nav-item">Theme Builder (Legacy)</a>
                         <a href="/admin/ai-landing.php" class="nav-item">Landing Pages</a>
                         <a href="/admin/ai-forms.php" class="nav-item">AI Forms</a>
                         <a href="/admin/ai-workflow-generator.php" class="nav-item">Workflows</a>
@@ -1028,10 +1026,6 @@ function isActive(string $path): string {
                     <a href="/admin/themes.php" class="nav-item <?= isActive('/admin/themes') ?>">
                         <span class="nav-item-icon">🎨</span>
                         <span class="nav-item-text">Themes</span>
-                    </a>
-                    <a href="/admin/theme-builder.php" class="nav-item <?= isActive('/admin/theme-builder') ?>">
-                        <span class="nav-item-icon">🛠️</span>
-                        <span class="nav-item-text">Theme Builder</span>
                     </a>
                     <a href="/admin/jessie-theme-builder" class="nav-item <?= isActive('/admin/jessie-theme-builder') ?>">
                         <span class="nav-item-icon">🏗️</span>

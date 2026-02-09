@@ -26,6 +26,41 @@ class JTB_Module_BarCounter extends JTB_Element
     public bool $use_position = false;
     public bool $use_filters = false;
 
+    // === UNIFIED THEME SYSTEM ===
+    protected string $module_prefix = 'bar_counter';
+
+    /**
+     * Declarative style configuration
+     */
+    protected array $style_config = [
+        'label_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-bar-counter-title'
+        ],
+        'percent_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-bar-counter-percent'
+        ],
+        'bar_background_color' => [
+            'property' => 'background-color',
+            'selector' => '.jtb-bar-counter-bar'
+        ],
+        'bar_color' => [
+            'property' => 'background-color',
+            'selector' => '.jtb-bar-counter-progress'
+        ],
+        'bar_height' => [
+            'property' => 'height',
+            'selector' => '.jtb-bar-counter-bar',
+            'unit' => 'px'
+        ],
+        'bar_border_radius' => [
+            'property' => 'border-radius',
+            'selector' => '.jtb-bar-counter-bar, .jtb-bar-counter-progress',
+            'unit' => 'px'
+        ]
+    ];
+
     public function getSlug(): string
     {
         return 'bar_counter';
@@ -109,6 +144,9 @@ class JTB_Module_BarCounter extends JTB_Element
 
     public function render(array $attrs, string $content = ''): string
     {
+        // Apply default styles from design system
+        $attrs = JTB_Default_Styles::mergeWithDefaults($this->getSlug(), $attrs);
+
         $title = $this->esc($attrs['content'] ?? 'Progress Bar');
         $percent = intval($attrs['percent'] ?? 50);
         $showPercent = $attrs['use_percentages'] ?? true;
@@ -128,44 +166,25 @@ class JTB_Module_BarCounter extends JTB_Element
         return $this->renderWrapper($innerHtml, $attrs);
     }
 
+    /**
+     * Generate CSS for Bar Counter module
+     * Base styles are in jtb-base-modules.css
+     */
     public function generateCss(array $attrs, string $selector): string
     {
         $css = '';
 
-        // Header styles
+        // Use declarative style_config system
+        $css .= $this->generateStyleConfigCss($attrs, $selector);
+
+        // Header styles (base)
         $css .= $selector . ' .jtb-bar-counter-header { display: flex; justify-content: space-between; margin-bottom: 8px; }' . "\n";
 
-        // Label color
-        if (!empty($attrs['label_color'])) {
-            $css .= $selector . ' .jtb-bar-counter-title { color: ' . $attrs['label_color'] . '; }' . "\n";
-        }
+        // Bar container overflow
+        $css .= $selector . ' .jtb-bar-counter-bar { overflow: hidden; }' . "\n";
 
-        // Percent color
-        if (!empty($attrs['percent_color'])) {
-            $css .= $selector . ' .jtb-bar-counter-percent { color: ' . $attrs['percent_color'] . '; }' . "\n";
-        }
-
-        // Bar container
-        $barBg = $attrs['bar_background_color'] ?? '#dddddd';
-        $barHeight = $attrs['bar_height'] ?? 20;
-        $barRadius = $attrs['bar_border_radius'] ?? 0;
-
-        $css .= $selector . ' .jtb-bar-counter-bar { ';
-        $css .= 'background-color: ' . $barBg . '; ';
-        $css .= 'height: ' . $barHeight . 'px; ';
-        $css .= 'border-radius: ' . $barRadius . 'px; ';
-        $css .= 'overflow: hidden; ';
-        $css .= '}' . "\n";
-
-        // Progress bar
-        $barColor = $attrs['bar_color'] ?? '#2ea3f2';
-
-        $css .= $selector . ' .jtb-bar-counter-progress { ';
-        $css .= 'background-color: ' . $barColor . '; ';
-        $css .= 'height: 100%; ';
-        $css .= 'border-radius: ' . $barRadius . 'px; ';
-        $css .= 'transition: width 1.5s ease-in-out; ';
-        $css .= '}' . "\n";
+        // Progress bar transition
+        $css .= $selector . ' .jtb-bar-counter-progress { height: 100%; transition: width 1.5s ease-in-out; }' . "\n";
 
         // Stripes
         if (!empty($attrs['use_stripes'])) {
@@ -180,6 +199,7 @@ class JTB_Module_BarCounter extends JTB_Element
             }
         }
 
+        // Parent class handles common styles
         $css .= parent::generateCss($attrs, $selector);
 
         return $css;

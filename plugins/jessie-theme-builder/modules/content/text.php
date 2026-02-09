@@ -25,6 +25,20 @@ class JTB_Module_Text extends JTB_Element
     public bool $use_position = false;
     public bool $use_filters = false;
 
+    // === UNIFIED THEME SYSTEM ===
+    protected string $module_prefix = 'text';
+
+    /**
+     * Declarative style configuration
+     */
+    protected array $style_config = [
+        'text_orientation' => [
+            'property' => 'text-align',
+            'selector' => '.jtb-text-inner',
+            'responsive' => true
+        ]
+    ];
+
     public function getSlug(): string
     {
         return 'text';
@@ -59,6 +73,9 @@ class JTB_Module_Text extends JTB_Element
 
     public function render(array $attrs, string $content = ''): string
     {
+        // Apply default styles from design system
+        $attrs = JTB_Default_Styles::mergeWithDefaults($this->getSlug(), $attrs);
+
         $textContent = $attrs['content'] ?? '<p>Enter your text here...</p>';
 
         $innerHtml = '<div class="jtb-text-inner">' . $textContent . '</div>';
@@ -66,29 +83,18 @@ class JTB_Module_Text extends JTB_Element
         return $this->renderWrapper($innerHtml, $attrs);
     }
 
+    /**
+     * Generate CSS for Text module
+     * Base styles are in jtb-base-modules.css
+     */
     public function generateCss(array $attrs, string $selector): string
     {
         $css = '';
 
-        // Text orientation
-        if (!empty($attrs['text_orientation'])) {
-            $css .= $selector . ' .jtb-text-inner { text-align: ' . $attrs['text_orientation'] . '; }' . "\n";
-        }
+        // Use declarative style_config system
+        $css .= $this->generateStyleConfigCss($attrs, $selector);
 
-        // Responsive text orientation
-        if (!empty($attrs['text_orientation__tablet'])) {
-            $css .= '@media (max-width: 980px) {' . "\n";
-            $css .= '  ' . $selector . ' .jtb-text-inner { text-align: ' . $attrs['text_orientation__tablet'] . '; }' . "\n";
-            $css .= '}' . "\n";
-        }
-
-        if (!empty($attrs['text_orientation__phone'])) {
-            $css .= '@media (max-width: 767px) {' . "\n";
-            $css .= '  ' . $selector . ' .jtb-text-inner { text-align: ' . $attrs['text_orientation__phone'] . '; }' . "\n";
-            $css .= '}' . "\n";
-        }
-
-        // Parent CSS
+        // Parent class handles common styles
         $css .= parent::generateCss($attrs, $selector);
 
         return $css;

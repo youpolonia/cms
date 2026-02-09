@@ -18,7 +18,6 @@ cms_session_start('admin');
 csrf_boot('admin');
 cms_require_admin_role();
 
-if (!defined('DEV_MODE') || !DEV_MODE) { http_response_code(403); exit('Forbidden'); }
 
 function esc($str) { return htmlspecialchars((string)$str, ENT_QUOTES, 'UTF-8'); }
 
@@ -95,7 +94,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-
 .btn-primary{background:var(--accent);color:#000}
 .btn-primary:hover{background:var(--purple)}
 .output-box{background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:16px;font-family:monospace;font-size:12px;max-height:400px;overflow:auto;white-space:pre-wrap}
-.preview-frame{background:#fff;border-radius:10px;padding:20px;min-height:300px;overflow:auto}
+.preview-frame{background:var(--bg2);border-radius:10px;padding:20px;min-height:300px;overflow:auto}
 .tabs{display:flex;gap:8px;margin-bottom:16px}
 .tab{padding:8px 16px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;color:var(--text2);cursor:pointer;font-size:12px}
 .tab.active{background:var(--accent);color:#000;border-color:var(--accent)}

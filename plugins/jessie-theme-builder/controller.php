@@ -50,6 +50,8 @@ require_once $pluginPath . '/includes/class-jtb-registry.php';
 require_once $pluginPath . '/includes/class-jtb-fields.php';
 require_once $pluginPath . '/includes/class-jtb-fonts.php';
 require_once $pluginPath . '/includes/class-jtb-renderer.php';
+require_once $pluginPath . '/includes/class-jtb-css-output.php';
+require_once $pluginPath . '/includes/class-jtb-style-system.php';
 require_once $pluginPath . '/includes/class-jtb-settings.php';
 require_once $pluginPath . '/includes/class-jtb-builder.php';
 require_once $pluginPath . '/includes/class-jtb-icons.php';

@@ -25,6 +25,48 @@ class JTB_Module_Search extends JTB_Element
     public bool $use_position = false;
     public bool $use_filters = false;
 
+    // === UNIFIED THEME SYSTEM ===
+    protected string $module_prefix = 'search';
+
+    /**
+     * Declarative style configuration
+     */
+    protected array $style_config = [
+        'field_bg_color' => [
+            'property' => 'background-color',
+            'selector' => '.jtb-search-input'
+        ],
+        'field_text_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-search-input'
+        ],
+        'field_border_color' => [
+            'property' => 'border-color',
+            'selector' => '.jtb-search-input',
+            'hover' => true
+        ],
+        'field_border_width' => [
+            'property' => 'border-width',
+            'selector' => '.jtb-search-input',
+            'unit' => 'px'
+        ],
+        'field_border_radius' => [
+            'property' => 'border-radius',
+            'selector' => '.jtb-search-input',
+            'unit' => 'px'
+        ],
+        'button_bg_color' => [
+            'property' => 'background-color',
+            'selector' => '.jtb-search-submit',
+            'hover' => true
+        ],
+        'button_text_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-search-submit',
+            'hover' => true
+        ]
+    ];
+
     public function getSlug(): string
     {
         return 'search';
@@ -109,6 +151,9 @@ class JTB_Module_Search extends JTB_Element
 
     public function render(array $attrs, string $content = ''): string
     {
+        // Apply default styles from design system
+        $attrs = JTB_Default_Styles::mergeWithDefaults($this->getSlug(), $attrs);
+
         $placeholder = $this->esc($attrs['placeholder'] ?? 'Search...');
         $buttonText = $this->esc($attrs['button_text'] ?? 'Search');
         $showButton = $attrs['show_button'] ?? true;
@@ -140,61 +185,38 @@ class JTB_Module_Search extends JTB_Element
         return $this->renderWrapper($innerHtml, $attrs);
     }
 
+    /**
+     * Generate CSS for Search module
+     * Base styles are in jtb-base-modules.css
+     */
     public function generateCss(array $attrs, string $selector): string
     {
         $css = '';
 
+        // Use declarative style_config system
+        $css .= $this->generateStyleConfigCss($attrs, $selector);
+
         // Container
         $css .= $selector . ' .jtb-search-form { display: flex; }' . "\n";
 
-        // Field
-        $fieldBg = $attrs['field_bg_color'] ?? '#ffffff';
-        $fieldText = $attrs['field_text_color'] ?? '#666666';
-        $fieldBorder = $attrs['field_border_color'] ?? '#bbb';
-        $fieldBorderWidth = $attrs['field_border_width'] ?? 1;
-        $fieldBorderRadius = $attrs['field_border_radius'] ?? 0;
-
+        // Field base styles
         $css .= $selector . ' .jtb-search-field { flex: 1; }' . "\n";
 
         $css .= $selector . ' .jtb-search-input { ';
-        $css .= 'width: 100%; ';
-        $css .= 'padding: 12px 15px; ';
-        $css .= 'background-color: ' . $fieldBg . '; ';
-        $css .= 'color: ' . $fieldText . '; ';
-        $css .= 'border: ' . $fieldBorderWidth . 'px solid ' . $fieldBorder . '; ';
-        $css .= 'border-radius: ' . $fieldBorderRadius . 'px; ';
-        $css .= 'font-size: 14px; ';
-        $css .= 'box-sizing: border-box; ';
+        $css .= 'width: 100%; padding: 12px 15px; font-size: 14px; box-sizing: border-box; border-style: solid; ';
         $css .= '}' . "\n";
 
         // Focus
-        if (!empty($attrs['field_border_color__hover'])) {
-            $css .= $selector . ' .jtb-search-input:focus { border-color: ' . $attrs['field_border_color__hover'] . '; outline: none; }' . "\n";
-        }
+        $css .= $selector . ' .jtb-search-input:focus { outline: none; }' . "\n";
 
-        // Button
-        $btnBg = $attrs['button_bg_color'] ?? '#2ea3f2';
-        $btnText = $attrs['button_text_color'] ?? '#ffffff';
-
-        $css .= $selector . ' .jtb-search-submit { ';
-        $css .= 'background-color: ' . $btnBg . '; ';
-        $css .= 'color: ' . $btnText . '; ';
-        $css .= 'border: none; ';
-        $css .= 'padding: 12px 20px; ';
-        $css .= 'cursor: pointer; ';
-        $css .= 'font-size: 14px; ';
-        $css .= 'transition: all 0.3s ease; ';
-        $css .= 'margin-left: -1px; ';
-        $css .= '}' . "\n";
-
-        if (!empty($attrs['button_bg_color__hover'])) {
-            $css .= $selector . ' .jtb-search-submit:hover { background-color: ' . $attrs['button_bg_color__hover'] . '; }' . "\n";
-        }
+        // Button base styles
+        $css .= $selector . ' .jtb-search-submit { border: none; padding: 12px 20px; cursor: pointer; font-size: 14px; transition: all 0.3s ease; margin-left: -1px; }' . "\n";
 
         // Icon styling
         $css .= $selector . ' .jtb-icon-search { display: inline-flex; align-items: center; }' . "\n";
         $css .= $selector . ' .jtb-icon-search svg { width: 16px; height: 16px; }' . "\n";
 
+        // Parent class handles common styles
         $css .= parent::generateCss($attrs, $selector);
 
         return $css;

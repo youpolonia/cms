@@ -71,9 +71,44 @@ const JTBGlobalModules = {
     /**
      * Edit global module (open in editor)
      */
-    edit(id) {
-        // TODO: Open module in a special editor view
-        this.showNotification('Edit feature coming soon', 'info');
+    async edit(id) {
+        try {
+            const response = await fetch(`/api/jtb/global-module-get/${id}`, { credentials: 'include' });
+            const result = await response.json();
+
+            if (!result.success || !result.data) {
+                this.showNotification('Failed to load module', 'error');
+                return;
+            }
+
+            const module = result.data;
+            const name = prompt('Module name:', module.name || '');
+            if (name === null) return;
+
+            // Save with updated name
+            const saveResponse = await fetch('/api/jtb/global-module-save', {
+                method: 'POST',
+                credentials: 'include',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    id: id,
+                    name: name,
+                    type: module.type,
+                    content: module.content
+                })
+            });
+
+            const saveResult = await saveResponse.json();
+            if (saveResult.success) {
+                this.showNotification('Module updated', 'success');
+                location.reload();
+            } else {
+                this.showNotification(saveResult.error || 'Save failed', 'error');
+            }
+        } catch (err) {
+            console.error('[GlobalModules] Edit error:', err);
+            this.showNotification('Failed to edit module', 'error');
+        }
     },
 
     /**

@@ -4,19 +4,23 @@
  * Handles GET and POST requests for global theme settings
  *
  * @package JessieThemeBuilder
+ * @updated 2026-02-03 - Added Style System integration
  */
 
 namespace JessieThemeBuilder;
 
 defined('CMS_ROOT') or die('Direct access not allowed');
 
-// Load theme settings class if not loaded
+// Load required classes
 $pluginPath = dirname(__DIR__);
 if (!class_exists(__NAMESPACE__ . '\\JTB_Theme_Settings')) {
     require_once $pluginPath . '/includes/class-jtb-theme-settings.php';
 }
 if (!class_exists(__NAMESPACE__ . '\\JTB_CSS_Generator')) {
     require_once $pluginPath . '/includes/class-jtb-css-generator.php';
+}
+if (!class_exists(__NAMESPACE__ . '\\JTB_Style_System')) {
+    require_once $pluginPath . '/includes/class-jtb-style-system.php';
 }
 
 // Ensure table exists
@@ -54,13 +58,21 @@ try {
 
         // Save all settings
         if (JTB_Theme_Settings::saveAll($data)) {
+            // Invalidate Style System cache
+            JTB_Style_System::clearCache();
+
             // Regenerate CSS file
             $cssPath = JTB_CSS_Generator::generateCssFile($data);
+
+            // Get fresh CSS variables from Style System
+            $styleSystem = JTB_Style_System::getInstance();
+            $cssVariables = $styleSystem->generateCssVariables();
 
             echo json_encode([
                 'success' => true,
                 'message' => 'Settings saved successfully',
-                'css_path' => $cssPath
+                'css_path' => $cssPath,
+                'css_variables_length' => strlen($cssVariables)
             ]);
         } else {
             throw new \Exception('Failed to save settings');

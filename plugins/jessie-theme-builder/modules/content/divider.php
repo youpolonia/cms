@@ -25,6 +25,32 @@ class JTB_Module_Divider extends JTB_Element
     public bool $use_position = false;
     public bool $use_filters = false;
 
+    // === UNIFIED THEME SYSTEM ===
+    protected string $module_prefix = 'divider';
+
+    /**
+     * Declarative style configuration
+     */
+    protected array $style_config = [
+        'height' => [
+            'property' => 'height',
+            'selector' => '',
+            'unit' => 'px',
+            'responsive' => true
+        ],
+        'max_width' => [
+            'property' => 'max-width',
+            'selector' => '',
+            'unit' => '%',
+            'responsive' => true
+        ],
+        'divider_color' => [
+            'property' => 'border-color',
+            'selector' => '.jtb-divider-line',
+            'hover' => true
+        ]
+    ];
+
     public function getSlug(): string
     {
         return 'divider';
@@ -118,6 +144,9 @@ class JTB_Module_Divider extends JTB_Element
 
     public function render(array $attrs, string $content = ''): string
     {
+        // Apply default styles from design system
+        $attrs = JTB_Default_Styles::mergeWithDefaults($this->getSlug(), $attrs);
+
         $showDivider = $attrs['show_divider'] ?? true;
 
         $innerHtml = '<div class="jtb-divider-inner">';
@@ -129,20 +158,19 @@ class JTB_Module_Divider extends JTB_Element
         return $this->renderWrapper($innerHtml, $attrs);
     }
 
+    /**
+     * Generate CSS for Divider module
+     * Base styles are in jtb-base-modules.css
+     */
     public function generateCss(array $attrs, string $selector): string
     {
         $css = '';
         $showDivider = $attrs['show_divider'] ?? true;
 
-        // Height
-        $height = $attrs['height'] ?? 23;
-        $css .= $selector . ' { height: ' . $height . 'px; }' . "\n";
+        // Use declarative style_config system
+        $css .= $this->generateStyleConfigCss($attrs, $selector);
 
-        // Max width
-        $maxWidth = $attrs['max_width'] ?? 100;
-        $css .= $selector . ' { max-width: ' . $maxWidth . '%; }' . "\n";
-
-        // Alignment
+        // Alignment (special handling)
         $alignment = $attrs['divider_alignment'] ?? 'center';
         if ($alignment === 'center') {
             $css .= $selector . ' { margin-left: auto; margin-right: auto; }' . "\n";
@@ -167,28 +195,9 @@ class JTB_Module_Divider extends JTB_Element
             }
 
             $css .= $selector . ' .jtb-divider-line { width: 100%; border-top: ' . $weight . 'px ' . $style . ' ' . $color . '; }' . "\n";
-
-            // Hover
-            if (!empty($attrs['divider_color__hover'])) {
-                $css .= $selector . ':hover .jtb-divider-line { border-color: ' . $attrs['divider_color__hover'] . '; }' . "\n";
-            }
         }
 
-        // Responsive
-        if (!empty($attrs['height__tablet'])) {
-            $css .= '@media (max-width: 980px) { ' . $selector . ' { height: ' . $attrs['height__tablet'] . 'px; } }' . "\n";
-        }
-        if (!empty($attrs['height__phone'])) {
-            $css .= '@media (max-width: 767px) { ' . $selector . ' { height: ' . $attrs['height__phone'] . 'px; } }' . "\n";
-        }
-
-        if (!empty($attrs['max_width__tablet'])) {
-            $css .= '@media (max-width: 980px) { ' . $selector . ' { max-width: ' . $attrs['max_width__tablet'] . '%; } }' . "\n";
-        }
-        if (!empty($attrs['max_width__phone'])) {
-            $css .= '@media (max-width: 767px) { ' . $selector . ' { max-width: ' . $attrs['max_width__phone'] . '%; } }' . "\n";
-        }
-
+        // Parent class handles common styles
         $css .= parent::generateCss($attrs, $selector);
 
         return $css;

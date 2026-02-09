@@ -25,6 +25,39 @@ class JTB_Module_Comments extends JTB_Element
     public bool $use_position = false;
     public bool $use_filters = false;
 
+    // === UNIFIED THEME SYSTEM ===
+    protected string $module_prefix = 'comments';
+
+    /**
+     * Declarative style configuration
+     */
+    protected array $style_config = [
+        'header_bg_color' => [
+            'property' => 'background-color',
+            'selector' => '.jtb-comments-header'
+        ],
+        'comment_bg_color' => [
+            'property' => 'background-color',
+            'selector' => '.jtb-comment-form'
+        ],
+        'author_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-comment-author'
+        ],
+        'date_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-comment-date'
+        ],
+        'text_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-comment-content'
+        ],
+        'reply_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-comment-reply-link'
+        ]
+    ];
+
     public function getSlug(): string
     {
         return 'comments';
@@ -107,6 +140,9 @@ class JTB_Module_Comments extends JTB_Element
 
     public function render(array $attrs, string $content = ''): string
     {
+        // Apply default styles from design system
+        $attrs = JTB_Default_Styles::mergeWithDefaults($this->getSlug(), $attrs);
+
         $showCount = $attrs['show_count'] ?? true;
         $showAvatar = $attrs['show_avatar'] ?? true;
         $showReply = $attrs['show_reply'] ?? true;
@@ -214,20 +250,21 @@ class JTB_Module_Comments extends JTB_Element
         return $html;
     }
 
+    /**
+     * Generate CSS for Comments module
+     * Base styles are in jtb-base-modules.css
+     */
     public function generateCss(array $attrs, string $selector): string
     {
         $css = '';
 
+        // Use declarative style_config system
+        $css .= $this->generateStyleConfigCss($attrs, $selector);
+
         $avatarSize = $attrs['avatar_size'] ?? 60;
-        $headerBg = $attrs['header_bg_color'] ?? '#f9f9f9';
-        $commentBg = $attrs['comment_bg_color'] ?? '#ffffff';
-        $authorColor = $attrs['author_color'] ?? '#333333';
-        $dateColor = $attrs['date_color'] ?? '#999999';
-        $textColor = $attrs['text_color'] ?? '#666666';
-        $replyColor = $attrs['reply_color'] ?? '#2ea3f2';
 
         // Header
-        $css .= $selector . ' .jtb-comments-header { background: ' . $headerBg . '; padding: 20px; margin-bottom: 20px; }' . "\n";
+        $css .= $selector . ' .jtb-comments-header { padding: 20px; margin-bottom: 20px; }' . "\n";
         $css .= $selector . ' .jtb-comments-title { margin: 0; font-size: 20px; }' . "\n";
 
         // Comment
@@ -236,32 +273,25 @@ class JTB_Module_Comments extends JTB_Element
         // Avatar
         $css .= $selector . ' .jtb-comment-avatar { flex-shrink: 0; }' . "\n";
         $css .= $selector . ' .jtb-avatar-placeholder { '
-            . 'width: ' . $avatarSize . 'px; '
-            . 'height: ' . $avatarSize . 'px; '
-            . 'border-radius: 50%; '
-            . 'background: #ddd; '
-            . 'display: flex; '
-            . 'align-items: center; '
-            . 'justify-content: center; '
-            . 'font-size: ' . ($avatarSize / 2) . 'px; '
-            . 'color: #666; '
-            . 'font-weight: bold; '
-            . '}' . "\n";
+            . 'width: ' . $avatarSize . 'px; height: ' . $avatarSize . 'px; '
+            . 'border-radius: 50%; background: #ddd; display: flex; '
+            . 'align-items: center; justify-content: center; '
+            . 'font-size: ' . ($avatarSize / 2) . 'px; color: #666; font-weight: bold; }' . "\n";
 
         // Body
         $css .= $selector . ' .jtb-comment-body { flex: 1; }' . "\n";
         $css .= $selector . ' .jtb-comment-meta { margin-bottom: 10px; }' . "\n";
-        $css .= $selector . ' .jtb-comment-author { color: ' . $authorColor . '; font-weight: bold; margin-right: 15px; }' . "\n";
-        $css .= $selector . ' .jtb-comment-date { color: ' . $dateColor . '; font-size: 14px; }' . "\n";
-        $css .= $selector . ' .jtb-comment-content { color: ' . $textColor . '; line-height: 1.6; margin-bottom: 10px; }' . "\n";
-        $css .= $selector . ' .jtb-comment-reply-link { color: ' . $replyColor . '; text-decoration: none; font-size: 14px; }' . "\n";
+        $css .= $selector . ' .jtb-comment-author { font-weight: bold; margin-right: 15px; }' . "\n";
+        $css .= $selector . ' .jtb-comment-date { font-size: 14px; }' . "\n";
+        $css .= $selector . ' .jtb-comment-content { line-height: 1.6; margin-bottom: 10px; }' . "\n";
+        $css .= $selector . ' .jtb-comment-reply-link { text-decoration: none; font-size: 14px; }' . "\n";
 
         // Replies
         $css .= $selector . ' .jtb-comment-replies { margin-left: 60px; }' . "\n";
         $css .= $selector . ' .jtb-comment-reply { padding-left: 20px; border-left: 3px solid #eee; }' . "\n";
 
         // Form
-        $css .= $selector . ' .jtb-comment-form { margin-top: 40px; padding: 30px; background: ' . $commentBg . '; border: 1px solid #eee; }' . "\n";
+        $css .= $selector . ' .jtb-comment-form { margin-top: 40px; padding: 30px; border: 1px solid #eee; }' . "\n";
         $css .= $selector . ' .jtb-comment-form h4 { margin-top: 0; margin-bottom: 20px; }' . "\n";
         $css .= $selector . ' .jtb-form-row { display: flex; gap: 15px; margin-bottom: 15px; }' . "\n";
         $css .= $selector . ' .jtb-form-row input { flex: 1; padding: 12px; border: 1px solid #ddd; }' . "\n";
@@ -273,6 +303,7 @@ class JTB_Module_Comments extends JTB_Element
         $css .= '  ' . $selector . ' .jtb-comment-replies { margin-left: 30px; }' . "\n";
         $css .= '}' . "\n";
 
+        // Parent class handles common styles
         $css .= parent::generateCss($attrs, $selector);
 
         return $css;

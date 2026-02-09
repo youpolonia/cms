@@ -267,70 +267,83 @@ class JTB_Template_Conditions
 
     /**
      * Get available objects for a page type
+     * Updated 2026-02-04: Fixed table names for Jessie CMS (articles instead of posts, etc.)
      */
     public static function getObjectsForType(string $pageType): array
     {
         $db = \core\Database::connection();
         $objects = [];
 
-        switch ($pageType) {
-            case self::PAGE_SINGLE_POST:
-                // Get all posts
-                $stmt = $db->query("
-                    SELECT id, title as name
-                    FROM posts
-                    WHERE status = 'published' AND type = 'post'
-                    ORDER BY title ASC
-                    LIMIT 100
-                ");
-                $objects = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-                break;
+        try {
+            switch ($pageType) {
+                case self::PAGE_SINGLE_POST:
+                    // Get all articles (posts) - Jessie CMS uses 'articles' table
+                    $stmt = $db->query("
+                        SELECT id, title as name
+                        FROM articles
+                        WHERE status = 'published'
+                        ORDER BY title ASC
+                        LIMIT 100
+                    ");
+                    $objects = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+                    break;
 
-            case self::PAGE_SINGLE_PAGE:
-                // Get all pages
-                $stmt = $db->query("
-                    SELECT id, title as name
-                    FROM posts
-                    WHERE status = 'published' AND type = 'page'
-                    ORDER BY title ASC
-                    LIMIT 100
-                ");
-                $objects = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-                break;
+                case self::PAGE_SINGLE_PAGE:
+                    // Get all pages - Jessie CMS uses 'pages' table
+                    $stmt = $db->query("
+                        SELECT id, title as name
+                        FROM pages
+                        WHERE status = 'published'
+                        ORDER BY title ASC
+                        LIMIT 100
+                    ");
+                    $objects = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+                    break;
 
-            case self::PAGE_CATEGORY:
-                // Get all categories
-                $stmt = $db->query("
-                    SELECT id, name
-                    FROM categories
-                    ORDER BY name ASC
-                    LIMIT 100
-                ");
-                $objects = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-                break;
+                case self::PAGE_CATEGORY:
+                    // Get all categories
+                    $stmt = $db->query("
+                        SELECT id, name
+                        FROM categories
+                        ORDER BY name ASC
+                        LIMIT 100
+                    ");
+                    $objects = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+                    break;
 
-            case self::PAGE_TAG:
-                // Get all tags
-                $stmt = $db->query("
-                    SELECT id, name
-                    FROM tags
-                    ORDER BY name ASC
-                    LIMIT 100
-                ");
-                $objects = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-                break;
+                case self::PAGE_TAG:
+                    // Get all tags from article_categories (Jessie CMS uses this for tags too)
+                    // or check if tags table exists
+                    try {
+                        $stmt = $db->query("
+                            SELECT id, name
+                            FROM tags
+                            ORDER BY name ASC
+                            LIMIT 100
+                        ");
+                        $objects = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+                    } catch (\PDOException $e) {
+                        // Tags table doesn't exist, return empty
+                        $objects = [];
+                    }
+                    break;
 
-            case self::PAGE_AUTHOR:
-                // Get all authors/users
-                $stmt = $db->query("
-                    SELECT id, username as name
-                    FROM users
-                    WHERE status = 'active'
-                    ORDER BY username ASC
-                    LIMIT 100
-                ");
-                $objects = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-                break;
+                case self::PAGE_AUTHOR:
+                    // Get all authors/users - Jessie CMS uses 'users' table
+                    $stmt = $db->query("
+                        SELECT id, username as name
+                        FROM users
+                        WHERE status = 'active'
+                        ORDER BY username ASC
+                        LIMIT 100
+                    ");
+                    $objects = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+                    break;
+            }
+        } catch (\PDOException $e) {
+            // Log error but return empty array
+            error_log('JTB Conditions: Error fetching objects for type ' . $pageType . ': ' . $e->getMessage());
+            $objects = [];
         }
 
         return $objects;
@@ -361,36 +374,53 @@ class JTB_Template_Conditions
 
     /**
      * Get object name by type and ID
+     * Updated 2026-02-04: Fixed table names for Jessie CMS
      */
     private static function getObjectName(string $pageType, int $objectId): ?string
     {
         $db = \core\Database::connection();
 
-        switch ($pageType) {
-            case self::PAGE_SINGLE_POST:
-            case self::PAGE_SINGLE_PAGE:
-                $stmt = $db->prepare("SELECT title FROM posts WHERE id = ?");
-                $stmt->execute([$objectId]);
-                $row = $stmt->fetch(\PDO::FETCH_ASSOC);
-                return $row ? $row['title'] : null;
+        try {
+            switch ($pageType) {
+                case self::PAGE_SINGLE_POST:
+                    // Jessie CMS uses 'articles' table for posts
+                    $stmt = $db->prepare("SELECT title FROM articles WHERE id = ?");
+                    $stmt->execute([$objectId]);
+                    $row = $stmt->fetch(\PDO::FETCH_ASSOC);
+                    return $row ? $row['title'] : null;
 
-            case self::PAGE_CATEGORY:
-                $stmt = $db->prepare("SELECT name FROM categories WHERE id = ?");
-                $stmt->execute([$objectId]);
-                $row = $stmt->fetch(\PDO::FETCH_ASSOC);
-                return $row ? $row['name'] : null;
+                case self::PAGE_SINGLE_PAGE:
+                    // Jessie CMS uses 'pages' table
+                    $stmt = $db->prepare("SELECT title FROM pages WHERE id = ?");
+                    $stmt->execute([$objectId]);
+                    $row = $stmt->fetch(\PDO::FETCH_ASSOC);
+                    return $row ? $row['title'] : null;
 
-            case self::PAGE_TAG:
-                $stmt = $db->prepare("SELECT name FROM tags WHERE id = ?");
-                $stmt->execute([$objectId]);
-                $row = $stmt->fetch(\PDO::FETCH_ASSOC);
-                return $row ? $row['name'] : null;
+                case self::PAGE_CATEGORY:
+                    $stmt = $db->prepare("SELECT name FROM categories WHERE id = ?");
+                    $stmt->execute([$objectId]);
+                    $row = $stmt->fetch(\PDO::FETCH_ASSOC);
+                    return $row ? $row['name'] : null;
 
-            case self::PAGE_AUTHOR:
-                $stmt = $db->prepare("SELECT username FROM users WHERE id = ?");
-                $stmt->execute([$objectId]);
-                $row = $stmt->fetch(\PDO::FETCH_ASSOC);
-                return $row ? $row['username'] : null;
+                case self::PAGE_TAG:
+                    try {
+                        $stmt = $db->prepare("SELECT name FROM tags WHERE id = ?");
+                        $stmt->execute([$objectId]);
+                        $row = $stmt->fetch(\PDO::FETCH_ASSOC);
+                        return $row ? $row['name'] : null;
+                    } catch (\PDOException $e) {
+                        return null;
+                    }
+
+                case self::PAGE_AUTHOR:
+                    $stmt = $db->prepare("SELECT username FROM users WHERE id = ?");
+                    $stmt->execute([$objectId]);
+                    $row = $stmt->fetch(\PDO::FETCH_ASSOC);
+                    return $row ? $row['username'] : null;
+            }
+        } catch (\PDOException $e) {
+            error_log('JTB Conditions: Error fetching object name: ' . $e->getMessage());
+            return null;
         }
 
         return null;

@@ -202,99 +202,18 @@ document.getElementById('redirect-modal').addEventListener('click', function(e) 
 </script>
 
 <style>
-.page-header {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    margin-bottom: 1.5rem;
-}
-.page-header h1 {
-    margin: 0;
-}
-.page-header .btn {
-    margin-left: auto;
-}
-.status-badge {
-    display: inline-block;
-    padding: 0.25rem 0.5rem;
-    border-radius: 4px;
-    font-size: 0.75rem;
-}
-.status-badge.active {
-    background: #d4edda;
-    color: #155724;
-}
-.status-badge.inactive {
-    background: #f8d7da;
-    color: #721c24;
-}
-.empty-state {
-    text-align: center;
-    color: #666;
-    padding: 2rem;
-}
-.modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0,0,0,0.5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
-}
-.modal-content {
-    background: #fff;
-    border-radius: 8px;
-    width: 100%;
-    max-width: 500px;
-    max-height: 90vh;
-    overflow-y: auto;
-}
-.modal-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 1rem 1.5rem;
-    border-bottom: 1px solid #ddd;
-}
-.modal-header h2 {
-    margin: 0;
-}
-.close-btn {
-    background: none;
-    border: none;
-    font-size: 1.5rem;
-    cursor: pointer;
-    padding: 0;
-    line-height: 1;
-}
-.modal-content form {
-    padding: 1.5rem;
-}
-.modal-footer {
-    display: flex;
-    gap: 0.5rem;
-    margin-top: 1rem;
-}
-.pagination {
-    display: flex;
-    gap: 0.25rem;
-    margin-top: 1rem;
-    justify-content: center;
-}
-.page-link {
-    padding: 0.5rem 0.75rem;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    text-decoration: none;
-    color: #333;
-}
-.page-link.active {
-    background: #007bff;
-    color: #fff;
-    border-color: #007bff;
-}
+/* Dark theme overrides for redirects view */
+.status-badge{display:inline-flex;padding:3px 8px;border-radius:5px;font-size:11px;font-weight:600}
+.status-badge.active{background:rgba(166,227,161,.15);color:var(--success)}
+.status-badge.inactive{background:rgba(243,139,168,.15);color:var(--danger)}
+.empty-state{text-align:center;color:var(--muted);padding:40px}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;z-index:1000}
+.modal-content{background:var(--bg2);border:1px solid var(--border);border-radius:16px;width:100%;max-width:540px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.4)}
+.modal-header{display:flex;align-items:center;justify-content:space-between;padding:20px 24px;border-bottom:1px solid var(--border)}
+.modal-header h2{margin:0;font-size:18px;font-weight:600}
+.close-btn{background:none;border:none;font-size:20px;cursor:pointer;color:var(--muted);padding:0;line-height:1}
+.close-btn:hover{color:var(--text)}
+.modal-content form{padding:24px}
+.modal-footer{display:flex;gap:10px;margin-top:16px}
+small.muted{display:block;font-size:12px;color:var(--muted);margin-top:4px}
 </style>

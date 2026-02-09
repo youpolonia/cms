@@ -25,6 +25,36 @@ class JTB_Module_Icon extends JTB_Element
     public bool $use_animation = true;
     public bool $use_transform = true;
 
+    // === UNIFIED THEME SYSTEM ===
+    protected string $module_prefix = 'icon';
+
+    /**
+     * Declarative style configuration
+     */
+    protected array $style_config = [
+        'icon_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-icon',
+            'hover' => true
+        ],
+        'icon_size' => [
+            'property' => 'font-size',
+            'selector' => '.jtb-icon',
+            'unit' => 'px',
+            'responsive' => true
+        ],
+        'icon_background_color' => [
+            'property' => 'background-color',
+            'selector' => '.jtb-icon',
+            'hover' => true
+        ],
+        'icon_border_color' => [
+            'property' => 'border-color',
+            'selector' => '.jtb-icon',
+            'hover' => true
+        ]
+    ];
+
     public function getSlug(): string
     {
         return $this->slug;
@@ -128,6 +158,9 @@ class JTB_Module_Icon extends JTB_Element
 
     public function render(array $attrs, string $content = ''): string
     {
+        // Apply default styles from design system
+        $attrs = JTB_Default_Styles::mergeWithDefaults($this->getSlug(), $attrs);
+
         $iconName = $attrs['icon_name'] ?? 'star';
         $linkUrl = $attrs['link_url'] ?? '';
         $linkTarget = !empty($attrs['link_target']) ? ' target="_blank" rel="noopener"' : '';

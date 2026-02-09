@@ -37,13 +37,16 @@ class TemplateController
         require_once $this->pluginPath . '/includes/class-jtb-registry.php';
         require_once $this->pluginPath . '/includes/class-jtb-fields.php';
         require_once $this->pluginPath . '/includes/class-jtb-fonts.php';
+        require_once $this->pluginPath . '/includes/class-jtb-default-styles.php';
         require_once $this->pluginPath . '/includes/class-jtb-renderer.php';
+        require_once $this->pluginPath . '/includes/class-jtb-css-output.php';
         require_once $this->pluginPath . '/includes/class-jtb-settings.php';
         require_once $this->pluginPath . '/includes/class-jtb-builder.php';
         require_once $this->pluginPath . '/includes/class-jtb-icons.php';
         require_once $this->pluginPath . '/includes/class-jtb-templates.php';
         require_once $this->pluginPath . '/includes/class-jtb-template-conditions.php';
         require_once $this->pluginPath . '/includes/class-jtb-global-modules.php';
+        require_once $this->pluginPath . '/includes/class-jtb-dynamic-context.php';
 
         // Initialize registry
         JTB_Registry::init();
@@ -191,6 +194,7 @@ class TemplateController
         // Load theme settings classes
         require_once $this->pluginPath . '/includes/class-jtb-theme-settings.php';
         require_once $this->pluginPath . '/includes/class-jtb-css-generator.php';
+        require_once $this->pluginPath . '/includes/class-jtb-style-system.php';
 
         $pluginUrl = $this->pluginUrl;
         $csrfToken = $this->getCsrfToken();
@@ -220,6 +224,25 @@ class TemplateController
     }
 
     /**
+     * Show AI Quality Dashboard (DEV_MODE only)
+     * Route: /admin/jtb/quality-dashboard
+     */
+    public function qualityDashboard(): void
+    {
+        $this->checkAuth();
+
+        // DEV_MODE gate
+        if (!defined('DEV_MODE') || DEV_MODE !== true) {
+            http_response_code(403);
+            echo 'Access denied. This tool is only available in DEV_MODE.';
+            exit;
+        }
+
+        // Include the dashboard file directly
+        require $this->pluginPath . '/admin/tools/ai_quality_dashboard.php';
+    }
+
+    /**
      * Show template library browser
      * Route: /admin/jtb/library
      */
@@ -243,5 +266,64 @@ class TemplateController
         $embedMode = isset($_GET['embed']) && $_GET['embed'] === '1';
 
         require $this->pluginPath . '/views/library-browser.php';
+    }
+
+    /**
+     * Website Builder - Unified Theme Builder
+     * Build entire website in one interface: header + footer + pages + templates
+     * Route: /admin/jtb/website-builder
+     */
+    public function websiteBuilder(): void
+    {
+        $this->checkAuth();
+        $this->loadDependencies();
+
+        // Load additional required classes
+        require_once $this->pluginPath . '/includes/class-jtb-theme-settings.php';
+
+        $pluginUrl = $this->pluginUrl;
+        $csrfToken = $this->getCsrfToken();
+
+        // Get all headers
+        $headers = JTB_Templates::getAll('header');
+
+        // Get all footers
+        $footers = JTB_Templates::getAll('footer');
+
+        // Get all body templates
+        $bodyTemplates = JTB_Templates::getAll('body');
+
+        // Get theme settings
+        $themeSettings = JTB_Theme_Settings::getAll();
+
+        // Get pages from CMS
+        $db = \core\Database::connection();
+        $pages = $db->query("SELECT id, title, slug FROM pages WHERE status = 'published' ORDER BY title")->fetchAll(\PDO::FETCH_ASSOC);
+
+        // Website meta
+        $website = [
+            'id' => 1,
+            'name' => JTB_Dynamic_Context::getSiteTitle() ?: 'My Website'
+        ];
+
+        // Get all modules for the builder
+        $modules = [];
+        foreach (JTB_Registry::getInstances() as $slug => $instance) {
+            $modules[$slug] = [
+                'slug' => $slug,
+                'name' => $instance->getName(),
+                'icon' => $instance->icon ?? 'box',
+                'category' => $instance->category ?? 'content',
+                'is_child' => $instance->is_child ?? false,
+                'child_slug' => $instance->child_slug ?? null,
+                'fields' => [
+                    'content' => $instance->getContentFields(),
+                    'design' => $instance->getDesignFields(),
+                    'advanced' => $instance->getAdvancedFields()
+                ]
+            ];
+        }
+
+        require $this->pluginPath . '/views/website-builder.php';
     }
 }

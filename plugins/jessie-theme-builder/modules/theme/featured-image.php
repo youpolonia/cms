@@ -15,7 +15,7 @@ class JTB_Module_Featured_Image extends JTB_Element
     public string $slug = 'featured_image';
     public string $name = 'Featured Image';
     public string $icon = 'image';
-    public string $category = 'theme';
+    public string $category = 'dynamic';
 
     public bool $use_background = false;
     public bool $use_spacing = true;
@@ -23,6 +23,31 @@ class JTB_Module_Featured_Image extends JTB_Element
     public bool $use_box_shadow = true;
     public bool $use_animation = true;
     public bool $use_transform = true;
+
+    protected string $module_prefix = 'featured_image';
+
+    protected array $style_config = [
+        'max_height' => [
+            'property' => 'max-height',
+            'selector' => '.jtb-featured-img',
+            'unit' => 'px',
+            'responsive' => true
+        ],
+        'border_radius' => [
+            'property' => 'border-radius',
+            'selector' => '.jtb-featured-img',
+            'unit' => 'px'
+        ],
+        'caption_color' => [
+            'property' => 'color',
+            'selector' => '.jtb-image-caption'
+        ],
+        'caption_font_size' => [
+            'property' => 'font-size',
+            'selector' => '.jtb-image-caption',
+            'unit' => 'px'
+        ]
+    ];
 
     public function getSlug(): string
     {
@@ -148,12 +173,22 @@ class JTB_Module_Featured_Image extends JTB_Element
 
     public function render(array $attrs, string $content = ''): string
     {
+        // Apply default styles from design system
+        $attrs = JTB_Default_Styles::mergeWithDefaults($this->getSlug(), $attrs);
+
         $id = $attrs['id'] ?? 'featured_image_' . uniqid();
         $imageStyle = $attrs['image_style'] ?? 'default';
         $alignment = $attrs['alignment'] ?? 'center';
         $fallback = $attrs['fallback_image'] ?? '';
         $showCaption = $attrs['show_caption'] ?? false;
         $hoverEffect = $attrs['hover_effect'] ?? 'none';
+        $linkToPost = $attrs['link_to_post'] ?? false;
+
+        // Get dynamic content
+        $isPreview = JTB_Dynamic_Context::isPreviewMode();
+        $featuredImage = JTB_Dynamic_Context::getFeaturedImage();
+        $postTitle = JTB_Dynamic_Context::getPostTitle();
+        $postUrl = JTB_Dynamic_Context::getPostUrl();
 
         $classes = ['jtb-featured-image', 'jtb-align-' . $this->esc($alignment)];
         if ($imageStyle !== 'default') {
@@ -174,13 +209,34 @@ class JTB_Module_Featured_Image extends JTB_Element
             . '<text fill="#64748b" font-family="sans-serif" font-size="20" x="50%" y="320" text-anchor="middle">Featured Image</text>'
             . '</svg>';
 
-        $placeholderUrl = !empty($fallback) ? $fallback : 'data:image/svg+xml,' . rawurlencode($placeholderSvg);
+        // Use actual featured image or fallback
+        $imageUrl = '';
+        if (!empty($featuredImage) && !$isPreview) {
+            $imageUrl = $featuredImage;
+        } elseif (!empty($fallback)) {
+            $imageUrl = $fallback;
+        } else {
+            $imageUrl = 'data:image/svg+xml,' . rawurlencode($placeholderSvg);
+        }
+
+        $altText = !empty($postTitle) ? $postTitle : 'Featured Image';
 
         $html = '<figure id="' . $this->esc($id) . '" class="' . implode(' ', $classes) . '">';
-        $html .= '<img src="' . $this->esc($placeholderUrl) . '" alt="Featured Image" class="jtb-featured-img" />';
+
+        // Wrap in link if requested
+        if ($linkToPost && !empty($postUrl) && !$isPreview) {
+            $html .= '<a href="' . $this->esc($postUrl) . '" class="jtb-image-link">';
+        }
+
+        $html .= '<img src="' . $this->esc($imageUrl) . '" alt="' . $this->esc($altText) . '" class="jtb-featured-img" />';
+
+        if ($linkToPost && !empty($postUrl) && !$isPreview) {
+            $html .= '</a>';
+        }
 
         if ($showCaption) {
-            $html .= '<figcaption class="jtb-image-caption">Image caption will appear here</figcaption>';
+            $caption = !empty($postTitle) && !$isPreview ? $postTitle : 'Image caption will appear here';
+            $html .= '<figcaption class="jtb-image-caption">' . $this->esc($caption) . '</figcaption>';
         }
 
         $html .= '</figure>';
@@ -191,6 +247,7 @@ class JTB_Module_Featured_Image extends JTB_Element
     public function generateCss(array $attrs, string $selector): string
     {
         $css = parent::generateCss($attrs, $selector);
+        $css .= $this->generateStyleConfigCss($attrs, $selector);
 
         $alignment = $attrs['alignment'] ?? 'center';
         $maxHeight = $attrs['max_height'] ?? 400;

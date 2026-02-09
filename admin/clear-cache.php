@@ -7,10 +7,6 @@ if (!defined('CMS_ROOT')) {
 }
 require_once CMS_ROOT . '/config.php';
 
-if (!defined('DEV_MODE') || !DEV_MODE) {
-    http_response_code(403);
-    exit('Forbidden');
-}
 
 // Clear OPcache
 $opcacheResult = 'Not available';
