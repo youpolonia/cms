@@ -67,12 +67,15 @@ class PageController
             'sidebar-right' => 'front/page-sidebar-right',
             'landing' => 'front/page-landing',
             'contact' => 'front/page-contact',
-            'blank' => 'front/page-blank'
+            'blank' => 'front/page-blank',
+            'gallery' => 'front/gallery'
         ];
         
         $viewFile = $templateViews[$template] ?? 'front/page';
+        // Check if view exists in app/views/front/ OR in theme templates
         $viewPath = CMS_APP . '/views/' . $viewFile . '.php';
-        if (!file_exists($viewPath)) {
+        $themeViewPath = theme_path('templates/' . str_replace('front/', '', $viewFile) . '.php');
+        if (!file_exists($viewPath) && !file_exists($themeViewPath)) {
             $viewFile = 'front/page';
         }
 

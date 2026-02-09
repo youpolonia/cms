@@ -56,7 +56,8 @@ $templates = [
     'sidebar-right' => 'Sidebar Right',
     'landing' => 'Landing Page',
     'contact' => 'Contact Page',
-    'blank' => 'Blank (No Header/Footer)'
+    'blank' => 'Blank (No Header/Footer)',
+    'gallery' => 'Gallery Page'
 ];
 
 // Set title for layout
