@@ -147,8 +147,8 @@ RewriteRule ^admin/media(/.*)?$ index.php [QSA,L]
 # Themes
 RewriteRule ^admin/themes(/.*)?$ index.php [QSA,L]
 
-# Theme Editor
-RewriteRule ^admin/theme-editor(/.*)?$ index.php [QSA,L]
+# Theme Studio
+RewriteRule ^admin/theme-studio(/.*)?$ index.php [QSA,L]
 
 # Logs
 RewriteRule ^admin/logs(/.*)?$ index.php [QSA,L]
@@ -216,6 +216,9 @@ RewriteRule ^admin/jessie-theme-builder(/.*)?$ index.php [QSA,L]
 
 # JTB Website Builder
 RewriteRule ^admin/jtb(/.*)?$ index.php [QSA,L]
+
+# Theme Studio API
+RewriteRule ^api/theme-studio(/.*)?$ index.php [QSA,L]
 
 # JTB API
 RewriteRule ^api/jtb(/.*)?$ index.php [QSA,L]
