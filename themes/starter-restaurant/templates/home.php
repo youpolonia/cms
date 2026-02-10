@@ -1,13 +1,48 @@
+<?php
+/**
+ * Starter Restaurant — Home Template
+ * 
+ * All editable content reads from theme_get() (Theme Studio customizations).
+ * data-ts attributes provide live preview bindings.
+ */
+
+// Pre-load customized values with sensible defaults
+$heroHeadline = theme_get('hero.headline', get_site_name());
+$heroSubtitle = theme_get('hero.subtitle', get_setting('hero_subtitle') ?: 'Experience exceptional cuisine in an unforgettable atmosphere.');
+$heroBtnText  = theme_get('hero.btn_text', 'Our Stories');
+$heroBtnLink  = theme_get('hero.btn_link', '/articles');
+$heroBgImage  = theme_get('hero.bg_image');
+$heroBadge    = get_setting('hero_badge') ?: 'Welcome';
+
+$aboutLabel   = theme_get('about.label', 'About Us');
+$aboutTitle   = theme_get('about.title', get_site_name());
+$aboutDesc    = theme_get('about.description', get_setting('about_text') ?: 'Welcome to our establishment. We bring you the finest experiences with passion and dedication.');
+$aboutImage   = theme_get('about.image');
+
+$pagesLabel   = theme_get('pages.label', 'Explore');
+$pagesTitle   = theme_get('pages.title', 'Our Pages');
+$pagesDesc    = theme_get('pages.description', 'Discover everything we have to offer.');
+
+$articlesLabel   = theme_get('articles.label', 'News & Stories');
+$articlesTitle   = theme_get('articles.title', 'Latest Articles');
+$articlesDesc    = theme_get('articles.description', 'Stay up to date with our latest news and stories.');
+$articlesBtnText = theme_get('articles.btn_text', 'View All Articles');
+$articlesBtnLink = theme_get('articles.btn_link', '/articles');
+
+$parallaxQuote    = theme_get('parallax.quote', get_setting('quote_text') ?: 'Every great experience begins with passion and dedication.');
+$parallaxCitation = theme_get('parallax.citation', get_site_name());
+$parallaxBg       = theme_get('parallax.bg_image');
+?>
 <!-- Hero Section -->
 <section class="hero">
-    <div class="hero-bg" data-ts-bg="hero.bg_image"></div>
+    <div class="hero-bg" data-ts-bg="hero.bg_image"<?php if ($heroBgImage): ?> style="background: url(<?= esc($heroBgImage) ?>) center/cover no-repeat"<?php endif; ?>></div>
     <div class="hero-overlay"></div>
     <div class="hero-content">
-        <div class="hero-badge"><?= esc(get_setting('hero_badge') ?: 'Welcome') ?></div>
-        <h1 class="hero-title" data-ts="hero.headline"><?= esc(get_site_name()) ?></h1>
-        <p class="hero-subtitle" data-ts="hero.subtitle"><?= esc(get_setting('hero_subtitle') ?: 'Experience exceptional cuisine in an unforgettable atmosphere.') ?></p>
+        <div class="hero-badge"><?= esc($heroBadge) ?></div>
+        <h1 class="hero-title" data-ts="hero.headline"><?= esc($heroHeadline) ?></h1>
+        <p class="hero-subtitle" data-ts="hero.subtitle"><?= esc($heroSubtitle) ?></p>
         <div class="hero-actions">
-            <a href="/articles" class="btn btn-primary" data-ts="hero.btn_text" data-ts-href="hero.btn_link">Our Stories</a>
+            <a href="<?= esc($heroBtnLink) ?>" class="btn btn-primary" data-ts="hero.btn_text" data-ts-href="hero.btn_link"><?= esc($heroBtnText) ?></a>
             <a href="#pages" class="btn btn-outline">Explore</a>
         </div>
     </div>
@@ -18,14 +53,16 @@
     <div class="container">
         <div class="about-grid">
             <div class="about-images">
-                <div class="about-img-main" data-ts-bg="about.image">
+                <div class="about-img-main" data-ts-bg="about.image"<?php if ($aboutImage): ?> style="background: url(<?= esc($aboutImage) ?>) center/cover no-repeat"<?php endif; ?>>
+                    <?php if (!$aboutImage): ?>
                     <div class="img-placeholder"><i class="fas fa-utensils"></i></div>
+                    <?php endif; ?>
                 </div>
             </div>
             <div class="about-content">
-                <span class="section-label" data-ts="about.label">About Us</span>
-                <h2 class="section-title" data-ts="about.title"><?= esc(get_site_name()) ?></h2>
-                <p class="about-lead" data-ts="about.description"><?= esc(get_setting('about_text') ?: 'Welcome to our establishment. We bring you the finest experiences with passion and dedication.') ?></p>
+                <span class="section-label" data-ts="about.label"><?= esc($aboutLabel) ?></span>
+                <h2 class="section-title" data-ts="about.title"><?= esc($aboutTitle) ?></h2>
+                <p class="about-lead" data-ts="about.description"><?= esc($aboutDesc) ?></p>
                 <div class="about-features">
                     <?php if (!empty($pages)): ?>
                         <?php foreach (array_slice($pages, 0, 3) as $p): ?>
@@ -49,9 +86,9 @@
 <section class="section menu-section" id="pages">
     <div class="container">
         <div class="section-header">
-            <span class="section-label" data-ts="pages.label">Explore</span>
-            <h2 class="section-title" data-ts="pages.title">Our Pages</h2>
-            <p class="section-desc" data-ts="pages.description">Discover everything we have to offer.</p>
+            <span class="section-label" data-ts="pages.label"><?= esc($pagesLabel) ?></span>
+            <h2 class="section-title" data-ts="pages.title"><?= esc($pagesTitle) ?></h2>
+            <p class="section-desc" data-ts="pages.description"><?= esc($pagesDesc) ?></p>
         </div>
         <div class="menu-grid">
             <?php foreach ($pages as $p): ?>
@@ -81,9 +118,9 @@
 <section class="section">
     <div class="container">
         <div class="section-header">
-            <span class="section-label" data-ts="articles.label">News & Stories</span>
-            <h2 class="section-title" data-ts="articles.title">Latest Articles</h2>
-            <p class="section-desc" data-ts="articles.description">Stay up to date with our latest news and stories.</p>
+            <span class="section-label" data-ts="articles.label"><?= esc($articlesLabel) ?></span>
+            <h2 class="section-title" data-ts="articles.title"><?= esc($articlesTitle) ?></h2>
+            <p class="section-desc" data-ts="articles.description"><?= esc($articlesDesc) ?></p>
         </div>
         <div class="menu-grid">
             <?php foreach (array_slice($articles, 0, 4) as $a): ?>
@@ -115,7 +152,7 @@
             <?php endforeach; ?>
         </div>
         <div class="menu-cta">
-            <a href="/articles" class="btn btn-outline" data-ts="articles.btn_text" data-ts-href="articles.btn_link">View All Articles</a>
+            <a href="<?= esc($articlesBtnLink) ?>" class="btn btn-outline" data-ts="articles.btn_text" data-ts-href="articles.btn_link"><?= esc($articlesBtnText) ?></a>
         </div>
     </div>
 </section>
@@ -123,7 +160,7 @@
 <section class="section">
     <div class="container">
         <div class="section-header">
-            <span class="section-label" data-ts="articles.label">News</span>
+            <span class="section-label" data-ts="articles.label"><?= esc($articlesLabel) ?></span>
             <h2 class="section-title" data-ts="articles.title">No articles yet</h2>
             <p class="section-desc" data-ts="articles.description">Check back soon for news and stories.</p>
         </div>
@@ -132,12 +169,12 @@
 <?php endif; ?>
 
 <!-- Parallax Divider -->
-<section class="parallax-divider" data-ts-bg="parallax.bg_image">
+<section class="parallax-divider" data-ts-bg="parallax.bg_image"<?php if ($parallaxBg): ?> style="background: url(<?= esc($parallaxBg) ?>) center/cover fixed no-repeat"<?php endif; ?>>
     <div class="parallax-overlay"></div>
     <div class="parallax-content">
         <blockquote>
-            <p data-ts="parallax.quote"><?= esc(get_setting('quote_text') ?: 'Every great experience begins with passion and dedication.') ?></p>
+            <p data-ts="parallax.quote"><?= esc($parallaxQuote) ?></p>
         </blockquote>
-        <cite data-ts="parallax.citation"><?= esc(get_site_name()) ?></cite>
+        <cite data-ts="parallax.citation"><?= esc($parallaxCitation) ?></cite>
     </div>
 </section>
