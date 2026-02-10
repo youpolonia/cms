@@ -21,8 +21,8 @@
 <header class="site-header">
   <div class="container header-inner">
     <div class="site-brand">
-      <a href="/" class="site-title"><?= esc(get_site_name()) ?></a>
-      <span class="site-tagline">Independent Journalism &amp; Culture</span>
+      <a href="/" class="site-title" data-ts="brand.site_name"><?= esc(get_site_name()) ?></a>
+      <span class="site-tagline" data-ts="brand.tagline">Independent Journalism &amp; Culture</span>
     </div>
     <nav class="main-nav">
       <?= render_menu('header', ['wrap' => false, 'class' => 'nav-links', 'fallback_to_pages' => true]); ?>
@@ -80,7 +80,7 @@
     </div>
   </div>
   <div class="container footer-bottom">
-    <p>&copy; <?= date('Y') ?> <?= esc(get_site_name()) ?>. All rights reserved.</p>
+    <p data-ts="footer.copyright">&copy; <?= date('Y') ?> <?= esc(get_site_name()) ?>. All rights reserved.</p>
   </div>
 </footer>
 <script src="/themes/starter-magazine/assets/js/main.js"></script>

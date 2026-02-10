@@ -3,13 +3,13 @@
     <div class="hero-label">
         <span><?= esc(get_setting('hero_label') ?: 'Welcome') ?></span>
     </div>
-    <h1 class="hero-title">
+    <h1 class="hero-title" data-ts="hero.headline">
         <span class="text-stroke"><?= esc(get_site_name()) ?></span><br>
         <span class="text-gradient"><?= esc(get_setting('hero_tagline') ?: 'Creative Portfolio') ?></span>
     </h1>
-    <p class="hero-description"><?= esc(get_setting('hero_subtitle') ?: 'Explore our projects, read our blog, and discover what we do best.') ?></p>
+    <p class="hero-description" data-ts="hero.subtitle"><?= esc(get_setting('hero_subtitle') ?: 'Explore our projects, read our blog, and discover what we do best.') ?></p>
     <div class="hero-cta-group">
-        <a href="#projects" class="btn btn-primary">View Projects <i class="fas fa-arrow-right"></i></a>
+        <a href="#projects" class="btn btn-primary" data-ts="hero.btn_text" data-ts-href="hero.btn_link">View Projects <i class="fas fa-arrow-right"></i></a>
         <a href="/articles" class="btn btn-outline">Read Blog</a>
     </div>
     <div class="hero-scroll-indicator">

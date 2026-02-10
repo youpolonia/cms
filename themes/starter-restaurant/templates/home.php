@@ -1,13 +1,13 @@
 <!-- Hero Section -->
 <section class="hero">
-    <div class="hero-bg"></div>
+    <div class="hero-bg" data-ts-bg="hero.bg_image"></div>
     <div class="hero-overlay"></div>
     <div class="hero-content">
         <div class="hero-badge"><?= esc(get_setting('hero_badge') ?: 'Welcome') ?></div>
-        <h1 class="hero-title"><?= esc(get_site_name()) ?></h1>
-        <p class="hero-subtitle"><?= esc(get_setting('hero_subtitle') ?: 'Experience exceptional cuisine in an unforgettable atmosphere.') ?></p>
+        <h1 class="hero-title" data-ts="hero.headline"><?= esc(get_site_name()) ?></h1>
+        <p class="hero-subtitle" data-ts="hero.subtitle"><?= esc(get_setting('hero_subtitle') ?: 'Experience exceptional cuisine in an unforgettable atmosphere.') ?></p>
         <div class="hero-actions">
-            <a href="/articles" class="btn btn-primary">Our Stories</a>
+            <a href="/articles" class="btn btn-primary" data-ts="hero.btn_text" data-ts-href="hero.btn_link">Our Stories</a>
             <a href="#pages" class="btn btn-outline">Explore</a>
         </div>
     </div>

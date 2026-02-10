@@ -72,11 +72,11 @@ $isTbPage = !empty($page['is_tb_page']);
         <div class="header-container">
             <div class="header-inner">
                 <!-- Logo -->
-                <a href="/" class="site-logo" aria-label="<?php echo esc($siteName); ?> — Home">
+                <a href="/" class="site-logo" aria-label="<?php echo esc($siteName); ? data-ts="brand.logo"> — Home">
                     <?php if (!empty($siteLogo)): ?>
                         <img src="<?php echo esc($siteLogo); ?>" alt="<?php echo esc($siteName); ?>" class="logo-img">
                     <?php else: ?>
-                        <span class="logo-text"><?php echo esc($siteName); ?></span>
+                        <span class="logo-text" data-ts="brand.site_name"><?php echo esc($siteName); ?></span>
                     <?php endif; ?>
                 </a>
 
@@ -127,11 +127,11 @@ $isTbPage = !empty($page['is_tb_page']);
                 <div class="footer-grid">
                     <!-- Col 1 — About -->
                     <div class="footer-col footer-about">
-                        <a href="/" class="footer-logo" aria-label="<?php echo esc($siteName); ?>">
+                        <a href="/" class="footer-logo" aria-label="<?php echo esc($siteName); ? data-ts="brand.logo">">
                             <?php if (!empty($siteLogo)): ?>
                                 <img src="<?php echo esc($siteLogo); ?>" alt="<?php echo esc($siteName); ?>" class="footer-logo-img">
                             <?php else: ?>
-                                <span class="footer-logo-text"><?php echo esc($siteName); ?></span>
+                                <span class="footer-logo-text" data-ts="brand.site_name"><?php echo esc($siteName); ?></span>
                             <?php endif; ?>
                         </a>
                         <p class="footer-desc"><?php echo esc($footerAbout); ?></p>
@@ -195,7 +195,7 @@ $isTbPage = !empty($page['is_tb_page']);
         <div class="footer-bottom">
             <div class="container">
                 <div class="footer-bottom-inner">
-                    <p class="copyright">&copy; <?php echo date('Y'); ?> <?php echo esc($siteName); ?>. All rights reserved.</p>
+                    <p class="copyright" data-ts="footer.copyright">&copy; <?php echo date('Y'); ?> <?php echo esc($siteName); ?>. All rights reserved.</p>
                     <ul class="legal-links">
                         <li><a href="/privacy-policy">Privacy Policy</a></li>
                         <li><a href="/terms-of-service">Terms of Service</a></li>

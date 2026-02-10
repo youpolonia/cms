@@ -1,9 +1,9 @@
 <!-- Blog Hero -->
 <section class="blog-hero">
     <h1><?= esc(get_site_name()) ?></h1>
-    <p class="hero-subtitle"><?= esc(get_setting('hero_subtitle') ?: 'Stories, thoughts, and ideas worth sharing.') ?></p>
+    <p class="hero-subtitle" data-ts="hero.subtitle"><?= esc(get_setting('hero_subtitle') ?: 'Stories, thoughts, and ideas worth sharing.') ?></p>
     <div class="hero-actions">
-        <a href="/articles" class="btn btn-primary">Browse Articles <i class="fas fa-arrow-right"></i></a>
+        <a href="/articles" class="btn btn-primary" data-ts="hero.btn_text" data-ts-href="hero.btn_link">Browse Articles <i class="fas fa-arrow-right"></i></a>
         <a href="#latest" class="btn btn-outline">Latest Posts</a>
     </div>
 </section>

@@ -12,7 +12,7 @@
 <body class="<?= get_body_class() ?>">
 <header class="site-header">
   <div class="header-inner">
-    <a href="/" class="site-logo"><?= esc(get_site_name()) ?></a>
+    <a href="/" class="site-logo" data-ts="brand.logo"><?= esc(get_site_name()) ?></a>
     <button class="hamburger" id="menuToggle" aria-label="Menu"><span></span><span></span><span></span></button>
   </div>
 </header>
@@ -25,7 +25,7 @@
 <main class="site-main"><?= $content ?></main>
 <footer class="site-footer">
   <div class="container footer-inner">
-    <span>&copy; <?= date('Y') ?> <?= esc(get_site_name()) ?></span>
+    <span data-ts="footer.copyright">&copy; <?= date('Y') ?> <?= esc(get_site_name()) ?></span>
     <span class="footer-links"><a href="/contact">Contact</a> · <a href="/about">About</a> · <a href="https://instagram.com" target="_blank">Instagram</a></span>
   </div>
 </footer>

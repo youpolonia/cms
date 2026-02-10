@@ -61,13 +61,13 @@ $themeDir = '/themes/starter-saas';
 <header class="site-header" id="site-header">
     <div class="container">
         <div class="header-inner">
-            <a href="/" class="logo">
+            <a href="/" class="logo" data-ts="brand.logo">
                 <?php if ($siteLogo): ?>
                     <div class="logo-icon"><img src="<?= esc($siteLogo) ?>" alt="<?= esc($siteName) ?>"></div>
                 <?php else: ?>
                     <div class="logo-icon"><i class="fas fa-rocket"></i></div>
                 <?php endif; ?>
-                <span class="logo-text"><?= esc($siteName) ?></span>
+                <span class="logo-text" data-ts="brand.site_name"><?= esc($siteName) ?></span>
             </a>
 
             <nav class="nav-main" id="nav-main">
@@ -98,13 +98,13 @@ $themeDir = '/themes/starter-saas';
     <div class="container">
         <div class="footer-grid">
             <div class="footer-brand">
-                <a href="/" class="logo">
+                <a href="/" class="logo" data-ts="brand.logo">
                     <?php if ($siteLogo): ?>
                         <div class="logo-icon"><img src="<?= esc($siteLogo) ?>" alt="<?= esc($siteName) ?>"></div>
                     <?php else: ?>
                         <div class="logo-icon"><i class="fas fa-rocket"></i></div>
                     <?php endif; ?>
-                    <span class="logo-text"><?= esc($siteName) ?></span>
+                    <span class="logo-text" data-ts="brand.site_name"><?= esc($siteName) ?></span>
                 </a>
                 <p>Build something amazing with modern tools and AI-powered features.</p>
                 <div class="footer-social">
@@ -136,7 +136,7 @@ $themeDir = '/themes/starter-saas';
             </div>
         </div>
         <div class="footer-bottom">
-            <p>&copy; <?= date('Y') ?> <?= esc($siteName) ?>. All rights reserved.</p>
+            <p data-ts="footer.copyright">&copy; <?= date('Y') ?> <?= esc($siteName) ?>. All rights reserved.</p>
         </div>
     </div>
 </footer>

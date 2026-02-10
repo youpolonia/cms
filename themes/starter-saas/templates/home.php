@@ -7,9 +7,9 @@
                 <?= esc(get_setting('hero_badge') ?: 'Welcome to ' . get_site_name()) ?>
             </div>
             <h1><?= esc(get_site_name()) ?> <span class="gradient-text"><?= esc(get_setting('hero_tagline') ?: 'Build Something Amazing') ?></span></h1>
-            <p class="hero-subtitle"><?= esc(get_setting('hero_subtitle') ?: 'Discover our latest content, explore our pages, and stay up to date with everything new.') ?></p>
+            <p class="hero-subtitle" data-ts="hero.subtitle"><?= esc(get_setting('hero_subtitle') ?: 'Discover our latest content, explore our pages, and stay up to date with everything new.') ?></p>
             <div class="hero-actions">
-                <a href="/articles" class="btn btn-primary">Browse Articles <i class="fas fa-arrow-right"></i></a>
+                <a href="/articles" class="btn btn-primary" data-ts="hero.btn_text" data-ts-href="hero.btn_link">Browse Articles <i class="fas fa-arrow-right"></i></a>
                 <a href="#pages" class="btn btn-glass">Our Pages <i class="fas fa-chevron-down"></i></a>
             </div>
 

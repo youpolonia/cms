@@ -1,16 +1,16 @@
 <!-- Hero Section -->
 <section class="hero">
-    <div class="hero-bg"></div>
+    <div class="hero-bg" data-ts-bg="hero.bg_image"></div>
     <div class="container">
         <div class="hero-content">
             <div class="hero-badge">
                 <i class="fas fa-bolt"></i>
                 <?= esc(get_setting('hero_badge') ?: 'Welcome to ' . get_site_name()) ?>
             </div>
-            <h1 class="hero-title"><?= esc(get_site_name()) ?> — <span class="text-gradient"><?= esc(get_setting('hero_tagline') ?: 'Your Trusted Partner') ?></span></h1>
+            <h1 class="hero-title" data-ts="hero.headline"><?= esc(get_site_name()) ?> — <span class="text-gradient"><?= esc(get_setting('hero_tagline') ?: 'Your Trusted Partner') ?></span></h1>
             <p class="hero-desc"><?= esc(get_setting('hero_subtitle') ?: 'Delivering excellence through innovation, expertise, and dedication to our clients.') ?></p>
             <div class="hero-actions">
-                <a href="#services" class="btn btn-primary btn-lg">Our Services <i class="fas fa-arrow-right"></i></a>
+                <a href="#services" class="btn btn-primary btn-lg" data-ts="hero.btn_text" data-ts-href="hero.btn_link">Our Services <i class="fas fa-arrow-right"></i></a>
                 <a href="/articles" class="btn btn-outline btn-lg">Read Insights</a>
             </div>
 

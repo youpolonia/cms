@@ -60,11 +60,11 @@ $themeDir = '/themes/starter-blog';
 <header class="site-header" id="site-header">
     <div class="container">
         <div class="header-inner">
-            <a href="/" class="logo">
+            <a href="/" class="logo" data-ts="brand.logo">
                 <?php if ($siteLogo): ?>
                     <img src="<?= esc($siteLogo) ?>" alt="<?= esc($siteName) ?>" class="logo-img">
                 <?php endif; ?>
-                <span class="logo-text"><?= esc($siteName) ?></span>
+                <span class="logo-text" data-ts="brand.site_name"><?= esc($siteName) ?></span>
             </a>
 
             <nav class="nav-main" id="nav-main">
@@ -93,8 +93,8 @@ $themeDir = '/themes/starter-blog';
     <div class="container">
         <div class="footer-grid">
             <div class="footer-brand">
-                <a href="/" class="logo">
-                    <span class="logo-text"><?= esc($siteName) ?></span>
+                <a href="/" class="logo" data-ts="brand.logo">
+                    <span class="logo-text" data-ts="brand.site_name"><?= esc($siteName) ?></span>
                 </a>
                 <p>Stories, ideas, and insights for the curious mind. Subscribe to stay updated with our latest posts.</p>
             </div>
@@ -112,7 +112,7 @@ $themeDir = '/themes/starter-blog';
             </div>
         </div>
         <div class="footer-bottom">
-            <p>&copy; <?= date('Y') ?> <?= esc($siteName) ?>. All rights reserved.</p>
+            <p data-ts="footer.copyright">&copy; <?= date('Y') ?> <?= esc($siteName) ?>. All rights reserved.</p>
             <div class="footer-social">
                 <a href="#" aria-label="Twitter"><i class="fab fa-x-twitter"></i></a>
                 <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>

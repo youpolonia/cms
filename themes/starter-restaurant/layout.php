@@ -90,17 +90,17 @@ $themePath = '/themes/starter-restaurant';
     <!-- Restaurant Header -->
     <header class="site-header" id="siteHeader">
         <div class="header-container">
-            <a href="/" class="header-logo">
+            <a href="/" class="header-logo" data-ts="brand.logo">
                 <?php if ($siteLogo): ?>
                     <img src="<?= esc($siteLogo) ?>" alt="<?= esc($siteName) ?>">
                 <?php else: ?>
-                    <span class="logo-text"><?= esc($siteName) ?></span>
+                    <span class="logo-text" data-ts="brand.site_name"><?= esc($siteName) ?></span>
                 <?php endif; ?>
             </a>
             <nav class="header-nav" id="headerNav">
                 <?= render_menu('header', ['class' => 'nav-links', 'link_class' => 'nav-link', 'wrap' => false]) ?>
             </nav>
-            <a href="#reservation" class="header-cta">Reserve a Table</a>
+            <a href="#reservation" class="header-cta" data-ts="header.cta_text" data-ts-href="header.cta_link">Reserve a Table</a>
             <button class="mobile-toggle" id="mobileToggle" aria-label="Toggle menu">
                 <span></span>
                 <span></span>
@@ -131,14 +131,14 @@ $themePath = '/themes/starter-restaurant';
             <div class="container">
                 <div class="footer-grid">
                     <div class="footer-brand">
-                        <a href="/" class="footer-logo">
+                        <a href="/" class="footer-logo" data-ts="brand.logo">
                             <?php if ($siteLogo): ?>
                                 <img src="<?= esc($siteLogo) ?>" alt="<?= esc($siteName) ?>">
                             <?php else: ?>
-                                <span class="logo-text"><?= esc($siteName) ?></span>
+                                <span class="logo-text" data-ts="brand.site_name"><?= esc($siteName) ?></span>
                             <?php endif; ?>
                         </a>
-                        <p class="footer-tagline">An exquisite dining experience where tradition meets innovation. Every dish tells a story of passion and craftsmanship.</p>
+                        <p class="footer-tagline" data-ts="footer.description">An exquisite dining experience where tradition meets innovation. Every dish tells a story of passion and craftsmanship.</p>
                         <div class="footer-social">
                             <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
                             <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
@@ -171,7 +171,7 @@ $themePath = '/themes/starter-restaurant';
         </div>
         <div class="footer-bottom">
             <div class="container">
-                <p>&copy; <?= date('Y') ?> <?= esc($siteName) ?>. All rights reserved.</p>
+                <p data-ts="footer.copyright">&copy; <?= date('Y') ?> <?= esc($siteName) ?>. All rights reserved.</p>
             </div>
         </div>
     </footer>

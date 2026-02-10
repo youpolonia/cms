@@ -5,7 +5,7 @@
         <h1>Supercharge Your<br><span class="gradient-text">Workflow Today</span></h1>
         <p>AppFlow helps teams move faster with smart automation, real-time collaboration, and powerful integrations — all in one beautiful platform.</p>
         <div class="hero-buttons">
-            <a href="/contact" class="btn-primary">Get Started Free →</a>
+            <a href="/contact" class="btn-primary" data-ts="hero.btn_text" data-ts-href="hero.btn_link">Get Started Free →</a>
             <a href="#features" class="btn-outline">▶ Watch Demo</a>
         </div>
     </div>

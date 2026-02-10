@@ -76,11 +76,11 @@ $googleFontsUrl = "https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@3
     <!-- Header -->
     <header class="site-header" id="siteHeader">
         <div class="header-inner">
-            <a href="/" class="site-brand">
+            <a href="/" class="site-brand" data-ts="brand.logo">
                 <?php if ($siteLogo): ?>
                     <img src="<?= esc($siteLogo) ?>" alt="<?= esc($siteName) ?>" class="site-logo">
                 <?php else: ?>
-                    <span class="site-name"><?= esc($siteName) ?></span>
+                    <span class="site-name" data-ts="brand.site_name"><?= esc($siteName) ?></span>
                 <?php endif; ?>
             </a>
 
@@ -115,7 +115,7 @@ $googleFontsUrl = "https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@3
         <div class="footer-inner">
             <div class="footer-top">
                 <div class="footer-brand">
-                    <a href="/" class="footer-logo-link">
+                    <a href="/" class="footer-logo-link" data-ts="brand.logo">
                         <?php if ($siteLogo): ?>
                             <img src="<?= esc($siteLogo) ?>" alt="<?= esc($siteName) ?>" class="footer-logo">
                         <?php else: ?>
@@ -159,7 +159,7 @@ $googleFontsUrl = "https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@3
 
             <div class="footer-bottom">
                 <div class="footer-line"></div>
-                <p class="footer-copyright">
+                <p class="footer-copyright" data-ts="footer.copyright">
                     &copy; <?= date('Y') ?> <?= esc($siteName) ?>. <?= esc($footerText) ?>
                 </p>
             </div>

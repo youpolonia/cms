@@ -2,7 +2,7 @@
 <section class="hero-section">
     <div class="hero-content">
         <div class="hero-date">June 15–17, 2026 • London, UK</div>
-        <h1 class="hero-title">Summit 2026</h1>
+        <h1 class="hero-title" data-ts="hero.headline">Summit 2026</h1>
         <p class="hero-tagline">The premier tech conference bringing together the world's most innovative minds. Three days of inspiration, connection, and transformation.</p>
 
         <div class="countdown">
@@ -25,7 +25,7 @@
         </div>
 
         <div class="hero-buttons">
-            <a href="/contact" class="btn-primary">Get Tickets 🎟️</a>
+            <a href="/contact" class="btn-primary" data-ts="hero.btn_text" data-ts-href="hero.btn_link">Get Tickets 🎟️</a>
             <a href="/about" class="btn-outline">Learn More →</a>
         </div>
     </div>

@@ -21,7 +21,7 @@ try {
 ?>
 
 <!-- Hero Fullscreen -->
-<section class="hero-fullscreen" style="background-image: url('/uploads/media/demo_starter-photography_3.jpg');">
+<section class="hero-fullscreen" data-ts-bg="hero.bg_image" style="background-image: url('/uploads/media/demo_starter-photography_3.jpg');">
     <div class="hero-content">
         <span class="hero-label">Photography Portfolio</span>
         <h1>Capturing Light<br>& Shadow</h1>

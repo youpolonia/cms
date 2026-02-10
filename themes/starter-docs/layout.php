@@ -13,7 +13,7 @@
 
 <header class="site-header">
   <div class="header-inner">
-    <a href="/" class="site-logo"><?= esc(get_site_name()) ?></a>
+    <a href="/" class="site-logo" data-ts="brand.logo"><?= esc(get_site_name()) ?></a>
     <div class="header-search">
       <input type="text" placeholder="Search documentation..." class="search-input" id="docsSearch">
       <kbd>⌘K</kbd>
@@ -43,7 +43,7 @@
 
 <footer class="site-footer">
   <div class="container footer-inner">
-    <p>&copy; <?= date('Y') ?> <?= esc(get_site_name()) ?>. Built with Jessie CMS.</p>
+    <p data-ts="footer.copyright">&copy; <?= date('Y') ?> <?= esc(get_site_name()) ?>. Built with Jessie CMS.</p>
     <div class="footer-links">
       <a href="/about">About</a>
       <a href="/contact">Contact</a>
