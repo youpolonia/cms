@@ -343,8 +343,18 @@ if (!function_exists('render')) {
 if (!function_exists('cms_inject_admin_toolbar')) {
     /**
      * Inject admin toolbar into HTML output (after <body> tag)
+     * Also injects Theme Studio preview script when in preview mode.
      */
     function cms_inject_admin_toolbar(string $html, array $context = []): string {
+        // Theme Studio preview mode: inject live-update script before </body>
+        if (defined('THEME_STUDIO_PREVIEW') && THEME_STUDIO_PREVIEW) {
+            if (function_exists('theme_studio_preview_script')) {
+                $html = str_replace('</body>', theme_studio_preview_script() . "\n</body>", $html);
+            }
+            // Skip toolbar in preview mode — it would interfere
+            return $html;
+        }
+
         if (!function_exists('cms_admin_toolbar') || !function_exists('cms_is_admin_logged_in')) {
             return $html;
         }
