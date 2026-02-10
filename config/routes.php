@@ -321,6 +321,21 @@ return [
     'POST /admin/profile/password/update' => ['Admin\\ProfileController', 'updatePassword', ['auth' => true, 'csrf' => true]],
 
     // Jessie Theme Builder Plugin (JTB)
+    // Theme Studio
+    'GET /admin/theme-studio' => ['Admin\\ThemeStudioController', 'index', ['auth' => true]],
+    'GET /admin/theme-studio/preview' => ['Admin\\ThemeStudioController', 'preview', ['auth' => true]],
+    'GET /api/theme-studio/schema' => ['Admin\\ThemeStudioController', 'apiSchema', ['auth' => true]],
+    'GET /api/theme-studio/values' => ['Admin\\ThemeStudioController', 'apiValues', ['auth' => true]],
+    'POST /api/theme-studio/save' => ['Admin\\ThemeStudioController', 'apiSave', ['auth' => true, 'csrf' => true]],
+    'POST /api/theme-studio/reset' => ['Admin\\ThemeStudioController', 'apiReset', ['auth' => true, 'csrf' => true]],
+    'GET /api/theme-studio/history' => ['Admin\\ThemeStudioController', 'apiHistory', ['auth' => true]],
+    'POST /api/theme-studio/restore' => ['Admin\\ThemeStudioController', 'apiRestore', ['auth' => true, 'csrf' => true]],
+    'POST /api/theme-studio/upload' => ['Admin\\ThemeStudioController', 'apiUpload', ['auth' => true, 'csrf' => true]],
+    'POST /api/theme-studio/ai/customize' => ['Admin\\ThemeStudioController', 'aiCustomize', ['auth' => true, 'csrf' => true]],
+    'POST /api/theme-studio/ai/generate-content' => ['Admin\\ThemeStudioController', 'aiGenerateContent', ['auth' => true, 'csrf' => true]],
+    'POST /api/theme-studio/ai/suggest-images' => ['Admin\\ThemeStudioController', 'aiSuggestImages', ['auth' => true, 'csrf' => true]],
+    'POST /api/theme-studio/ai/color-palette' => ['Admin\\ThemeStudioController', 'aiColorPalette', ['auth' => true, 'csrf' => true]],
+
     'GET /admin/jessie-theme-builder' => ['Admin\\JtbController', 'index', ['auth' => true]],
     'GET /admin/jessie-theme-builder/edit/{id}' => ['Admin\\JtbController', 'edit', ['auth' => true]],
 

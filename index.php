@@ -78,6 +78,7 @@ require_once __DIR__ . '/core/csrf.php';
 // Load MVC helpers (db(), esc(), render(), etc.)
 if (file_exists(CMS_APP . '/helpers/functions.php')) {
     require_once CMS_APP . '/helpers/functions.php';
+    require_once CMS_ROOT . '/core/theme-customizer.php';
 }
 
 // Load menu helper for render_menu() function
