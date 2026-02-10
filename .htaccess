@@ -149,6 +149,7 @@ RewriteRule ^admin/themes(/.*)?$ index.php [QSA,L]
 
 # Theme Studio
 RewriteRule ^admin/theme-studio(/.*)?$ index.php [QSA,L]
+RewriteRule ^admin/ai-theme-builder(/.*)?$ index.php [QSA,L]
 
 # Logs
 RewriteRule ^admin/logs(/.*)?$ index.php [QSA,L]
@@ -219,6 +220,7 @@ RewriteRule ^admin/jtb(/.*)?$ index.php [QSA,L]
 
 # Theme Studio API
 RewriteRule ^api/theme-studio(/.*)?$ index.php [QSA,L]
+RewriteRule ^api/ai-theme-builder(/.*)?$ index.php [QSA,L]
 
 # JTB API
 RewriteRule ^api/jtb(/.*)?$ index.php [QSA,L]

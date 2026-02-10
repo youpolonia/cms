@@ -335,6 +335,18 @@ return [
     'POST /api/theme-studio/ai/suggest-images' => ['Admin\\ThemeStudioController', 'aiSuggestImages', ['auth' => true, 'csrf' => true]],
     'POST /api/theme-studio/ai/color-palette' => ['Admin\\ThemeStudioController', 'aiColorPalette', ['auth' => true, 'csrf' => true]],
 
+    // AI Theme Builder
+    'GET /admin/ai-theme-builder' => ['Admin\\AiThemeBuilderController', 'index', ['auth' => true]],
+    'POST /api/ai-theme-builder/generate' => ['Admin\\AiThemeBuilderController', 'generate', ['auth' => true, 'csrf' => true]],
+    'POST /api/ai-theme-builder/apply' => ['Admin\\AiThemeBuilderController', 'apply', ['auth' => true, 'csrf' => true]],
+    'GET /admin/ai-theme-builder/preview' => ['Admin\\AiThemeBuilderController', 'preview', ['auth' => true]],
+
+    // AI Theme Builder
+    'GET /admin/ai-theme-builder' => ['Admin\\AiThemeBuilderController', 'index', ['auth' => true]],
+    'POST /api/ai-theme-builder/generate' => ['Admin\\AiThemeBuilderController', 'generate', ['auth' => true, 'csrf' => true]],
+    'POST /api/ai-theme-builder/apply' => ['Admin\\AiThemeBuilderController', 'apply', ['auth' => true, 'csrf' => true]],
+    'GET /admin/ai-theme-builder/preview' => ['Admin\\AiThemeBuilderController', 'preview', ['auth' => true]],
+
     'GET /admin/jessie-theme-builder' => ['Admin\\JtbController', 'index', ['auth' => true]],
     'GET /admin/jessie-theme-builder/edit/{id}' => ['Admin\\JtbController', 'edit', ['auth' => true]],
 

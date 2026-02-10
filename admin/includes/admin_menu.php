@@ -93,6 +93,8 @@ return [
             ['label' => '🏗️ Page Builder', 'url' => '/admin/jessie-theme-builder'],
             ['label' => '🎨 Themes', 'url' => '/admin/themes'],
             ['label' => '🎯 Theme Studio', 'url' => '/admin/theme-studio'],
+            ['label' => '🤖 AI Theme Builder', 'url' => '/admin/ai-theme-builder'],
+            ['label' => '🤖 AI Theme Builder', 'url' => '/admin/ai-theme-builder'],
             ['label' => '🧩 AI Components', 'url' => '/admin/ai-components'],
         ]
     ],
