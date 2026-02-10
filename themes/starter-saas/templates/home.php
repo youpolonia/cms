@@ -6,7 +6,7 @@
                 <span class="badge-dot"></span>
                 <?= esc(get_setting('hero_badge') ?: 'Welcome to ' . get_site_name()) ?>
             </div>
-            <h1><?= esc(get_site_name()) ?> <span class="gradient-text"><?= esc(get_setting('hero_tagline') ?: 'Build Something Amazing') ?></span></h1>
+            <h1 data-ts="hero.headline"><?= esc(get_site_name()) ?> <span class="gradient-text"><?= esc(get_setting('hero_tagline') ?: 'Build Something Amazing') ?></span></h1>
             <p class="hero-subtitle" data-ts="hero.subtitle"><?= esc(get_setting('hero_subtitle') ?: 'Discover our latest content, explore our pages, and stay up to date with everything new.') ?></p>
             <div class="hero-actions">
                 <a href="/articles" class="btn btn-primary" data-ts="hero.btn_text" data-ts-href="hero.btn_link">Browse Articles <i class="fas fa-arrow-right"></i></a>
@@ -38,9 +38,9 @@
 <section class="features-section">
     <div class="container">
         <div class="section-header">
-            <span class="section-badge">Latest Articles</span>
-            <h2>Fresh from the <span class="gradient-text">Blog</span></h2>
-            <p>Stay informed with our latest articles and insights.</p>
+            <span class="section-badge" data-ts="articles.label">Latest Articles</span>
+            <h2 data-ts="articles.title">Fresh from the <span class="gradient-text">Blog</span></h2>
+            <p data-ts="articles.description">Stay informed with our latest articles and insights.</p>
         </div>
         <div class="features-grid">
             <?php foreach (array_slice($articles, 0, 6) as $a): ?>
@@ -95,9 +95,9 @@
 <section class="showcase-section" id="pages">
     <div class="container">
         <div class="section-header">
-            <span class="section-badge">Explore</span>
-            <h2>Our <span class="gradient-text">Pages</span></h2>
-            <p>Discover what we have to offer.</p>
+            <span class="section-badge" data-ts="pages.label">Explore</span>
+            <h2 data-ts="pages.title">Our <span class="gradient-text">Pages</span></h2>
+            <p data-ts="pages.description">Discover what we have to offer.</p>
         </div>
         <div class="features-grid" style="grid-template-columns:repeat(2, 1fr)">
             <?php foreach ($pages as $p): ?>
@@ -124,8 +124,8 @@
 <section class="cta-section">
     <div class="container">
         <div class="cta-card">
-            <h2>Stay in the <span class="gradient-text">Loop</span></h2>
-            <p>Subscribe to get the latest updates, articles, and news delivered to your inbox.</p>
+            <h2 data-ts="cta.title">Stay in the <span class="gradient-text">Loop</span></h2>
+            <p data-ts="cta.description">Subscribe to get the latest updates, articles, and news delivered to your inbox.</p>
             <div class="cta-actions">
                 <a href="/articles" class="btn btn-primary btn-lg">Browse Articles <i class="fas fa-arrow-right"></i></a>
                 <a href="/" class="btn btn-glass">Back to Top <i class="fas fa-chevron-up"></i></a>

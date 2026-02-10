@@ -1,9 +1,9 @@
 <!-- Hero Section -->
 <section class="hero">
     <div class="hero-content fade-in-up">
-        <div class="hero-badge">🚀 Now in public beta — Try it free</div>
-        <h1>Supercharge Your<br><span class="gradient-text">Workflow Today</span></h1>
-        <p>AppFlow helps teams move faster with smart automation, real-time collaboration, and powerful integrations — all in one beautiful platform.</p>
+        <div class="hero-badge" data-ts="hero.badge">🚀 Now in public beta — Try it free</div>
+        <h1 data-ts="hero.headline">Supercharge Your<br><span class="gradient-text">Workflow Today</span></h1>
+        <p data-ts="hero.subtitle">AppFlow helps teams move faster with smart automation, real-time collaboration, and powerful integrations — all in one beautiful platform.</p>
         <div class="hero-buttons">
             <a href="/contact" class="btn-primary" data-ts="hero.btn_text" data-ts-href="hero.btn_link">Get Started Free →</a>
             <a href="#features" class="btn-outline">▶ Watch Demo</a>
@@ -188,8 +188,8 @@
 <!-- CTA Banner -->
 <section class="cta-banner">
     <div class="container fade-in-up">
-        <h2>Ready to supercharge your workflow?</h2>
-        <p>Join 10,000+ teams already using AppFlow to ship faster and collaborate better.</p>
+        <h2 data-ts="cta.title">Ready to supercharge your workflow?</h2>
+        <p data-ts="cta.description">Join 10,000+ teams already using AppFlow to ship faster and collaborate better.</p>
         <a href="/contact" class="btn-white">Get Started Free →</a>
     </div>
 </section>

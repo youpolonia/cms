@@ -1,9 +1,9 @@
 <!-- HERO SECTION -->
 <section class="hero-section">
     <div class="hero-content">
-        <div class="hero-date">June 15–17, 2026 • London, UK</div>
+        <div class="hero-date" data-ts="hero.badge">June 15–17, 2026 • London, UK</div>
         <h1 class="hero-title" data-ts="hero.headline">Summit 2026</h1>
-        <p class="hero-tagline">The premier tech conference bringing together the world's most innovative minds. Three days of inspiration, connection, and transformation.</p>
+        <p class="hero-tagline" data-ts="hero.subtitle">The premier tech conference bringing together the world's most innovative minds. Three days of inspiration, connection, and transformation.</p>
 
         <div class="countdown">
             <div class="countdown-box">
@@ -163,8 +163,8 @@
 <section class="section section-cta">
     <div class="container">
         <div class="cta-content">
-            <h2 class="cta-title">Don't Miss Out</h2>
-            <p class="cta-text">Early bird tickets are selling fast. Secure your spot at the most anticipated tech event of 2026.</p>
+            <h2 class="cta-title" data-ts="cta.title">Don't Miss Out</h2>
+            <p class="cta-text" data-ts="cta.description">Early bird tickets are selling fast. Secure your spot at the most anticipated tech event of 2026.</p>
             <a href="/contact" class="btn-primary btn-large">Register Now 🎟️</a>
         </div>
     </div>

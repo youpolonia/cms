@@ -23,9 +23,9 @@
 <div class="section-divider"><hr></div>
 <section class="section" id="projects">
     <div class="section-header">
-        <div class="section-label">Projects</div>
-        <h2 class="section-title">Featured <span class="text-gradient">Work</span></h2>
-        <p class="section-subtitle">Explore our pages and projects.</p>
+        <div class="section-label" data-ts="pages.label">Projects</div>
+        <h2 class="section-title" data-ts="pages.title">Featured <span class="text-gradient">Work</span></h2>
+        <p class="section-subtitle" data-ts="pages.description">Explore our pages and projects.</p>
     </div>
     <div class="work-grid">
         <?php foreach ($pages as $p): ?>
@@ -53,9 +53,9 @@
 <div class="section-divider"><hr></div>
 <section class="section">
     <div class="section-header">
-        <div class="section-label">Blog</div>
-        <h2 class="section-title">Latest <span class="text-gradient">Posts</span></h2>
-        <p class="section-subtitle">Thoughts, stories, and insights.</p>
+        <div class="section-label" data-ts="articles.label">Blog</div>
+        <h2 class="section-title" data-ts="articles.title">Latest <span class="text-gradient">Posts</span></h2>
+        <p class="section-subtitle" data-ts="articles.description">Thoughts, stories, and insights.</p>
     </div>
     <div class="work-grid">
         <?php foreach (array_slice($articles, 0, 4) as $a): ?>
@@ -127,8 +127,8 @@
 
 <!-- CTA -->
 <section class="cta-section">
-    <h2 class="cta-title">Let's <span class="text-gradient">Connect</span></h2>
-    <p class="cta-description">Interested in working together? Let's make something great.</p>
+    <h2 class="cta-title" data-ts="cta.title">Let's <span class="text-gradient">Connect</span></h2>
+    <p class="cta-description" data-ts="cta.description">Interested in working together? Let's make something great.</p>
     <div class="cta-button-group">
         <a href="/articles" class="btn btn-primary">Read Our Blog <i class="fas fa-arrow-right"></i></a>
     </div>

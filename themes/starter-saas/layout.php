@@ -73,7 +73,7 @@ $themeDir = '/themes/starter-saas';
             <nav class="nav-main" id="nav-main">
                 <?= render_menu('header', ['class' => 'nav-links', 'link_class' => 'nav-link', 'wrap' => false]) ?>
                 <div class="nav-cta">
-                    <a href="/contact" class="btn btn-primary btn-sm">Get Started <i class="fas fa-arrow-right"></i></a>
+                    <a href="/contact" class="btn btn-primary btn-sm" data-ts="header.cta_text" data-ts-href="header.cta_link">Get Started <i class="fas fa-arrow-right"></i></a>
                 </div>
             </nav>
 
@@ -106,7 +106,7 @@ $themeDir = '/themes/starter-saas';
                     <?php endif; ?>
                     <span class="logo-text" data-ts="brand.site_name"><?= esc($siteName) ?></span>
                 </a>
-                <p>Build something amazing with modern tools and AI-powered features.</p>
+                <p data-ts="footer.description">Build something amazing with modern tools and AI-powered features.</p>
                 <div class="footer-social">
                     <a href="#" aria-label="Twitter"><i class="fab fa-x-twitter"></i></a>
                     <a href="#" aria-label="GitHub"><i class="fab fa-github"></i></a>

@@ -8,7 +8,7 @@
                 <?= esc(get_setting('hero_badge') ?: 'Welcome to ' . get_site_name()) ?>
             </div>
             <h1 class="hero-title" data-ts="hero.headline"><?= esc(get_site_name()) ?> — <span class="text-gradient"><?= esc(get_setting('hero_tagline') ?: 'Your Trusted Partner') ?></span></h1>
-            <p class="hero-desc"><?= esc(get_setting('hero_subtitle') ?: 'Delivering excellence through innovation, expertise, and dedication to our clients.') ?></p>
+            <p class="hero-desc" data-ts="hero.subtitle"><?= esc(get_setting('hero_subtitle') ?: 'Delivering excellence through innovation, expertise, and dedication to our clients.') ?></p>
             <div class="hero-actions">
                 <a href="#services" class="btn btn-primary btn-lg" data-ts="hero.btn_text" data-ts-href="hero.btn_link">Our Services <i class="fas fa-arrow-right"></i></a>
                 <a href="/articles" class="btn btn-outline btn-lg">Read Insights</a>
@@ -42,9 +42,9 @@
 <section class="section services-section" id="services">
     <div class="container">
         <div class="section-header">
-            <span class="section-badge">What We Offer</span>
-            <h2 class="section-title">Our <span class="text-gradient">Services</span></h2>
-            <p class="section-desc">Explore what we have to offer across all our pages.</p>
+            <span class="section-badge" data-ts="services.label">What We Offer</span>
+            <h2 class="section-title" data-ts="services.title">Our <span class="text-gradient">Services</span></h2>
+            <p class="section-desc" data-ts="services.description">Explore what we have to offer across all our pages.</p>
         </div>
         <div class="services-grid">
             <?php $icons = ['fas fa-cogs', 'fas fa-chart-line', 'fas fa-shield-alt', 'fas fa-lightbulb', 'fas fa-users', 'fas fa-globe']; ?>
@@ -74,9 +74,9 @@
 <section class="section testimonials-section">
     <div class="container">
         <div class="section-header">
-            <span class="section-badge">Insights</span>
-            <h2 class="section-title">Latest <span class="text-gradient">Articles</span></h2>
-            <p class="section-desc">Stay informed with our latest business insights and thought leadership.</p>
+            <span class="section-badge" data-ts="articles.label">Insights</span>
+            <h2 class="section-title" data-ts="articles.title">Latest <span class="text-gradient">Articles</span></h2>
+            <p class="section-desc" data-ts="articles.description">Stay informed with our latest business insights and thought leadership.</p>
         </div>
         <div class="services-grid">
             <?php foreach (array_slice($articles, 0, 6) as $a): ?>
@@ -129,8 +129,8 @@
     <div class="container">
         <div class="newsletter-card">
             <div class="newsletter-content">
-                <h2 class="newsletter-title">Stay Ahead of the Curve</h2>
-                <p class="newsletter-desc">Get the latest insights, articles, and updates delivered to your inbox.</p>
+                <h2 class="newsletter-title" data-ts="cta.title">Stay Ahead of the Curve</h2>
+                <p class="newsletter-desc" data-ts="cta.description">Get the latest insights, articles, and updates delivered to your inbox.</p>
             </div>
             <div class="newsletter-form">
                 <div style="display:flex;gap:12px;flex-wrap:wrap">

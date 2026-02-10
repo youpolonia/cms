@@ -96,7 +96,7 @@ $themeDir = '/themes/starter-blog';
                 <a href="/" class="logo" data-ts="brand.logo">
                     <span class="logo-text" data-ts="brand.site_name"><?= esc($siteName) ?></span>
                 </a>
-                <p>Stories, ideas, and insights for the curious mind. Subscribe to stay updated with our latest posts.</p>
+                <p data-ts="footer.description">Stories, ideas, and insights for the curious mind. Subscribe to stay updated with our latest posts.</p>
             </div>
             <div class="footer-column">
                 <h4>Navigate</h4>

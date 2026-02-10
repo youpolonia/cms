@@ -1,6 +1,6 @@
 <!-- Blog Hero -->
 <section class="blog-hero">
-    <h1><?= esc(get_site_name()) ?></h1>
+    <h1 data-ts="hero.headline"><?= esc(get_site_name()) ?></h1>
     <p class="hero-subtitle" data-ts="hero.subtitle"><?= esc(get_setting('hero_subtitle') ?: 'Stories, thoughts, and ideas worth sharing.') ?></p>
     <div class="hero-actions">
         <a href="/articles" class="btn btn-primary" data-ts="hero.btn_text" data-ts-href="hero.btn_link">Browse Articles <i class="fas fa-arrow-right"></i></a>
@@ -53,9 +53,9 @@
 <section class="posts-section" id="latest">
     <div class="container">
         <div class="section-header">
-            <span class="section-badge">Latest</span>
-            <h2>Recent Posts</h2>
-            <p>Catch up on our latest articles and stories.</p>
+            <span class="section-badge" data-ts="articles.label">Latest</span>
+            <h2 data-ts="articles.title">Recent Posts</h2>
+            <p data-ts="articles.description">Catch up on our latest articles and stories.</p>
         </div>
         <div class="posts-grid">
             <?php foreach (array_slice($remaining, 0, 6) as $a): ?>
@@ -117,9 +117,9 @@
 <section class="categories-section">
     <div class="container">
         <div class="section-header">
-            <span class="section-badge">Explore</span>
-            <h2>Our Pages</h2>
-            <p>Discover more content across our site.</p>
+            <span class="section-badge" data-ts="pages.label">Explore</span>
+            <h2 data-ts="pages.title">Our Pages</h2>
+            <p data-ts="pages.description">Discover more content across our site.</p>
         </div>
         <div class="categories-grid">
             <?php $pageIcons = ['fas fa-file-alt', 'fas fa-info-circle', 'fas fa-bookmark', 'fas fa-star', 'fas fa-heart', 'fas fa-folder']; ?>
@@ -141,8 +141,8 @@
 <section class="newsletter-section">
     <div class="container">
         <div class="newsletter-card">
-            <h2>Stay <span class="gradient-text">Updated</span></h2>
-            <p>Subscribe to get notified about new articles and updates.</p>
+            <h2 data-ts="cta.title">Stay <span class="gradient-text">Updated</span></h2>
+            <p data-ts="cta.description">Subscribe to get notified about new articles and updates.</p>
             <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;max-width:450px;margin:0 auto">
                 <a href="/articles" class="btn btn-primary btn-lg">Browse All Articles <i class="fas fa-arrow-right"></i></a>
             </div>

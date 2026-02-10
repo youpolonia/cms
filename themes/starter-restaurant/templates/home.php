@@ -18,14 +18,14 @@
     <div class="container">
         <div class="about-grid">
             <div class="about-images">
-                <div class="about-img-main">
+                <div class="about-img-main" data-ts-bg="about.image">
                     <div class="img-placeholder"><i class="fas fa-utensils"></i></div>
                 </div>
             </div>
             <div class="about-content">
-                <span class="section-label">About Us</span>
-                <h2 class="section-title"><?= esc(get_site_name()) ?></h2>
-                <p class="about-lead"><?= esc(get_setting('about_text') ?: 'Welcome to our establishment. We bring you the finest experiences with passion and dedication.') ?></p>
+                <span class="section-label" data-ts="about.label">About Us</span>
+                <h2 class="section-title" data-ts="about.title"><?= esc(get_site_name()) ?></h2>
+                <p class="about-lead" data-ts="about.description"><?= esc(get_setting('about_text') ?: 'Welcome to our establishment. We bring you the finest experiences with passion and dedication.') ?></p>
                 <div class="about-features">
                     <?php if (!empty($pages)): ?>
                         <?php foreach (array_slice($pages, 0, 3) as $p): ?>
@@ -49,9 +49,9 @@
 <section class="section menu-section" id="pages">
     <div class="container">
         <div class="section-header">
-            <span class="section-label">Explore</span>
-            <h2 class="section-title">Our Pages</h2>
-            <p class="section-desc">Discover everything we have to offer.</p>
+            <span class="section-label" data-ts="pages.label">Explore</span>
+            <h2 class="section-title" data-ts="pages.title">Our Pages</h2>
+            <p class="section-desc" data-ts="pages.description">Discover everything we have to offer.</p>
         </div>
         <div class="menu-grid">
             <?php foreach ($pages as $p): ?>
@@ -81,9 +81,9 @@
 <section class="section">
     <div class="container">
         <div class="section-header">
-            <span class="section-label">News & Stories</span>
-            <h2 class="section-title">Latest Articles</h2>
-            <p class="section-desc">Stay up to date with our latest news and stories.</p>
+            <span class="section-label" data-ts="articles.label">News & Stories</span>
+            <h2 class="section-title" data-ts="articles.title">Latest Articles</h2>
+            <p class="section-desc" data-ts="articles.description">Stay up to date with our latest news and stories.</p>
         </div>
         <div class="menu-grid">
             <?php foreach (array_slice($articles, 0, 4) as $a): ?>
@@ -115,7 +115,7 @@
             <?php endforeach; ?>
         </div>
         <div class="menu-cta">
-            <a href="/articles" class="btn btn-outline">View All Articles</a>
+            <a href="/articles" class="btn btn-outline" data-ts="articles.btn_text" data-ts-href="articles.btn_link">View All Articles</a>
         </div>
     </div>
 </section>
@@ -123,21 +123,21 @@
 <section class="section">
     <div class="container">
         <div class="section-header">
-            <span class="section-label">News</span>
-            <h2 class="section-title">No articles yet</h2>
-            <p class="section-desc">Check back soon for news and stories.</p>
+            <span class="section-label" data-ts="articles.label">News</span>
+            <h2 class="section-title" data-ts="articles.title">No articles yet</h2>
+            <p class="section-desc" data-ts="articles.description">Check back soon for news and stories.</p>
         </div>
     </div>
 </section>
 <?php endif; ?>
 
 <!-- Parallax Divider -->
-<section class="parallax-divider">
+<section class="parallax-divider" data-ts-bg="parallax.bg_image">
     <div class="parallax-overlay"></div>
     <div class="parallax-content">
         <blockquote>
-            <p><?= esc(get_setting('quote_text') ?: 'Every great experience begins with passion and dedication.') ?></p>
+            <p data-ts="parallax.quote"><?= esc(get_setting('quote_text') ?: 'Every great experience begins with passion and dedication.') ?></p>
         </blockquote>
-        <cite><?= esc(get_site_name()) ?></cite>
+        <cite data-ts="parallax.citation"><?= esc(get_site_name()) ?></cite>
     </div>
 </section>

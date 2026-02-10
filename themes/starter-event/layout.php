@@ -23,7 +23,7 @@
 <main class="site-main"><?= $content ?></main>
 <footer class="site-footer">
   <div class="container footer-grid">
-    <div class="footer-col"><h4><?= esc(get_site_name()) ?></h4><p>The premier tech conference bringing together innovators, creators, and leaders.</p></div>
+    <div class="footer-col"><h4 data-ts="brand.site_name"><?= esc(get_site_name()) ?></h4><p data-ts="footer.description">The premier tech conference bringing together innovators, creators, and leaders.</p></div>
     <div class="footer-col"><h4>Event</h4><ul><li><a href="/about">About</a></li><li><a href="/speakers">Speakers</a></li><li><a href="/schedule">Schedule</a></li><li><a href="/gallery">Gallery</a></li></ul></div>
     <div class="footer-col"><h4>Info</h4><ul><li><a href="/venue">Venue</a></li><li><a href="/articles">Blog</a></li><li><a href="/contact">Contact</a></li><li><a href="#">Code of Conduct</a></li></ul></div>
     <div class="footer-col"><h4>Connect</h4><ul><li><a href="#">Twitter / X</a></li><li><a href="#">LinkedIn</a></li><li><a href="#">YouTube</a></li><li><a href="#">Discord</a></li></ul></div>

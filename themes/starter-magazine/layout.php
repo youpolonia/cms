@@ -67,8 +67,8 @@
 <footer class="site-footer">
   <div class="container footer-grid">
     <div class="footer-col">
-      <h4><?= esc(get_site_name()) ?></h4>
-      <p>Independent journalism covering technology, culture, science, and the arts since 2020.</p>
+      <h4 data-ts="brand.site_name"><?= esc(get_site_name()) ?></h4>
+      <p data-ts="footer.description">Independent journalism covering technology, culture, science, and the arts since 2020.</p>
     </div>
     <div class="footer-col">
       <h4>Sections</h4>

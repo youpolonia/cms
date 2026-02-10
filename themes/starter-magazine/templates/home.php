@@ -25,7 +25,7 @@ try {
 <?php endif; ?>
 
 <section class="latest-articles">
-  <h2 class="section-title">Latest Stories</h2>
+  <h2 class="section-title" data-ts="articles.title">Latest Stories</h2>
   <div class="articles-grid">
     <?php foreach ($grid as $art): ?>
     <article class="article-card">

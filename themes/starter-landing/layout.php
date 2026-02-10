@@ -23,7 +23,7 @@
 <main class="site-main"><?= $content ?></main>
 <footer class="site-footer">
   <div class="container footer-grid">
-    <div class="footer-col"><h4><?= esc(get_site_name()) ?></h4><p>The smarter way to manage your workflow and boost productivity.</p></div>
+    <div class="footer-col"><h4 data-ts="brand.site_name"><?= esc(get_site_name()) ?></h4><p data-ts="footer.description">The smarter way to manage your workflow and boost productivity.</p></div>
     <div class="footer-col"><h4>Product</h4><ul><li><a href="#">Features</a></li><li><a href="#">Pricing</a></li><li><a href="#">Integrations</a></li><li><a href="#">Changelog</a></li></ul></div>
     <div class="footer-col"><h4>Company</h4><ul><li><a href="/about">About</a></li><li><a href="/articles">Blog</a></li><li><a href="/contact">Contact</a></li><li><a href="/gallery">Gallery</a></li></ul></div>
     <div class="footer-col"><h4>Legal</h4><ul><li><a href="#">Privacy</a></li><li><a href="#">Terms</a></li><li><a href="#">Security</a></li></ul></div>

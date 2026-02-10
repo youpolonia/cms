@@ -288,7 +288,21 @@ if (!function_exists('theme_get_schema')) {
         
         // If theme has explicit customizable schema, use it
         if (!empty($config['customizable'])) {
-            return $config['customizable'];
+            $schema = $config['customizable'];
+            // Still merge auto-discovered data-ts fields
+            $additional = _theme_discover_data_attributes($themeSlug, $schema);
+            foreach ($additional as $section => $sectionDef) {
+                if (isset($schema[$section]) && !empty($sectionDef['fields'])) {
+                    foreach ($sectionDef['fields'] as $key => $fieldDef) {
+                        if (!isset($schema[$section]['fields'][$key])) {
+                            $schema[$section]['fields'][$key] = $fieldDef;
+                        }
+                    }
+                } elseif (!isset($schema[$section])) {
+                    $schema[$section] = $sectionDef;
+                }
+            }
+            return $schema;
         }
         
         // Generate default schema from existing theme.json structure
@@ -737,7 +751,170 @@ if (!function_exists('_theme_generate_default_schema')) {
             ]
         ];
         
+        // Auto-discover additional sections from data-ts attributes in templates
+        $additional = _theme_discover_data_attributes($themeSlug, $schema);
+        foreach ($additional as $section => $sectionDef) {
+            if (isset($schema[$section])) {
+                // Merge new fields into existing section
+                if (!empty($sectionDef['fields'])) {
+                    foreach ($sectionDef['fields'] as $key => $fieldDef) {
+                        if (!isset($schema[$section]['fields'][$key])) {
+                            $schema[$section]['fields'][$key] = $fieldDef;
+                        }
+                    }
+                }
+            } else {
+                // Insert new section before custom_css and theme_info
+                $schema[$section] = $sectionDef;
+            }
+        }
+
         return $schema;
+    }
+}
+
+if (!function_exists('_theme_discover_data_attributes')) {
+    /**
+     * Scan theme template files for data-ts attributes.
+     * Returns discovered sections and fields not already in the schema.
+     *
+     * Scans: layout.php + templates/*.php
+     * Attributes: data-ts="section.field", data-ts-bg="section.field", data-ts-href="section.field"
+     *
+     * @param string $themeSlug
+     * @param array $existingSchema Sections already defined (won't override)
+     * @return array Additional schema sections to merge
+     */
+    function _theme_discover_data_attributes(string $themeSlug, array $existingSchema = []): array
+    {
+        $themeDir = \CMS_ROOT . '/themes/' . $themeSlug;
+        if (!is_dir($themeDir)) return [];
+
+        // Collect all template files
+        $files = [];
+        $layoutFile = $themeDir . '/layout.php';
+        if (file_exists($layoutFile)) {
+            $files[] = $layoutFile;
+        }
+        $templatesDir = $themeDir . '/templates';
+        if (is_dir($templatesDir)) {
+            foreach (glob($templatesDir . '/*.php') as $f) {
+                $files[] = $f;
+            }
+        }
+
+        if (empty($files)) return [];
+
+        // Parse all data-ts, data-ts-bg, data-ts-href attributes
+        $discovered = []; // section => [field => ['type' => ..., 'source' => ...]]
+        $pattern = '/data-ts(?:-(bg|href))?\s*=\s*"([^"]+)"/';
+
+        foreach ($files as $filePath) {
+            $content = file_get_contents($filePath);
+            if ($content === false) continue;
+
+            if (preg_match_all($pattern, $content, $matches, PREG_SET_ORDER)) {
+                foreach ($matches as $m) {
+                    $variant = $m[1] ?? ''; // '' for data-ts, 'bg' for data-ts-bg, 'href' for data-ts-href
+                    $path = $m[2];          // e.g. "about.label"
+                    $parts = explode('.', $path, 2);
+                    if (count($parts) < 2) continue;
+
+                    [$section, $field] = $parts;
+
+                    // Determine field type from variant and field name
+                    $type = 'text';
+                    if ($variant === 'bg') {
+                        $type = 'image';
+                    } elseif ($variant === 'href') {
+                        $type = 'text'; // URL as text input
+                    } elseif (
+                        str_contains($field, 'description') || 
+                        str_contains($field, 'quote') || 
+                        str_contains($field, 'tagline') || 
+                        str_contains($field, 'bio') || 
+                        $field === 'text' || $field === 'content'
+                    ) {
+                        $type = 'textarea';
+                    }
+
+                    if (!isset($discovered[$section])) {
+                        $discovered[$section] = [];
+                    }
+                    // Don't override if already discovered with a different type
+                    if (!isset($discovered[$section][$field])) {
+                        $discovered[$section][$field] = ['type' => $type];
+                    }
+                }
+            }
+        }
+
+        // Build additional schema sections (skip those already in existingSchema)
+        $additional = [];
+        $sectionIcons = [
+            'about' => '👤', 'pages' => '📄', 'articles' => '📰', 'parallax' => '🖼️',
+            'features' => '⭐', 'services' => '🔧', 'team' => '👥', 'testimonials' => '💬',
+            'pricing' => '💰', 'contact' => '📧', 'gallery' => '🎨', 'cta' => '📣',
+            'stats' => '📊', 'faq' => '❓', 'newsletter' => '✉️',
+        ];
+
+        foreach ($discovered as $section => $fields) {
+            // Skip sections that exist in the default schema
+            if (isset($existingSchema[$section])) {
+                // But add any NEW fields to existing section
+                foreach ($fields as $fieldKey => $fieldDef) {
+                    if (!isset($existingSchema[$section]['fields'][$fieldKey])) {
+                        $additional[$section]['fields'][$fieldKey] = [
+                            'type' => $fieldDef['type'],
+                            'label' => _theme_humanize_label($fieldKey),
+                            'default' => '',
+                        ];
+                    }
+                }
+                continue;
+            }
+
+            // New section
+            $sectionFields = [];
+            foreach ($fields as $fieldKey => $fieldDef) {
+                $sectionFields[$fieldKey] = [
+                    'type' => $fieldDef['type'],
+                    'label' => _theme_humanize_label($fieldKey),
+                    'default' => '',
+                ];
+            }
+
+            $additional[$section] = [
+                'label' => _theme_humanize_label($section),
+                'icon' => $sectionIcons[$section] ?? '📋',
+                'fields' => $sectionFields,
+            ];
+        }
+
+        return $additional;
+    }
+}
+
+if (!function_exists('_theme_humanize_label')) {
+    /**
+     * Convert field/section name to human-readable label.
+     * "bg_image" → "Background Image", "btn_text" → "Button Text"
+     */
+    function _theme_humanize_label(string $name): string
+    {
+        $replacements = [
+            'bg_' => 'Background ',
+            'btn_' => 'Button ',
+            'cta_' => 'CTA ',
+        ];
+        $label = $name;
+        foreach ($replacements as $prefix => $replacement) {
+            if (str_starts_with($label, $prefix)) {
+                $label = $replacement . substr($label, strlen($prefix));
+                break;
+            }
+        }
+        return ucwords(str_replace('_', ' ', $label));
     }
 }
 

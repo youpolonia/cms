@@ -6,8 +6,8 @@
 ?>
 
 <div class="search-hero">
-  <h1>How can we help?</h1>
-  <p>Search our documentation, guides, and tutorials</p>
+  <h1 data-ts="hero.headline">How can we help?</h1>
+  <p data-ts="hero.subtitle">Search our documentation, guides, and tutorials</p>
   <div class="search-hero-input">
     <span class="search-icon">🔍</span>
     <input type="text" placeholder="Search for articles, guides, API references..." id="heroSearch">
@@ -38,7 +38,7 @@
 </div>
 
 <div class="topics-section">
-  <h2>Popular Topics</h2>
+  <h2 data-ts="pages.title">Popular Topics</h2>
   <div class="topics-grid">
     <a href="/getting-started" class="topic-card">
       <span class="topic-icon">⚡</span>

@@ -23,9 +23,9 @@ try {
 <!-- Hero Fullscreen -->
 <section class="hero-fullscreen" data-ts-bg="hero.bg_image" style="background-image: url('/uploads/media/demo_starter-photography_3.jpg');">
     <div class="hero-content">
-        <span class="hero-label">Photography Portfolio</span>
-        <h1>Capturing Light<br>& Shadow</h1>
-        <p>Fine art and documentary photography exploring the space between darkness and illumination.</p>
+        <span class="hero-label" data-ts="hero.badge">Photography Portfolio</span>
+        <h1 data-ts="hero.headline">Capturing Light<br>& Shadow</h1>
+        <p data-ts="hero.subtitle">Fine art and documentary photography exploring the space between darkness and illumination.</p>
     </div>
     <div class="hero-scroll-hint">Scroll</div>
 </section>
@@ -34,8 +34,8 @@ try {
 <?php if (!empty($_articles)): ?>
 <section class="selected-work">
     <div class="section-header fade-in">
-        <span class="section-label">Portfolio</span>
-        <h2 class="section-title">Selected Work</h2>
+        <span class="section-label" data-ts="articles.label">Portfolio</span>
+        <h2 class="section-title" data-ts="articles.title">Selected Work</h2>
     </div>
     <div class="horizontal-scroll">
         <?php foreach ($_articles as $_a): ?>
@@ -61,9 +61,9 @@ try {
 <section class="about-strip">
     <div class="about-grid fade-in">
         <div class="about-text">
-            <span class="section-label">About</span>
-            <h2 class="about-heading">Stories told through a lens</h2>
-            <p>Every frame is an invitation to see the world differently. With a focus on natural light, bold contrasts, and raw human emotion, each photograph seeks to capture moments that words cannot.</p>
+            <span class="section-label" data-ts="about.label">About</span>
+            <h2 class="about-heading" data-ts="about.title">Stories told through a lens</h2>
+            <p data-ts="about.description">Every frame is an invitation to see the world differently. With a focus on natural light, bold contrasts, and raw human emotion, each photograph seeks to capture moments that words cannot.</p>
             <p>Based in London. Available worldwide.</p>
             <a href="/about" class="about-link">Learn More →</a>
         </div>
@@ -75,8 +75,8 @@ try {
 
 <!-- Contact Strip -->
 <section class="contact-strip fade-in">
-    <span class="section-label">Get in Touch</span>
-    <h2>Let's Work Together</h2>
-    <p>Available for commissions, collaborations, and editorial assignments.</p>
+    <span class="section-label" data-ts="contact.label">Get in Touch</span>
+    <h2 data-ts="contact.title">Let's Work Together</h2>
+    <p data-ts="contact.description">Available for commissions, collaborations, and editorial assignments.</p>
     <a href="/contact" class="contact-email">hello@lensandlight.com</a>
 </section>

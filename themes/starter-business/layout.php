@@ -72,7 +72,7 @@ $isTbPage = !empty($page['is_tb_page']);
         <div class="header-container">
             <div class="header-inner">
                 <!-- Logo -->
-                <a href="/" class="site-logo" aria-label="<?php echo esc($siteName); ? data-ts="brand.logo"> — Home">
+                <a href="/" class="site-logo" aria-label="<?php echo esc($siteName); ?> — Home" data-ts="brand.logo">
                     <?php if (!empty($siteLogo)): ?>
                         <img src="<?php echo esc($siteLogo); ?>" alt="<?php echo esc($siteName); ?>" class="logo-img">
                     <?php else: ?>
@@ -92,7 +92,7 @@ $isTbPage = !empty($page['is_tb_page']);
                 <!-- Header CTA -->
                 <?php if ($showCta): ?>
                     <div class="header-actions">
-                        <a href="<?php echo esc($ctaUrl); ?>" class="btn btn-primary btn-header-cta">
+                        <a href="<?php echo esc($ctaUrl); ?>" class="btn btn-primary btn-header-cta" data-ts="header.cta_text" data-ts-href="header.cta_link">
                             <?php echo esc($ctaText); ?>
                             <i class="fas fa-arrow-right"></i>
                         </a>
@@ -127,14 +127,14 @@ $isTbPage = !empty($page['is_tb_page']);
                 <div class="footer-grid">
                     <!-- Col 1 — About -->
                     <div class="footer-col footer-about">
-                        <a href="/" class="footer-logo" aria-label="<?php echo esc($siteName); ? data-ts="brand.logo">">
+                        <a href="/" class="footer-logo" aria-label="<?php echo esc($siteName); ?>" data-ts="brand.logo">
                             <?php if (!empty($siteLogo)): ?>
                                 <img src="<?php echo esc($siteLogo); ?>" alt="<?php echo esc($siteName); ?>" class="footer-logo-img">
                             <?php else: ?>
                                 <span class="footer-logo-text" data-ts="brand.site_name"><?php echo esc($siteName); ?></span>
                             <?php endif; ?>
                         </a>
-                        <p class="footer-desc"><?php echo esc($footerAbout); ?></p>
+                        <p class="footer-desc" data-ts="footer.description"><?php echo esc($footerAbout); ?></p>
                         <div class="footer-social">
                             <?php if ($socialLinkedin && $socialLinkedin !== '#'): ?>
                                 <a href="<?php echo esc($socialLinkedin); ?>" class="social-link" aria-label="LinkedIn" target="_blank" rel="noopener"><i class="fab fa-linkedin-in"></i></a>
