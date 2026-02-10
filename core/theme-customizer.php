@@ -80,9 +80,8 @@ if (!function_exists('theme_get_all')) {
         $themeSlug = $themeSlug ?? get_active_theme();
         $dbValues = _theme_load_customizations($themeSlug);
         
-        // Merge with schema defaults
-        $config = get_theme_config($themeSlug);
-        $schema = $config['customizable'] ?? [];
+        // Merge with schema defaults (use full schema including auto-discovered)
+        $schema = theme_get_schema($themeSlug);
         $merged = [];
         
         foreach ($schema as $section => $sectionDef) {
