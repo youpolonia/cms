@@ -448,4 +448,90 @@ class MediaController
             echo json_encode(['success' => false, 'error' => 'Generation failed: ' . $e->getMessage()]);
         }
     }
+
+    /**
+     * GET /api/media/browse — JSON list of images for media picker
+     * Params: ?search=&page=1&per_page=40&source=all|media|galleries
+     */
+    public function apiBrowse(Request $request): void
+    {
+        $pdo = db();
+        $search = trim($request->get('search', ''));
+        $page = max(1, (int)$request->get('page', 1));
+        $perPage = min(80, max(12, (int)$request->get('per_page', 40)));
+        $source = $request->get('source', 'all');
+        $offset = ($page - 1) * $perPage;
+
+        $images = [];
+
+        // Media library images
+        if ($source === 'all' || $source === 'media') {
+            $where = ["mime_type LIKE 'image/%'"];
+            $params = [];
+            if ($search) {
+                $where[] = "(original_name LIKE ? OR title LIKE ? OR alt_text LIKE ?)";
+                $params = ["%{$search}%", "%{$search}%", "%{$search}%"];
+            }
+            $wc = implode(' AND ', $where);
+            $sql = "SELECT id, filename, original_name, path, title, alt_text, 'media' as source
+                    FROM media WHERE {$wc} ORDER BY created_at DESC";
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute($params);
+            while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+                $path = ltrim($row['path'], '/');
+                $images[] = [
+                    'id'     => 'm' . $row['id'],
+                    'url'    => '/' . $path,
+                    'thumb'  => '/' . $path,
+                    'title'  => $row['title'] ?: $row['original_name'],
+                    'alt'    => $row['alt_text'] ?? '',
+                    'source' => 'media',
+                ];
+            }
+        }
+
+        // Gallery images
+        if ($source === 'all' || $source === 'galleries') {
+            $where2 = [];
+            $params2 = [];
+            if ($search) {
+                $where2[] = "(gi.filename LIKE ? OR gi.title LIKE ? OR g.name LIKE ?)";
+                $params2 = ["%{$search}%", "%{$search}%", "%{$search}%"];
+            }
+            $wc2 = $where2 ? 'WHERE ' . implode(' AND ', $where2) : '';
+            $sql2 = "SELECT gi.id, gi.filename, gi.title, g.name as gallery_name
+                     FROM gallery_images gi
+                     JOIN galleries g ON gi.gallery_id = g.id
+                     {$wc2}
+                     ORDER BY gi.created_at DESC";
+            $stmt2 = $pdo->prepare($sql2);
+            $stmt2->execute($params2);
+            while ($row = $stmt2->fetch(\PDO::FETCH_ASSOC)) {
+                $images[] = [
+                    'id'     => 'g' . $row['id'],
+                    'url'    => '/uploads/galleries/' . $row['filename'],
+                    'thumb'  => '/uploads/galleries/' . $row['filename'],
+                    'title'  => $row['title'] ?: $row['gallery_name'] . ' — ' . $row['filename'],
+                    'alt'    => $row['title'] ?? '',
+                    'source' => 'gallery',
+                ];
+            }
+        }
+
+        // Paginate combined results
+        $total = count($images);
+        $paged = array_slice($images, $offset, $perPage);
+
+        header('Content-Type: application/json');
+        echo json_encode([
+            'ok'      => true,
+            'images'  => $paged,
+            'total'   => $total,
+            'page'    => $page,
+            'perPage' => $perPage,
+            'pages'   => (int)ceil($total / $perPage),
+        ]);
+        exit;
+    }
+
 }

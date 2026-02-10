@@ -21,18 +21,22 @@ class ThemeStudioController
         
         // Check if AI is available
         $aiAvailable = false;
-        $aiCorePath = \CMS_ROOT . '/plugins/jessie-theme-builder/includes/ai/class-jtb-ai-core.php';
-        if (file_exists($aiCorePath)) {
-            require_once $aiCorePath;
-            $ai = \JTB_AI_Core::getInstance();
-            $aiAvailable = $ai->isConfigured();
-        }
-        
         $pexelsAvailable = false;
-        $pexelsPath = \CMS_ROOT . '/plugins/jessie-theme-builder/includes/ai/class-jtb-ai-pexels.php';
-        if (file_exists($pexelsPath)) {
-            require_once $pexelsPath;
-            $pexelsAvailable = \JTB_AI_Pexels::isConfigured();
+        try {
+            $aiDir = \CMS_ROOT . '/plugins/jessie-theme-builder/includes/ai';
+            $corePath = $aiDir . '/class-jtb-ai-core.php';
+            $pexelsPath = $aiDir . '/class-jtb-ai-pexels.php';
+            if (file_exists($corePath)) {
+                require_once $corePath;
+                $ai = \JessieThemeBuilder\JTB_AI_Core::getInstance();
+                $aiAvailable = $ai->isConfigured();
+            }
+            if (file_exists($pexelsPath)) {
+                require_once $pexelsPath;
+                $pexelsAvailable = \JessieThemeBuilder\JTB_AI_Pexels::isConfigured();
+            }
+        } catch (\Throwable $e) {
+            // AI not available — that's OK
         }
         
         // Full-screen view (own layout, no admin topbar)
@@ -104,7 +108,7 @@ class ThemeStudioController
      */
     public function apiSave(Request $request): void
     {
-        $body = json_decode(file_get_contents('php://input'), true);
+        $body = $GLOBALS['_JSON_DATA'] ?? json_decode(file_get_contents('php://input'), true);
         if (empty($body['data']) || !is_array($body['data'])) {
             Response::json(['ok' => false, 'error' => 'No data provided']);
             return;
@@ -132,7 +136,7 @@ class ThemeStudioController
      */
     public function apiReset(Request $request): void
     {
-        $body = json_decode(file_get_contents('php://input'), true);
+        $body = $GLOBALS['_JSON_DATA'] ?? json_decode(file_get_contents('php://input'), true);
         $themeSlug = get_active_theme();
         $section = $body['section'] ?? null;
         
@@ -166,7 +170,7 @@ class ThemeStudioController
      */
     public function apiRestore(Request $request): void
     {
-        $body = json_decode(file_get_contents('php://input'), true);
+        $body = $GLOBALS['_JSON_DATA'] ?? json_decode(file_get_contents('php://input'), true);
         $id = (int)($body['id'] ?? 0);
         
         if ($id <= 0) {
@@ -258,14 +262,14 @@ class ThemeStudioController
         }
         
         require_once $aiCorePath;
-        $ai = \JTB_AI_Core::getInstance();
+        $ai = \JessieThemeBuilder\JTB_AI_Core::getInstance();
         
         if (!$ai->isConfigured()) {
             Response::json(['ok' => false, 'error' => 'No AI provider configured. Add your API key in Settings → AI Configuration.']);
             return;
         }
         
-        $body = json_decode(file_get_contents('php://input'), true);
+        $body = $GLOBALS['_JSON_DATA'] ?? json_decode(file_get_contents('php://input'), true);
         $userPrompt = trim($body['prompt'] ?? '');
         
         if (empty($userPrompt)) {
@@ -321,9 +325,9 @@ class ThemeStudioController
         }
         
         require_once $aiCorePath;
-        $ai = \JTB_AI_Core::getInstance();
+        $ai = \JessieThemeBuilder\JTB_AI_Core::getInstance();
         
-        $body = json_decode(file_get_contents('php://input'), true);
+        $body = $GLOBALS['_JSON_DATA'] ?? json_decode(file_get_contents('php://input'), true);
         $section = $body['section'] ?? '';
         $context = $body['context'] ?? '';
         
@@ -376,12 +380,12 @@ class ThemeStudioController
         
         require_once $pexelsPath;
         
-        if (!\JTB_AI_Pexels::isConfigured()) {
+        if (!\JessieThemeBuilder\JTB_AI_Pexels::isConfigured()) {
             Response::json(['ok' => false, 'error' => 'Pexels API key not configured']);
             return;
         }
         
-        $body = json_decode(file_get_contents('php://input'), true);
+        $body = $GLOBALS['_JSON_DATA'] ?? json_decode(file_get_contents('php://input'), true);
         $query = trim($body['query'] ?? '');
         $count = min(20, max(1, (int)($body['count'] ?? 8)));
         
@@ -390,7 +394,7 @@ class ThemeStudioController
             return;
         }
         
-        $results = \JTB_AI_Pexels::searchPhotos($query, ['per_page' => $count, 'orientation' => 'landscape']);
+        $results = \JessieThemeBuilder\JTB_AI_Pexels::searchPhotos($query, ['per_page' => $count, 'orientation' => 'landscape']);
         
         Response::json([
             'ok' => true,
@@ -404,7 +408,7 @@ class ThemeStudioController
      */
     public function aiColorPalette(Request $request): void
     {
-        $body = json_decode(file_get_contents('php://input'), true);
+        $body = $GLOBALS['_JSON_DATA'] ?? json_decode(file_get_contents('php://input'), true);
         $seed = $body['seed'] ?? '#3b82f6';
         $style = $body['style'] ?? 'modern';
         

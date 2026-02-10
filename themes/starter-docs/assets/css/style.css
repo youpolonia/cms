@@ -1015,3 +1015,18 @@ img {
     font-size: 3.5rem;
   }
 }
+
+
+/* ═══ Enhanced Responsive ═══ */
+@media (max-width: 1024px) {
+    section, .section { padding: 64px 0; }
+}
+
+@media (max-width: 768px) {
+    .error-page .error-code { font-size: 2.75rem; }
+    .gallery-empty-state .icon { font-size: 1.75rem; }
+    .error-page .error-code { font-size: 1.93rem; }
+    section, .section { padding: 48px 0; }
+    .container { padding: 0 20px; }
+    img { max-width: 100%; height: auto; }
+}

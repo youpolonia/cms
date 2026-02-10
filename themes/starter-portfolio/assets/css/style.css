@@ -1319,6 +1319,14 @@ strong { color: var(--color-text); }
 }
 
 /* ── Print styles ─────────────────────────────────────────── */
+
+/* ═══ Enhanced Responsive ═══ */
+@media (max-width: 768px) {
+    .hero-content { max-width: 100%; }
+    .container { padding: 0 20px; }
+    img { max-width: 100%; height: auto; }
+}
+
 @media print {
     .site-header, .site-footer, .noise-overlay,
     .cursor-dot, .cursor-ring, .hero-scroll-indicator,

@@ -1244,6 +1244,18 @@ body.tb-page .site-footer { margin-top: 0; }
 /* ═══════════════════════════════════════════════════════════════
    PRINT
    ═══════════════════════════════════════════════════════════════ */
+
+/* ═══ Enhanced Responsive ═══ */
+@media (max-width: 768px) {
+    .about-section .about-grid { grid-template-columns: 1fr; }
+    .footer-columns { grid-template-columns: 1fr; gap: 32px; }
+    .img-placeholder i { font-size: 1.75rem; }
+    .nav-links.active { display: flex; flex-direction: column; position: absolute; top: 100%; left: 0; right: 0; background: var(--color-surface, #1a1a21); padding: 16px; border-bottom: 1px solid var(--color-border, #2d2d3a); }
+    .hero-content { max-width: 100%; }
+    .hero-actions, .hero-buttons { flex-direction: column; align-items: center; gap: 12px; }
+    .container { padding: 0 20px; }
+}
+
 @media print {
     .site-header, .site-footer, .hero-scroll, .mobile-toggle, .mobile-overlay { display: none; }
     body { background: #fff; color: #333; }

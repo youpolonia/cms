@@ -1,4 +1,9 @@
 <?php
+
+// Ensure Cache class is loaded
+if (!class_exists('Cache') && file_exists(__DIR__ . '/cache.php')) {
+    require_once __DIR__ . '/cache.php';
+}
 /**
  * Theme Customizer — Core Functions
  * 
@@ -326,7 +331,7 @@ if (!function_exists('generate_studio_css_overrides')) {
             }
         }
         
-        // Custom font overrides
+        // Custom font overrides (legacy brand section)
         if (!empty($customs['brand']['heading_font'])) {
             $css .= "    --font-heading: '{$customs['brand']['heading_font']}', sans-serif;\n";
             $hasVars = true;
@@ -336,7 +341,84 @@ if (!function_exists('generate_studio_css_overrides')) {
             $hasVars = true;
         }
         
+        // Typography section overrides
+        if (!empty($customs['typography']['heading_font'])) {
+            $css .= "    --font-heading: '{$customs['typography']['heading_font']}', sans-serif;\n";
+            $hasVars = true;
+        }
+        if (!empty($customs['typography']['body_font'])) {
+            $css .= "    --font-family: '{$customs['typography']['body_font']}', sans-serif;\n";
+            $hasVars = true;
+        }
+        if (!empty($customs['typography']['base_font_size'])) {
+            $css .= "    --font-size-base: {$customs['typography']['base_font_size']};\n";
+            $hasVars = true;
+        }
+        if (!empty($customs['typography']['line_height'])) {
+            $css .= "    --line-height: {$customs['typography']['line_height']};\n";
+            $hasVars = true;
+        }
+        if (!empty($customs['typography']['heading_weight'])) {
+            $css .= "    --font-weight-heading: {$customs['typography']['heading_weight']};\n";
+            $hasVars = true;
+        }
+        
+        // Buttons section overrides
+        if (!empty($customs['buttons']['border_radius'])) {
+            $css .= "    --btn-radius: {$customs['buttons']['border_radius']};\n";
+            $hasVars = true;
+        }
+        if (!empty($customs['buttons']['padding_x'])) {
+            $css .= "    --btn-padding-x: {$customs['buttons']['padding_x']};\n";
+            $hasVars = true;
+        }
+        if (!empty($customs['buttons']['padding_y'])) {
+            $css .= "    --btn-padding-y: {$customs['buttons']['padding_y']};\n";
+            $hasVars = true;
+        }
+        if (!empty($customs['buttons']['font_weight'])) {
+            $css .= "    --btn-font-weight: {$customs['buttons']['font_weight']};\n";
+            $hasVars = true;
+        }
+        
+        // Layout section overrides
+        if (!empty($customs['layout']['container_width'])) {
+            $css .= "    --container-width: {$customs['layout']['container_width']};\n";
+            $hasVars = true;
+        }
+        if (!empty($customs['layout']['section_spacing'])) {
+            $css .= "    --section-spacing: {$customs['layout']['section_spacing']};\n";
+            $hasVars = true;
+        }
+        if (!empty($customs['layout']['border_radius'])) {
+            $css .= "    --border-radius: {$customs['layout']['border_radius']};\n";
+            $hasVars = true;
+        }
+        
+        // Effects section overrides
+        if (isset($customs['effects']['shadow_strength']) && $customs['effects']['shadow_strength'] !== '') {
+            $strength = (float)$customs['effects']['shadow_strength'];
+            $opacity = round($strength / 100, 2);
+            $css .= "    --shadow: 0 1px 3px rgba(0,0,0,{$opacity});\n";
+            $css .= "    --shadow-lg: 0 10px 40px rgba(0,0,0,{$opacity});\n";
+            $hasVars = true;
+        }
+        if (!empty($customs['effects']['hover_scale'])) {
+            $css .= "    --hover-scale: {$customs['effects']['hover_scale']};\n";
+            $hasVars = true;
+        }
+        if (!empty($customs['effects']['transition_speed'])) {
+            $css .= "    --transition-speed: {$customs['effects']['transition_speed']};\n";
+            $hasVars = true;
+        }
+        
         $css .= "}\n";
+        
+        // Custom CSS (appended after :root block)
+        if (!empty($customs['custom_css']['css_code'])) {
+            $css .= "\n/* Custom CSS */\n" . $customs['custom_css']['css_code'] . "\n";
+            $hasVars = true;
+        }
         
         return $hasVars ? $css : '';
     }
@@ -443,6 +525,215 @@ if (!function_exists('_theme_generate_default_schema')) {
                 'social_twitter' => ['type' => 'text', 'label' => 'Twitter/X URL', 'default' => ''],
                 'social_linkedin' => ['type' => 'text', 'label' => 'LinkedIn URL', 'default' => ''],
                 'social_github' => ['type' => 'text', 'label' => 'GitHub URL', 'default' => ''],
+            ]
+        ];
+        
+        // Typography
+        $schema['typography'] = [
+            'label' => 'Typography',
+            'icon' => '🔤',
+            'fields' => [
+                'heading_font' => [
+                    'type' => 'select',
+                    'label' => 'Heading Font',
+                    'default' => $config['typography']['headingFont'] ?? 'Inter',
+                    'options' => [
+                        'Inter' => 'Inter',
+                        'Roboto' => 'Roboto',
+                        'Open Sans' => 'Open Sans',
+                        'Lato' => 'Lato',
+                        'Montserrat' => 'Montserrat',
+                        'Poppins' => 'Poppins',
+                        'Raleway' => 'Raleway',
+                        'Playfair Display' => 'Playfair Display',
+                        'Merriweather' => 'Merriweather',
+                        'Source Sans Pro' => 'Source Sans Pro',
+                        'Nunito' => 'Nunito',
+                        'Work Sans' => 'Work Sans',
+                        'DM Sans' => 'DM Sans',
+                        'Space Grotesk' => 'Space Grotesk',
+                        'Outfit' => 'Outfit',
+                        'Plus Jakarta Sans' => 'Plus Jakarta Sans',
+                        'Sora' => 'Sora',
+                        'Manrope' => 'Manrope',
+                        'Unbounded' => 'Unbounded',
+                        'Clash Display' => 'Clash Display',
+                    ],
+                ],
+                'body_font' => [
+                    'type' => 'select',
+                    'label' => 'Body Font',
+                    'default' => $config['typography']['fontFamily'] ?? 'Inter',
+                    'options' => [
+                        'Inter' => 'Inter',
+                        'Roboto' => 'Roboto',
+                        'Open Sans' => 'Open Sans',
+                        'Lato' => 'Lato',
+                        'Nunito' => 'Nunito',
+                        'Source Sans Pro' => 'Source Sans Pro',
+                        'DM Sans' => 'DM Sans',
+                        'Work Sans' => 'Work Sans',
+                        'IBM Plex Sans' => 'IBM Plex Sans',
+                        'Noto Sans' => 'Noto Sans',
+                        'Mulish' => 'Mulish',
+                        'Quicksand' => 'Quicksand',
+                        'Karla' => 'Karla',
+                    ],
+                ],
+                'base_font_size' => [
+                    'type' => 'text',
+                    'label' => 'Base Font Size',
+                    'default' => $config['typography']['fontSize'] ?? '16px',
+                ],
+                'line_height' => [
+                    'type' => 'text',
+                    'label' => 'Line Height',
+                    'default' => $config['typography']['lineHeight'] ?? '1.6',
+                ],
+                'heading_weight' => [
+                    'type' => 'select',
+                    'label' => 'Heading Weight',
+                    'default' => $config['typography']['headingWeight'] ?? '700',
+                    'options' => [
+                        '400' => '400 — Regular',
+                        '500' => '500 — Medium',
+                        '600' => '600 — Semi Bold',
+                        '700' => '700 — Bold',
+                        '800' => '800 — Extra Bold',
+                        '900' => '900 — Black',
+                    ],
+                ],
+            ]
+        ];
+        
+        // Buttons
+        $schema['buttons'] = [
+            'label' => 'Buttons',
+            'icon' => '🔘',
+            'fields' => [
+                'border_radius' => [
+                    'type' => 'text',
+                    'label' => 'Border Radius',
+                    'default' => $config['buttons']['borderRadius'] ?? '8px',
+                ],
+                'padding_x' => [
+                    'type' => 'text',
+                    'label' => 'Horizontal Padding',
+                    'default' => $config['buttons']['paddingX'] ?? '24px',
+                ],
+                'padding_y' => [
+                    'type' => 'text',
+                    'label' => 'Vertical Padding',
+                    'default' => $config['buttons']['paddingY'] ?? '12px',
+                ],
+                'font_weight' => [
+                    'type' => 'select',
+                    'label' => 'Font Weight',
+                    'default' => $config['buttons']['fontWeight'] ?? '600',
+                    'options' => [
+                        '400' => '400 — Regular',
+                        '500' => '500 — Medium',
+                        '600' => '600 — Semi Bold',
+                        '700' => '700 — Bold',
+                    ],
+                ],
+                'uppercase' => [
+                    'type' => 'toggle',
+                    'label' => 'Uppercase Text',
+                    'default' => $config['buttons']['uppercase'] ?? false,
+                ],
+                'shadow' => [
+                    'type' => 'toggle',
+                    'label' => 'Button Shadow',
+                    'default' => $config['buttons']['shadow'] ?? false,
+                ],
+            ]
+        ];
+        
+        // Layout
+        $schema['layout'] = [
+            'label' => 'Layout',
+            'icon' => '📐',
+            'fields' => [
+                'container_width' => [
+                    'type' => 'text',
+                    'label' => 'Container Width',
+                    'default' => $config['layout']['containerWidth'] ?? '1200px',
+                ],
+                'section_spacing' => [
+                    'type' => 'text',
+                    'label' => 'Section Spacing',
+                    'default' => $config['layout']['sectionSpacing'] ?? '80px',
+                ],
+                'border_radius' => [
+                    'type' => 'text',
+                    'label' => 'Border Radius',
+                    'default' => $config['layout']['borderRadius'] ?? '12px',
+                ],
+            ]
+        ];
+        
+        // Effects
+        $schema['effects'] = [
+            'label' => 'Effects',
+            'icon' => '✨',
+            'fields' => [
+                'shadow_strength' => [
+                    'type' => 'text',
+                    'label' => 'Shadow Strength (0-100)',
+                    'default' => $config['effects']['shadowStrength'] ?? '20',
+                ],
+                'hover_scale' => [
+                    'type' => 'text',
+                    'label' => 'Hover Scale',
+                    'default' => $config['effects']['hoverScale'] ?? '1.02',
+                ],
+                'transition_speed' => [
+                    'type' => 'text',
+                    'label' => 'Transition Speed (ms)',
+                    'default' => $config['effects']['transitionSpeed'] ?? '200ms',
+                ],
+            ]
+        ];
+        
+        // Custom CSS
+        $schema['custom_css'] = [
+            'label' => 'Custom CSS',
+            'icon' => '💻',
+            'fields' => [
+                'css_code' => [
+                    'type' => 'textarea',
+                    'label' => 'CSS Code',
+                    'default' => $config['customCSS'] ?? '',
+                ],
+            ]
+        ];
+        
+        // Theme Info
+        $schema['theme_info'] = [
+            'label' => 'Theme Info',
+            'icon' => 'ℹ️',
+            'fields' => [
+                'name' => [
+                    'type' => 'text',
+                    'label' => 'Theme Name',
+                    'default' => $config['name'] ?? '',
+                ],
+                'description' => [
+                    'type' => 'textarea',
+                    'label' => 'Description',
+                    'default' => $config['description'] ?? '',
+                ],
+                'version' => [
+                    'type' => 'text',
+                    'label' => 'Version',
+                    'default' => $config['version'] ?? '1.0.0',
+                ],
+                'author' => [
+                    'type' => 'text',
+                    'label' => 'Author',
+                    'default' => $config['author'] ?? '',
+                ],
             ]
         ];
         

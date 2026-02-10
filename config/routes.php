@@ -238,6 +238,7 @@ return [
     'POST /admin/media/{id}' => ['Admin\\MediaController', 'update', ['auth' => true, 'csrf' => true]],
     'POST /admin/media/{id}/delete' => ['Admin\\MediaController', 'destroy', ['auth' => true, 'csrf' => true]],
     'POST /admin/media/bulk-delete' => ['Admin\\MediaController', 'bulkDelete', ['auth' => true, 'csrf' => true]],
+    'GET /api/media/browse' => ['Admin\MediaController', 'apiBrowse', ['auth' => true]],
     'GET /admin/media/stock-search' => ['Admin\\MediaController', 'stockSearch', ['auth' => true]],
     'POST /admin/media/ai-generate' => ['Admin\\MediaController', 'aiGenerate', ['auth' => true, 'csrf' => true]],
 
@@ -252,9 +253,7 @@ return [
     'POST /admin/themes/install-demo' => ['Admin\\ThemesController', 'installDemo', ['auth' => true, 'csrf' => true]],
     'POST /admin/themes/remove-demo' => ['Admin\\ThemesController', 'removeDemo', ['auth' => true, 'csrf' => true]],
 
-    // Theme Editor (Visual Customizer)
-    'GET /admin/theme-editor/{name}' => ['Admin\\ThemeEditorController', 'edit', ['auth' => true]],
-    'POST /admin/theme-editor/{name}/save' => ['Admin\\ThemeEditorController', 'save', ['auth' => true]],
+    // Theme Editor — REMOVED 2026-02-10 (merged into Theme Studio)
 
     // Legacy TB3/TB4/AI Theme Builder/AI Designer routes — REMOVED 2026-02-08
     // JTB (Jessie Theme Builder) routes are in /api/jtb/* and handled by index.php

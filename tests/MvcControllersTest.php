@@ -39,8 +39,8 @@ $controllers = [
     'MigrationsController', 'ModulesController',
     'NotificationsController', 'PagesController', 'PluginsController',
     'ProfileController', 'SchedulerController', 'SearchController',
-    'SecurityDashboardController', 'ThemeEditorController',
-    'ThemesController', 'UrlsController', 'UsersController',
+    'SecurityDashboardController',
+    'ThemeStudioController', 'ThemesController', 'UrlsController', 'UsersController',
     'VersionControlController', 'WidgetsController',
 ];
 
