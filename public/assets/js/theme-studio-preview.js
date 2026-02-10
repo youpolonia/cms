@@ -184,15 +184,28 @@
                 setHref(".hero .btn, .hero-actions a.btn, .hero-content a.btn, a.hero-cta, .hero a.btn-primary", vals.hero.btn_link);
             }
             if (vals.hero.bg_image !== undefined) {
-                document.querySelectorAll(".hero, section.hero, .hero-section, .hero-bg").forEach(function(el) {
+                /* .hero-bg is a common pattern: absolute div with gradient background.
+                   We must override the full 'background' shorthand, not just background-image,
+                   otherwise the gradient layers take precedence. */
+                var heroBg = document.querySelector(".hero-bg");
+                if (heroBg) {
                     if (vals.hero.bg_image) {
-                        el.style.backgroundImage = "url(" + vals.hero.bg_image + ")";
-                        el.style.backgroundSize = "cover";
-                        el.style.backgroundPosition = "center";
+                        heroBg.style.background = "url(" + vals.hero.bg_image + ") center/cover no-repeat";
                     } else {
-                        el.style.backgroundImage = "";
+                        heroBg.style.background = "";
                     }
-                });
+                } else {
+                    /* Fallback: apply directly to hero section */
+                    document.querySelectorAll(".hero, section.hero, .hero-section").forEach(function(el) {
+                        if (vals.hero.bg_image) {
+                            el.style.backgroundImage = "url(" + vals.hero.bg_image + ")";
+                            el.style.backgroundSize = "cover";
+                            el.style.backgroundPosition = "center";
+                        } else {
+                            el.style.backgroundImage = "";
+                        }
+                    });
+                }
             }
         }
 
