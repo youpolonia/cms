@@ -2188,7 +2188,7 @@ ul, ol {
 
 .logo-icon {
     width: 40px; height: 40px;
-    background: linear-gradient(135deg, #6366f1, #06b6d4);
+    background: linear-gradient(135deg, var(--primary, #6366f1), var(--accent, #06b6d4));
     border-radius: 10px;
     display: flex;
     align-items: center;
@@ -2295,7 +2295,7 @@ ul, ol {
     padding: 8px 18px;
     font-size: 0.85rem;
     font-weight: 600;
-    color: #818cf8;
+    color: var(--secondary, #818cf8);
     background: rgba(99, 102, 241, 0.1);
     border: 1px solid rgba(99, 102, 241, 0.25);
     border-radius: 50px;
@@ -2312,7 +2312,7 @@ ul, ol {
 }
 
 .gradient-text {
-    background: linear-gradient(135deg, #818cf8 0%, #22d3ee 100%);
+    background: linear-gradient(135deg, var(--secondary, #818cf8) 0%, #22d3ee 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -2379,7 +2379,7 @@ ul, ol {
 }
 
 .btn-primary {
-    background: linear-gradient(135deg, #6366f1, #4f46e5);
+    background: linear-gradient(135deg, var(--primary, #6366f1), #4f46e5);
     color: #fff !important;
     box-shadow: 0 4px 20px rgba(99, 102, 241, 0.3);
 }
@@ -2410,8 +2410,8 @@ ul, ol {
 }
 
 .btn-outline:hover {
-    border-color: #6366f1;
-    color: #818cf8 !important;
+    border-color: var(--primary, #6366f1);
+    color: var(--secondary, #818cf8) !important;
 }
 
 .btn-white {
@@ -2493,7 +2493,7 @@ ul, ol {
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 1px;
-    color: #818cf8;
+    color: var(--secondary, #818cf8);
     background: rgba(99, 102, 241, 0.1);
     border: 1px solid rgba(99, 102, 241, 0.2);
     border-radius: 50px;
@@ -2540,7 +2540,7 @@ ul, ol {
     justify-content: center;
     background: rgba(99, 102, 241, 0.1);
     border-radius: 12px;
-    color: #818cf8;
+    color: var(--secondary, #818cf8);
     font-size: 1.2rem;
     margin-bottom: 20px;
 }
@@ -2697,7 +2697,7 @@ ul, ol {
 .author-avatar {
     width: 40px; height: 40px;
     border-radius: 50%;
-    background: linear-gradient(135deg, #6366f1, #06b6d4);
+    background: linear-gradient(135deg, var(--primary, #6366f1), var(--accent, #06b6d4));
     display: flex;
     align-items: center;
     justify-content: center;
@@ -2750,7 +2750,7 @@ ul, ol {
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 1px;
-    background: linear-gradient(135deg, #6366f1, #06b6d4);
+    background: linear-gradient(135deg, var(--primary, #6366f1), var(--accent, #06b6d4));
     color: #fff;
     border-radius: 50px;
     white-space: nowrap;
@@ -2870,7 +2870,7 @@ body.tb-page .site-footer { margin-top: 0; }
     transition: color 0.2s;
 }
 
-.footer-social a:hover { color: #818cf8; }
+.footer-social a:hover { color: var(--secondary, #818cf8); }
 
 .footer-column h4 {
     font-size: 0.85rem;
@@ -2922,7 +2922,7 @@ body.tb-page .site-footer { margin-top: 0; }
 .footer-newsletter input::placeholder { color: #64748b; }
 .footer-newsletter input:focus {
     outline: none;
-    border-color: #6366f1;
+    border-color: var(--primary, #6366f1);
 }
 
 .footer-bottom {
@@ -2970,14 +2970,14 @@ body.tb-page .site-footer { margin-top: 0; }
 .content-body h2 { margin: 48px 0 20px; color: #f8fafc; }
 .content-body h3 { margin: 36px 0 16px; color: #f8fafc; }
 .content-body p { margin-bottom: 20px; }
-.content-body a { color: #818cf8; text-decoration: underline; }
+.content-body a { color: var(--secondary, #818cf8); text-decoration: underline; }
 .content-body strong { color: #e2e8f0; }
 
 .content-body ul, .content-body ol { margin: 20px 0; padding-left: 28px; }
 .content-body li { margin-bottom: 8px; }
 
 .content-body blockquote {
-    border-left: 3px solid #6366f1;
+    border-left: 3px solid var(--primary, #6366f1);
     padding: 16px 24px;
     margin: 32px 0;
     background: rgba(99, 102, 241, 0.05);
@@ -2989,7 +2989,7 @@ body.tb-page .site-footer { margin-top: 0; }
     padding: 2px 8px;
     border-radius: 4px;
     font-size: 0.88em;
-    color: #818cf8;
+    color: var(--secondary, #818cf8);
 }
 
 .content-body pre {
@@ -3028,7 +3028,7 @@ body.tb-page .site-footer { margin-top: 0; }
 }
 
 .error-code span {
-    background: linear-gradient(135deg, #818cf8, #22d3ee);
+    background: linear-gradient(135deg, var(--secondary, #818cf8), #22d3ee);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }

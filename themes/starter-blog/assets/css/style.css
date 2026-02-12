@@ -42,6 +42,22 @@
     --gradient-primary: linear-gradient(135deg, #f43f5e 0%, #f97316 100%);
     --gradient-text: linear-gradient(135deg, #fb7185 0%, #fb923c 100%);
     --gradient-dark: linear-gradient(180deg, #0c0a09 0%, #1c1917 100%);
+
+    /* Standard aliases for Theme Studio */
+    --primary: var(--blog-primary);
+    --secondary: var(--blog-primary-light);
+    --accent: var(--blog-accent);
+    --background: var(--blog-bg);
+    --surface: var(--blog-surface);
+    --text: var(--blog-text);
+    --text-muted: var(--blog-text-muted);
+    --border: var(--blog-border);
+    --color-primary: var(--blog-primary);
+    --color-secondary: var(--blog-primary-light);
+    --color-accent: var(--blog-accent);
+    --color-background: var(--blog-bg);
+    --color-surface: var(--blog-surface);
+    --color-text: var(--blog-text);
 }
 
 /* ─── Reset & Base ─────────────────────────────────────────────────────── */

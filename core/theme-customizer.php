@@ -334,12 +334,26 @@ if (!function_exists('generate_studio_css_overrides')) {
             'brand.text_color' => '--text',
         ];
         
+        // Blog theme uses --blog-primary etc., so map those too
+        $blogMap = [
+            '--primary' => '--blog-primary',
+            '--secondary' => '--blog-primary-light',
+            '--accent' => '--blog-accent',
+            '--surface' => '--blog-surface',
+            '--background' => '--blog-bg',
+            '--text' => '--blog-text',
+        ];
+        
         foreach ($colorMap as $path => $var) {
             [$section, $key] = explode('.', $path);
             if (!empty($customs[$section][$key])) {
                 $css .= "    {$var}: {$customs[$section][$key]};\n";
                 // Also set legacy aliases
                 $css .= "    --color" . substr($var, 1) . ": {$customs[$section][$key]};\n";
+                // Also set theme-specific aliases (blog etc.)
+                if (isset($blogMap[$var])) {
+                    $css .= "    {$blogMap[$var]}: {$customs[$section][$key]};\n";
+                }
                 $hasVars = true;
             }
         }

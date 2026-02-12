@@ -21,12 +21,12 @@
     /* ── CSS Variable Mappings ────────────────────────────── */
 
     var brandColorMap = {
-        "primary_color": ["--primary", "--color-primary"],
-        "secondary_color": ["--secondary", "--color-secondary"],
-        "accent_color": ["--accent", "--color-accent"],
-        "dark_color": ["--surface", "--color-surface"],
-        "bg_color": ["--background", "--color-background"],
-        "text_color": ["--text", "--color-text"]
+        "primary_color": ["--primary", "--color-primary", "--blog-primary"],
+        "secondary_color": ["--secondary", "--color-secondary", "--blog-primary-light"],
+        "accent_color": ["--accent", "--color-accent", "--blog-accent"],
+        "dark_color": ["--surface", "--color-surface", "--blog-surface"],
+        "bg_color": ["--background", "--color-background", "--blog-bg"],
+        "text_color": ["--text", "--color-text", "--blog-text"]
     };
 
     var simpleVarMap = {
