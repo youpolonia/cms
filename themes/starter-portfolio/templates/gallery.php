@@ -5,8 +5,6 @@
  * grid | masonry | mosaic | carousel | justified
  * 
  * Shows only galleries matching the active theme.
- * Falls back to all public galleries if none match (user-created galleries).
- * 
  * Available: $page (array), $content (string)
  */
 
@@ -16,14 +14,13 @@ try {
     $_pdo = \core\Database::connection();
     $_activeTheme = function_exists('get_active_theme') ? get_active_theme() : 'default';
     
-    // First try galleries for this theme + galleries without a theme (user-created)
     $_galStmt = $_pdo->prepare("
         SELECT * FROM galleries 
         WHERE is_public = 1 AND (theme = ? OR theme IS NULL OR theme = '')
         ORDER BY sort_order ASC, name ASC
     ");
     $_galStmt->execute([$_activeTheme]);
-    $_galleries = $_galStmt->fetchAll(PDO::FETCH_ASSOC);
+    $_galleries = $_galStmt->fetchAll(\PDO::FETCH_ASSOC);
     
     foreach ($_galleries as &$_gal) {
         $_imgStmt = $_pdo->prepare("
@@ -32,25 +29,33 @@ try {
             ORDER BY sort_order ASC, id ASC
         ");
         $_imgStmt->execute([$_gal['id']]);
-        $_gal['images'] = $_imgStmt->fetchAll(PDO::FETCH_ASSOC);
+        $_gal['images'] = $_imgStmt->fetchAll(\PDO::FETCH_ASSOC);
     }
     unset($_gal);
 } catch (\Throwable $e) {
-    // Silently fail — show page content only
+    // Silently fail
+}
+
+$_totalPhotos = 0;
+foreach ($_galleries as $_g) {
+    $_totalPhotos += count($_g['images'] ?? []);
 }
 ?>
 
-<!-- Gallery CSS + JS -->
 <link rel="stylesheet" href="/public/css/gallery-layouts.css">
 
-<!-- Page Content (from editor) -->
-<?php if (!empty($content) && trim(strip_tags($content)) !== ''): ?>
-<section class="page-section">
+<!-- Gallery Hero -->
+<section style="text-align:center;padding:80px 0 40px">
     <div class="container">
-        <div class="content-body"><?= $content ?></div>
+        <h1 style="font-size:3rem;font-weight:700;margin-bottom:16px;letter-spacing:-0.03em"><?= esc($page['title'] ?? 'Gallery') ?></h1>
+        <?php if (!empty($page['content']) && trim(strip_tags($page['content'])) !== ''): ?>
+        <div style="max-width:600px;margin:0 auto;opacity:0.7;font-size:1.1rem;line-height:1.6"><?= $page['content'] ?></div>
+        <?php endif; ?>
+        <?php if ($_totalPhotos > 0): ?>
+        <p style="margin-top:16px;font-size:0.85rem;letter-spacing:0.08em;text-transform:uppercase;opacity:0.35"><?= $_totalPhotos ?> photos · <?= count($_galleries) ?> <?= count($_galleries) === 1 ? 'collection' : 'collections' ?></p>
+        <?php endif; ?>
     </div>
 </section>
-<?php endif; ?>
 
 <!-- Galleries -->
 <?php if (!empty($_galleries)): ?>
@@ -68,7 +73,6 @@ try {
         </div>
 
         <?php if ($_template === 'carousel'): ?>
-        <!-- CAROUSEL LAYOUT -->
         <div class="gallery-layout-carousel">
             <div class="gallery-carousel-track">
                 <?php foreach ($_gallery['images'] as $_img): ?>
@@ -88,7 +92,6 @@ try {
         </div>
 
         <?php else: ?>
-        <!-- GRID / MASONRY / MOSAIC / JUSTIFIED -->
         <div class="gallery-layout-<?= esc($_template) ?>">
             <?php foreach ($_gallery['images'] as $_img): ?>
             <div class="gallery-item" data-src="/uploads/media/<?= esc($_img['filename']) ?>">
@@ -101,7 +104,6 @@ try {
             <?php endforeach; ?>
         </div>
         <?php endif; ?>
-
     </div>
 </section>
 <?php endif; ?>
@@ -115,7 +117,7 @@ try {
             <h2>No Galleries Yet</h2>
             <p>Galleries will appear here once created in the admin panel.</p>
             <?php if (function_exists('cms_is_admin_logged_in') && cms_is_admin_logged_in()): ?>
-            <a href="/admin/galleries" style="display:inline-block;margin-top:16px;padding:10px 24px;background:var(--accent,#89b4fa);color:#fff;border-radius:8px;text-decoration:none;font-weight:600">Manage Galleries</a>
+            <a href="/admin/galleries" style="display:inline-block;margin-top:20px;padding:12px 28px;background:var(--primary, var(--accent,#89b4fa));color:#fff;border-radius:8px;text-decoration:none;font-weight:600;transition:transform 0.2s" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform=''">Manage Galleries</a>
             <?php endif; ?>
         </div>
     </div>
