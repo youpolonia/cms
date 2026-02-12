@@ -972,6 +972,243 @@ html,body{
 }
 .ts-font-option:hover{background:var(--ts-overlay)}
 .ts-font-option.active{background:rgba(59,130,246,.15);color:var(--ts-blue)}
+
+/* ── Font Pairing Suggestions ─────────────────────────── */
+.ts-font-pairings{
+  margin-top:6px;display:flex;flex-wrap:wrap;gap:4px;
+  align-items:center;
+}
+.ts-font-pairings-label{
+  font-size:10px;color:var(--ts-subtext);margin-right:2px;
+}
+.ts-font-pair-chip{
+  font-size:11px;padding:3px 8px;border-radius:12px;
+  background:var(--ts-overlay);color:var(--ts-text);
+  border:none;cursor:pointer;transition:all .15s;
+  font-family:inherit;
+}
+.ts-font-pair-chip:hover{
+  background:var(--ts-blue);color:var(--ts-bg);
+}
+
+/* ── Color from Image ─────────────────────────────────── */
+.ts-extract-btn{
+  display:flex;align-items:center;gap:6px;
+  width:100%;padding:8px 12px;margin-top:8px;
+  background:var(--ts-overlay);border:1px dashed var(--ts-border);
+  border-radius:var(--ts-radius-sm);color:var(--ts-subtext);
+  font-size:12px;cursor:pointer;transition:all .15s;
+  font-family:inherit;
+}
+.ts-extract-btn:hover{
+  border-color:var(--ts-blue);color:var(--ts-text);
+  background:rgba(137,180,250,.1);
+}
+.ts-extracted-row{
+  display:flex;gap:4px;align-items:center;
+  margin-top:8px;padding:8px;
+  background:var(--ts-bg);border-radius:var(--ts-radius-sm);
+  border:1px solid var(--ts-border);
+}
+.ts-extracted-dot{
+  width:24px;height:24px;border-radius:50%;
+  border:2px solid rgba(255,255,255,.15);
+  flex-shrink:0;cursor:pointer;
+  transition:transform .15s;
+}
+.ts-extracted-dot:hover{transform:scale(1.2)}
+.ts-extracted-apply{
+  margin-left:auto;font-size:11px;padding:4px 10px;
+  background:var(--ts-blue);color:var(--ts-bg);
+  border:none;border-radius:12px;cursor:pointer;
+  font-weight:600;transition:background .15s;
+}
+.ts-extracted-apply:hover{background:#a8c7fc}
+
+/* ── Compare / Before-After Split ─────────────────────── */
+.ts-compare-active #ts-preview{position:relative;overflow:hidden}
+.ts-compare-wrap{
+  position:absolute;inset:0;z-index:50;
+  display:flex;background:var(--ts-bg);
+}
+.ts-compare-before,
+.ts-compare-after{
+  flex:1;overflow:hidden;position:relative;
+}
+.ts-compare-before{border-right:2px solid var(--ts-blue)}
+.ts-compare-label{
+  position:absolute;top:8px;z-index:2;
+  padding:4px 12px;border-radius:12px;
+  font-size:11px;font-weight:700;
+  text-transform:uppercase;letter-spacing:0.5px;
+}
+.ts-compare-before .ts-compare-label{left:8px;background:var(--ts-overlay);color:var(--ts-subtext)}
+.ts-compare-after .ts-compare-label{right:8px;background:var(--ts-blue);color:var(--ts-bg)}
+.ts-compare-divider{
+  position:absolute;top:0;bottom:0;width:4px;
+  background:var(--ts-blue);cursor:col-resize;
+  z-index:51;left:50%;transform:translateX(-50%);
+}
+.ts-compare-divider::after{
+  content:'⇔';position:absolute;top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  background:var(--ts-blue);color:var(--ts-bg);
+  width:28px;height:28px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:14px;font-weight:bold;
+}
+.ts-compare-wrap iframe{
+  width:100%;height:100%;border:none;
+}
+
+/* ── Gradient Builder ─────────────────────────────────── */
+.ts-gradient-builder{
+  padding:8px 0;
+}
+.ts-gradient-preview{
+  height:40px;border-radius:var(--ts-radius-sm);
+  border:1px solid var(--ts-border);margin-bottom:10px;
+}
+.ts-gradient-dir{
+  display:flex;flex-wrap:wrap;gap:4px;margin-bottom:10px;
+}
+.ts-gradient-dir-btn{
+  width:30px;height:30px;
+  background:var(--ts-bg);border:1px solid var(--ts-border);
+  border-radius:4px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  font-size:14px;color:var(--ts-subtext);
+  transition:all .15s;
+}
+.ts-gradient-dir-btn:hover{border-color:var(--ts-blue);color:var(--ts-text)}
+.ts-gradient-dir-btn.active{
+  background:var(--ts-blue);color:var(--ts-bg);border-color:var(--ts-blue);
+}
+.ts-gradient-stops{
+  display:flex;flex-direction:column;gap:6px;
+}
+.ts-gradient-stop{
+  display:flex;align-items:center;gap:6px;
+}
+.ts-gradient-stop-swatch{
+  width:28px;height:28px;border-radius:4px;
+  border:1px solid var(--ts-border);cursor:pointer;
+  flex-shrink:0;
+}
+.ts-gradient-stop-pos{
+  width:50px;padding:4px 6px;
+  background:var(--ts-bg);border:1px solid var(--ts-border);
+  border-radius:4px;color:var(--ts-text);font-size:12px;
+  text-align:center;outline:none;
+}
+.ts-gradient-stop-remove{
+  background:none;border:none;color:var(--ts-red);
+  cursor:pointer;font-size:16px;opacity:0.6;
+  transition:opacity .15s;
+}
+.ts-gradient-stop-remove:hover{opacity:1}
+.ts-gradient-add-stop{
+  font-size:11px;padding:4px 10px;
+  background:var(--ts-overlay);color:var(--ts-text);
+  border:1px dashed var(--ts-border);border-radius:4px;
+  cursor:pointer;transition:all .15s;margin-top:4px;
+  font-family:inherit;
+}
+.ts-gradient-add-stop:hover{border-color:var(--ts-blue);color:var(--ts-blue)}
+
+/* ── Box Shadow Editor ────────────────────────────────── */
+.ts-shadow-editor{padding:8px 0}
+.ts-shadow-preview-box{
+  width:80px;height:60px;margin:0 auto 12px;
+  background:var(--ts-surface);border-radius:8px;
+  transition:box-shadow .2s;
+}
+.ts-shadow-row{
+  display:flex;align-items:center;gap:8px;margin-bottom:8px;
+}
+.ts-shadow-row label{
+  font-size:11px;color:var(--ts-subtext);width:50px;
+  flex-shrink:0;text-align:right;
+}
+.ts-shadow-row input[type="range"]{flex:1}
+.ts-shadow-row .ts-shadow-val{
+  font-size:11px;color:var(--ts-text);width:36px;text-align:right;
+}
+
+/* ── Spacing Visual Editor (Box Model) ────────────────── */
+.ts-spacing-editor{padding:8px 0}
+.ts-box-model{
+  position:relative;width:100%;max-width:280px;
+  margin:0 auto;user-select:none;
+}
+.ts-box-layer{
+  position:relative;
+  border:2px dashed;
+  display:flex;align-items:center;justify-content:center;
+  min-height:40px;
+}
+.ts-box-margin{
+  border-color:rgba(249,115,22,.5);
+  background:rgba(249,115,22,.08);
+  padding:16px;
+}
+.ts-box-padding{
+  border-color:rgba(34,197,94,.5);
+  background:rgba(34,197,94,.08);
+  padding:16px;
+  width:100%;
+}
+.ts-box-content{
+  background:var(--ts-overlay);
+  border-radius:4px;padding:8px;
+  text-align:center;font-size:10px;
+  color:var(--ts-subtext);
+  width:100%;
+}
+.ts-box-label{
+  position:absolute;top:2px;left:4px;
+  font-size:9px;font-weight:700;
+  text-transform:uppercase;letter-spacing:0.5px;
+}
+.ts-box-margin > .ts-box-label{color:rgb(249,115,22)}
+.ts-box-padding > .ts-box-label{color:rgb(34,197,94)}
+.ts-box-val{
+  position:absolute;
+  background:transparent;border:none;
+  color:var(--ts-text);font-size:11px;
+  text-align:center;width:32px;
+  font-family:inherit;outline:none;
+  padding:1px;
+}
+.ts-box-val:focus{
+  background:var(--ts-bg);border-radius:3px;
+  box-shadow:0 0 0 2px var(--ts-blue);
+}
+.ts-box-val-top{top:2px;left:50%;transform:translateX(-50%)}
+.ts-box-val-right{right:2px;top:50%;transform:translateY(-50%)}
+.ts-box-val-bottom{bottom:2px;left:50%;transform:translateX(-50%)}
+.ts-box-val-left{left:2px;top:50%;transform:translateY(-50%)}
+
+/* ── Dark/Light Mode Toggle ───────────────────────────── */
+.ts-mode-toggle{
+  display:inline-flex;align-items:center;
+  gap:4px;padding:3px;
+  background:var(--ts-overlay);border-radius:16px;
+  border:1px solid var(--ts-border);
+}
+.ts-mode-btn{
+  width:28px;height:28px;
+  border:none;border-radius:50%;
+  background:transparent;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  font-size:14px;transition:all .15s;
+  color:var(--ts-subtext);
+}
+.ts-mode-btn.active{
+  background:var(--ts-blue);color:var(--ts-bg);
+  box-shadow:0 1px 4px rgba(0,0,0,.2);
+}
+.ts-mode-btn:hover:not(.active){color:var(--ts-text)}
 </style>
 <link rel="stylesheet" href="/plugins/jessie-theme-builder/assets/css/media-gallery.css">
 </head>
@@ -1030,6 +1267,19 @@ html,body{
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
       </button>
     </div>
+
+    <div class="ts-topbar-sep"></div>
+
+    <!-- Dark/Light Mode -->
+    <div class="ts-mode-toggle" id="ts-mode-toggle" title="Color mode">
+      <button class="ts-mode-btn active" data-mode="light" title="Light mode">☀️</button>
+      <button class="ts-mode-btn" data-mode="dark" title="Dark mode">🌙</button>
+    </div>
+
+    <!-- Compare (Before/After) -->
+    <button class="ts-icon-btn" id="ts-compare-btn" title="Before/After compare (split view)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="12" y1="3" x2="12" y2="21"/></svg>
+    </button>
 
     <div class="ts-topbar-sep"></div>
 
@@ -1179,6 +1429,11 @@ html,body{
 </div>
 
 
+<!-- Hidden file input for color extraction -->
+<input type="file" id="ts-extract-file" accept="image/*" style="display:none">
+<!-- Hidden canvas for color sampling -->
+<canvas id="ts-extract-canvas" style="display:none"></canvas>
+
 <!-- ═══════════════════════════════════════════════════════════
      JAVASCRIPT — Vanilla, no frameworks
      ═══════════════════════════════════════════════════════════ -->
@@ -1271,6 +1526,57 @@ if (!SCHEMA.announcement) {
   }};
 }
 
+/* ── Inject gradient field into Effects ── */
+if (SCHEMA.effects && !SCHEMA.effects.fields.gradient) {
+  SCHEMA.effects.fields.gradient = { type:'gradient', label:'Background Gradient', default:'' };
+}
+/* ── Inject box_shadow field into Effects ── */
+if (SCHEMA.effects && !SCHEMA.effects.fields.box_shadow) {
+  SCHEMA.effects.fields.box_shadow = { type:'boxshadow', label:'Box Shadow', default:'' };
+}
+/* ── Inject spacing fields into Layout ── */
+if (SCHEMA.layout) {
+  if (!SCHEMA.layout.fields.section_padding) SCHEMA.layout.fields.section_padding = { type:'spacing', label:'Section Spacing (Box Model)', default:'', _kind:'combined' };
+}
+/* ── Inject color_mode into Brand ── */
+if (SCHEMA.brand && !SCHEMA.brand.fields.color_mode) {
+  SCHEMA.brand.fields.color_mode = { type:'hidden', label:'Color Mode', default:'light' };
+}
+
+/* ── Font Pairing Data ── */
+const FONT_PAIRINGS = {
+  'Inter':['Lora','Merriweather','Crimson Text'],
+  'Roboto':['Roboto Slab','Open Sans','Lato'],
+  'Montserrat':['Open Sans','Lora','Source Sans Pro'],
+  'Poppins':['Lato','Nunito','Open Sans'],
+  'Playfair Display':['Source Sans Pro','Lato','Raleway'],
+  'Merriweather':['Open Sans','Lato','Nunito'],
+  'Raleway':['Lora','Merriweather','Open Sans'],
+  'DM Sans':['DM Serif Display','Lora','Source Sans Pro'],
+  'Space Grotesk':['Inter','Work Sans','Nunito'],
+  'Outfit':['Lora','Source Sans Pro','Inter'],
+  'Plus Jakarta Sans':['Crimson Text','Lora','Inter'],
+  'Sora':['Inter','DM Serif Display','Lato'],
+  'Manrope':['Lora','Spectral','Inter'],
+  'Oswald':['Open Sans','Lato','Source Sans Pro'],
+  'Lato':['Merriweather','Playfair Display','Lora'],
+  'Work Sans':['Lora','DM Serif Display','Source Sans Pro'],
+  'Barlow':['Lora','Crimson Text','Open Sans'],
+  'Josefin Sans':['Lora','Open Sans','Lato'],
+  'Libre Baskerville':['Lato','Raleway','Open Sans'],
+  'EB Garamond':['Open Sans','Lato','Work Sans'],
+  'Cormorant Garamond':['Poppins','Raleway','Montserrat'],
+  'DM Serif Display':['DM Sans','Inter','Nunito'],
+  'Arvo':['Lato','Open Sans','Source Sans Pro'],
+  'Lexend':['Inter','Lora','Open Sans'],
+  'Jost':['Lora','Source Sans Pro','Inter'],
+  'Red Hat Display':['Open Sans','Lato','Inter'],
+  'Figtree':['Merriweather','Lora','Inter'],
+  'Rubik':['Lora','Open Sans','Nunito'],
+  'Nunito':['Playfair Display','Merriweather','Lora'],
+  'Quicksand':['Lora','Crimson Text','EB Garamond'],
+};
+
 const AI_ON      = <?= json_encode(!empty($aiAvailable)) ?>;
 const PEXELS_ON  = <?= json_encode(!empty($pexelsAvailable)) ?>;
 const THEME_SLUG = <?= json_encode($themeSlug ?? '') ?>;
@@ -1336,6 +1642,12 @@ const dom = {
   cpickerPreview  : $('#ts-cpicker-preview'),
   cpickerSwatches : $('#ts-cpicker-swatches'),
 };
+
+/* New feature elements */
+const domCompare    = $('#ts-compare-btn');
+const domModeToggle = $('#ts-mode-toggle');
+const domExtractFile= $('#ts-extract-file');
+const domExtractCanvas = $('#ts-extract-canvas');
 
 /* AI elements (may be null if AI not available) */
 const aiDom = AI_ON ? {
@@ -1534,7 +1846,7 @@ function initSwatches() {
 function openColorPicker(swatch, hexInput, section, field) {
   cpickerTarget = { section, field, swatchEl: swatch, hexEl: hexInput };
 
-  const hex = getVal(section, field) || '#3b82f6';
+  const hex = (section && field) ? (getVal(section, field) || '#3b82f6') : (hexInput.value || '#3b82f6');
   const [h, s, v] = hexToHsv(hex);
   cpickerHue = h; cpickerSat = s; cpickerVal = v;
   updateCpickerUI();
@@ -1590,7 +1902,9 @@ function cpickerApply() {
   const { section, field, swatchEl, hexEl } = cpickerTarget;
   swatchEl.style.background = hex;
   hexEl.value = hex;
-  onFieldChange(section, field, hex);
+  if (section && field) onFieldChange(section, field, hex);
+  /* Fire custom event for non-standard color picker users */
+  hexEl.dispatchEvent(new Event('input', {bubbles:true}));
 }
 
 /* Saturation/Value area dragging */
@@ -1813,6 +2127,10 @@ function buildField(section, key, def) {
     case 'select':   wrap.appendChild(buildSelect(section, key, val, def.options || {})); break;
     case 'range':    wrap.appendChild(buildRange(section, key, val, def)); break;
     case 'fontpicker': wrap.appendChild(buildFontPicker(section, key, val)); break;
+    case 'gradient':   wrap.appendChild(buildGradient(section, key, val)); break;
+    case 'boxshadow':  wrap.appendChild(buildBoxShadow(section, key, val)); break;
+    case 'spacing':    wrap.appendChild(buildSpacing(section, key, val)); break;
+    case 'hidden':     break; /* hidden fields — no UI */
     default:         wrap.appendChild(buildText(section, key, val)); break;
   }
 
@@ -2059,6 +2377,7 @@ function buildFontPicker(section, key, val) {
         wrap.classList.remove('open');
         search.value = '';
         onFieldChange(section, key, fontName);
+        showPairings(fontName);
       });
       optionsWrap.appendChild(opt);
     });
@@ -2087,8 +2406,47 @@ function buildFontPicker(section, key, val) {
   document.addEventListener('click', () => wrap.classList.remove('open'));
   dropdown.addEventListener('click', (e) => e.stopPropagation());
 
+  /* ── Font Pairing Suggestions ── */
+  const pairingWrap = document.createElement('div');
+  pairingWrap.className = 'ts-font-pairings';
+  pairingWrap.style.display = 'none';
+
+  function showPairings(fontName) {
+    pairingWrap.innerHTML = '';
+    const pairs = FONT_PAIRINGS[fontName];
+    if (!pairs || key !== 'heading_font') { pairingWrap.style.display = 'none'; return; }
+    pairingWrap.style.display = 'flex';
+    const lbl = document.createElement('span');
+    lbl.className = 'ts-font-pairings-label';
+    lbl.textContent = 'Pairs with:';
+    pairingWrap.appendChild(lbl);
+    pairs.forEach(p => {
+      const chip = document.createElement('button');
+      chip.className = 'ts-font-pair-chip';
+      chip.textContent = p;
+      chip.title = 'Apply ' + p + ' as body font';
+      chip.addEventListener('click', e => {
+        e.stopPropagation();
+        loadGoogleFont(p);
+        setVal('typography', 'body_font', p);
+        /* Update body font picker if visible */
+        $$('.ts-field[data-field="body_font"] .ts-font-picker-selected').forEach(sel => {
+          sel.textContent = p;
+          sel.style.fontFamily = "'" + p + "', sans-serif";
+        });
+        onFieldChange('typography', 'body_font', p);
+        toast('Body font set to ' + p, 'success');
+      });
+      pairingWrap.appendChild(chip);
+    });
+  }
+
+  /* Show pairings for initial font */
+  showPairings(currentFont);
+
   wrap.appendChild(selected);
   wrap.appendChild(dropdown);
+  wrap.appendChild(pairingWrap);
   return wrap;
 }
 
@@ -2122,6 +2480,333 @@ function buildRange(section, key, val, def) {
 
   wrap.appendChild(range);
   wrap.appendChild(valDisplay);
+  return wrap;
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   GRADIENT BUILDER
+   ═══════════════════════════════════════════════════════════ */
+
+function buildGradient(section, key, val) {
+  const wrap = document.createElement('div');
+  wrap.className = 'ts-gradient-builder';
+
+  const DIRS = [
+    {label:'↑',deg:'to top'},{label:'↗',deg:'to top right'},{label:'→',deg:'to right'},{label:'↘',deg:'to bottom right'},
+    {label:'↓',deg:'to bottom'},{label:'↙',deg:'to bottom left'},{label:'←',deg:'to left'},{label:'↖',deg:'to top left'}
+  ];
+
+  let stops = [{color:'#6366f1',pos:0},{color:'#ec4899',pos:100}];
+  let dir = 'to right';
+
+  /* Parse existing value */
+  if (val) {
+    const m = val.match(/linear-gradient\(([^,]+),\s*(.+)\)/);
+    if (m) {
+      dir = m[1].trim();
+      stops = m[2].split(/,(?![^(]*\))/).map(s => {
+        const parts = s.trim().match(/(#[0-9a-fA-F]{3,8}|rgba?\([^)]+\))\s*(\d+)%?/);
+        return parts ? {color:parts[1],pos:parseInt(parts[2])} : null;
+      }).filter(Boolean);
+      if (stops.length < 2) stops = [{color:'#6366f1',pos:0},{color:'#ec4899',pos:100}];
+    }
+  }
+
+  function getGradientCSS() {
+    const s = stops.map(st => st.color + ' ' + st.pos + '%').join(', ');
+    return 'linear-gradient(' + dir + ', ' + s + ')';
+  }
+
+  /* Preview */
+  const preview = document.createElement('div');
+  preview.className = 'ts-gradient-preview';
+  function updatePreview() {
+    const css = getGradientCSS();
+    preview.style.background = css;
+    onFieldChange(section, key, css);
+  }
+
+  /* Direction buttons */
+  const dirWrap = document.createElement('div');
+  dirWrap.className = 'ts-gradient-dir';
+  DIRS.forEach(d => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'ts-gradient-dir-btn' + (d.deg === dir ? ' active' : '');
+    btn.textContent = d.label;
+    btn.title = d.deg;
+    btn.addEventListener('click', () => {
+      dir = d.deg;
+      dirWrap.querySelectorAll('.ts-gradient-dir-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      updatePreview();
+    });
+    dirWrap.appendChild(btn);
+  });
+
+  /* Stops */
+  const stopsWrap = document.createElement('div');
+  stopsWrap.className = 'ts-gradient-stops';
+
+  function renderStops() {
+    stopsWrap.innerHTML = '';
+    stops.forEach((st, i) => {
+      const row = document.createElement('div');
+      row.className = 'ts-gradient-stop';
+
+      const swatch = document.createElement('input');
+      swatch.type = 'color';
+      swatch.className = 'ts-gradient-stop-swatch';
+      swatch.value = st.color;
+      swatch.style.cursor = 'pointer';
+      swatch.addEventListener('input', () => {
+        st.color = swatch.value;
+        updatePreview();
+      });
+
+      const posInput = document.createElement('input');
+      posInput.className = 'ts-gradient-stop-pos';
+      posInput.type = 'number'; posInput.min = 0; posInput.max = 100;
+      posInput.value = st.pos;
+      posInput.addEventListener('input', () => { st.pos = parseInt(posInput.value) || 0; updatePreview(); });
+
+      const pctLabel = document.createElement('span');
+      pctLabel.style.cssText = 'font-size:11px;color:var(--ts-subtext)';
+      pctLabel.textContent = '%';
+
+      row.appendChild(swatch);
+      row.appendChild(posInput);
+      row.appendChild(pctLabel);
+
+      if (stops.length > 2) {
+        const del = document.createElement('button');
+        del.type = 'button';
+        del.className = 'ts-gradient-stop-remove';
+        del.textContent = '✕';
+        del.addEventListener('click', () => { stops.splice(i, 1); renderStops(); updatePreview(); });
+        row.appendChild(del);
+      }
+      stopsWrap.appendChild(row);
+    });
+  }
+
+  /* Add stop button */
+  const addBtn = document.createElement('button');
+  addBtn.type = 'button';
+  addBtn.className = 'ts-gradient-add-stop';
+  addBtn.textContent = '+ Add color stop';
+  addBtn.addEventListener('click', () => {
+    if (stops.length >= 5) return;
+    stops.push({color:'#94e2d5', pos: 50});
+    renderStops();
+    updatePreview();
+  });
+
+  /* Clear button */
+  const clearBtn = document.createElement('button');
+  clearBtn.type = 'button';
+  clearBtn.className = 'ts-gradient-add-stop';
+  clearBtn.textContent = '✕ Clear gradient';
+  clearBtn.style.marginLeft = '8px';
+  clearBtn.addEventListener('click', () => {
+    onFieldChange(section, key, '');
+    preview.style.background = 'var(--ts-overlay)';
+  });
+
+  renderStops();
+  updatePreview();
+
+  const btnRow = document.createElement('div');
+  btnRow.style.display = 'flex';
+  btnRow.appendChild(addBtn);
+  btnRow.appendChild(clearBtn);
+
+  wrap.appendChild(preview);
+  wrap.appendChild(dirWrap);
+  wrap.appendChild(stopsWrap);
+  wrap.appendChild(btnRow);
+  return wrap;
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   BOX SHADOW EDITOR
+   ═══════════════════════════════════════════════════════════ */
+
+function buildBoxShadow(section, key, val) {
+  const wrap = document.createElement('div');
+  wrap.className = 'ts-shadow-editor';
+
+  let sh = { x:2, y:4, blur:12, spread:0, color:'rgba(0,0,0,0.15)', inset:false };
+
+  /* Parse existing */
+  if (val) {
+    const m = val.match(/(inset\s+)?(-?\d+)px\s+(-?\d+)px\s+(\d+)px\s+(-?\d+)px\s+(.+)/);
+    if (m) {
+      sh.inset = !!m[1]; sh.x = parseInt(m[2]); sh.y = parseInt(m[3]);
+      sh.blur = parseInt(m[4]); sh.spread = parseInt(m[5]); sh.color = m[6].trim();
+    }
+  }
+
+  function getShadowCSS() {
+    return (sh.inset ? 'inset ' : '') + sh.x + 'px ' + sh.y + 'px ' + sh.blur + 'px ' + sh.spread + 'px ' + sh.color;
+  }
+
+  /* Preview box */
+  const previewBox = document.createElement('div');
+  previewBox.className = 'ts-shadow-preview-box';
+
+  function update() {
+    const css = getShadowCSS();
+    previewBox.style.boxShadow = css;
+    onFieldChange(section, key, css);
+  }
+
+  /* Slider rows */
+  const sliders = [
+    { label:'X', prop:'x', min:-30, max:30, unit:'px' },
+    { label:'Y', prop:'y', min:-30, max:30, unit:'px' },
+    { label:'Blur', prop:'blur', min:0, max:60, unit:'px' },
+    { label:'Spread', prop:'spread', min:-20, max:30, unit:'px' },
+  ];
+
+  const rows = document.createElement('div');
+  sliders.forEach(s => {
+    const row = document.createElement('div');
+    row.className = 'ts-shadow-row';
+    const lbl = document.createElement('label');
+    lbl.textContent = s.label;
+    const range = document.createElement('input');
+    range.type = 'range'; range.min = s.min; range.max = s.max; range.value = sh[s.prop];
+    range.className = 'ts-range';
+    const valEl = document.createElement('span');
+    valEl.className = 'ts-shadow-val';
+    valEl.textContent = sh[s.prop] + s.unit;
+    range.addEventListener('input', () => {
+      sh[s.prop] = parseInt(range.value);
+      valEl.textContent = sh[s.prop] + s.unit;
+      update();
+    });
+    row.appendChild(lbl); row.appendChild(range); row.appendChild(valEl);
+    rows.appendChild(row);
+  });
+
+  /* Color row */
+  const colorRow = document.createElement('div');
+  colorRow.className = 'ts-shadow-row';
+  const colorLbl = document.createElement('label');
+  colorLbl.textContent = 'Color';
+  const colorSwatch = document.createElement('div');
+  colorSwatch.className = 'ts-color-swatch';
+  colorSwatch.style.cssText = 'width:28px;height:28px;border-radius:4px;cursor:pointer;background:' + sh.color;
+  const colorHex = document.createElement('input');
+  colorHex.type = 'text'; colorHex.className = 'ts-color-hex';
+  colorHex.value = sh.color; colorHex.style.flex = '1';
+  colorHex.addEventListener('input', () => { sh.color = colorHex.value; colorSwatch.style.background = sh.color; update(); });
+  colorSwatch.addEventListener('click', () => openColorPicker(colorSwatch, colorHex, null, null));
+  colorRow.appendChild(colorLbl); colorRow.appendChild(colorSwatch); colorRow.appendChild(colorHex);
+
+  /* Inset toggle */
+  const insetRow = document.createElement('div');
+  insetRow.className = 'ts-shadow-row';
+  const insetLbl = document.createElement('label');
+  insetLbl.textContent = 'Inset';
+  const insetCb = document.createElement('input');
+  insetCb.type = 'checkbox'; insetCb.checked = sh.inset;
+  insetCb.addEventListener('change', () => { sh.inset = insetCb.checked; update(); });
+  insetRow.appendChild(insetLbl); insetRow.appendChild(insetCb);
+
+  /* Clear */
+  const clearRow = document.createElement('div');
+  clearRow.style.cssText = 'margin-top:8px';
+  const clearBtn = document.createElement('button');
+  clearBtn.type = 'button';
+  clearBtn.className = 'ts-gradient-add-stop';
+  clearBtn.textContent = '✕ Clear shadow';
+  clearBtn.addEventListener('click', () => {
+    onFieldChange(section, key, '');
+    previewBox.style.boxShadow = 'none';
+  });
+  clearRow.appendChild(clearBtn);
+
+  wrap.appendChild(previewBox);
+  wrap.appendChild(rows);
+  wrap.appendChild(colorRow);
+  wrap.appendChild(insetRow);
+  wrap.appendChild(clearRow);
+  update();
+  return wrap;
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   SPACING VISUAL EDITOR (BOX MODEL)
+   ═══════════════════════════════════════════════════════════ */
+
+function buildSpacing(section, key, val) {
+  const wrap = document.createElement('div');
+  wrap.className = 'ts-spacing-editor';
+
+  /* Parse stored JSON or defaults */
+  let sp = { mt:0, mr:0, mb:0, ml:0, pt:20, pr:20, pb:20, pl:20 };
+  if (val) {
+    try { const parsed = JSON.parse(val); Object.assign(sp, parsed); } catch(e) {}
+  }
+
+  function getJSON() { return JSON.stringify(sp); }
+
+  function update() {
+    onFieldChange(section, key, getJSON());
+  }
+
+  /* Box model diagram */
+  const model = document.createElement('div');
+  model.className = 'ts-box-model';
+
+  const marginBox = document.createElement('div');
+  marginBox.className = 'ts-box-layer ts-box-margin';
+  const mLabel = document.createElement('span');
+  mLabel.className = 'ts-box-label';
+  mLabel.textContent = 'margin';
+
+  const paddingBox = document.createElement('div');
+  paddingBox.className = 'ts-box-layer ts-box-padding';
+  const pLabel = document.createElement('span');
+  pLabel.className = 'ts-box-label';
+  pLabel.textContent = 'padding';
+
+  const content = document.createElement('div');
+  content.className = 'ts-box-content';
+  content.textContent = 'content';
+
+  function makeInput(prop, cls) {
+    const inp = document.createElement('input');
+    inp.className = 'ts-box-val ' + cls;
+    inp.type = 'number'; inp.value = sp[prop]; inp.min = 0; inp.max = 200;
+    inp.title = prop;
+    inp.addEventListener('input', () => { sp[prop] = parseInt(inp.value) || 0; update(); });
+    return inp;
+  }
+
+  /* Margin inputs */
+  marginBox.appendChild(mLabel);
+  marginBox.appendChild(makeInput('mt', 'ts-box-val-top'));
+  marginBox.appendChild(makeInput('mr', 'ts-box-val-right'));
+  marginBox.appendChild(makeInput('mb', 'ts-box-val-bottom'));
+  marginBox.appendChild(makeInput('ml', 'ts-box-val-left'));
+
+  /* Padding inputs */
+  paddingBox.appendChild(pLabel);
+  paddingBox.appendChild(makeInput('pt', 'ts-box-val-top'));
+  paddingBox.appendChild(makeInput('pr', 'ts-box-val-right'));
+  paddingBox.appendChild(makeInput('pb', 'ts-box-val-bottom'));
+  paddingBox.appendChild(makeInput('pl', 'ts-box-val-left'));
+
+  paddingBox.appendChild(content);
+  marginBox.appendChild(paddingBox);
+  model.appendChild(marginBox);
+  wrap.appendChild(model);
   return wrap;
 }
 
@@ -3165,6 +3850,282 @@ secSaveBtn.addEventListener('click', async () => {
     secSaveBtn.disabled = false;
   }
 });
+
+
+/* ═══════════════════════════════════════════════════════════
+   COLOR FROM IMAGE (Extract Palette)
+   ═══════════════════════════════════════════════════════════ */
+
+domExtractFile.addEventListener('change', () => {
+  const file = domExtractFile.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const img = new Image();
+    img.onload = () => {
+      const canvas = domExtractCanvas;
+      const ctx = canvas.getContext('2d');
+      const size = 64; /* Sample at small size for speed */
+      canvas.width = size; canvas.height = size;
+      ctx.drawImage(img, 0, 0, size, size);
+      const data = ctx.getImageData(0, 0, size, size).data;
+
+      /* Collect pixel colors */
+      const pixels = [];
+      for (let i = 0; i < data.length; i += 4) {
+        const r = data[i], g = data[i+1], b = data[i+2], a = data[i+3];
+        if (a < 128) continue; /* Skip transparent */
+        pixels.push([r, g, b]);
+      }
+
+      /* Simple k-means with 5 clusters */
+      const k = 5;
+      let centers = pixels.filter((_, i) => i % Math.max(1, Math.floor(pixels.length / k)) === 0).slice(0, k);
+      if (centers.length < k) {
+        while (centers.length < k) centers.push([128, 128, 128]);
+      }
+
+      for (let iter = 0; iter < 10; iter++) {
+        const clusters = centers.map(() => []);
+        pixels.forEach(px => {
+          let minD = Infinity, minI = 0;
+          centers.forEach((c, ci) => {
+            const d = (px[0]-c[0])**2 + (px[1]-c[1])**2 + (px[2]-c[2])**2;
+            if (d < minD) { minD = d; minI = ci; }
+          });
+          clusters[minI].push(px);
+        });
+        centers = clusters.map((cl, i) => {
+          if (!cl.length) return centers[i];
+          const avg = [0, 0, 0];
+          cl.forEach(px => { avg[0] += px[0]; avg[1] += px[1]; avg[2] += px[2]; });
+          return avg.map(v => Math.round(v / cl.length));
+        });
+      }
+
+      /* Sort by saturation (most colorful first) */
+      const hexColors = centers.map(c => rgbToHex(c[0], c[1], c[2]));
+      const sorted = hexColors.map(hex => {
+        const rgb = hexToRgb(hex);
+        const hsv = rgbToHsv(rgb[0], rgb[1], rgb[2]);
+        return { hex, sat: hsv[1], val: hsv[2] };
+      }).sort((a, b) => (b.sat * b.val) - (a.sat * a.val));
+
+      showExtractedPalette(sorted.map(s => s.hex));
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+  domExtractFile.value = '';
+});
+
+function showExtractedPalette(colors) {
+  /* Remove previous extracted row */
+  const old = document.querySelector('.ts-extracted-row');
+  if (old) old.remove();
+
+  const row = document.createElement('div');
+  row.className = 'ts-extracted-row';
+
+  colors.forEach(c => {
+    const dot = document.createElement('div');
+    dot.className = 'ts-extracted-dot';
+    dot.style.background = c;
+    dot.title = c;
+    row.appendChild(dot);
+  });
+
+  const apply = document.createElement('button');
+  apply.className = 'ts-extracted-apply';
+  apply.textContent = 'Apply';
+  apply.addEventListener('click', () => {
+    pushUndo();
+    setVal('brand', 'primary_color', colors[0] || '#6366f1');
+    setVal('brand', 'secondary_color', colors[1] || '#818cf8');
+    setVal('brand', 'accent_color', colors[2] || '#f59e0b');
+    refreshAllFields();
+    sendToPreview();
+    scheduleSave();
+    toast('Palette applied from image', 'success');
+  });
+  row.appendChild(apply);
+
+  /* Insert after color presets grid */
+  const presetsEl = document.querySelector('.ts-presets');
+  if (presetsEl) presetsEl.appendChild(row);
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   BEFORE / AFTER COMPARE (SPLIT VIEW)
+   ═══════════════════════════════════════════════════════════ */
+
+let compareMode = false;
+let savedValuesSnapshot = null;
+
+domCompare.addEventListener('click', () => {
+  if (compareMode) {
+    exitCompare();
+  } else {
+    enterCompare();
+  }
+});
+
+function enterCompare() {
+  compareMode = true;
+  domCompare.classList.add('active');
+  savedValuesSnapshot = deepClone(values);
+
+  const main = document.getElementById('ts-preview');
+
+  /* Create compare wrapper */
+  const wrap = document.createElement('div');
+  wrap.className = 'ts-compare-wrap';
+  wrap.id = 'ts-compare-wrap';
+
+  /* Before side */
+  const before = document.createElement('div');
+  before.className = 'ts-compare-before';
+  const beforeLabel = document.createElement('div');
+  beforeLabel.className = 'ts-compare-label';
+  beforeLabel.textContent = 'BEFORE';
+  const beforeIframe = document.createElement('iframe');
+  beforeIframe.src = '/admin/theme-studio/preview';
+  beforeIframe.style.cssText = 'width:100%;height:100%;border:none';
+  before.appendChild(beforeLabel);
+  before.appendChild(beforeIframe);
+
+  /* Divider */
+  const divider = document.createElement('div');
+  divider.className = 'ts-compare-divider';
+
+  /* After side */
+  const after = document.createElement('div');
+  after.className = 'ts-compare-after';
+  const afterLabel = document.createElement('div');
+  afterLabel.className = 'ts-compare-label';
+  afterLabel.textContent = 'AFTER';
+  const afterIframe = document.createElement('iframe');
+  afterIframe.src = '/admin/theme-studio/preview';
+  afterIframe.style.cssText = 'width:100%;height:100%;border:none';
+  after.appendChild(afterLabel);
+  after.appendChild(afterIframe);
+
+  wrap.appendChild(before);
+  wrap.appendChild(divider);
+  wrap.appendChild(after);
+
+  /* Hide normal preview, show compare */
+  dom.previewContainer.style.display = 'none';
+  main.appendChild(wrap);
+
+  /* After iframe loads, send current values */
+  afterIframe.addEventListener('load', () => {
+    setTimeout(() => {
+      try { afterIframe.contentWindow.postMessage({ type:'theme-studio-update', values }, '*'); } catch(e) {}
+    }, 300);
+  });
+
+  /* Drag divider */
+  let dragging = false;
+  divider.addEventListener('mousedown', e => { dragging = true; e.preventDefault(); });
+  document.addEventListener('mousemove', e => {
+    if (!dragging) return;
+    const rect = wrap.getBoundingClientRect();
+    let pct = ((e.clientX - rect.left) / rect.width) * 100;
+    pct = Math.max(15, Math.min(85, pct));
+    before.style.flex = '0 0 ' + pct + '%';
+    after.style.flex = '0 0 ' + (100 - pct) + '%';
+    divider.style.left = pct + '%';
+  });
+  document.addEventListener('mouseup', () => { dragging = false; });
+}
+
+function exitCompare() {
+  compareMode = false;
+  domCompare.classList.remove('active');
+  const wrap = document.getElementById('ts-compare-wrap');
+  if (wrap) wrap.remove();
+  dom.previewContainer.style.display = '';
+  savedValuesSnapshot = null;
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   DARK / LIGHT MODE TOGGLE
+   ═══════════════════════════════════════════════════════════ */
+
+const DARK_OVERRIDES = {
+  bg_color: '#1a1a2e', dark_color: '#16213e', text_color: '#e2e8f0',
+  primary_color: null, secondary_color: null, accent_color: null /* keep original */
+};
+
+let colorMode = getVal('brand', 'color_mode') || 'light';
+let lightSnapshot = null;
+
+/* Set initial active state */
+$$('#ts-mode-toggle .ts-mode-btn').forEach(btn => {
+  btn.classList.toggle('active', btn.dataset.mode === colorMode);
+});
+
+$$('#ts-mode-toggle .ts-mode-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const mode = btn.dataset.mode;
+    if (mode === colorMode) return;
+
+    $$('#ts-mode-toggle .ts-mode-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+
+    pushUndo();
+
+    if (mode === 'dark') {
+      /* Save light values before switching */
+      lightSnapshot = {
+        bg_color: getVal('brand', 'bg_color'),
+        dark_color: getVal('brand', 'dark_color'),
+        text_color: getVal('brand', 'text_color'),
+      };
+      /* Apply dark overrides */
+      setVal('brand', 'bg_color', DARK_OVERRIDES.bg_color);
+      setVal('brand', 'dark_color', DARK_OVERRIDES.dark_color);
+      setVal('brand', 'text_color', DARK_OVERRIDES.text_color);
+    } else {
+      /* Restore light values */
+      if (lightSnapshot) {
+        setVal('brand', 'bg_color', lightSnapshot.bg_color || '');
+        setVal('brand', 'dark_color', lightSnapshot.dark_color || '');
+        setVal('brand', 'text_color', lightSnapshot.text_color || '');
+      }
+    }
+
+    colorMode = mode;
+    setVal('brand', 'color_mode', mode);
+    refreshAllFields();
+    sendToPreview();
+    scheduleSave();
+    toast(mode === 'dark' ? '🌙 Dark mode' : '☀️ Light mode', 'success');
+  });
+});
+
+
+/* ═══════════════════════════════════════════════════════════
+   INJECT "EXTRACT FROM IMAGE" INTO PRESETS
+   ═══════════════════════════════════════════════════════════ */
+
+/* Override renderPanel to inject extract button after presets grid */
+const _origRenderPanel = renderPanel;
+/* Monkey-patch: after renderPanel runs, inject the extract button */
+setTimeout(() => {
+  const presetsEl = document.querySelector('.ts-presets');
+  if (presetsEl) {
+    const extractBtn = document.createElement('button');
+    extractBtn.type = 'button';
+    extractBtn.className = 'ts-extract-btn';
+    extractBtn.innerHTML = '🎨 Extract palette from image…';
+    extractBtn.addEventListener('click', () => domExtractFile.click());
+    presetsEl.appendChild(extractBtn);
+  }
+}, 0);
 
 
 /* Report readiness */

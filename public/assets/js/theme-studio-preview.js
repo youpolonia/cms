@@ -159,6 +159,40 @@
         if (vals.custom_css && vals.custom_css.css_code !== undefined) {
             styleEl.textContent = vals.custom_css.css_code;
         }
+
+        /* Gradient */
+        if (vals.effects && vals.effects.gradient) {
+            setVar("--gradient", vals.effects.gradient);
+        }
+
+        /* Box Shadow (custom) */
+        if (vals.effects && vals.effects.box_shadow) {
+            setVar("--shadow-custom", vals.effects.box_shadow);
+        }
+
+        /* Spacing / Box Model */
+        if (vals.layout && vals.layout.section_padding) {
+            try {
+                var sp = typeof vals.layout.section_padding === "string" ? JSON.parse(vals.layout.section_padding) : vals.layout.section_padding;
+                if (sp) {
+                    setVar("--section-margin-top", (sp.mt || 0) + "px");
+                    setVar("--section-margin-right", (sp.mr || 0) + "px");
+                    setVar("--section-margin-bottom", (sp.mb || 0) + "px");
+                    setVar("--section-margin-left", (sp.ml || 0) + "px");
+                    setVar("--section-padding-top", (sp.pt || 20) + "px");
+                    setVar("--section-padding-right", (sp.pr || 20) + "px");
+                    setVar("--section-padding-bottom", (sp.pb || 20) + "px");
+                    setVar("--section-padding-left", (sp.pl || 20) + "px");
+                }
+            } catch(e) { /* ignore parse errors */ }
+        }
+
+        /* Dark mode overrides */
+        if (vals.brand && vals.brand.color_mode === "dark") {
+            document.documentElement.classList.add("ts-dark-mode");
+        } else {
+            document.documentElement.classList.remove("ts-dark-mode");
+        }
     }
 
     /* ── Toggle visibility ────────────────────────────────── */
