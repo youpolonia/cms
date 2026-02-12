@@ -136,10 +136,16 @@
         }
 
         /* Simple 1:1 variable mappings (buttons, layout, effects) */
+        var pxFields = {"buttons.border_radius":1,"buttons.padding_x":1,"buttons.padding_y":1,"layout.container_width":1,"layout.section_spacing":1,"layout.border_radius":1};
+        var msFields = {"effects.transition_speed":1};
         Object.keys(simpleVarMap).forEach(function(path) {
             var parts = path.split(".");
             if (vals[parts[0]] && vals[parts[0]][parts[1]]) {
-                setVar(simpleVarMap[path], vals[parts[0]][parts[1]]);
+                var v = vals[parts[0]][parts[1]];
+                /* Add units if value is plain number */
+                if (pxFields[path] && !isNaN(v) && String(v).indexOf("px") === -1) v = v + "px";
+                if (msFields[path] && !isNaN(v) && String(v).indexOf("ms") === -1) v = v + "ms";
+                setVar(simpleVarMap[path], v);
             }
         });
 

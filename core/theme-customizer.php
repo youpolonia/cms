@@ -396,17 +396,20 @@ if (!function_exists('generate_studio_css_overrides')) {
             $hasVars = true;
         }
         
-        // Buttons section overrides
+        // Buttons section overrides (add px unit if missing)
         if (!empty($customs['buttons']['border_radius'])) {
-            $css .= "    --btn-radius: {$customs['buttons']['border_radius']};\n";
+            $v = $customs['buttons']['border_radius'];
+            $css .= "    --btn-radius: " . (is_numeric($v) ? "{$v}px" : $v) . ";\n";
             $hasVars = true;
         }
         if (!empty($customs['buttons']['padding_x'])) {
-            $css .= "    --btn-padding-x: {$customs['buttons']['padding_x']};\n";
+            $v = $customs['buttons']['padding_x'];
+            $css .= "    --btn-padding-x: " . (is_numeric($v) ? "{$v}px" : $v) . ";\n";
             $hasVars = true;
         }
         if (!empty($customs['buttons']['padding_y'])) {
-            $css .= "    --btn-padding-y: {$customs['buttons']['padding_y']};\n";
+            $v = $customs['buttons']['padding_y'];
+            $css .= "    --btn-padding-y: " . (is_numeric($v) ? "{$v}px" : $v) . ";\n";
             $hasVars = true;
         }
         if (!empty($customs['buttons']['font_weight'])) {
@@ -414,17 +417,20 @@ if (!function_exists('generate_studio_css_overrides')) {
             $hasVars = true;
         }
         
-        // Layout section overrides
+        // Layout section overrides (add px unit if missing)
         if (!empty($customs['layout']['container_width'])) {
-            $css .= "    --container-width: {$customs['layout']['container_width']};\n";
+            $v = $customs['layout']['container_width'];
+            $css .= "    --container-width: " . (is_numeric($v) ? "{$v}px" : $v) . ";\n";
             $hasVars = true;
         }
         if (!empty($customs['layout']['section_spacing'])) {
-            $css .= "    --section-spacing: {$customs['layout']['section_spacing']};\n";
+            $v = $customs['layout']['section_spacing'];
+            $css .= "    --section-spacing: " . (is_numeric($v) ? "{$v}px" : $v) . ";\n";
             $hasVars = true;
         }
         if (!empty($customs['layout']['border_radius'])) {
-            $css .= "    --border-radius: {$customs['layout']['border_radius']};\n";
+            $v = $customs['layout']['border_radius'];
+            $css .= "    --border-radius: " . (is_numeric($v) ? "{$v}px" : $v) . ";\n";
             $hasVars = true;
         }
         
@@ -545,9 +551,9 @@ if (!function_exists('_theme_generate_default_schema')) {
                 'primary_color' => ['type' => 'color', 'label' => 'Primary Color', 'default' => $config['colors']['primary'] ?? '#3b82f6'],
                 'secondary_color' => ['type' => 'color', 'label' => 'Secondary Color', 'default' => $config['colors']['secondary'] ?? '#06b6d4'],
                 'accent_color' => ['type' => 'color', 'label' => 'Accent Color', 'default' => $config['colors']['accent'] ?? '#f59e0b'],
-                'bg_color' => ['type' => 'color', 'label' => 'Background Color', 'default' => '#ffffff'],
-                'text_color' => ['type' => 'color', 'label' => 'Text Color', 'default' => '#1e293b'],
-                'dark_color' => ['type' => 'color', 'label' => 'Surface / Dark Color', 'default' => '#f8fafc'],
+                'bg_color' => ['type' => 'color', 'label' => 'Background Color', 'default' => $config['colors']['background'] ?? '#ffffff'],
+                'text_color' => ['type' => 'color', 'label' => 'Text Color', 'default' => $config['colors']['text'] ?? '#1e293b'],
+                'dark_color' => ['type' => 'color', 'label' => 'Surface Color', 'default' => $config['colors']['surface'] ?? '#f8fafc'],
                 'favicon' => ['type' => 'image', 'label' => 'Favicon', 'default' => null],
                 'og_image' => ['type' => 'image', 'label' => 'Social Share Image (OG)', 'default' => null],
                 'color_mode' => ['type' => 'hidden', 'label' => 'Color Mode', 'default' => 'light'],
