@@ -26,6 +26,62 @@ class AiThemeBuilderController
             // AI not available
         }
 
+        // Load available AI models — only capable ones for theme generation
+        $aiModels = [];
+        $settingsPath = \CMS_ROOT . '/config/ai_settings.json';
+        if (file_exists($settingsPath)) {
+            $settings = @json_decode(file_get_contents($settingsPath), true);
+            $defaultProvider = $settings['default_provider'] ?? '';
+            // Providers not suitable for theme generation
+            $skipProviders = ['huggingface', 'ollama'];
+            // Patterns that indicate too-small models (word boundaries with - or space)
+            $skipPatterns = ['-mini', ' mini', '-nano', ' nano', 'haiku', '-flash', ' flash'];
+
+            foreach ($settings['providers'] ?? [] as $providerKey => $providerConf) {
+                if (empty($providerConf['enabled']) || empty($providerConf['api_key'])) continue;
+                if (in_array($providerKey, $skipProviders)) continue;
+
+                foreach ($providerConf['models'] ?? [] as $modelKey => $modelConf) {
+                    // Skip legacy models
+                    if (!empty($modelConf['legacy'])) continue;
+                    // Skip small models by name pattern
+                    $keyLower = strtolower($modelKey);
+                    $nameLower = strtolower($modelConf['name'] ?? '');
+                    $skip = false;
+                    foreach ($skipPatterns as $pat) {
+                        if (str_contains($keyLower, $pat) || str_contains($nameLower, $pat)) {
+                            $skip = true;
+                            break;
+                        }
+                    }
+                    if ($skip) continue;
+
+                    // Rate model quality for theme generation
+                    // Rate model quality for theme generation based on provider + cost
+                    $tier = 'recommended';
+                    $tierLabel = '';
+                    $cost = (float)($modelConf['cost_per_1k_output'] ?? 0);
+                    // Budget: DeepSeek, very cheap models — limited output tokens
+                    if ($providerKey === 'deepseek' || $cost < 0.001) {
+                        $tier = 'budget';
+                        $tierLabel = '⚠️ Lower quality, shorter output';
+                    } elseif ($cost >= 0.02) {
+                        $tier = 'premium';
+                        $tierLabel = '⭐ Best quality';
+                    }
+
+                    $aiModels[] = [
+                        'provider' => $providerKey,
+                        'model' => $modelKey,
+                        'name' => ($modelConf['name'] ?? $modelKey),
+                        'isDefault' => ($providerKey === $defaultProvider && $modelKey === ($providerConf['default_model'] ?? '')),
+                        'tier' => $tier,
+                        'tierLabel' => $tierLabel,
+                    ];
+                }
+            }
+        }
+
         // List existing AI-generated themes
         $generatedThemes = [];
         $themesDir = \CMS_ROOT . '/themes';
@@ -45,6 +101,7 @@ class AiThemeBuilderController
         $data = [
             'title' => 'AI Theme Builder',
             'aiAvailable' => $aiAvailable,
+            'aiModels' => $aiModels,
             'generatedThemes' => $generatedThemes,
             'csrfToken' => csrf_token(),
         ];
@@ -65,6 +122,9 @@ class AiThemeBuilderController
         $industry = $body['industry'] ?? 'portfolio';
         $style    = $body['style'] ?? 'minimalist';
         $mood     = $body['mood'] ?? 'light';
+        $provider = trim($body['provider'] ?? '');
+        $model    = trim($body['model'] ?? '');
+        $language = trim($body['language'] ?? 'English');
 
         if (empty($prompt)) {
             Response::json(['ok' => false, 'error' => 'Please describe your website']);
@@ -72,9 +132,20 @@ class AiThemeBuilderController
         }
 
         // Validate inputs
-        $validIndustries = ['restaurant', 'saas', 'portfolio', 'blog', 'ecommerce', 'agency', 'law', 'medical', 'fitness', 'education'];
-        $validStyles = ['minimalist', 'bold', 'elegant', 'playful', 'corporate'];
-        $validMoods = ['light', 'dark', 'colorful', 'monochrome'];
+        $validIndustries = [
+            'restaurant','cafe','bar','hotel','catering',
+            'saas','startup','ai','app','crypto',
+            'portfolio','photography','agency','music','film',
+            'blog','magazine','podcast','news',
+            'ecommerce','fashion','jewelry','realestate',
+            'law','finance','consulting','accounting','insurance',
+            'medical','dental','fitness','yoga','spa','veterinary',
+            'education','course','coaching',
+            'nonprofit','church','events','travel','architecture',
+            'construction','automotive','gaming','sports','wedding',
+        ];
+        $validStyles = ['minimalist','bold','elegant','playful','corporate','brutalist','retro','futuristic','organic','artdeco','glassmorphism','neubrutalism','editorial','geometric'];
+        $validMoods = ['light','dark','colorful','monochrome','warm','cool','pastel','neon','earth','luxury'];
 
         if (!in_array($industry, $validIndustries)) $industry = 'portfolio';
         if (!in_array($style, $validStyles)) $style = 'minimalist';
@@ -82,7 +153,11 @@ class AiThemeBuilderController
 
         try {
             require_once \CMS_ROOT . '/core/ai-theme-builder.php';
-            $builder = new \AiThemeBuilder();
+            $builder = new \AiThemeBuilder([
+                'provider' => $provider,
+                'model'    => $model,
+                'language' => $language,
+            ]);
 
             $result = $builder->generate([
                 'prompt' => $prompt,
@@ -164,6 +239,23 @@ class AiThemeBuilderController
             return;
         }
 
+        // Override get_active_theme() for this request
+        // theme-customizer uses this to resolve theme_get() values
+        $GLOBALS['_active_theme_override'] = $slug;
+
+        // Variables needed by layout.php and templates
+        try {
+            $pdo = \core\Database::connection();
+            $stmt = $pdo->prepare("SELECT value FROM settings WHERE `key` = ?");
+            $stmt->execute(['site_name']);
+            $siteName = $stmt->fetchColumn() ?: 'My Website';
+        } catch (\Throwable $e) {
+            $siteName = 'My Website';
+        }
+        $siteLogo = '';
+        $tsLogo = theme_get('brand.logo', '');
+        $themePath = '/themes/' . $slug;
+
         // Build minimal page context
         $page = [
             'title' => 'Home',
@@ -172,14 +264,17 @@ class AiThemeBuilderController
             'is_tb_page' => false,
         ];
 
-        // Load some demo data
+        // Load demo data — prefer theme-specific content, fallback to generic
         try {
             $pdo = \core\Database::connection();
             
-            $stmt = $pdo->query("SELECT id, title, slug, content, featured_image FROM pages WHERE status = 'published' ORDER BY id DESC LIMIT 6");
+            // Try theme-specific pages first, fallback to untagged
+            $stmt = $pdo->prepare("SELECT id, title, slug, content, featured_image FROM pages WHERE status = 'published' AND (theme_slug = ? OR theme_slug IS NULL) ORDER BY theme_slug DESC, id DESC LIMIT 6");
+            $stmt->execute([$slug]);
             $pages = $stmt->fetchAll(\PDO::FETCH_ASSOC);
 
-            $stmt = $pdo->query("SELECT a.id, a.title, a.slug, a.content, a.excerpt, a.featured_image, a.published_at, a.created_at, a.views, c.name as category_name FROM articles a LEFT JOIN categories c ON a.category_id = c.id WHERE a.status = 'published' ORDER BY a.published_at DESC LIMIT 4");
+            $stmt = $pdo->prepare("SELECT a.id, a.title, a.slug, a.content, a.excerpt, a.featured_image, a.published_at, a.created_at, a.views, c.name as category_name FROM articles a LEFT JOIN article_categories c ON a.category_id = c.id WHERE a.status = 'published' AND (a.theme_slug = ? OR a.theme_slug IS NULL) ORDER BY a.theme_slug DESC, a.published_at DESC LIMIT 4");
+            $stmt->execute([$slug]);
             $articles = $stmt->fetchAll(\PDO::FETCH_ASSOC);
         } catch (\Throwable $e) {
             $pages = [];
@@ -188,11 +283,46 @@ class AiThemeBuilderController
 
         // Render home template content
         ob_start();
-        require $homeFile;
+        try {
+            require $homeFile;
+        } catch (\Throwable $e) {
+            echo '<!-- Home template error: ' . htmlspecialchars($e->getMessage()) . ' -->';
+        }
         $content = ob_get_clean();
 
         // Render full layout with the content
-        require $layoutFile;
+        try {
+            require $layoutFile;
+        } catch (\Throwable $e) {
+            echo '<pre>Layout error: ' . htmlspecialchars($e->getMessage()) . "\n" . htmlspecialchars($e->getFile()) . ':' . $e->getLine() . '</pre>';
+        }
         exit;
+    }
+
+    /**
+     * POST /api/ai-theme-builder/delete — Delete a generated theme
+     */
+    public function delete(Request $request): void
+    {
+        $body = $GLOBALS['_JSON_DATA'] ?? [];
+        $slug = trim($body['slug'] ?? '');
+
+        if (empty($slug) || !preg_match('/^[a-z0-9-]+$/', $slug)) {
+            Response::json(['ok' => false, 'error' => 'Invalid theme slug']);
+            return;
+        }
+
+        try {
+            require_once \CMS_ROOT . '/core/ai-theme-builder.php';
+            $builder = new \AiThemeBuilder();
+            $result = $builder->deleteTheme($slug);
+
+            Response::json([
+                'ok' => $result,
+                'error' => $result ? null : 'Cannot delete (active theme or not AI-generated)',
+            ]);
+        } catch (\Throwable $e) {
+            Response::json(['ok' => false, 'error' => $e->getMessage()]);
+        }
     }
 }

@@ -343,6 +343,9 @@ return [
     'POST /api/ai-theme-builder/generate' => ['Admin\\AiThemeBuilderController', 'generate', ['auth' => true, 'csrf' => true]],
     'POST /api/ai-theme-builder/apply' => ['Admin\\AiThemeBuilderController', 'apply', ['auth' => true, 'csrf' => true]],
     'GET /admin/ai-theme-builder/preview' => ['Admin\\AiThemeBuilderController', 'preview', ['auth' => true]],
+    'GET /admin/docs' => ['Admin\\DocsController', 'index', ['auth' => true]],
+    'GET /api/docs/search' => ['Admin\\DocsController', 'search', ['auth' => true]],
+    'POST /api/ai-theme-builder/delete' => ['Admin\\AiThemeBuilderController', 'delete', ['auth' => true, 'csrf' => true]],
 
     'GET /admin/jessie-theme-builder' => ['Admin\\JtbController', 'index', ['auth' => true]],
     'GET /admin/jessie-theme-builder/edit/{id}' => ['Admin\\JtbController', 'edit', ['auth' => true]],
