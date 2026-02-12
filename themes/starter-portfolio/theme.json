@@ -55,33 +55,28 @@
     {
       "id": "hero",
       "label": "Hero",
-      "icon": "\u2b50",
+      "icon": "🎨",
       "required": true
     },
     {
-      "id": "about",
-      "label": "About",
-      "icon": "\ud83d\udc64"
-    },
-    {
       "id": "work",
-      "label": "Work",
-      "icon": "\ud83d\udcbc"
+      "label": "Projects",
+      "icon": "💼"
     },
     {
       "id": "skills",
       "label": "Skills",
-      "icon": "\ud83c\udfaf"
+      "icon": "🛠️"
     },
     {
       "id": "testimonials",
-      "label": "Testimonials",
-      "icon": "\ud83d\udcac"
+      "label": "Journal",
+      "icon": "✍️"
     },
     {
       "id": "cta",
-      "label": "Call to Action",
-      "icon": "\ud83d\udce3"
+      "label": "Contact",
+      "icon": "📬"
     }
   ]
 }

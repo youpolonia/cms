@@ -89,28 +89,23 @@
     {
       "id": "hero",
       "label": "Hero",
-      "icon": "\u2b50",
+      "icon": "🏢",
       "required": true
     },
     {
       "id": "services",
       "label": "Services",
-      "icon": "\ud83d\udd27"
+      "icon": "⚙️"
     },
     {
       "id": "testimonials",
-      "label": "Testimonials",
-      "icon": "\ud83d\udcac"
-    },
-    {
-      "id": "team",
-      "label": "Team",
-      "icon": "\ud83d\udc65"
+      "label": "Insights",
+      "icon": "💡"
     },
     {
       "id": "newsletter",
-      "label": "Newsletter",
-      "icon": "\u2709\ufe0f"
+      "label": "Contact CTA",
+      "icon": "📩"
     }
   ]
 }

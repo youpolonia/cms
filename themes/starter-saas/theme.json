@@ -66,28 +66,28 @@
     {
       "id": "hero",
       "label": "Hero",
-      "icon": "\u2b50",
+      "icon": "🚀",
       "required": true
     },
     {
       "id": "features",
       "label": "Features",
-      "icon": "\u2728"
-    },
-    {
-      "id": "tools",
-      "label": "Tools",
-      "icon": "\ud83d\udd27"
+      "icon": "⚡"
     },
     {
       "id": "showcase",
-      "label": "Showcase",
-      "icon": "\ud83d\udda5\ufe0f"
+      "label": "Product",
+      "icon": "💎"
+    },
+    {
+      "id": "tools",
+      "label": "Blog",
+      "icon": "📝"
     },
     {
       "id": "cta",
       "label": "Call to Action",
-      "icon": "\ud83d\udce3"
+      "icon": "🎯"
     }
   ]
 }

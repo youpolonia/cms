@@ -3,8 +3,8 @@
  * Starter Portfolio — Skills Section
  * Editable via Theme Studio. data-ts for live preview.
  */
-$skillsLabel = theme_get('skills.label', 'What We Do');
-$skillsTitle = theme_get('skills.title', 'Our Skills');
+$skillsLabel = theme_get('skills.label', 'Expertise');
+$skillsTitle = theme_get('skills.title', 'What I Do');
 ?>
 <!-- Skills Section -->
 <div class="section-divider"><hr></div>
@@ -15,19 +15,24 @@ $skillsTitle = theme_get('skills.title', 'Our Skills');
     </div>
     <div class="skills-grid">
         <div class="skill-card">
-            <div class="skill-icon"><i class="fas fa-code"></i></div>
-            <h3 class="skill-title">Development</h3>
-            <p class="skill-desc">Building modern, performant web applications with clean code.</p>
-        </div>
-        <div class="skill-card">
             <div class="skill-icon"><i class="fas fa-palette"></i></div>
-            <h3 class="skill-title">Design</h3>
-            <p class="skill-desc">Crafting beautiful, intuitive interfaces that users love.</p>
+            <h3 class="skill-title">Visual Design</h3>
+            <p class="skill-desc">Brand identity, typography, color systems, and visual storytelling.</p>
         </div>
         <div class="skill-card">
-            <div class="skill-icon"><i class="fas fa-rocket"></i></div>
-            <h3 class="skill-title">Strategy</h3>
-            <p class="skill-desc">Planning and executing digital strategies that deliver results.</p>
+            <div class="skill-icon"><i class="fas fa-mobile-alt"></i></div>
+            <h3 class="skill-title">UI/UX Design</h3>
+            <p class="skill-desc">User research, wireframing, prototyping, and interface design.</p>
+        </div>
+        <div class="skill-card">
+            <div class="skill-icon"><i class="fas fa-camera"></i></div>
+            <h3 class="skill-title">Photography</h3>
+            <p class="skill-desc">Portrait, landscape, editorial, and fine art photography.</p>
+        </div>
+        <div class="skill-card">
+            <div class="skill-icon"><i class="fas fa-code"></i></div>
+            <h3 class="skill-title">Front-End Dev</h3>
+            <p class="skill-desc">HTML, CSS, JavaScript — bringing designs to life in the browser.</p>
         </div>
     </div>
 </section>

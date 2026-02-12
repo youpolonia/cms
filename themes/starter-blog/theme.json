@@ -66,33 +66,28 @@
     {
       "id": "hero",
       "label": "Hero",
-      "icon": "\u2b50",
+      "icon": "✍️",
       "required": true
     },
     {
       "id": "featured",
       "label": "Featured Post",
-      "icon": "\ud83d\udccc"
+      "icon": "⭐"
     },
     {
       "id": "recent",
       "label": "Recent Posts",
-      "icon": "\ud83d\udcf0"
-    },
-    {
-      "id": "popular",
-      "label": "Popular",
-      "icon": "\ud83d\udd25"
+      "icon": "📰"
     },
     {
       "id": "categories",
-      "label": "Categories",
-      "icon": "\ud83d\udcc2"
+      "label": "Explore",
+      "icon": "🧭"
     },
     {
       "id": "newsletter",
       "label": "Newsletter",
-      "icon": "\u2709\ufe0f"
+      "icon": "💌"
     }
   ]
 }
