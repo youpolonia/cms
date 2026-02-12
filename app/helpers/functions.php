@@ -1136,7 +1136,7 @@ if (!function_exists('render_seo_meta')) {
      */
     function render_seo_meta(?array $page = null): string
     {
-        $siteName = get_site_name();
+        $siteName = function_exists('theme_get') ? theme_get('brand.site_name', get_site_name()) : get_site_name();
 
         // Title
         $title = $page['meta_title'] ?? ($page['title'] ?? $siteName);
