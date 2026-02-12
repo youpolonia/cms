@@ -2712,12 +2712,12 @@ async function saveSecContent(sid, schId, bodyEl, btn) {
 /* ── Live Preview ────────────────────────────────────────── */
 function previewSec(sid, schId, bodyEl) {
   const fv = collectVals(bodyEl);
-  const w = dom.iframe.contentWindow;
-  if (!w) return;
   const key = schId || sid;
-  for (const [k, v] of Object.entries(fv)) {
-    w.postMessage({ type:'themeStudio', action:'update', section:key, field:k, value:v }, '*');
-  }
+  /* Update local values so sendToPreview sends everything */
+  if (!values[key]) values[key] = {};
+  Object.assign(values[key], fv);
+  /* Use same format as Design tab — preview JS expects this */
+  sendToPreview();
 }
 
 /* ── Reorder Data ────────────────────────────────────────── */
