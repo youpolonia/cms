@@ -258,6 +258,32 @@ html,body{
 .ts-toggle input:checked ~ .ts-toggle-thumb{transform:translateX(20px)}
 .ts-toggle-label-text{font-size:13px;color:var(--ts-text)}
 
+/* ── Range Slider Field ───────────────────────────────── */
+.ts-range-wrap{display:flex;align-items:center;gap:12px;width:100%}
+.ts-range{
+  -webkit-appearance:none;appearance:none;flex:1;height:6px;
+  background:var(--ts-overlay);border-radius:3px;outline:none;cursor:pointer;
+}
+.ts-range::-webkit-slider-thumb{
+  -webkit-appearance:none;width:18px;height:18px;border-radius:50%;
+  background:var(--ts-blue);border:2px solid var(--ts-surface);
+  box-shadow:0 1px 4px rgba(0,0,0,.3);cursor:grab;transition:transform .15s;
+}
+.ts-range::-webkit-slider-thumb:hover{transform:scale(1.15)}
+.ts-range::-webkit-slider-thumb:active{cursor:grabbing;transform:scale(1.1)}
+.ts-range::-moz-range-thumb{
+  width:18px;height:18px;border-radius:50%;border:2px solid var(--ts-surface);
+  background:var(--ts-blue);box-shadow:0 1px 4px rgba(0,0,0,.3);cursor:grab;
+}
+.ts-range::-moz-range-track{background:var(--ts-overlay);height:6px;border-radius:3px}
+.ts-range-val{
+  min-width:48px;padding:4px 8px;text-align:center;
+  font-size:12px;font-family:'SF Mono',Monaco,Consolas,monospace;
+  color:var(--ts-text);background:var(--ts-bg);
+  border:1px solid var(--ts-border);border-radius:var(--ts-radius-sm);
+}
+.ts-range-unit{font-size:11px;color:var(--ts-subtext);margin-left:-4px}
+
 /* ── Color Picker Field ───────────────────────────────── */
 .ts-color-field{display:flex;align-items:center;gap:10px}
 .ts-color-swatch{
@@ -1100,6 +1126,24 @@ html,body{
 
 const CSRF       = <?= json_encode($csrfToken ?? '') ?>;
 const SCHEMA     = <?= $schemaJson ?>;
+
+/* Override numeric fields → range sliders with proper min/max/step/unit */
+const RANGE_OVERRIDES = {
+  'effects.shadow_strength':   { type:'range', min:0,   max:100,  step:1,   unit:'%',  label:'Shadow Strength' },
+  'effects.hover_scale':       { type:'range', min:1.0, max:1.2,  step:0.01,unit:'×',  label:'Hover Scale' },
+  'effects.transition_speed':  { type:'range', min:50,  max:800,  step:10,  unit:'ms', label:'Transition Speed' },
+  'buttons.border_radius':     { type:'range', min:0,   max:30,   step:1,   unit:'px', label:'Border Radius' },
+  'buttons.padding_x':         { type:'range', min:8,   max:60,   step:2,   unit:'px', label:'Padding X' },
+  'buttons.padding_y':         { type:'range', min:4,   max:30,   step:1,   unit:'px', label:'Padding Y' },
+  'layout.container_width':    { type:'range', min:800, max:1600, step:20,  unit:'px', label:'Container Width' },
+  'layout.section_spacing':    { type:'range', min:20,  max:200,  step:5,   unit:'px', label:'Section Spacing' },
+  'layout.border_radius':      { type:'range', min:0,   max:40,   step:1,   unit:'px', label:'Border Radius' },
+};
+Object.entries(RANGE_OVERRIDES).forEach(([path, cfg]) => {
+  const [sec, key] = path.split('.');
+  if (SCHEMA[sec]?.fields?.[key]) Object.assign(SCHEMA[sec].fields[key], cfg);
+});
+
 const AI_ON      = <?= json_encode(!empty($aiAvailable)) ?>;
 const PEXELS_ON  = <?= json_encode(!empty($pexelsAvailable)) ?>;
 const THEME_SLUG = <?= json_encode($themeSlug ?? '') ?>;
@@ -1589,6 +1633,7 @@ function buildField(section, key, def) {
     case 'image':    wrap.appendChild(buildImage(section, key, val)); break;
     case 'toggle':   wrap.appendChild(buildToggle(section, key, val)); break;
     case 'select':   wrap.appendChild(buildSelect(section, key, val, def.options || {})); break;
+    case 'range':    wrap.appendChild(buildRange(section, key, val, def)); break;
     default:         wrap.appendChild(buildText(section, key, val)); break;
   }
 
@@ -1771,6 +1816,39 @@ function buildSelect(section, key, val, options) {
   return wrap;
 }
 
+/* Range slider */
+function buildRange(section, key, val, def) {
+  const wrap = document.createElement('div');
+  wrap.className = 'ts-range-wrap';
+
+  const min = def.min ?? 0;
+  const max = def.max ?? 100;
+  const step = def.step ?? 1;
+  const unit = def.unit || '';
+  const current = val !== undefined && val !== '' ? parseFloat(val) : parseFloat(def.default || min);
+
+  const range = document.createElement('input');
+  range.type = 'range';
+  range.className = 'ts-range';
+  range.min = min;
+  range.max = max;
+  range.step = step;
+  range.value = current;
+
+  const valDisplay = document.createElement('span');
+  valDisplay.className = 'ts-range-val';
+  valDisplay.textContent = current + unit;
+
+  range.addEventListener('input', () => {
+    valDisplay.textContent = range.value + unit;
+    onFieldChange(section, key, range.value);
+  });
+
+  wrap.appendChild(range);
+  wrap.appendChild(valDisplay);
+  return wrap;
+}
+
 
 /* ═══════════════════════════════════════════════════════════
    FIELD CHANGE HANDLING & AUTO-SAVE
@@ -1855,6 +1933,14 @@ function refreshAllFields() {
       case 'select': {
         const sel = $('.ts-select', el);
         if (sel) sel.value = val ?? '';
+        break;
+      }
+      case 'range': {
+        const rng = $('.ts-range', el);
+        const rv  = $('.ts-range-val', el);
+        const unit = SCHEMA[s]?.fields?.[f]?.unit || '';
+        if (rng && document.activeElement !== rng) rng.value = val ?? rng.min;
+        if (rv) rv.textContent = (val ?? rng?.min ?? '') + unit;
         break;
       }
       case 'image': {
