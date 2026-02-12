@@ -1,10 +1,11 @@
 <?php
 /**
- * Starter Restaurant — Articles Section
+ * Starter Restaurant — From Our Kitchen (articles)
+ * Shows food/wine articles styled as culinary stories
  * Variables inherited from parent scope: $articlesLabel, $articlesTitle, $articlesDesc, $articlesBtnText, $articlesBtnLink, $articles
  */
 ?>
-<!-- Latest Articles as "News" -->
+<!-- From Our Kitchen (Articles) -->
 <?php if (!empty($articles)): ?>
 <section class="section">
     <div class="container">
@@ -18,7 +19,7 @@
             <a href="/article/<?= esc($a['slug']) ?>" class="menu-card" style="text-decoration:none" data-animate>
                 <div class="menu-card-img">
                     <?php if (!empty($a['featured_image'])): ?>
-                    <img src="<?= esc($a['featured_image']) ?>" alt="<?= esc($a['title']) ?>" style="width:100%;height:220px;object-fit:cover">
+                    <img src="<?= esc($a['featured_image']) ?>" alt="<?= esc($a['title']) ?>" loading="lazy" style="width:100%;height:220px;object-fit:cover">
                     <?php else: ?>
                     <div class="img-placeholder menu-ph"><i class="fas fa-newspaper"></i></div>
                     <?php endif; ?>
@@ -33,9 +34,9 @@
                     </div>
                     <p>
                         <?php if (!empty($a['excerpt'])): ?>
-                            <?= esc(mb_strimwidth(strip_tags($a['excerpt']), 0, 100, '...')) ?>
+                            <?= esc(mb_strimwidth(strip_tags($a['excerpt']), 0, 120, '...')) ?>
                         <?php else: ?>
-                            <?= esc(mb_strimwidth(strip_tags($a['content']), 0, 100, '...')) ?>
+                            <?= esc(mb_strimwidth(strip_tags($a['content']), 0, 120, '...')) ?>
                         <?php endif; ?>
                     </p>
                 </div>
@@ -43,17 +44,7 @@
             <?php endforeach; ?>
         </div>
         <div class="menu-cta">
-            <a href="<?= esc($articlesBtnLink) ?>" class="btn btn-outline" data-ts="articles.btn_text" data-ts-href="articles.btn_link"><?= esc($articlesBtnText) ?></a>
-        </div>
-    </div>
-</section>
-<?php else: ?>
-<section class="section">
-    <div class="container">
-        <div class="section-header">
-            <span class="section-label" data-ts="articles.label"><?= esc($articlesLabel) ?></span>
-            <h2 class="section-title" data-ts="articles.title">No articles yet</h2>
-            <p class="section-desc" data-ts="articles.description">Check back soon for news and stories.</p>
+            <a href="<?= esc($articlesBtnLink) ?>" class="btn btn-outline" data-ts="articles.btn_text" data-ts-href="articles.btn_link"><i class="fas fa-book-open"></i> <?= esc($articlesBtnText) ?></a>
         </div>
     </div>
 </section>

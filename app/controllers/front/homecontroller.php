@@ -10,23 +10,27 @@ class HomeController
     public function index(Request $request): void
     {
         $pdo = db();
+        $theme = get_active_theme();
         
-        // Legacy TB homepage check removed — JTB uses templates system
-        
-        // Static homepage
-        // Get published pages
-        $stmt = $pdo->query("SELECT * FROM pages WHERE status = 'published' ORDER BY created_at DESC LIMIT 10");
+        // Get published pages for this theme (theme_slug match OR NULL = shared)
+        $stmt = $pdo->prepare("
+            SELECT * FROM pages 
+            WHERE status = 'published' AND (theme_slug = :theme OR theme_slug IS NULL)
+            ORDER BY created_at DESC LIMIT 10
+        ");
+        $stmt->execute([':theme' => $theme]);
         $pages = $stmt->fetchAll(\PDO::FETCH_ASSOC);
         
-        // Get published articles with category
-        $stmt = $pdo->query("
+        // Get published articles for this theme (theme_slug match OR NULL = shared)
+        $stmt = $pdo->prepare("
             SELECT a.*, c.name as category_name, c.slug as category_slug 
             FROM articles a 
             LEFT JOIN article_categories c ON a.category_id = c.id 
-            WHERE a.status = 'published' 
+            WHERE a.status = 'published' AND (a.theme_slug = :theme OR a.theme_slug IS NULL)
             ORDER BY a.published_at DESC, a.created_at DESC 
             LIMIT 6
         ");
+        $stmt->execute([':theme' => $theme]);
         $articles = $stmt->fetchAll(\PDO::FETCH_ASSOC);
 
         render('front/home', [

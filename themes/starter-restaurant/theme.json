@@ -68,28 +68,28 @@
     {
       "id": "hero",
       "label": "Hero",
-      "icon": "\u2b50",
+      "icon": "⭐",
       "required": true
     },
     {
       "id": "about",
-      "label": "About Us",
-      "icon": "\ud83d\udc64"
+      "label": "Our Story",
+      "icon": "👨‍🍳"
     },
     {
       "id": "pages",
-      "label": "Pages",
-      "icon": "\ud83d\udcc4"
+      "label": "Explore",
+      "icon": "📖"
     },
     {
       "id": "articles",
-      "label": "Articles",
-      "icon": "\ud83d\udcf0"
+      "label": "From Our Kitchen",
+      "icon": "🍽️"
     },
     {
       "id": "parallax",
-      "label": "Parallax Divider",
-      "icon": "\ud83d\uddbc\ufe0f"
+      "label": "Chef's Quote",
+      "icon": "✨"
     }
   ]
 }

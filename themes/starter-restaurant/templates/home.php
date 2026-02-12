@@ -13,7 +13,7 @@ $heroSubtitle = theme_get('hero.subtitle', get_setting('hero_subtitle') ?: 'Expe
 $heroBtnText  = theme_get('hero.btn_text', 'Our Stories');
 $heroBtnLink  = theme_get('hero.btn_link', '/articles');
 $heroBgImage  = theme_get('hero.bg_image');
-$heroBadge    = get_setting('hero_badge') ?: 'Welcome';
+$heroBadge    = theme_get('hero.badge', get_setting('hero_badge') ?: 'Est. 2008');
 
 $aboutLabel   = theme_get('about.label', 'About Us');
 $aboutTitle   = theme_get('about.title', get_site_name());
