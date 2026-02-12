@@ -49,7 +49,9 @@ $themeDir = '/themes/starter-saas';
     <link rel="stylesheet" href="/assets/css/fontawesome.min.css">
     <link rel="stylesheet" href="/assets/css/tb-frontend.css">
     <link rel="stylesheet" href="<?= $themeDir ?>/assets/css/style.css">
-    <style><?= $themeCssVariables ?></style>
+    <style><?= $themeCssVariables ?>
+<?= generate_studio_css_overrides() ?>
+    </style>
 </head>
 <body class="starter-saas <?= esc(get_body_class() ?? '') ?><?= $isTbPage ? ' tb-page' : '' ?>">
 

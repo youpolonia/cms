@@ -52,6 +52,7 @@ $isTbPage = !empty($page['is_tb_page']);
         :root {
             <?php echo generate_theme_css_variables($themeConfig); ?>
         }
+<?= generate_studio_css_overrides() ?>
     </style>
 
     <!-- Theme Stylesheet -->

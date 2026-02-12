@@ -52,6 +52,7 @@ $googleFontsUrl = "https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@3
         :root {
             <?= generate_theme_css_variables($themeConfig) ?>
         }
+<?= generate_studio_css_overrides() ?>
     </style>
 
     <?php
