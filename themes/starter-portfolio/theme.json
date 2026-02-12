@@ -1,87 +1,96 @@
 {
-    "name": "Starter Portfolio",
-    "slug": "starter-portfolio",
-    "version": "1.0.0",
-    "description": "A bold, creative portfolio theme with asymmetric layouts, large typography, and stunning animations. Designed for creatives, developers, and designers.",
-    "author": "CMS Themes",
-    "supports": {
-        "theme_builder": true,
-        "menus": [
-            "header",
-            "footer"
-        ],
-        "custom_css": true,
-        "custom_js": true,
-        "seo": true,
-        "responsive": true
+  "name": "Starter Portfolio",
+  "slug": "starter-portfolio",
+  "version": "1.0.0",
+  "description": "A bold, creative portfolio theme with asymmetric layouts, large typography, and stunning animations. Designed for creatives, developers, and designers.",
+  "author": "CMS Themes",
+  "supports": {
+    "theme_builder": true,
+    "menus": [
+      "header",
+      "footer"
+    ],
+    "custom_css": true,
+    "custom_js": true,
+    "seo": true,
+    "responsive": true
+  },
+  "colors": {
+    "primary": "#10b981",
+    "accent": "#84cc16",
+    "background": "#0c0c0c",
+    "surface": "#141414",
+    "surface_hover": "#1a1a1a",
+    "text": "#f0f0f0",
+    "text_muted": "#888888",
+    "border": "#222222",
+    "secondary": "#065f46",
+    "success": "#10b981",
+    "warning": "#f59e0b",
+    "error": "#ef4444"
+  },
+  "typography": {
+    "fontFamily": "Inter",
+    "headingFont": "Space Grotesk",
+    "baseFontSize": "16",
+    "lineHeight": "1.6",
+    "h1Size": "3.5",
+    "h2Size": "2.5",
+    "h3Size": "1.75",
+    "fontWeight": "400",
+    "headingWeight": "700"
+  },
+  "options": {
+    "show_cursor_effect": true,
+    "show_scroll_animations": true,
+    "header_style": "minimal",
+    "footer_text": "All rights reserved.",
+    "social_github": "",
+    "social_twitter": "",
+    "social_linkedin": "",
+    "social_dribbble": "",
+    "social_email": ""
+  },
+  "homepage_sections": [
+    {
+      "id": "hero",
+      "label": "Hero",
+      "icon": "⭐",
+      "required": true
     },
-    "colors": {
-        "primary": "#10b981",
-        "accent": "#84cc16",
-        "background": "#0c0c0c",
-        "surface": "#141414",
-        "surface_hover": "#1a1a1a",
-        "text": "#f0f0f0",
-        "text_muted": "#888888",
-        "border": "#222222",
-        "secondary": "#065f46",
-        "success": "#10b981",
-        "warning": "#f59e0b",
-        "error": "#ef4444"
+    {
+      "id": "about",
+      "label": "About",
+      "icon": "👤"
     },
-    "typography": {
-        "fontFamily": "Inter",
-        "headingFont": "Space Grotesk",
-        "baseFontSize": "16",
-        "lineHeight": "1.6",
-        "h1Size": "3.5",
-        "h2Size": "2.5",
-        "h3Size": "1.75",
-        "fontWeight": "400",
-        "headingWeight": "700"
+    {
+      "id": "work",
+      "label": "Work",
+      "icon": "💼"
     },
-    "options": {
-        "show_cursor_effect": true,
-        "show_scroll_animations": true,
-        "header_style": "minimal",
-        "footer_text": "All rights reserved.",
-        "social_github": "",
-        "social_twitter": "",
-        "social_linkedin": "",
-        "social_dribbble": "",
-        "social_email": ""
+    {
+      "id": "skills",
+      "label": "Skills",
+      "icon": "🎯"
     },
-    "homepage_sections": [
-        {
-            "id": "hero",
-            "label": "Hero",
-            "icon": "⭐",
-            "required": true
-        },
-        {
-            "id": "about",
-            "label": "About",
-            "icon": "👤"
-        },
-        {
-            "id": "work",
-            "label": "Work",
-            "icon": "💼"
-        },
-        {
-            "id": "skills",
-            "label": "Skills",
-            "icon": "🎯"
-        },
-        {
-            "id": "testimonials",
-            "label": "Testimonials",
-            "icon": "💬"
-        },
-        {
-            "id": "cta",
-            "label": "Call to Action",
-            "icon": "📣"
-        }
-    ]
+    {
+      "id": "testimonials",
+      "label": "Testimonials",
+      "icon": "💬"
+    },
+    {
+      "id": "cta",
+      "label": "Call to Action",
+      "icon": "📣"
+    }
+  ],
+  "native_mode": "dark",
+  "colors_alt": {
+    "--color-background": "#ffffff",
+    "--color-surface": "#f8fafc",
+    "--color-surface-hover": "#f1f5f9",
+    "--color-text": "#1e293b",
+    "--color-text-muted": "#64748b",
+    "--color-border": "rgba(0,0,0,0.1)"
+  }
 }

@@ -1,93 +1,106 @@
 {
-    "name": "Starter SaaS",
-    "description": "Modern SaaS landing page theme with glassmorphism and gradient accents",
-    "version": "1.0.0",
-    "author": "Jessie CMS",
-    "supports": {
-        "theme-builder": true,
-        "custom-header": true,
-        "custom-footer": true,
-        "custom-colors": true
+  "name": "Starter SaaS",
+  "description": "Modern SaaS landing page theme with glassmorphism and gradient accents",
+  "version": "1.0.0",
+  "author": "Jessie CMS",
+  "supports": {
+    "theme-builder": true,
+    "custom-header": true,
+    "custom-footer": true,
+    "custom-colors": true
+  },
+  "options": {
+    "show_header": true,
+    "show_footer": true,
+    "preload_fonts": true,
+    "body_background": "#0a0a0f"
+  },
+  "colors": {
+    "primary": "#6366f1",
+    "secondary": "#818cf8",
+    "accent": "#06b6d4",
+    "background": "#0a0a0f",
+    "surface": "#131320",
+    "text": "#f1f5f9",
+    "text_muted": "#94a3b8",
+    "border": "#1e1e35",
+    "success": "#10b981",
+    "warning": "#f59e0b",
+    "error": "#ef4444"
+  },
+  "typography": {
+    "fontFamily": "Inter",
+    "headingFont": "Inter",
+    "baseFontSize": "16",
+    "lineHeight": "1.6",
+    "h1Size": "3.5",
+    "h2Size": "2.5",
+    "h3Size": "1.75",
+    "fontWeight": "400",
+    "headingWeight": "700"
+  },
+  "header": {
+    "background": "transparent",
+    "sticky": true,
+    "blur": true,
+    "height": "72"
+  },
+  "buttons": {
+    "borderRadius": "12",
+    "paddingX": "28",
+    "paddingY": "14",
+    "fontWeight": "600",
+    "shadow": true
+  },
+  "layout": {
+    "containerWidth": "1200",
+    "sectionSpacing": "100",
+    "borderRadius": "16"
+  },
+  "effects": {
+    "shadowStrength": "25",
+    "hoverScale": "1.03",
+    "transitionSpeed": "200"
+  },
+  "homepage_sections": [
+    {
+      "id": "hero",
+      "label": "Hero",
+      "icon": "⭐",
+      "required": true
     },
-    "options": {
-        "show_header": true,
-        "show_footer": true,
-        "preload_fonts": true,
-        "body_background": "#0a0a0f"
+    {
+      "id": "features",
+      "label": "Features",
+      "icon": "✨"
     },
-    "colors": {
-        "primary": "#6366f1",
-        "secondary": "#818cf8",
-        "accent": "#06b6d4",
-        "background": "#0a0a0f",
-        "surface": "#131320",
-        "text": "#f1f5f9",
-        "text_muted": "#94a3b8",
-        "border": "#1e1e35",
-        "success": "#10b981",
-        "warning": "#f59e0b",
-        "error": "#ef4444"
+    {
+      "id": "tools",
+      "label": "Tools",
+      "icon": "🔧"
     },
-    "typography": {
-        "fontFamily": "Inter",
-        "headingFont": "Inter",
-        "baseFontSize": "16",
-        "lineHeight": "1.6",
-        "h1Size": "3.5",
-        "h2Size": "2.5",
-        "h3Size": "1.75",
-        "fontWeight": "400",
-        "headingWeight": "700"
+    {
+      "id": "showcase",
+      "label": "Showcase",
+      "icon": "🖥️"
     },
-    "header": {
-        "background": "transparent",
-        "sticky": true,
-        "blur": true,
-        "height": "72"
-    },
-    "buttons": {
-        "borderRadius": "12",
-        "paddingX": "28",
-        "paddingY": "14",
-        "fontWeight": "600",
-        "shadow": true
-    },
-    "layout": {
-        "containerWidth": "1200",
-        "sectionSpacing": "100",
-        "borderRadius": "16"
-    },
-    "effects": {
-        "shadowStrength": "25",
-        "hoverScale": "1.03",
-        "transitionSpeed": "200"
-    },
-    "homepage_sections": [
-        {
-            "id": "hero",
-            "label": "Hero",
-            "icon": "⭐",
-            "required": true
-        },
-        {
-            "id": "features",
-            "label": "Features",
-            "icon": "✨"
-        },
-        {
-            "id": "tools",
-            "label": "Tools",
-            "icon": "🔧"
-        },
-        {
-            "id": "showcase",
-            "label": "Showcase",
-            "icon": "🖥️"
-        },
-        {
-            "id": "cta",
-            "label": "Call to Action",
-            "icon": "📣"
-        }
-    ]
+    {
+      "id": "cta",
+      "label": "Call to Action",
+      "icon": "📣"
+    }
+  ],
+  "native_mode": "dark",
+  "colors_alt": {
+    "--color-bg": "#ffffff",
+    "--color-bg-alt": "#f8fafc",
+    "--color-surface": "#f1f5f9",
+    "--color-surface-elevated": "#ffffff",
+    "--color-surface-hover": "#e2e8f0",
+    "--color-border": "rgba(0,0,0,0.08)",
+    "--color-border-hover": "rgba(0,0,0,0.15)",
+    "--color-text": "#1e293b",
+    "--color-text-muted": "#64748b",
+    "--color-text-heading": "#0f172a"
+  }
 }

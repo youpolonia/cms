@@ -1578,6 +1578,8 @@ const FONT_PAIRINGS = {
 const AI_ON      = <?= json_encode(!empty($aiAvailable)) ?>;
 const PEXELS_ON  = <?= json_encode(!empty($pexelsAvailable)) ?>;
 const THEME_SLUG = <?= json_encode($themeSlug ?? '') ?>;
+const NATIVE_MODE = <?= json_encode($nativeMode ?? 'light') ?>;
+const COLORS_ALT  = <?= json_encode($colorsAlt ?? new stdClass, JSON_HEX_TAG) ?>;
 
 let values    = <?= $valuesJson ?>;
 let history   = <?= $historyJson ?>;
@@ -4050,15 +4052,20 @@ function exitCompare() {
    DARK / LIGHT MODE TOGGLE
    ═══════════════════════════════════════════════════════════ */
 
-/* Dark/Light mode — pure CSS overlay, does NOT touch brand fields.
-   Detects whether the theme is natively dark or light, then the toggle
-   applies the OPPOSITE mode as an overlay. */
+/* Dark/Light mode — switches ALL CSS variables using theme.json colors_alt.
+   NATIVE_MODE tells us what the theme is by default.
+   COLORS_ALT has the complete alternate palette (CSS variable → value map).
+   Toggle: native mode button = default, opposite = apply colors_alt. */
 let colorMode = getVal('brand', 'color_mode') || 'default';
+const altMode = NATIVE_MODE === 'dark' ? 'light' : 'dark';
 
-/* Set initial active state: 'default' = no override, 'light' or 'dark' = override active */
 function updateModeButtons() {
   $$('#ts-mode-toggle .ts-mode-btn').forEach(btn => {
-    btn.classList.toggle('active', btn.dataset.mode === colorMode);
+    if (colorMode === 'default') {
+      btn.classList.toggle('active', btn.dataset.mode === NATIVE_MODE);
+    } else {
+      btn.classList.toggle('active', btn.dataset.mode === colorMode);
+    }
   });
 }
 updateModeButtons();
@@ -4066,23 +4073,28 @@ updateModeButtons();
 $$('#ts-mode-toggle .ts-mode-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     const mode = btn.dataset.mode;
-    if (mode === colorMode) {
-      /* Clicking active mode → reset to theme default (no override) */
+    const isAlt = (mode === altMode);
+
+    if (isAlt && colorMode !== altMode) {
+      /* Switch to alternate mode */
+      colorMode = altMode;
+    } else if (!isAlt && colorMode === altMode) {
+      /* Switch back to native/default */
       colorMode = 'default';
-      setVal('brand', 'color_mode', 'default');
-      updateModeButtons();
-      sendToPreview();
-      scheduleSave();
-      toast('🎨 Theme default colors restored', 'success');
-      return;
+    } else {
+      return; /* Already in this mode */
     }
 
-    colorMode = mode;
-    setVal('brand', 'color_mode', mode);
+    setVal('brand', 'color_mode', colorMode);
     updateModeButtons();
     sendToPreview();
     scheduleSave();
-    toast(mode === 'dark' ? '🌙 Dark mode overlay' : '☀️ Light mode overlay', 'success');
+
+    if (colorMode === 'default') {
+      toast('🎨 Theme default colors restored', 'success');
+    } else {
+      toast(colorMode === 'dark' ? '🌙 Dark mode' : '☀️ Light mode', 'success');
+    }
   });
 });
 

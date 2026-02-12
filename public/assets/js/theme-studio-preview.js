@@ -193,51 +193,23 @@
             } catch(e) { /* ignore parse errors */ }
         }
 
-        /* Color mode overlay — independent from brand fields */
-        var modeStyle = document.getElementById("ts-color-mode-css");
-        if (!modeStyle) {
-            modeStyle = document.createElement("style");
-            modeStyle.id = "ts-color-mode-css";
-            document.head.appendChild(modeStyle);
-        }
+        /* Color mode — uses theme-specific alternate palette from theme.json.
+           No !important, just sets CSS variables that the theme already uses. */
+        var nativeMode = window.__TS_NATIVE_MODE || "light";
+        var colorsAlt = window.__TS_COLORS_ALT || {};
         var cmode = (vals.brand && vals.brand.color_mode) ? vals.brand.color_mode : "default";
-        var primary = (vals.brand && vals.brand.primary_color) || "var(--primary, #6366f1)";
+        var altMode = (nativeMode === "dark") ? "light" : "dark";
 
-        if (cmode === "dark") {
-            modeStyle.textContent = [
-                "/* Theme Studio — Dark Mode Overlay */",
-                ":root { --background:#0f172a; --color-background:#0f172a; --color-bg:#0f172a; --blog-bg:#0f172a; --surface:#1e293b; --color-surface:#1e293b; --color-surface-elevated:#1e293b; --blog-surface:#1e293b; --text:#e2e8f0; --color-text:#e2e8f0; --color-text-heading:#f1f5f9; --color-text-muted:#94a3b8; --blog-text:#e2e8f0; --color-border:rgba(255,255,255,0.08); }",
-                "html, body { background-color:#0f172a !important; color:#e2e8f0 !important; }",
-                "section, .section { background-color:#0f172a !important; color:#e2e8f0 !important; }",
-                "h1,h2,h3,h4,h5,h6 { color:#f1f5f9 !important; }",
-                "p,span,li,label,blockquote,figcaption,small,em,strong,td,th,dt,dd,address { color:#e2e8f0 !important; }",
-                "a:not(.btn):not([class*='btn']) { color:" + primary + " !important; }",
-                ".card,[class*='card'],[class*='item'],[class*='box'],[class*='testimonial'],[class*='service'] { background-color:#1e293b !important; color:#e2e8f0 !important; border-color:rgba(255,255,255,0.08) !important; }",
-                "header,nav,.header,.navbar,[class*='header'],[class*='nav']:not(section) { background-color:#1e293b !important; color:#e2e8f0 !important; }",
-                "footer,.footer,[class*='footer'] { background-color:#1e293b !important; color:#cbd5e1 !important; }",
-                "input,textarea,select { background-color:#1e293b !important; color:#e2e8f0 !important; border-color:rgba(255,255,255,0.12) !important; }",
-                ".btn-outline,[class*='btn-outline'] { border-color:rgba(255,255,255,0.25) !important; color:#e2e8f0 !important; }",
-                "hr { border-color:rgba(255,255,255,0.08) !important; }",
-            ].join("\n");
-        } else if (cmode === "light") {
-            modeStyle.textContent = [
-                "/* Theme Studio — Light Mode Overlay */",
-                ":root { --background:#ffffff; --color-background:#ffffff; --color-bg:#ffffff; --blog-bg:#ffffff; --surface:#f8fafc; --color-surface:#f8fafc; --color-surface-elevated:#ffffff; --blog-surface:#f1f5f9; --text:#1e293b; --color-text:#1e293b; --color-text-heading:#0f172a; --color-text-muted:#64748b; --blog-text:#1e293b; --color-border:rgba(0,0,0,0.1); --color-bg-alt:#f8fafc; --color-surface-hover:#f1f5f9; --color-border-hover:rgba(0,0,0,0.15); }",
-                "html, body { background-color:#ffffff !important; color:#1e293b !important; }",
-                "section, .section { background-color:#ffffff !important; color:#1e293b !important; }",
-                "h1,h2,h3,h4,h5,h6 { color:#0f172a !important; }",
-                "p,span,li,label,blockquote,figcaption,small,em,strong,td,th,dt,dd,address { color:#1e293b !important; }",
-                "a:not(.btn):not([class*='btn']) { color:" + primary + " !important; }",
-                ".card,[class*='card'],[class*='item'],[class*='box'],[class*='testimonial'],[class*='service'] { background-color:#ffffff !important; color:#1e293b !important; border-color:rgba(0,0,0,0.1) !important; box-shadow:0 1px 3px rgba(0,0,0,0.08) !important; }",
-                "header,nav,.header,.navbar,[class*='header'],[class*='nav']:not(section) { background-color:#ffffff !important; color:#1e293b !important; border-bottom-color:rgba(0,0,0,0.1) !important; }",
-                "footer,.footer,[class*='footer'] { background-color:#f8fafc !important; color:#475569 !important; }",
-                "input,textarea,select { background-color:#ffffff !important; color:#1e293b !important; border-color:rgba(0,0,0,0.15) !important; }",
-                ".btn-outline,[class*='btn-outline'] { border-color:rgba(0,0,0,0.2) !important; color:#1e293b !important; }",
-                "hr { border-color:rgba(0,0,0,0.1) !important; }",
-            ].join("\n");
+        if (cmode === altMode && Object.keys(colorsAlt).length > 0) {
+            /* Apply alternate palette — set each CSS variable from theme.json colors_alt */
+            Object.keys(colorsAlt).forEach(function(varName) {
+                document.documentElement.style.setProperty(varName, colorsAlt[varName]);
+            });
         } else {
-            /* default = no overlay, theme's own colors */
-            modeStyle.textContent = "";
+            /* Default mode — remove any overrides we set, let theme CSS take over */
+            Object.keys(colorsAlt).forEach(function(varName) {
+                document.documentElement.style.removeProperty(varName);
+            });
         }
     }
 

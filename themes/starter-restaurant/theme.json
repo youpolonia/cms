@@ -1,95 +1,104 @@
 {
-    "name": "Starter Restaurant",
-    "description": "Elegant restaurant theme with warm gold tones, serif typography, and refined dining aesthetics",
-    "version": "1.0.0",
-    "author": "CMS Team",
-    "supports": {
-        "theme-builder": true,
-        "custom-header": true,
-        "custom-footer": true,
-        "custom-colors": true
+  "name": "Starter Restaurant",
+  "description": "Elegant restaurant theme with warm gold tones, serif typography, and refined dining aesthetics",
+  "version": "1.0.0",
+  "author": "CMS Team",
+  "supports": {
+    "theme-builder": true,
+    "custom-header": true,
+    "custom-footer": true,
+    "custom-colors": true
+  },
+  "options": {
+    "show_header": true,
+    "show_footer": true,
+    "body_background": "#1a1410",
+    "preload_fonts": true
+  },
+  "colors": {
+    "primary": "#d4a574",
+    "secondary": "#b8860b",
+    "accent": "#fef3c7",
+    "background": "#1a1410",
+    "surface": "#241c14",
+    "text": "#faf5ef",
+    "text_muted": "#c4a882",
+    "border": "#3d2e1e",
+    "success": "#6b8f71",
+    "warning": "#d4a574",
+    "error": "#c45e4c"
+  },
+  "typography": {
+    "fontFamily": "Inter",
+    "headingFont": "Playfair Display",
+    "baseFontSize": "16",
+    "lineHeight": "1.7",
+    "h1Size": "3.5",
+    "h2Size": "2.5",
+    "h3Size": "1.75",
+    "fontWeight": "400",
+    "headingWeight": "700"
+  },
+  "header": {
+    "background": "transparent",
+    "sticky": true,
+    "blur": true,
+    "height": "80",
+    "logoSize": "36"
+  },
+  "buttons": {
+    "borderRadius": "4",
+    "paddingX": "32",
+    "paddingY": "14",
+    "fontWeight": "600",
+    "uppercase": true,
+    "shadow": true
+  },
+  "layout": {
+    "containerWidth": "1200",
+    "sectionSpacing": "120",
+    "borderRadius": "8"
+  },
+  "effects": {
+    "shadowStrength": "15",
+    "hoverScale": "1.03",
+    "transitionSpeed": "300"
+  },
+  "homepage_sections": [
+    {
+      "id": "hero",
+      "label": "Hero",
+      "icon": "⭐",
+      "required": true
     },
-    "options": {
-        "show_header": true,
-        "show_footer": true,
-        "body_background": "#1a1410",
-        "preload_fonts": true
+    {
+      "id": "about",
+      "label": "About Us",
+      "icon": "👤"
     },
-    "colors": {
-        "primary": "#d4a574",
-        "secondary": "#b8860b",
-        "accent": "#fef3c7",
-        "background": "#1a1410",
-        "surface": "#241c14",
-        "text": "#faf5ef",
-        "text_muted": "#c4a882",
-        "border": "#3d2e1e",
-        "success": "#6b8f71",
-        "warning": "#d4a574",
-        "error": "#c45e4c"
+    {
+      "id": "pages",
+      "label": "Pages",
+      "icon": "📄"
     },
-    "typography": {
-        "fontFamily": "Inter",
-        "headingFont": "Playfair Display",
-        "baseFontSize": "16",
-        "lineHeight": "1.7",
-        "h1Size": "3.5",
-        "h2Size": "2.5",
-        "h3Size": "1.75",
-        "fontWeight": "400",
-        "headingWeight": "700"
+    {
+      "id": "articles",
+      "label": "Articles",
+      "icon": "📰"
     },
-    "header": {
-        "background": "transparent",
-        "sticky": true,
-        "blur": true,
-        "height": "80",
-        "logoSize": "36"
-    },
-    "buttons": {
-        "borderRadius": "4",
-        "paddingX": "32",
-        "paddingY": "14",
-        "fontWeight": "600",
-        "uppercase": true,
-        "shadow": true
-    },
-    "layout": {
-        "containerWidth": "1200",
-        "sectionSpacing": "120",
-        "borderRadius": "8"
-    },
-    "effects": {
-        "shadowStrength": "15",
-        "hoverScale": "1.03",
-        "transitionSpeed": "300"
-    },
-    "homepage_sections": [
-        {
-            "id": "hero",
-            "label": "Hero",
-            "icon": "⭐",
-            "required": true
-        },
-        {
-            "id": "about",
-            "label": "About Us",
-            "icon": "👤"
-        },
-        {
-            "id": "pages",
-            "label": "Pages",
-            "icon": "📄"
-        },
-        {
-            "id": "articles",
-            "label": "Articles",
-            "icon": "📰"
-        },
-        {
-            "id": "parallax",
-            "label": "Parallax Divider",
-            "icon": "🖼️"
-        }
-    ]
+    {
+      "id": "parallax",
+      "label": "Parallax Divider",
+      "icon": "🖼️"
+    }
+  ],
+  "native_mode": "dark",
+  "colors_alt": {
+    "--background": "#faf5ef",
+    "--surface": "#ffffff",
+    "--color-surface": "#ffffff",
+    "--text": "#2d1f12",
+    "--text-muted": "#6b5a4a",
+    "--color-border": "rgba(0,0,0,0.1)"
+  }
 }

@@ -1,98 +1,113 @@
 {
-    "name": "Starter Blog",
-    "description": "Modern blog and magazine theme with beautiful reading experience",
-    "version": "1.0.0",
-    "author": "Jessie CMS",
-    "supports": {
-        "theme-builder": true,
-        "custom-header": true,
-        "custom-footer": true,
-        "custom-colors": true
+  "name": "Starter Blog",
+  "description": "Modern blog and magazine theme with beautiful reading experience",
+  "version": "1.0.0",
+  "author": "Jessie CMS",
+  "supports": {
+    "theme-builder": true,
+    "custom-header": true,
+    "custom-footer": true,
+    "custom-colors": true
+  },
+  "options": {
+    "show_header": true,
+    "show_footer": true,
+    "preload_fonts": true,
+    "body_background": "#0c0a09"
+  },
+  "colors": {
+    "primary": "#f43f5e",
+    "secondary": "#e11d48",
+    "accent": "#f97316",
+    "background": "#0c0a09",
+    "surface": "#1c1917",
+    "text": "#fafaf9",
+    "text_muted": "#a8a29e",
+    "border": "#292524",
+    "success": "#10b981",
+    "warning": "#f59e0b",
+    "error": "#ef4444"
+  },
+  "typography": {
+    "fontFamily": "Inter",
+    "headingFont": "Merriweather",
+    "baseFontSize": "17",
+    "lineHeight": "1.8",
+    "h1Size": "2.75",
+    "h2Size": "2",
+    "h3Size": "1.5",
+    "fontWeight": "400",
+    "headingWeight": "700"
+  },
+  "header": {
+    "background": "transparent",
+    "sticky": true,
+    "blur": true,
+    "height": "64"
+  },
+  "buttons": {
+    "borderRadius": "8",
+    "paddingX": "24",
+    "paddingY": "12",
+    "fontWeight": "600",
+    "shadow": false
+  },
+  "layout": {
+    "containerWidth": "1100",
+    "sectionSpacing": "80",
+    "borderRadius": "12"
+  },
+  "effects": {
+    "shadowStrength": "15",
+    "hoverScale": "1.02",
+    "transitionSpeed": "200"
+  },
+  "homepage_sections": [
+    {
+      "id": "hero",
+      "label": "Hero",
+      "icon": "⭐",
+      "required": true
     },
-    "options": {
-        "show_header": true,
-        "show_footer": true,
-        "preload_fonts": true,
-        "body_background": "#0c0a09"
+    {
+      "id": "featured",
+      "label": "Featured Post",
+      "icon": "📌"
     },
-    "colors": {
-        "primary": "#f43f5e",
-        "secondary": "#e11d48",
-        "accent": "#f97316",
-        "background": "#0c0a09",
-        "surface": "#1c1917",
-        "text": "#fafaf9",
-        "text_muted": "#a8a29e",
-        "border": "#292524",
-        "success": "#10b981",
-        "warning": "#f59e0b",
-        "error": "#ef4444"
+    {
+      "id": "recent",
+      "label": "Recent Posts",
+      "icon": "📰"
     },
-    "typography": {
-        "fontFamily": "Inter",
-        "headingFont": "Merriweather",
-        "baseFontSize": "17",
-        "lineHeight": "1.8",
-        "h1Size": "2.75",
-        "h2Size": "2",
-        "h3Size": "1.5",
-        "fontWeight": "400",
-        "headingWeight": "700"
+    {
+      "id": "popular",
+      "label": "Popular",
+      "icon": "🔥"
     },
-    "header": {
-        "background": "transparent",
-        "sticky": true,
-        "blur": true,
-        "height": "64"
+    {
+      "id": "categories",
+      "label": "Categories",
+      "icon": "📂"
     },
-    "buttons": {
-        "borderRadius": "8",
-        "paddingX": "24",
-        "paddingY": "12",
-        "fontWeight": "600",
-        "shadow": false
-    },
-    "layout": {
-        "containerWidth": "1100",
-        "sectionSpacing": "80",
-        "borderRadius": "12"
-    },
-    "effects": {
-        "shadowStrength": "15",
-        "hoverScale": "1.02",
-        "transitionSpeed": "200"
-    },
-    "homepage_sections": [
-        {
-            "id": "hero",
-            "label": "Hero",
-            "icon": "⭐",
-            "required": true
-        },
-        {
-            "id": "featured",
-            "label": "Featured Post",
-            "icon": "📌"
-        },
-        {
-            "id": "recent",
-            "label": "Recent Posts",
-            "icon": "📰"
-        },
-        {
-            "id": "popular",
-            "label": "Popular",
-            "icon": "🔥"
-        },
-        {
-            "id": "categories",
-            "label": "Categories",
-            "icon": "📂"
-        },
-        {
-            "id": "newsletter",
-            "label": "Newsletter",
-            "icon": "✉️"
-        }
-    ]
+    {
+      "id": "newsletter",
+      "label": "Newsletter",
+      "icon": "✉️"
+    }
+  ],
+  "native_mode": "dark",
+  "colors_alt": {
+    "--blog-bg": "#fafaf9",
+    "--blog-surface": "#ffffff",
+    "--blog-surface-light": "#f5f5f4",
+    "--blog-text": "#1c1917",
+    "--blog-text-secondary": "#44403c",
+    "--blog-text-muted": "#78716c",
+    "--blog-border": "#e7e5e4",
+    "--blog-border-light": "#d6d3d1",
+    "--shadow-sm": "0 2px 8px rgba(0,0,0,0.06)",
+    "--shadow-md": "0 4px 16px rgba(0,0,0,0.08)",
+    "--shadow-lg": "0 8px 32px rgba(0,0,0,0.1)",
+    "--gradient-dark": "linear-gradient(180deg, #fafaf9 0%, #f5f5f4 100%)"
+  }
 }
