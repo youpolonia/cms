@@ -4050,27 +4050,39 @@ function exitCompare() {
    DARK / LIGHT MODE TOGGLE
    ═══════════════════════════════════════════════════════════ */
 
-/* Dark/Light mode — pure overlay, does NOT touch brand fields */
-let colorMode = getVal('brand', 'color_mode') || 'light';
+/* Dark/Light mode — pure CSS overlay, does NOT touch brand fields.
+   Detects whether the theme is natively dark or light, then the toggle
+   applies the OPPOSITE mode as an overlay. */
+let colorMode = getVal('brand', 'color_mode') || 'default';
 
-/* Set initial active state */
-$$('#ts-mode-toggle .ts-mode-btn').forEach(btn => {
-  btn.classList.toggle('active', btn.dataset.mode === colorMode);
-});
+/* Set initial active state: 'default' = no override, 'light' or 'dark' = override active */
+function updateModeButtons() {
+  $$('#ts-mode-toggle .ts-mode-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.mode === colorMode);
+  });
+}
+updateModeButtons();
 
 $$('#ts-mode-toggle .ts-mode-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     const mode = btn.dataset.mode;
-    if (mode === colorMode) return;
-
-    $$('#ts-mode-toggle .ts-mode-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
+    if (mode === colorMode) {
+      /* Clicking active mode → reset to theme default (no override) */
+      colorMode = 'default';
+      setVal('brand', 'color_mode', 'default');
+      updateModeButtons();
+      sendToPreview();
+      scheduleSave();
+      toast('🎨 Theme default colors restored', 'success');
+      return;
+    }
 
     colorMode = mode;
     setVal('brand', 'color_mode', mode);
+    updateModeButtons();
     sendToPreview();
     scheduleSave();
-    toast(mode === 'dark' ? '🌙 Dark mode applied' : '☀️ Light mode restored', 'success');
+    toast(mode === 'dark' ? '🌙 Dark mode overlay' : '☀️ Light mode overlay', 'success');
   });
 });
 
