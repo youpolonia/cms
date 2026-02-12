@@ -239,6 +239,82 @@ if (!function_exists('esc')) {
         border-color: var(--accent);
         box-shadow: 0 0 0 3px var(--accent-muted);
     }
+
+    /* Inline Help Tooltips */
+    .tip {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 16px;
+        height: 16px;
+        font-size: 10px;
+        font-weight: 700;
+        line-height: 1;
+        color: var(--text-muted, #94a3b8);
+        background: var(--bg-tertiary, #313244);
+        border: 1px solid var(--border, #45475a);
+        border-radius: 50%;
+        cursor: help;
+        position: relative;
+        vertical-align: middle;
+        margin-left: 4px;
+        transition: color .15s, border-color .15s, background .15s;
+        user-select: none;
+        flex-shrink: 0;
+    }
+    .tip:hover {
+        color: var(--accent, #6366f1);
+        border-color: var(--accent, #6366f1);
+        background: var(--accent-muted, rgba(99,102,241,.1));
+    }
+    .tip::before { content: "?"; }
+    .tip-text {
+        visibility: hidden;
+        opacity: 0;
+        position: absolute;
+        z-index: 9999;
+        bottom: calc(100% + 8px);
+        left: 50%;
+        transform: translateX(-50%);
+        width: max-content;
+        max-width: 280px;
+        padding: 8px 12px;
+        font-size: 12px;
+        font-weight: 400;
+        line-height: 1.5;
+        color: #e2e8f0;
+        background: #1e293b;
+        border: 1px solid #334155;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,.3);
+        pointer-events: none;
+        transition: opacity .15s, visibility .15s;
+        white-space: normal;
+        text-align: left;
+    }
+    .tip-text::after {
+        content: "";
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        border: 5px solid transparent;
+        border-top-color: #334155;
+    }
+    .tip:hover .tip-text {
+        visibility: visible;
+        opacity: 1;
+    }
+    .tip.tip-down .tip-text {
+        bottom: auto;
+        top: calc(100% + 8px);
+    }
+    .tip.tip-down .tip-text::after {
+        top: auto;
+        bottom: 100%;
+        border-top-color: transparent;
+        border-bottom-color: #334155;
+    }
     </style>
     <?php if (file_exists(CMS_ROOT . '/assets/css/theme-custom.css')): ?>
     <link rel="stylesheet" href="/assets/css/theme-custom.css?v=<?= filemtime(CMS_ROOT . '/assets/css/theme-custom.css') ?>">
