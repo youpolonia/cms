@@ -2487,8 +2487,8 @@ async function loadSections() {
   }
 }
 
-/* ── Build Field HTML ────────────────────────────────────── */
-function buildField(sid, key, def, val) {
+/* ── Build Field HTML (Section Manager) ──────────────────── */
+function secBuildField(sid, key, def, val) {
   const fid = 'sf-' + sid + '-' + key;
   const v = val !== undefined && val !== null && val !== '' ? val : (def.default || '');
   let h = '<div class="ts-sf"><div class="ts-sf-label"><span>' + esc(def.label || key) + '</span><span class="ts-sf-type">' + def.type + '</span></div>';
@@ -2595,7 +2595,7 @@ function renderSec() {
       let fieldsHtml = '<div class="ts-sec-fields">';
       for (const [key, def] of Object.entries(fields)) {
         const curVal = schId && values[schId] ? values[schId][key] : undefined;
-        fieldsHtml += buildField(sid, key, def, curVal);
+        fieldsHtml += secBuildField(sid, key, def, curVal);
       }
       fieldsHtml += '<div class="ts-sec-save-bar">';
       fieldsHtml += '<button type="button" class="ts-sec-save-btn" data-sid="' + sid + '">💾 Save Changes</button>';
