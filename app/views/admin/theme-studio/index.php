@@ -4074,15 +4074,20 @@ $$('#ts-mode-toggle .ts-mode-btn').forEach(btn => {
     pushUndo();
 
     if (mode === 'dark') {
-      /* Save light values before switching */
+      /* Save current (light) values before switching */
       lightSnapshot = {};
-      DARK_FIELDS.forEach(f => { lightSnapshot[f] = getVal('brand', f); });
+      DARK_FIELDS.forEach(f => {
+        const cur = getVal('brand', f);
+        /* Save actual value or the light default — never empty */
+        lightSnapshot[f] = (cur && cur !== '') ? cur : LIGHT_DEFAULTS[f];
+      });
       /* Apply dark overrides */
       DARK_FIELDS.forEach(f => { setVal('brand', f, DARK_DEFAULTS[f]); });
     } else {
-      /* Restore light values */
+      /* Restore light values — always use LIGHT_DEFAULTS as safety net */
       DARK_FIELDS.forEach(f => {
-        setVal('brand', f, (lightSnapshot && lightSnapshot[f]) ? lightSnapshot[f] : LIGHT_DEFAULTS[f]);
+        const restored = (lightSnapshot && lightSnapshot[f]) ? lightSnapshot[f] : LIGHT_DEFAULTS[f];
+        setVal('brand', f, restored);
       });
     }
 
