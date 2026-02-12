@@ -136,6 +136,7 @@ return [
         'items' => [
             ['label' => '👤 Profile', 'url' => '/admin/profile'],
             ['label' => '☙️ Settings', 'url' => '/admin/settings'],
+            ['label' => '📖 Documentation', 'url' => '/admin/docs'],
             ['label' => '🚪 Logout', 'url' => '/admin/logout'],
         ]
     ],
