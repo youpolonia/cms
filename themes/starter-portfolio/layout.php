@@ -62,8 +62,11 @@ $googleFontsUrl = "https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@3
         require_once $jtbBootPath;
     }
     ?>
+<?= function_exists("theme_render_favicon") ? theme_render_favicon() : "" ?>
+<?= function_exists("theme_render_og_image") ? theme_render_og_image() : "" ?>
 </head>
 <body class="<?= esc($bodyClass) ?> header-<?= esc($headerStyle) ?><?= $showCursor ? ' custom-cursor' : '' ?><?= $showAnimations ? ' has-animations' : '' ?>">
+<?= function_exists("theme_render_announcement_bar") ? theme_render_announcement_bar() : "" ?>
 
     <!-- Custom Cursor -->
     <?php if ($showCursor): ?>

@@ -170,6 +170,35 @@
                 el.style.display = show ? "" : "none";
             });
         }
+
+        /* Announcement bar */
+        if (vals.announcement) {
+            var bar = document.querySelector('.ts-announcement-bar');
+            var enabled = vals.announcement.enabled === true || vals.announcement.enabled === "1" || vals.announcement.enabled === 1;
+            var text = vals.announcement.text || '';
+            if (enabled && text) {
+                if (!bar) {
+                    bar = document.createElement('div');
+                    bar.className = 'ts-announcement-bar';
+                    bar.style.cssText = 'text-align:center;padding:10px 20px;font-size:14px;font-weight:500;position:relative;z-index:9998';
+                    document.body.insertBefore(bar, document.body.firstChild);
+                }
+                bar.style.background = vals.announcement.bg_color || '#6366f1';
+                bar.style.color = vals.announcement.text_color || '#ffffff';
+                var link = vals.announcement.link;
+                bar.innerHTML = link ? '<a href="' + link + '" style="color:inherit;text-decoration:underline">' + text + '</a>' : text;
+                bar.style.display = '';
+            } else if (bar) {
+                bar.style.display = 'none';
+            }
+        }
+
+        /* Favicon live update */
+        if (vals.brand && vals.brand.favicon) {
+            var link = document.querySelector('link[rel="icon"]');
+            if (!link) { link = document.createElement('link'); link.rel = 'icon'; document.head.appendChild(link); }
+            link.href = vals.brand.favicon;
+        }
     }
 
     /* ── Main: Apply All Values ───────────────────────────── */

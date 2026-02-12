@@ -946,6 +946,57 @@ if (!function_exists('theme_studio_preview_script')) {
     }
 }
 
+if (!function_exists('theme_render_favicon')) {
+    /**
+     * Render favicon link tag if set in Theme Studio.
+     */
+    function theme_render_favicon(): string
+    {
+        $favicon = theme_get('brand.favicon');
+        if (!$favicon) return '';
+        $type = 'image/x-icon';
+        if (str_ends_with($favicon, '.png')) $type = 'image/png';
+        elseif (str_ends_with($favicon, '.svg')) $type = 'image/svg+xml';
+        return '<link rel="icon" type="' . $type . '" href="' . htmlspecialchars($favicon) . '">' . "\n";
+    }
+}
+
+if (!function_exists('theme_render_announcement_bar')) {
+    /**
+     * Render announcement bar HTML if enabled in Theme Studio.
+     */
+    function theme_render_announcement_bar(): string
+    {
+        $enabled = theme_get('announcement.enabled');
+        if (!$enabled || $enabled === '0' || $enabled === 'false') return '';
+        $text = theme_get('announcement.text');
+        if (empty($text)) return '';
+        $link = theme_get('announcement.link');
+        $bg = theme_get('announcement.bg_color') ?: '#6366f1';
+        $color = theme_get('announcement.text_color') ?: '#ffffff';
+        $html = '<div class="ts-announcement-bar" style="background:' . htmlspecialchars($bg) . ';color:' . htmlspecialchars($color) . ';text-align:center;padding:10px 20px;font-size:14px;font-weight:500;position:relative;z-index:9998">';
+        if ($link) {
+            $html .= '<a href="' . htmlspecialchars($link) . '" style="color:inherit;text-decoration:underline">';
+        }
+        $html .= htmlspecialchars($text);
+        if ($link) $html .= '</a>';
+        $html .= '</div>';
+        return $html;
+    }
+}
+
+if (!function_exists('theme_render_og_image')) {
+    /**
+     * Render OG image meta tag if set in Theme Studio.
+     */
+    function theme_render_og_image(): string
+    {
+        $ogImage = theme_get('brand.og_image');
+        if (!$ogImage) return '';
+        return '<meta property="og:image" content="' . htmlspecialchars($ogImage) . '">' . "\n";
+    }
+}
+
 if (!function_exists('theme_get_section_order')) {
     /**
      * Returns ordered section IDs for the active theme homepage.

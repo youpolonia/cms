@@ -65,8 +65,11 @@ $isTbPage = !empty($page['is_tb_page']);
         require_once $jtbBoot;
     }
     ?>
+<?= function_exists("theme_render_favicon") ? theme_render_favicon() : "" ?>
+<?= function_exists("theme_render_og_image") ? theme_render_og_image() : "" ?>
 </head>
 <body class="starter-business <?php echo esc($bodyClass); ?>">
+<?= function_exists("theme_render_announcement_bar") ? theme_render_announcement_bar() : "" ?>
 
     <!-- ====== HEADER ====== -->
     <header class="site-header" id="site-header">

@@ -168,6 +168,13 @@ html,body{
   width:18px;height:18px;color:var(--ts-subtext);
   transition:transform 0.25s cubic-bezier(0.4,0,0.2,1);flex-shrink:0;
 }
+.ts-section-reset{
+  background:none;border:none;color:var(--ts-subtext);cursor:pointer;
+  font-size:14px;padding:2px 6px;border-radius:4px;opacity:0;
+  transition:opacity .15s,color .15s,background .15s;margin-left:auto;margin-right:4px;
+}
+.ts-section-header:hover .ts-section-reset{opacity:1}
+.ts-section-reset:hover{color:var(--ts-red);background:rgba(243,139,168,.1)}
 .ts-section.open .ts-section-header .ts-section-chevron{transform:rotate(90deg)}
 .ts-section.open .ts-section-header{background:rgba(69,71,90,.3)}
 
@@ -909,6 +916,62 @@ html,body{
 @media(max-width:900px){
   :root{--ts-panel-w:280px}
 }
+
+/* ── Font Picker ──────────────────────────────────────── */
+.ts-font-picker{position:relative;width:100%}
+.ts-font-picker-selected{
+  display:flex;align-items:center;justify-content:space-between;
+  width:100%;padding:9px 32px 9px 12px;
+  background:var(--ts-bg);border:1px solid var(--ts-border);
+  border-radius:var(--ts-radius-sm);color:var(--ts-text);
+  font-size:13px;cursor:pointer;
+  transition:border-color var(--ts-transition);
+  user-select:none;position:relative;
+}
+.ts-font-picker-selected:hover{border-color:var(--ts-blue)}
+.ts-font-picker-selected::after{
+  content:'';position:absolute;right:12px;top:50%;
+  transform:translateY(-50%);
+  border:5px solid transparent;border-top-color:var(--ts-subtext);
+  pointer-events:none;
+}
+.ts-font-picker.open .ts-font-picker-selected{
+  border-color:var(--ts-blue);
+  border-radius:var(--ts-radius-sm) var(--ts-radius-sm) 0 0;
+}
+.ts-font-picker.open .ts-font-picker-selected::after{
+  border-top-color:transparent;border-bottom-color:var(--ts-subtext);
+  transform:translateY(-75%);
+}
+.ts-font-picker-dropdown{
+  display:none;position:absolute;top:100%;left:0;right:0;
+  background:var(--ts-surface);border:1px solid var(--ts-blue);
+  border-top:none;border-radius:0 0 var(--ts-radius-sm) var(--ts-radius-sm);
+  z-index:200;max-height:280px;
+  box-shadow:0 8px 24px rgba(0,0,0,.35);
+  overflow:hidden;
+  display:flex;flex-direction:column;
+}
+.ts-font-picker:not(.open) .ts-font-picker-dropdown{display:none}
+.ts-font-picker.open .ts-font-picker-dropdown{display:flex}
+.ts-font-search{
+  width:100%;padding:8px 12px;
+  background:var(--ts-bg);border:none;border-bottom:1px solid var(--ts-border);
+  color:var(--ts-text);font-size:12px;outline:none;
+  font-family:inherit;flex-shrink:0;
+}
+.ts-font-search::placeholder{color:var(--ts-subtext)}
+.ts-font-options{
+  overflow-y:auto;flex:1;overscroll-behavior:contain;
+  scrollbar-width:thin;scrollbar-color:var(--ts-overlay) transparent;
+}
+.ts-font-option{
+  padding:8px 12px;cursor:pointer;font-size:14px;
+  color:var(--ts-text);transition:background 0.15s;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.ts-font-option:hover{background:var(--ts-overlay)}
+.ts-font-option.active{background:rgba(59,130,246,.15);color:var(--ts-blue)}
 </style>
 <link rel="stylesheet" href="/plugins/jessie-theme-builder/assets/css/media-gallery.css">
 </head>
@@ -970,6 +1033,9 @@ html,body{
 
     <div class="ts-topbar-sep"></div>
 
+    <button class="ts-btn ts-btn-ghost" id="ts-export-btn" title="Export theme settings">⬇ Export</button>
+    <button class="ts-btn ts-btn-ghost" id="ts-import-btn" title="Import theme settings">⬆ Import</button>
+    <input type="file" id="ts-import-file" accept=".json" style="display:none">
     <button class="ts-btn ts-btn-ghost" id="ts-reset-btn">Reset</button>
     <button class="ts-btn ts-btn-primary" id="ts-publish-btn">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
@@ -1138,11 +1204,72 @@ const RANGE_OVERRIDES = {
   'layout.container_width':    { type:'range', min:800, max:1600, step:20,  unit:'px', label:'Container Width' },
   'layout.section_spacing':    { type:'range', min:20,  max:200,  step:5,   unit:'px', label:'Section Spacing' },
   'layout.border_radius':      { type:'range', min:0,   max:40,   step:1,   unit:'px', label:'Border Radius' },
+  'typography.base_font_size': { type:'range', min:12,  max:24,   step:1,   unit:'px', label:'Base Font Size' },
+  'typography.line_height':    { type:'range', min:1.0, max:2.5,  step:0.05,unit:'',   label:'Line Height' },
 };
 Object.entries(RANGE_OVERRIDES).forEach(([path, cfg]) => {
   const [sec, key] = path.split('.');
   if (SCHEMA[sec]?.fields?.[key]) Object.assign(SCHEMA[sec].fields[key], cfg);
 });
+
+/* ── Google Fonts – top 60 popular fonts (hardcoded, no API call) ── */
+const GOOGLE_FONTS = [
+  'Inter','Roboto','Open Sans','Lato','Montserrat','Poppins','Raleway',
+  'Playfair Display','Merriweather','Source Sans Pro','Nunito','Work Sans',
+  'DM Sans','Space Grotesk','Outfit','Plus Jakarta Sans','Sora','Manrope',
+  'Unbounded','Clash Display','IBM Plex Sans','Noto Sans','Mulish','Quicksand',
+  'Karla','Oswald','Roboto Condensed','Roboto Slab','PT Sans','Ubuntu',
+  'Fira Sans','Rubik','Barlow','Josefin Sans','Cabin','Libre Baskerville',
+  'Bitter','EB Garamond','Crimson Text','Lora','Cormorant Garamond',
+  'DM Serif Display','Arvo','Vollkorn','Spectral','Alegreya',
+  'Archivo','Red Hat Display','Lexend','Jost','Albert Sans','Figtree',
+  'Geist','Satoshi','General Sans','Bricolage Grotesque','Instrument Sans',
+  'Onest','Schibsted Grotesk','Wix Madefor Display'
+];
+
+const _loadedGoogleFonts = new Set();
+function loadGoogleFont(fontName) {
+  if (!fontName || _loadedGoogleFonts.has(fontName)) return;
+  _loadedGoogleFonts.add(fontName);
+  const family = fontName.replace(/ /g, '+');
+  const url = `https://fonts.googleapis.com/css2?family=${family}:wght@400;500;600;700;800&display=swap`;
+  // Load in parent document
+  const link = document.createElement('link');
+  link.rel = 'stylesheet'; link.href = url;
+  document.head.appendChild(link);
+  // Load in iframe too
+  try {
+    const iframeDoc = dom.iframe?.contentDocument || dom.iframe?.contentWindow?.document;
+    if (iframeDoc) {
+      const iLink = iframeDoc.createElement('link');
+      iLink.rel = 'stylesheet'; iLink.href = url;
+      iframeDoc.head.appendChild(iLink);
+    }
+  } catch(e) { /* cross-origin silenced */ }
+}
+
+/* Override heading_font and body_font to use fontpicker */
+if (SCHEMA.typography?.fields?.heading_font) {
+  SCHEMA.typography.fields.heading_font.type = 'fontpicker';
+}
+if (SCHEMA.typography?.fields?.body_font) {
+  SCHEMA.typography.fields.body_font.type = 'fontpicker';
+}
+
+/* ── Add missing schema fields (favicon, OG image, announcement bar) ── */
+if (SCHEMA.brand) {
+  if (!SCHEMA.brand.fields.favicon) SCHEMA.brand.fields.favicon = { type:'image', label:'Favicon', default:null };
+  if (!SCHEMA.brand.fields.og_image) SCHEMA.brand.fields.og_image = { type:'image', label:'Social Share Image (OG)', default:null };
+}
+if (!SCHEMA.announcement) {
+  SCHEMA.announcement = { label:'Announcement Bar', fields:{
+    enabled:  { type:'toggle',   label:'Show Announcement Bar', default:false },
+    text:     { type:'text',     label:'Announcement Text', default:'' },
+    link:     { type:'text',     label:'Link URL', default:'' },
+    bg_color: { type:'color',    label:'Background Color', default:'#6366f1' },
+    text_color:{ type:'color',   label:'Text Color', default:'#ffffff' },
+  }};
+}
 
 const AI_ON      = <?= json_encode(!empty($aiAvailable)) ?>;
 const PEXELS_ON  = <?= json_encode(!empty($pexelsAvailable)) ?>;
@@ -1188,6 +1315,9 @@ const dom = {
   historyClose    : $('#ts-history-close'),
   publishBtn      : $('#ts-publish-btn'),
   resetBtn        : $('#ts-reset-btn'),
+  exportBtn       : $('#ts-export-btn'),
+  importBtn       : $('#ts-import-btn'),
+  importFile      : $('#ts-import-file'),
   saveStatus      : $('#ts-save-status'),
   saveText        : $('.ts-save-text', $('#ts-save-status')),
   saveDot         : $('.ts-dot', $('#ts-save-status')),
@@ -1527,12 +1657,41 @@ initSwatches();
    ═══════════════════════════════════════════════════════════ */
 
 const COLOR_PRESETS = [
+  /* ── Popular ───────────────────── */
   { name: 'Purple Dream', primary: '#7c3aed', secondary: '#a78bfa', accent: '#f59e0b' },
   { name: 'Ocean Blue',   primary: '#0ea5e9', secondary: '#06b6d4', accent: '#14b8a6' },
   { name: 'Forest Green', primary: '#16a34a', secondary: '#22c55e', accent: '#eab308' },
   { name: 'Sunset',       primary: '#f97316', secondary: '#ef4444', accent: '#fbbf24' },
   { name: 'Corporate',    primary: '#1e40af', secondary: '#3b82f6', accent: '#6366f1' },
   { name: 'Rose',         primary: '#e11d48', secondary: '#f43f5e', accent: '#ec4899' },
+  /* ── Restaurant / Food ─────────── */
+  { name: 'Warm Gold',    primary: '#d4a574', secondary: '#c49464', accent: '#fef3c7' },
+  { name: 'Olive Garden', primary: '#65a30d', secondary: '#84cc16', accent: '#d4a574' },
+  { name: 'Wine & Dine',  primary: '#9f1239', secondary: '#be123c', accent: '#fbbf24' },
+  /* ── Tech / SaaS ───────────────── */
+  { name: 'Indigo SaaS',  primary: '#6366f1', secondary: '#818cf8', accent: '#06b6d4' },
+  { name: 'Neon Cyber',   primary: '#8b5cf6', secondary: '#a78bfa', accent: '#22d3ee' },
+  { name: 'Mint Tech',    primary: '#059669', secondary: '#34d399', accent: '#3b82f6' },
+  /* ── Medical / Health ──────────── */
+  { name: 'Clean Medical', primary: '#0284c7', secondary: '#38bdf8', accent: '#10b981' },
+  { name: 'Wellness',     primary: '#14b8a6', secondary: '#5eead4', accent: '#f0abfc' },
+  /* ── Photography / Creative ────── */
+  { name: 'Monochrome',   primary: '#a3a3a3', secondary: '#737373', accent: '#fbbf24' },
+  { name: 'Dark Studio',  primary: '#f5f5f5', secondary: '#d4d4d4', accent: '#ef4444' },
+  { name: 'Pastel Dream', primary: '#c084fc', secondary: '#f9a8d4', accent: '#67e8f9' },
+  /* ── Real Estate / Business ────── */
+  { name: 'Navy Trust',   primary: '#1e3a5f', secondary: '#2563eb', accent: '#f59e0b' },
+  { name: 'Emerald Pro',  primary: '#047857', secondary: '#10b981', accent: '#fbbf24' },
+  /* ── E-commerce ────────────────── */
+  { name: 'Luxury Black',  primary: '#1c1917', secondary: '#44403c', accent: '#d4a574' },
+  { name: 'Shopify Green', primary: '#008060', secondary: '#5cbf7c', accent: '#f97316' },
+  /* ── Education / Non-profit ────── */
+  { name: 'Campus Blue',  primary: '#1d4ed8', secondary: '#60a5fa', accent: '#f59e0b' },
+  { name: 'Charity Warm', primary: '#dc2626', secondary: '#f87171', accent: '#fbbf24' },
+  /* ── Dark Themes ───────────────── */
+  { name: 'Midnight',     primary: '#818cf8', secondary: '#6366f1', accent: '#f472b6' },
+  { name: 'Dracula',      primary: '#bd93f9', secondary: '#ff79c6', accent: '#50fa7b' },
+  { name: 'Nord',         primary: '#88c0d0', secondary: '#81a1c1', accent: '#a3be8c' },
 ];
 
 function renderPanel() {
@@ -1575,7 +1734,7 @@ function renderPanel() {
   const entries = Object.entries(SCHEMA);
   /* Content-only sections go in Section Manager, not Design tab.
      hero is a homepage section — editable via Sections tab only. */
-  const DESIGN_SECTIONS = new Set(['brand','header','footer','typography','buttons','layout','effects','custom_css','theme_info']);
+  const DESIGN_SECTIONS = new Set(['brand','announcement','header','footer','typography','buttons','layout','effects','custom_css','theme_info']);
 
   entries.filter(([k]) => DESIGN_SECTIONS.has(k)).forEach(([sectionKey, section], idx) => {
     const sEl = document.createElement('div');
@@ -1588,11 +1747,30 @@ function renderPanel() {
     header.innerHTML =
       '<span class="ts-section-icon">' + (section.icon || '⚙️') + '</span>' +
       '<span class="ts-section-label">' + esc(section.label || sectionKey) + '</span>' +
+      '<button class="ts-section-reset" title="Reset this section to defaults">↩</button>' +
       '<svg class="ts-section-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" ' +
       'stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>';
 
-    header.addEventListener('click', () => {
+    header.addEventListener('click', e => {
+      if (e.target.closest('.ts-section-reset')) return;
       sEl.classList.toggle('open');
+    });
+
+    /* Reset section */
+    const resetBtn = header.querySelector('.ts-section-reset');
+    if (resetBtn) resetBtn.addEventListener('click', async e => {
+      e.stopPropagation();
+      if (!confirm('Reset "' + (section.label || sectionKey) + '" to defaults?')) return;
+      pushUndo();
+      try {
+        const res = await api('POST', 'reset', { section: sectionKey });
+        if (res.ok) {
+          values = res.values || values;
+          refreshAllFields();
+          sendToPreview();
+          toast('"' + (section.label || sectionKey) + '" reset to defaults', 'success');
+        }
+      } catch (err) { toast('Reset failed: ' + err.message, 'error'); }
     });
 
     /* Section body */
@@ -1634,6 +1812,7 @@ function buildField(section, key, def) {
     case 'toggle':   wrap.appendChild(buildToggle(section, key, val)); break;
     case 'select':   wrap.appendChild(buildSelect(section, key, val, def.options || {})); break;
     case 'range':    wrap.appendChild(buildRange(section, key, val, def)); break;
+    case 'fontpicker': wrap.appendChild(buildFontPicker(section, key, val)); break;
     default:         wrap.appendChild(buildText(section, key, val)); break;
   }
 
@@ -1816,6 +1995,103 @@ function buildSelect(section, key, val, options) {
   return wrap;
 }
 
+/* Font Picker (searchable Google Fonts dropdown) */
+function buildFontPicker(section, key, val) {
+  const wrap = document.createElement('div');
+  wrap.className = 'ts-font-picker';
+
+  const currentFont = val || 'Inter';
+
+  // Preload selected font
+  loadGoogleFont(currentFont);
+
+  // Selected display
+  const selected = document.createElement('div');
+  selected.className = 'ts-font-picker-selected';
+  selected.textContent = currentFont;
+  selected.style.fontFamily = `'${currentFont}', sans-serif`;
+
+  // Dropdown container
+  const dropdown = document.createElement('div');
+  dropdown.className = 'ts-font-picker-dropdown';
+
+  // Search input
+  const search = document.createElement('input');
+  search.type = 'text';
+  search.className = 'ts-font-search';
+  search.placeholder = 'Search fonts…';
+  dropdown.appendChild(search);
+
+  // Options container
+  const optionsWrap = document.createElement('div');
+  optionsWrap.className = 'ts-font-options';
+  dropdown.appendChild(optionsWrap);
+
+  // Intersection observer for lazy font loading
+  const fontObserver = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        const fontName = e.target.dataset.font;
+        if (fontName) {
+          loadGoogleFont(fontName);
+          e.target.style.fontFamily = `'${fontName}', sans-serif`;
+        }
+        fontObserver.unobserve(e.target);
+      }
+    });
+  }, { root: optionsWrap, rootMargin: '40px' });
+
+  function renderOptions(filter) {
+    optionsWrap.innerHTML = '';
+    const q = (filter || '').toLowerCase();
+    const fonts = GOOGLE_FONTS.filter(f => !q || f.toLowerCase().includes(q));
+    fonts.forEach(fontName => {
+      const opt = document.createElement('div');
+      opt.className = 'ts-font-option' + (fontName === currentFont ? ' active' : '');
+      opt.textContent = fontName;
+      opt.dataset.font = fontName;
+      // Lazy load font on scroll visibility
+      fontObserver.observe(opt);
+      opt.addEventListener('click', () => {
+        loadGoogleFont(fontName);
+        selected.textContent = fontName;
+        selected.style.fontFamily = `'${fontName}', sans-serif`;
+        wrap.classList.remove('open');
+        search.value = '';
+        onFieldChange(section, key, fontName);
+      });
+      optionsWrap.appendChild(opt);
+    });
+  }
+
+  renderOptions('');
+
+  // Toggle dropdown
+  selected.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const wasOpen = wrap.classList.contains('open');
+    // Close all other font pickers
+    document.querySelectorAll('.ts-font-picker.open').forEach(fp => fp.classList.remove('open'));
+    if (!wasOpen) {
+      wrap.classList.add('open');
+      search.focus();
+      renderOptions('');
+    }
+  });
+
+  // Search handler
+  search.addEventListener('input', () => renderOptions(search.value));
+  search.addEventListener('click', (e) => e.stopPropagation());
+
+  // Close on outside click
+  document.addEventListener('click', () => wrap.classList.remove('open'));
+  dropdown.addEventListener('click', (e) => e.stopPropagation());
+
+  wrap.appendChild(selected);
+  wrap.appendChild(dropdown);
+  return wrap;
+}
+
 /* Range slider */
 function buildRange(section, key, val, def) {
   const wrap = document.createElement('div');
@@ -1955,6 +2231,16 @@ function refreshAllFields() {
         }
         break;
       }
+      case 'fontpicker': {
+        const sel = $('.ts-font-picker-selected', el);
+        if (sel) {
+          const fontName = val || 'Inter';
+          sel.textContent = fontName;
+          sel.style.fontFamily = `'${fontName}', sans-serif`;
+          loadGoogleFont(fontName);
+        }
+        break;
+      }
     }
   });
 }
@@ -2070,6 +2356,45 @@ dom.resetBtn.addEventListener('click', async () => {
     showSaveStatus('error');
     toast('Reset failed: ' + e.message, 'error');
   }
+});
+
+
+/* ═══════════════════════════════════════════════════════════
+   EXPORT / IMPORT
+   ═══════════════════════════════════════════════════════════ */
+
+dom.exportBtn.addEventListener('click', () => {
+  const blob = new Blob([JSON.stringify({ theme: THEME_SLUG, values, exportedAt: new Date().toISOString() }, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = THEME_SLUG + '-settings-' + new Date().toISOString().slice(0,10) + '.json';
+  a.click();
+  URL.revokeObjectURL(a.href);
+  toast('Settings exported', 'success');
+});
+
+dom.importBtn.addEventListener('click', () => dom.importFile.click());
+dom.importFile.addEventListener('change', () => {
+  const file = dom.importFile.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = async e => {
+    try {
+      const data = JSON.parse(e.target.result);
+      if (!data.values || typeof data.values !== 'object') throw new Error('Invalid format');
+      if (data.theme && data.theme !== THEME_SLUG && !confirm('This was exported from "' + data.theme + '" but current theme is "' + THEME_SLUG + '". Import anyway?')) return;
+      pushUndo();
+      values = data.values;
+      refreshAllFields();
+      sendToPreview();
+      scheduleSave();
+      toast('Settings imported from ' + file.name, 'success');
+    } catch (err) {
+      toast('Import failed: ' + err.message, 'error');
+    }
+    dom.importFile.value = '';
+  };
+  reader.readAsText(file);
 });
 
 

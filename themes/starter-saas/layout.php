@@ -52,8 +52,11 @@ $themeDir = '/themes/starter-saas';
     <style><?= $themeCssVariables ?>
 <?= generate_studio_css_overrides() ?>
     </style>
+<?= function_exists("theme_render_favicon") ? theme_render_favicon() : "" ?>
+<?= function_exists("theme_render_og_image") ? theme_render_og_image() : "" ?>
 </head>
 <body class="starter-saas <?= esc(get_body_class() ?? '') ?><?= $isTbPage ? ' tb-page' : '' ?>">
+<?= function_exists("theme_render_announcement_bar") ? theme_render_announcement_bar() : "" ?>
 
 <!-- Background Effects -->
 <div class="bg-grid"></div>

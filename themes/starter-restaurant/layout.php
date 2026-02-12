@@ -81,8 +81,11 @@ $themePath = '/themes/starter-restaurant';
 <?= $themeCssVariables ?>
 <?= generate_studio_css_overrides() ?>
     </style>
+<?= function_exists("theme_render_favicon") ? theme_render_favicon() : "" ?>
+<?= function_exists("theme_render_og_image") ? theme_render_og_image() : "" ?>
 </head>
 <body class="<?= esc(get_body_class() ?? '') ?><?= $isTbPage ? ' tb-page' : '' ?>">
+<?= function_exists("theme_render_announcement_bar") ? theme_render_announcement_bar() : "" ?>
 
 <?php if ($showHeader): ?>
     <?php if ($tbHeader): ?>
