@@ -674,6 +674,225 @@ HTML,
                     ],
                 ],
             ],
+
+            // ─── FAQ ───
+            [
+                'label' => 'FAQ',
+                'icon' => '❓',
+                'items' => [
+                    [
+                        'slug' => 'faq-general',
+                        'title' => 'General FAQ',
+                        'keywords' => ['faq', 'questions', 'help', 'common', 'frequently asked'],
+                        'content' => <<<'HTML'
+<h2>Frequently Asked Questions</h2>
+
+<div class="doc-faq">
+    <details class="doc-faq-item">
+        <summary>How do I change my site name?</summary>
+        <p>Go to <strong>System → Settings</strong> and update the <strong>Site Name</strong> field. The change takes effect immediately across your entire site.</p>
+    </details>
+
+    <details class="doc-faq-item">
+        <summary>How do I add a logo?</summary>
+        <p>Open <strong>Theme Studio</strong> → <strong>Brand</strong> section. Click the logo area to upload your image. Recommended size: 200×60px (PNG or SVG).</p>
+    </details>
+
+    <details class="doc-faq-item">
+        <summary>Can I use Jessie CMS without AI?</summary>
+        <p>Yes! AI features are optional. You can create pages, articles, and manage your entire site without configuring any AI provider. AI just makes things faster.</p>
+    </details>
+
+    <details class="doc-faq-item">
+        <summary>How do I switch themes?</summary>
+        <p>Go to <strong>Appearance → Themes</strong> and click <strong>Activate</strong> on the theme you want. Your content is preserved — only the visual design changes.</p>
+    </details>
+
+    <details class="doc-faq-item">
+        <summary>Is my content safe when switching themes?</summary>
+        <p>Yes. Pages, articles, media, and menus are independent of themes. Switching themes only changes the visual presentation. Theme Studio customizations are saved per-theme.</p>
+    </details>
+
+    <details class="doc-faq-item">
+        <summary>How do I set up email sending?</summary>
+        <p>Go to <strong>System → Email Settings</strong>. Enter your SMTP server details (host, port, username, password). Use port 587 with TLS for most providers (Gmail, Mailgun, etc.). Click <strong>Test</strong> to verify.</p>
+    </details>
+
+    <details class="doc-faq-item">
+        <summary>How do I make my site SEO-friendly?</summary>
+        <p>Start with the <strong>SEO Assistant</strong> — it analyzes your pages and gives specific recommendations. Key basics: fill in meta titles/descriptions, use headings properly, add alt text to images, and create quality content regularly.</p>
+    </details>
+
+    <details class="doc-faq-item">
+        <summary>How do I create a backup?</summary>
+        <p>Go to <strong>System → Backup</strong> and click <strong>Create Backup</strong>. Download the file and store it safely. Do this before making major changes.</p>
+    </details>
+
+    <details class="doc-faq-item">
+        <summary>Can I have multiple admins?</summary>
+        <p>Yes. Go to <strong>System → Users</strong> to create additional admin or editor accounts. Editors can manage content but not system settings.</p>
+    </details>
+
+    <details class="doc-faq-item">
+        <summary>How do I add Google Analytics?</summary>
+        <p>Go to <strong>System → Settings</strong> and paste your Google Analytics tracking code (GA4 measurement ID). The tracking script is automatically added to all public pages.</p>
+    </details>
+
+    <details class="doc-faq-item">
+        <summary>What hosting do I need?</summary>
+        <p>Any PHP 8.2+ hosting with MySQL/MariaDB. No special requirements — no Composer, no Node.js, no CLI access needed. Even $3/month shared hosting works. Upload via FTP and you're done.</p>
+    </details>
+
+    <details class="doc-faq-item">
+        <summary>How do I set up URL redirects?</summary>
+        <p>Go to <strong>System → URL Redirects</strong>. Add the old URL as Source and new URL as Target. Choose 301 (permanent) for SEO-friendly redirects or 302 (temporary).</p>
+    </details>
+
+    <details class="doc-faq-item">
+        <summary>How do I add a contact form?</summary>
+        <p>Use <strong>AI Forms</strong> to generate a form from a description, or use JTB Page Builder's form modules to build one visually. Forms can send submissions via email or store them in the database.</p>
+    </details>
+
+    <details class="doc-faq-item">
+        <summary>Can I use my own domain?</summary>
+        <p>Yes. Point your domain's DNS to your hosting server. Update your hosting control panel to associate the domain with your CMS installation directory. No configuration needed in the CMS itself.</p>
+    </details>
+
+    <details class="doc-faq-item">
+        <summary>How do I update Jessie CMS?</summary>
+        <p>Download the latest version and upload the new files via FTP (overwrite existing). Then go to <strong>System → Migrations</strong> and run any pending database migrations. Always backup first!</p>
+    </details>
+</div>
+HTML,
+                    ],
+                    [
+                        'slug' => 'faq-ai',
+                        'title' => 'AI FAQ',
+                        'keywords' => ['ai faq', 'api key', 'cost', 'tokens', 'ai not working'],
+                        'content' => <<<'HTML'
+<h2>AI — Frequently Asked Questions</h2>
+
+<div class="doc-faq">
+    <details class="doc-faq-item">
+        <summary>How much does AI cost?</summary>
+        <p>You pay AI providers directly using your own API keys. Typical costs:</p>
+        <ul>
+            <li><strong>Content generation</strong> (1 article): $0.01–$0.05</li>
+            <li><strong>Theme generation</strong> (full theme): $0.10–$0.50</li>
+            <li><strong>SEO analysis</strong> (per page): $0.01–$0.03</li>
+            <li><strong>Image generation</strong> (1 image): $0.02–$0.04</li>
+        </ul>
+        <p>DeepSeek is the cheapest (~10× cheaper than OpenAI). Claude Opus is the most expensive but produces the best quality.</p>
+    </details>
+
+    <details class="doc-faq-item">
+        <summary>AI features aren't working — what do I check?</summary>
+        <p>Common issues:</p>
+        <ol>
+            <li><strong>No API key</strong> — Go to Settings and add at least one provider key</li>
+            <li><strong>Invalid key</strong> — Check for typos, expired keys, or exceeded quotas</li>
+            <li><strong>Wrong model</strong> — Some models require specific API tiers (e.g., GPT-5 needs paid OpenAI)</li>
+            <li><strong>Timeout</strong> — Large requests (themes, long articles) may timeout on slow hosting. Try a faster model.</li>
+        </ol>
+    </details>
+
+    <details class="doc-faq-item">
+        <summary>Which AI model should I use for theme generation?</summary>
+        <p><strong>Claude Opus 4.5</strong> or <strong>GPT-5</strong> produce the best themes. They have large output limits (16K+ tokens) needed for quality CSS. Avoid DeepSeek for themes — its 8K output limit produces incomplete CSS.</p>
+    </details>
+
+    <details class="doc-faq-item">
+        <summary>Can I use multiple AI providers?</summary>
+        <p>Yes! Configure all providers you want in Settings. Different tools can use different providers. For example: Claude for themes, GPT for content, DeepSeek for quick tasks.</p>
+    </details>
+
+    <details class="doc-faq-item">
+        <summary>Is my content sent to AI providers?</summary>
+        <p>When you use AI features, relevant content is sent to the provider's API. Major providers (OpenAI, Anthropic, Google) don't use API data for training. Check each provider's data policy for details.</p>
+    </details>
+
+    <details class="doc-faq-item">
+        <summary>Can I use AI without internet?</summary>
+        <p>No. AI features require internet access to reach provider APIs. All other CMS features (pages, articles, themes, SEO tools) work fully offline.</p>
+    </details>
+</div>
+HTML,
+                    ],
+                    [
+                        'slug' => 'faq-troubleshooting',
+                        'title' => 'Troubleshooting',
+                        'keywords' => ['troubleshoot', 'error', 'bug', 'fix', 'problem', '500', 'white screen', 'broken'],
+                        'content' => <<<'HTML'
+<h2>Troubleshooting</h2>
+
+<div class="doc-faq">
+    <details class="doc-faq-item">
+        <summary>I see a white/blank page</summary>
+        <p>This usually means a PHP error. Check:</p>
+        <ol>
+            <li>PHP error log (usually in hosting control panel → Error Logs)</li>
+            <li>Add <code>ini_set('display_errors', 1);</code> temporarily to <code>index.php</code></li>
+            <li>Check PHP version — Jessie requires PHP 8.2+</li>
+            <li>Check file permissions — PHP files should be readable by the web server</li>
+        </ol>
+    </details>
+
+    <details class="doc-faq-item">
+        <summary>I get a 500 Internal Server Error</summary>
+        <p>Common causes:</p>
+        <ul>
+            <li><strong>.htaccess issue</strong> — Check if mod_rewrite is enabled on your Apache server</li>
+            <li><strong>PHP memory</strong> — Increase PHP memory_limit in php.ini (128M recommended)</li>
+            <li><strong>Database connection</strong> — Verify credentials in <code>config.php</code></li>
+            <li><strong>File permissions</strong> — <code>uploads/</code> directory needs write permission (755 or 775)</li>
+        </ul>
+    </details>
+
+    <details class="doc-faq-item">
+        <summary>Images aren't uploading</summary>
+        <p>Check:</p>
+        <ul>
+            <li><code>uploads/</code> directory exists and is writable (chmod 755)</li>
+            <li>PHP <code>upload_max_filesize</code> is large enough (default 2M may be too small)</li>
+            <li>PHP <code>post_max_size</code> is larger than <code>upload_max_filesize</code></li>
+        </ul>
+    </details>
+
+    <details class="doc-faq-item">
+        <summary>Theme changes aren't showing</summary>
+        <p>Try:</p>
+        <ul>
+            <li><strong>Hard refresh</strong> — Ctrl+Shift+R (or Cmd+Shift+R on Mac)</li>
+            <li><strong>Clear browser cache</strong></li>
+            <li>Check if you're editing the correct theme (active theme shown at top of Theme Studio)</li>
+            <li>Check if a CDN or caching plugin is serving old files</li>
+        </ul>
+    </details>
+
+    <details class="doc-faq-item">
+        <summary>I forgot my admin password</summary>
+        <p>Access your database (via phpMyAdmin or CLI) and run:</p>
+        <pre><code>UPDATE users SET password = '$2y$10$...' WHERE username = 'admin';</code></pre>
+        <p>Generate a new bcrypt hash at <a href="https://bcrypt-generator.com/" target="_blank">bcrypt-generator.com</a> and use it in the query above.</p>
+    </details>
+
+    <details class="doc-faq-item">
+        <summary>My site is slow</summary>
+        <p>Performance tips:</p>
+        <ul>
+            <li>Optimize images before uploading (use WebP format)</li>
+            <li>Enable browser caching in .htaccess</li>
+            <li>Use a CDN for static assets</li>
+            <li>Reduce the number of homepage sections</li>
+            <li>Check hosting — shared hosting can be slow under load</li>
+        </ul>
+    </details>
+</div>
+HTML,
+                    ],
+                ],
+            ],
+
         ];
     }
 }

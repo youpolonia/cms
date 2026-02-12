@@ -133,7 +133,14 @@ function formatBytes(int $bytes): string {
 
 <!-- Stock Videos Panel -->
 <div id="panelStockVideos" style="display: none;">
-    <div class="card">
+    
+<div class="inline-help" id="help-media">
+    <span class="inline-help-icon">💡</span>
+    <div><strong>Media Library</strong> stores all your images and files. Drag &amp; drop to upload. When editing pages, you can also insert images from <strong>Pexels</strong> (free stock photos) or generate them with <strong>AI</strong>. <a href="/admin/docs?section=media">Read more →</a></div>
+    <button class="inline-help-close" onclick="this.closest('.inline-help').style.display='none';localStorage.setItem('help-media-hidden','1')" title="Dismiss">×</button>
+</div>
+<script>if(localStorage.getItem('help-media-hidden'))document.getElementById('help-media').style.display='none'</script>
+<div class="card">
         <div class="card-header">
             <h2 class="card-title">🎬 Stock Videos from Pexels</h2>
         </div>

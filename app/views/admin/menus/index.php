@@ -193,6 +193,13 @@ $locationIcons = [
     <div class="alert alert-error"><?= esc($error) ?></div>
 <?php endif; ?>
 
+
+<div class="inline-help" id="help-menus">
+    <span class="inline-help-icon">💡</span>
+    <div><strong>Menus</strong> control your site navigation. Create menus and assign them to locations (header, footer). Add pages, custom links, or categories as menu items. Drag items to reorder. <a href="/admin/docs?section=menus">Read more →</a></div>
+    <button class="inline-help-close" onclick="this.closest('.inline-help').style.display='none';localStorage.setItem('help-menus-hidden','1')" title="Dismiss">×</button>
+</div>
+<script>if(localStorage.getItem('help-menus-hidden'))document.getElementById('help-menus').style.display='none'</script>
 <div class="page-header">
     <div>
         <h1>📋 Navigation Menus</h1>

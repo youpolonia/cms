@@ -114,6 +114,13 @@ ob_start();
 </style>
 
 <div class="es-container">
+<div class="inline-help" id="help-email">
+    <span class="inline-help-icon">💡</span>
+    <div><strong>Email Setup</strong> — Configure SMTP to send emails (password resets, notifications, campaigns). Use port <strong>587</strong> with TLS for most providers. Click <strong>Test</strong> after saving.</div>
+    <button class="inline-help-close" onclick="this.closest('.inline-help').style.display='none';localStorage.setItem('help-email-hidden','1')" title="Dismiss">×</button>
+</div>
+<script>if(localStorage.getItem('help-email-hidden'))document.getElementById('help-email').style.display='none'</script>
+
     <?php if (!empty($success)): ?>
         <div class="es-alert es-alert-success" id="successAlert">
             <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>

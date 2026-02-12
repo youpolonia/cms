@@ -263,6 +263,13 @@ $viewerCount = count(array_filter($users, fn($u) => ($u['role'] ?? '') === 'view
 </div>
 
 <!-- Stats Cards -->
+
+<div class="inline-help" id="help-users">
+    <span class="inline-help-icon">💡</span>
+    <div><strong>Users</strong> are admin accounts. <strong>Admin</strong> = full access, <strong>Editor</strong> = content only. Use strong passwords and change the default password after setup. <a href="/admin/docs?section=users">Read more →</a></div>
+    <button class="inline-help-close" onclick="this.closest('.inline-help').style.display='none';localStorage.setItem('help-users-hidden','1')" title="Dismiss">×</button>
+</div>
+<script>if(localStorage.getItem('help-users-hidden'))document.getElementById('help-users').style.display='none'</script>
 <div class="stats-grid">
     <div class="stat-card">
         <div class="stat-icon total">👥</div>

@@ -19,6 +19,13 @@ $draftCount = count(array_filter($articles, fn($a) => $a['status'] === 'draft'))
     <div class="alert alert-error"><?= esc($error) ?></div>
 <?php endif; ?>
 
+
+<div class="inline-help" id="help-articles">
+    <span class="inline-help-icon">💡</span>
+    <div><strong>Articles</strong> are blog posts and news updates. They appear in chronological feeds and can be categorized. Use <a href="/admin/ai-content-creator">AI Content Creator</a> to generate drafts quickly. <a href="/admin/docs?section=articles">Read more →</a></div>
+    <button class="inline-help-close" onclick="this.closest('.inline-help').style.display='none';localStorage.setItem('help-articles-hidden','1')" title="Dismiss">×</button>
+</div>
+<script>if(localStorage.getItem('help-articles-hidden'))document.getElementById('help-articles').style.display='none'</script>
 <div class="page-header">
     <div class="page-header-content">
         <h1 class="page-title">📝 Articles</h1>

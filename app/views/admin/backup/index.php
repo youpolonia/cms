@@ -24,6 +24,13 @@ function human_time_diff($timestamp) {
 <div class="alert alert-danger" style="margin-bottom: 1rem;"><?= esc($error) ?></div>
 <?php endif; ?>
 
+
+<div class="inline-help" id="help-backup">
+    <span class="inline-help-icon">💡</span>
+    <div><strong>Backups</strong> protect your data. Create a backup before major changes (theme switches, updates). Download and store backups off-server for extra safety. <a href="/admin/docs?section=backup">Read more →</a></div>
+    <button class="inline-help-close" onclick="this.closest('.inline-help').style.display='none';localStorage.setItem('help-backup-hidden','1')" title="Dismiss">×</button>
+</div>
+<script>if(localStorage.getItem('help-backup-hidden'))document.getElementById('help-backup').style.display='none'</script>
 <div class="stats-grid">
     <div class="stat-card">
         <div class="stat-header">

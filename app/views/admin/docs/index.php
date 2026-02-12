@@ -110,6 +110,20 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var
     .doc-sidebar{width:100%;min-width:0;max-height:40vh;border-right:none;border-bottom:1px solid var(--s0)}
     .doc-content{max-width:100%}
 }
+
+/* FAQ accordion */
+.doc-faq{display:flex;flex-direction:column;gap:8px;margin:16px 0}
+.doc-faq-item{background:var(--s0);border:1px solid var(--s1);border-radius:10px;overflow:hidden}
+.doc-faq-item summary{padding:14px 18px;cursor:pointer;font-weight:600;font-size:14px;color:var(--text);list-style:none;display:flex;align-items:center;gap:10px;transition:background .15s}
+.doc-faq-item summary:hover{background:var(--s1)}
+.doc-faq-item summary::before{content:"▸";font-size:12px;color:var(--sub0);transition:transform .2s;flex-shrink:0}
+.doc-faq-item[open] summary::before{transform:rotate(90deg)}
+.doc-faq-item summary::-webkit-details-marker{display:none}
+.doc-faq-item > :not(summary){padding:0 18px 16px;font-size:13px;line-height:1.7;color:var(--sub0)}
+.doc-faq-item ul,.doc-faq-item ol{margin:8px 0;padding-left:20px}
+.doc-faq-item li{margin-bottom:4px}
+.doc-faq-item pre{background:var(--m);padding:10px 14px;border-radius:6px;overflow-x:auto;font-size:12px}
+.doc-faq-item code{background:var(--m);padding:2px 6px;border-radius:4px;font-size:12px}
 </style>
 </head>
 <body>

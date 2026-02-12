@@ -40,6 +40,13 @@ ob_start();
     </form>
 </div>
 
+
+<div class="inline-help" id="help-themes">
+    <span class="inline-help-icon">💡</span>
+    <div><strong>Themes</strong> control your site's visual design. Click <strong>Activate</strong> to switch — your content is safe. Use <strong>Theme Studio</strong> to customize, or try <a href="/admin/ai-theme-builder">AI Theme Builder</a>. <a href="/admin/docs?section=themes">Read more →</a></div>
+    <button class="inline-help-close" onclick="this.closest('.inline-help').style.display='none';localStorage.setItem('help-themes-hidden','1')" title="Dismiss">×</button>
+</div>
+<script>if(localStorage.getItem('help-themes-hidden'))document.getElementById('help-themes').style.display='none'</script>
 <div class="themes-header">
     <h2>Available Themes</h2>
     <div class="themes-stats">

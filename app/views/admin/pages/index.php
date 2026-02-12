@@ -13,6 +13,13 @@ $draftPages = $totalPages - $publishedPages;
 $recentPages = count(array_filter($pages, fn($p) => strtotime($p['updated_at'] ?? '1970-01-01') > strtotime('-7 days')));
 ?>
 
+
+<div class="inline-help" id="help-pages">
+    <span class="inline-help-icon">💡</span>
+    <div><strong>Pages</strong> are the main building blocks of your site — Home, About, Services, Contact. Each page has its own URL. Use <strong>Draft</strong> to hide work-in-progress pages from visitors. <a href="/admin/docs?section=pages">Read more →</a></div>
+    <button class="inline-help-close" onclick="this.closest('.inline-help').style.display='none';localStorage.setItem('help-pages-hidden','1')" title="Dismiss">×</button>
+</div>
+<script>if(localStorage.getItem('help-pages-hidden'))document.getElementById('help-pages').style.display='none'</script>
 <div class="page-header">
     <div class="page-header-content">
         <h1 class="page-title">Pages</h1>

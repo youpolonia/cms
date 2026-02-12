@@ -240,6 +240,38 @@ if (!function_exists('esc')) {
         box-shadow: 0 0 0 3px var(--accent-muted);
     }
 
+
+    /* Inline Help Banners */
+    .inline-help {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        padding: 14px 18px;
+        background: rgba(99,102,241,.08);
+        border: 1px solid rgba(99,102,241,.2);
+        border-radius: 10px;
+        margin-bottom: 20px;
+        font-size: 13px;
+        line-height: 1.6;
+        color: var(--text-secondary, #b4befe);
+    }
+    .inline-help-icon { font-size: 20px; flex-shrink: 0; line-height: 1.3; }
+    .inline-help strong { color: var(--text-primary, #cdd6f4); }
+    .inline-help a { color: #89b4fa; text-decoration: underline; }
+    .inline-help a:hover { color: #b4befe; }
+    .inline-help .inline-help-close {
+        margin-left: auto;
+        background: none;
+        border: none;
+        color: var(--text-muted, #6c7086);
+        cursor: pointer;
+        font-size: 16px;
+        padding: 0 4px;
+        line-height: 1;
+        flex-shrink: 0;
+    }
+    .inline-help .inline-help-close:hover { color: var(--text-primary, #cdd6f4); }
+
     /* Inline Help Tooltips */
     .tip {
         display: inline-flex;

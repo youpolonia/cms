@@ -11,6 +11,13 @@ ob_start();
     <div class="alert alert-error"><?= esc($error) ?></div>
 <?php endif; ?>
 
+
+<div class="inline-help" id="help-urls">
+    <span class="inline-help-icon">💡</span>
+    <div><strong>URL Redirects</strong> forward old URLs to new ones. Use <strong>301</strong> (permanent) to pass SEO value, or <strong>302</strong> (temporary) for short-term redirects.</div>
+    <button class="inline-help-close" onclick="this.closest('.inline-help').style.display='none';localStorage.setItem('help-urls-hidden','1')" title="Dismiss">×</button>
+</div>
+<script>if(localStorage.getItem('help-urls-hidden'))document.getElementById('help-urls').style.display='none'</script>
 <div class="card">
     <div class="card-header">
         <h2 class="card-title">URL Redirects</h2>

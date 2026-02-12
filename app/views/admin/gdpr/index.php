@@ -10,6 +10,13 @@ ob_start();
 <div class="alert alert-danger" style="margin-bottom: 1rem;"><?= esc($error) ?></div>
 <?php endif; ?>
 
+
+<div class="inline-help" id="help-gdpr">
+    <span class="inline-help-icon">💡</span>
+    <div><strong>GDPR Tools</strong> help you comply with data protection regulations. Export, anonymize, or delete user data on request. Required by law in the EU and many other regions.</div>
+    <button class="inline-help-close" onclick="this.closest('.inline-help').style.display='none';localStorage.setItem('help-gdpr-hidden','1')" title="Dismiss">×</button>
+</div>
+<script>if(localStorage.getItem('help-gdpr-hidden'))document.getElementById('help-gdpr').style.display='none'</script>
 <div class="stats-grid">
     <div class="stat-card">
         <div class="stat-header">
