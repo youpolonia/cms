@@ -789,16 +789,18 @@ if (!function_exists('_theme_discover_data_attributes')) {
         $themeDir = \CMS_ROOT . '/themes/' . $themeSlug;
         if (!is_dir($themeDir)) return [];
 
-        // Collect all template files
+        // Collect all template files (layout + templates + sections)
         $files = [];
         $layoutFile = $themeDir . '/layout.php';
         if (file_exists($layoutFile)) {
             $files[] = $layoutFile;
         }
-        $templatesDir = $themeDir . '/templates';
-        if (is_dir($templatesDir)) {
-            foreach (glob($templatesDir . '/*.php') as $f) {
-                $files[] = $f;
+        foreach (['templates', 'sections'] as $subdir) {
+            $dir = $themeDir . '/' . $subdir;
+            if (is_dir($dir)) {
+                foreach (glob($dir . '/*.php') as $f) {
+                    $files[] = $f;
+                }
             }
         }
 

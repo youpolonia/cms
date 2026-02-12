@@ -823,6 +823,77 @@ html,body{
 .ts-sections-save:disabled{opacity:0.5;cursor:default}
 .ts-sections-save.saved{background:var(--ts-green)}
 
+/* Section inline editor */
+.ts-section-item-wrap{margin-bottom:4px}
+.ts-section-item-wrap .ts-section-item{margin-bottom:0;border-radius:var(--ts-radius-sm) var(--ts-radius-sm) 0 0}
+.ts-section-item-wrap.collapsed .ts-section-item{border-radius:var(--ts-radius-sm)}
+.ts-section-edit-btn{
+  background:none;border:none;cursor:pointer;padding:4px;
+  color:var(--ts-subtext);font-size:14px;flex-shrink:0;
+  transition:color 0.15s;border-radius:4px;width:28px;height:28px;
+  display:flex;align-items:center;justify-content:center;
+}
+.ts-section-edit-btn:hover{color:var(--ts-blue);background:rgba(137,180,250,.1)}
+.ts-section-item-wrap:not(.collapsed) .ts-section-edit-btn{color:var(--ts-blue)}
+.ts-section-editor{
+  display:none;padding:12px 14px 14px;
+  background:rgba(30,30,46,.6);border:1px solid var(--ts-border);
+  border-top:none;border-radius:0 0 var(--ts-radius-sm) var(--ts-radius-sm);
+}
+.ts-section-item-wrap:not(.collapsed) .ts-section-editor{display:block}
+.ts-section-editor .ts-field{margin-bottom:10px}
+.ts-section-editor .ts-field:last-child{margin-bottom:0}
+.ts-section-editor .ts-field label{
+  display:block;font-size:11px;font-weight:600;color:var(--ts-subtext);
+  margin-bottom:4px;text-transform:uppercase;letter-spacing:0.3px;
+}
+.ts-section-editor .ts-field input[type="text"],
+.ts-section-editor .ts-field textarea{
+  width:100%;padding:7px 10px;font-size:13px;font-family:inherit;
+  background:var(--ts-mantle);border:1px solid var(--ts-border);
+  border-radius:var(--ts-radius-sm);color:var(--ts-text);
+  transition:border-color 0.15s;
+}
+.ts-section-editor .ts-field input:focus,
+.ts-section-editor .ts-field textarea:focus{
+  border-color:var(--ts-blue);outline:none;
+  box-shadow:0 0 0 2px rgba(137,180,250,.15);
+}
+.ts-section-editor .ts-field textarea{min-height:60px;resize:vertical}
+.ts-section-editor .ts-field .ts-img-field{
+  display:flex;align-items:center;gap:8px;
+}
+.ts-section-editor .ts-field .ts-img-preview{
+  width:48px;height:48px;border-radius:6px;border:1px solid var(--ts-border);
+  background:var(--ts-mantle);overflow:hidden;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  font-size:18px;color:var(--ts-overlay);
+}
+.ts-section-editor .ts-field .ts-img-preview img{width:100%;height:100%;object-fit:cover}
+.ts-section-editor .ts-field .ts-img-btn{
+  padding:5px 10px;font-size:11px;font-weight:600;
+  background:var(--ts-surface);border:1px solid var(--ts-border);
+  border-radius:var(--ts-radius-sm);color:var(--ts-text);
+  cursor:pointer;transition:all 0.15s;font-family:inherit;
+}
+.ts-section-editor .ts-field .ts-img-btn:hover{border-color:var(--ts-blue);color:var(--ts-blue)}
+.ts-section-editor-actions{
+  display:flex;gap:8px;margin-top:12px;padding-top:10px;
+  border-top:1px solid var(--ts-border);
+}
+.ts-section-editor-save{
+  flex:1;padding:7px 12px;font-size:12px;font-weight:600;
+  background:var(--ts-green);color:var(--ts-bg);border:none;
+  border-radius:var(--ts-radius-sm);cursor:pointer;font-family:inherit;
+  transition:all 0.15s;
+}
+.ts-section-editor-save:hover{opacity:0.9}
+.ts-section-editor-save:disabled{opacity:0.5;cursor:default}
+.ts-section-no-fields{
+  padding:16px;text-align:center;font-size:12px;color:var(--ts-subtext);
+  font-style:italic;
+}
+
 /* ── Responsive ────────────────────────────────────────── */
 /* ── Color Presets ──────────────────────────────────────── */
 .ts-presets{padding:12px 16px;border-bottom:1px solid var(--ts-border)}
@@ -2418,12 +2489,12 @@ $$('.ts-tab-btn').forEach(btn => {
 
 
 /* ═══════════════════════════════════════════════════════════
-   SECTION MANAGER — Drag & Drop Sortable
+   SECTION MANAGER — Drag & Drop + Inline Content Editor
    ═══════════════════════════════════════════════════════════ */
 
 let sectionsLoaded = false;
 let sectionsData = [];
-let draggedItem = null;
+let draggedWrap = null;
 
 const sectionsList = $('#sections-list');
 const sectionsSaveBtn = $('#sections-save-btn');
@@ -2444,22 +2515,115 @@ async function loadSections() {
   }
 }
 
+/**
+ * Map homepage_section ID → schema section ID.
+ * Some sections use different data-ts names (e.g. "features" file uses "articles.*" data-ts).
+ * This mapping resolves the correct schema section for editing.
+ */
+function sectionSchemaId(sectionId) {
+  /* Direct match first */
+  if (SCHEMA[sectionId]) return sectionId;
+  /* Common mappings (theme section file → data-ts section) */
+  const map = {
+    'features': 'articles',
+    'showcase': 'pages',
+    'recent': 'articles',
+    'categories': 'pages',
+    'newsletter': 'cta',
+    'testimonials': 'articles',
+    'services': 'services',
+    'work': 'pages',
+  };
+  const mapped = map[sectionId];
+  if (mapped && SCHEMA[mapped]) return mapped;
+  return null;
+}
+
+/** Get schema fields for a section ID (from SCHEMA global) */
+function getSectionFields(sectionId) {
+  const schemaId = sectionSchemaId(sectionId);
+  if (!schemaId || !SCHEMA[schemaId]) return null;
+  return SCHEMA[schemaId].fields || null;
+}
+
+/** Build inline editor HTML for a section */
+function buildSectionEditor(sectionId) {
+  const schemaId = sectionSchemaId(sectionId);
+  const fields = getSectionFields(sectionId);
+  if (!fields || Object.keys(fields).length === 0) {
+    return '<div class="ts-section-no-fields">No editable fields for this section</div>';
+  }
+
+  let html = '';
+  for (const [key, def] of Object.entries(fields)) {
+    const val = (values[schemaId] && values[schemaId][key]) || def.default || '';
+    const fieldId = 'sec-' + sectionId + '-' + key;
+
+    html += '<div class="ts-field">';
+    html += '<label for="' + fieldId + '">' + esc(def.label || key) + '</label>';
+
+    if (def.type === 'textarea') {
+      html += '<textarea id="' + fieldId + '" data-section="' + sectionId + '" data-key="' + key + '" rows="3">' + esc(val) + '</textarea>';
+    } else if (def.type === 'image') {
+      html += '<div class="ts-img-field">';
+      html += '<div class="ts-img-preview" id="' + fieldId + '-preview">';
+      if (val) {
+        html += '<img src="' + esc(val) + '">';
+      } else {
+        html += '🖼️';
+      }
+      html += '</div>';
+      html += '<button type="button" class="ts-img-btn" data-field-id="' + fieldId + '" data-section="' + sectionId + '" data-key="' + key + '">Choose Image</button>';
+      html += '<input type="hidden" id="' + fieldId + '" data-section="' + sectionId + '" data-key="' + key + '" value="' + esc(val) + '">';
+      html += '</div>';
+    } else if (def.type === 'color') {
+      html += '<div style="display:flex;gap:8px;align-items:center">';
+      html += '<input type="color" id="' + fieldId + '" data-section="' + sectionId + '" data-key="' + key + '" value="' + esc(val || '#000000') + '" style="width:36px;height:30px;border:1px solid var(--ts-border);border-radius:4px;cursor:pointer;background:var(--ts-mantle);padding:2px">';
+      html += '<input type="text" data-mirror="' + fieldId + '" value="' + esc(val) + '" style="flex:1" placeholder="#hex">';
+      html += '</div>';
+    } else if (def.type === 'toggle') {
+      html += '<label class="ts-section-toggle" style="margin-top:4px">';
+      html += '<input type="checkbox" id="' + fieldId + '" data-section="' + sectionId + '" data-key="' + key + '"' + (val ? ' checked' : '') + '>';
+      html += '<span class="ts-section-toggle-track"></span>';
+      html += '<span class="ts-section-toggle-thumb"></span>';
+      html += '</label>';
+    } else {
+      html += '<input type="text" id="' + fieldId + '" data-section="' + sectionId + '" data-key="' + key + '" value="' + esc(val) + '" placeholder="' + esc(def.label || '') + '">';
+    }
+
+    html += '</div>';
+  }
+
+  html += '<div class="ts-section-editor-actions">';
+  html += '<button type="button" class="ts-section-editor-save" data-section="' + sectionId + '">💾 Save Section</button>';
+  html += '</div>';
+  return html;
+}
+
 function renderSections() {
   sectionsList.innerHTML = '';
   
-  sectionsData.forEach((sec, idx) => {
+  sectionsData.forEach((sec) => {
+    /* Wrapper div */
+    const wrap = document.createElement('div');
+    wrap.className = 'ts-section-item-wrap collapsed';
+    wrap.dataset.id = sec.id;
+
+    /* Header row (drag handle + icon + label + edit btn + toggle) */
     const item = document.createElement('div');
     item.className = 'ts-section-item' + (!sec.enabled ? ' disabled' : '');
     item.dataset.id = sec.id;
     item.draggable = true;
     
     const isRequired = !!sec.required;
+    const hasFields = !!getSectionFields(sec.id);
     
     item.innerHTML =
       '<span class="ts-section-item-handle">⠿</span>' +
       '<span class="ts-section-item-icon">' + esc(sec.icon || '📋') + '</span>' +
       '<span class="ts-section-item-label">' + esc(sec.label || sec.id) + '</span>' +
       (isRequired ? '<span class="ts-section-item-badge">Required</span>' : '') +
+      (hasFields ? '<button type="button" class="ts-section-edit-btn" title="Edit content">✏️</button>' : '') +
       '<label class="ts-section-toggle">' +
         '<input type="checkbox" ' + (sec.enabled ? 'checked' : '') + (isRequired ? ' checked disabled' : '') + '>' +
         '<span class="ts-section-toggle-track"></span>' +
@@ -2474,59 +2638,210 @@ function renderSections() {
         item.classList.toggle('disabled', !checkbox.checked);
       });
     }
+
+    /* Edit button → expand/collapse editor */
+    const editBtn = item.querySelector('.ts-section-edit-btn');
+    if (editBtn) {
+      editBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const isOpen = !wrap.classList.contains('collapsed');
+        /* Close all others */
+        $$('.ts-section-item-wrap:not(.collapsed)', sectionsList).forEach(w => w.classList.add('collapsed'));
+        if (!isOpen) {
+          wrap.classList.remove('collapsed');
+        }
+      });
+    }
+
+    /* Editor panel */
+    const editor = document.createElement('div');
+    editor.className = 'ts-section-editor';
+    if (hasFields) {
+      editor.innerHTML = buildSectionEditor(sec.id);
+      bindEditorEvents(editor, sec.id);
+    }
     
-    /* Drag & Drop */
+    /* Drag & Drop — on the wrapper */
     item.addEventListener('dragstart', e => {
-      draggedItem = item;
-      item.classList.add('dragging');
+      draggedWrap = wrap;
+      wrap.classList.add('dragging');
       e.dataTransfer.effectAllowed = 'move';
       e.dataTransfer.setData('text/plain', sec.id);
     });
     
     item.addEventListener('dragend', () => {
-      item.classList.remove('dragging');
-      $$('.ts-section-item.drag-over', sectionsList).forEach(el => el.classList.remove('drag-over'));
-      draggedItem = null;
+      wrap.classList.remove('dragging');
+      $$('.ts-section-item-wrap.drag-over', sectionsList).forEach(el => el.classList.remove('drag-over'));
+      draggedWrap = null;
     });
     
-    item.addEventListener('dragover', e => {
+    wrap.addEventListener('dragover', e => {
       e.preventDefault();
       e.dataTransfer.dropEffect = 'move';
-      if (draggedItem && draggedItem !== item) {
-        item.classList.add('drag-over');
+      if (draggedWrap && draggedWrap !== wrap) {
+        wrap.classList.add('drag-over');
       }
     });
     
-    item.addEventListener('dragleave', () => {
-      item.classList.remove('drag-over');
+    wrap.addEventListener('dragleave', () => {
+      wrap.classList.remove('drag-over');
     });
     
-    item.addEventListener('drop', e => {
+    wrap.addEventListener('drop', e => {
       e.preventDefault();
-      item.classList.remove('drag-over');
-      if (!draggedItem || draggedItem === item) return;
+      wrap.classList.remove('drag-over');
+      if (!draggedWrap || draggedWrap === wrap) return;
       
-      /* Reorder in DOM */
-      const allItems = [...sectionsList.querySelectorAll('.ts-section-item')];
-      const fromIdx = allItems.indexOf(draggedItem);
-      const toIdx = allItems.indexOf(item);
+      const allWraps = [...sectionsList.querySelectorAll('.ts-section-item-wrap')];
+      const fromIdx = allWraps.indexOf(draggedWrap);
+      const toIdx = allWraps.indexOf(wrap);
       
       if (fromIdx < toIdx) {
-        sectionsList.insertBefore(draggedItem, item.nextSibling);
+        sectionsList.insertBefore(draggedWrap, wrap.nextSibling);
       } else {
-        sectionsList.insertBefore(draggedItem, item);
+        sectionsList.insertBefore(draggedWrap, wrap);
       }
       
-      /* Update sectionsData order */
       reorderSectionsData();
     });
-    
-    sectionsList.appendChild(item);
+
+    wrap.appendChild(item);
+    wrap.appendChild(editor);
+    sectionsList.appendChild(wrap);
   });
 }
 
+/** Bind events inside a section editor panel */
+function bindEditorEvents(editorEl, sectionId) {
+  /* Save button */
+  const saveBtn = editorEl.querySelector('.ts-section-editor-save');
+  if (saveBtn) {
+    saveBtn.addEventListener('click', () => saveSectionContent(sectionId, editorEl));
+  }
+
+  /* Image buttons → open JTB Media Gallery */
+  editorEl.querySelectorAll('.ts-img-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const fieldId = btn.dataset.fieldId;
+      const secId = btn.dataset.section;
+      const key = btn.dataset.key;
+      openMediaForSection(fieldId, secId, key);
+    });
+  });
+
+  /* Color mirror sync */
+  editorEl.querySelectorAll('input[data-mirror]').forEach(mirror => {
+    const colorInput = editorEl.querySelector('#' + mirror.dataset.mirror);
+    if (!colorInput) return;
+    mirror.addEventListener('input', () => { colorInput.value = mirror.value; });
+    colorInput.addEventListener('input', () => { mirror.value = colorInput.value; });
+  });
+
+  /* Live preview on input change (debounced) */
+  let previewTimer = null;
+  editorEl.querySelectorAll('input[data-section], textarea[data-section]').forEach(inp => {
+    inp.addEventListener('input', () => {
+      clearTimeout(previewTimer);
+      previewTimer = setTimeout(() => sendSectionPreview(sectionId, editorEl), 300);
+    });
+  });
+  editorEl.querySelectorAll('input[type="checkbox"][data-section]').forEach(inp => {
+    inp.addEventListener('change', () => sendSectionPreview(sectionId, editorEl));
+  });
+}
+
+/** Collect field values from a section editor */
+function collectSectionValues(editorEl) {
+  const data = {};
+  editorEl.querySelectorAll('[data-section][data-key]').forEach(el => {
+    const key = el.dataset.key;
+    if (el.type === 'checkbox') {
+      data[key] = el.checked;
+    } else {
+      data[key] = el.value;
+    }
+  });
+  return data;
+}
+
+/** Save section content to DB */
+async function saveSectionContent(sectionId, editorEl) {
+  const schemaId = sectionSchemaId(sectionId) || sectionId;
+  const btn = editorEl.querySelector('.ts-section-editor-save');
+  const fieldValues = collectSectionValues(editorEl);
+  if (Object.keys(fieldValues).length === 0) return;
+
+  btn.disabled = true;
+  btn.textContent = 'Saving…';
+
+  try {
+    const payload = { data: { [schemaId]: fieldValues } };
+    const res = await api('POST', 'save', payload);
+    if (res.ok) {
+      /* Update local values cache */
+      if (!values[schemaId]) values[schemaId] = {};
+      Object.assign(values[schemaId], fieldValues);
+
+      btn.textContent = '✅ Saved!';
+      toast('Section "' + sectionId + '" saved', 'success');
+      /* Reload preview */
+      dom.iframe.src = dom.iframe.src;
+      setTimeout(() => { btn.textContent = '💾 Save Section'; btn.disabled = false; }, 1500);
+    } else {
+      throw new Error(res.error || 'Save failed');
+    }
+  } catch (e) {
+    btn.textContent = '❌ Error';
+    toast('Save failed: ' + e.message, 'error');
+    setTimeout(() => { btn.textContent = '💾 Save Section'; btn.disabled = false; }, 2000);
+  }
+}
+
+/** Send live preview update via postMessage */
+function sendSectionPreview(sectionId, editorEl) {
+  const schemaId = sectionSchemaId(sectionId) || sectionId;
+  const fieldValues = collectSectionValues(editorEl);
+  const iframeWin = dom.iframe.contentWindow;
+  if (!iframeWin) return;
+
+  /* Send each field as a postMessage update (use schemaId for data-ts matching) */
+  for (const [key, val] of Object.entries(fieldValues)) {
+    iframeWin.postMessage({
+      type: 'themeStudio',
+      action: 'update',
+      section: schemaId,
+      field: key,
+      value: val,
+    }, '*');
+  }
+}
+
+/** Open media gallery for section image field */
+function openMediaForSection(fieldId, sectionId, key) {
+  if (typeof JTB_MediaGallery !== 'undefined') {
+    JTB_MediaGallery.open(function(url) {
+      const input = document.getElementById(fieldId);
+      const preview = document.getElementById(fieldId + '-preview');
+      if (input) input.value = url;
+      if (preview) preview.innerHTML = '<img src="' + esc(url) + '">';
+      /* Trigger preview */
+      const editor = input.closest('.ts-section-editor');
+      if (editor) sendSectionPreview(sectionId, editor);
+    });
+  } else {
+    /* Fallback: simple prompt */
+    const url = prompt('Enter image URL:');
+    if (url) {
+      const input = document.getElementById(fieldId);
+      const preview = document.getElementById(fieldId + '-preview');
+      if (input) input.value = url;
+      if (preview) preview.innerHTML = '<img src="' + esc(url) + '">';
+    }
+  }
+}
+
 function reorderSectionsData() {
-  const orderedIds = [...sectionsList.querySelectorAll('.ts-section-item')].map(el => el.dataset.id);
+  const orderedIds = [...sectionsList.querySelectorAll('.ts-section-item-wrap')].map(el => el.dataset.id);
   const newData = [];
   orderedIds.forEach(id => {
     const sec = sectionsData.find(s => s.id === id);
