@@ -37,9 +37,9 @@ $remaining = !empty($articles) ? array_slice($articles, 1) : [];
                     <h3><a href="/article/<?= esc($a['slug']) ?>"><?= esc($a['title']) ?></a></h3>
                     <p class="excerpt">
                         <?php if (!empty($a['excerpt'])): ?>
-                            <?= esc(mb_strimwidth(strip_tags($a['excerpt']), 0, 120, '...')) ?>
+                            <?= esc(mb_strimwidth(strip_tags($a["excerpt"]), 0, 160, '...')) ?>
                         <?php else: ?>
-                            <?= esc(mb_strimwidth(strip_tags($a['content']), 0, 120, '...')) ?>
+                            <?= esc(mb_strimwidth(strip_tags($a["content"]), 0, 160, '...')) ?>
                         <?php endif; ?>
                     </p>
                     <div class="post-meta">

@@ -31,9 +31,9 @@ $articlesDesc  = theme_get('articles.description', 'Stay informed with our lates
                 <h3 class="service-title"><?= esc($a['title']) ?></h3>
                 <p class="service-desc">
                     <?php if (!empty($a['excerpt'])): ?>
-                        <?= esc(mb_strimwidth(strip_tags($a['excerpt']), 0, 120, '...')) ?>
+                        <?= esc(mb_strimwidth(strip_tags($a["excerpt"]), 0, 160, '...')) ?>
                     <?php else: ?>
-                        <?= esc(mb_strimwidth(strip_tags($a['content']), 0, 120, '...')) ?>
+                        <?= esc(mb_strimwidth(strip_tags($a["content"]), 0, 160, '...')) ?>
                     <?php endif; ?>
                 </p>
                 <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px">

@@ -27,7 +27,7 @@
                     <div class="menu-card-header">
                         <h3><?= esc($p['title']) ?></h3>
                     </div>
-                    <p><?= esc(mb_strimwidth(strip_tags($p['content']), 0, 120, '...')) ?></p>
+                    <p><?= esc(mb_strimwidth(strip_tags($p["content"]), 0, 160, '...')) ?></p>
                 </div>
             </a>
             <?php endforeach; ?>

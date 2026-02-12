@@ -30,7 +30,7 @@ $servicesDesc  = theme_get('services.description', 'Explore what we have to offe
                 </div>
                 <?php endif; ?>
                 <h3 class="service-title"><?= esc($p['title']) ?></h3>
-                <p class="service-desc"><?= esc(mb_strimwidth(strip_tags($p['content']), 0, 120, '...')) ?></p>
+                <p class="service-desc"><?= esc(mb_strimwidth(strip_tags($p["content"]), 0, 160, '...')) ?></p>
                 <span class="service-link">Learn more <i class="fas fa-arrow-right"></i></span>
             </a>
             <?php endforeach; ?>
