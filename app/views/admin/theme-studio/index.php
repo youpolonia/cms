@@ -1286,8 +1286,8 @@ html,body{
     <aside id="ts-panel">
       <!-- Tab Navigation -->
       <div class="ts-tab-nav" id="ts-tab-nav">
-        <button class="ts-tab-btn active" data-tab="design" title="Design">🎨 Design</button>
-        <button class="ts-tab-btn" data-tab="sections" title="Sections">📐 Sections</button>
+        <button class="ts-tab-btn active" data-tab="design" title="Design">🎨 Design <span class="tip"><span class="tip-text">Colors, fonts, spacing and visual style of your theme.</span></span></button>
+        <button class="ts-tab-btn" data-tab="sections" title="Sections">📐 Sections <span class="tip"><span class="tip-text">Reorder, show/hide homepage sections with drag &amp; drop.</span></span></button>
       </div>
 
       <!-- Design Tab (existing accordion) -->

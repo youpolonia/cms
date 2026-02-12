@@ -339,7 +339,7 @@ ob_start();
                 </div>
                 
                 <div class="sidebar-section">
-                    <div class="sidebar-title">📐 Template</div>
+                    <div class="sidebar-title">📐 Template <span class="tip"><span class="tip-text">Controls the visual layout. Different templates show different sections.</span></span></div>
                     <select name="template" class="form-select">
                         <?php foreach ($templates as $key => $label): ?>
                         <option value="<?= $key ?>" <?= ($page['template'] ?? 'default') === $key ? 'selected' : '' ?>>
@@ -351,7 +351,7 @@ ob_start();
                 </div>
                 
                 <div class="sidebar-section">
-                    <div class="sidebar-title">📁 Parent Page</div>
+                    <div class="sidebar-title">📁 Parent Page <span class="tip"><span class="tip-text">Nest this page under another to create a hierarchy (e.g. About → Team).</span></span></div>
                     <select name="parent_id" class="form-select">
                         <option value="">— No Parent (Top Level) —</option>
                         <?php foreach ($allPages as $p): ?>
@@ -364,7 +364,7 @@ ob_start();
                 </div>
                 
                 <div class="sidebar-section">
-                    <div class="sidebar-title">🖼️ Featured Image</div>
+                    <div class="sidebar-title">🖼️ Featured Image <span class="tip"><span class="tip-text">Main image shown in cards, social shares, and page headers.</span></span></div>
                     <div class="featured-image-box <?= !empty($page['featured_image']) ? 'has-image' : '' ?>" 
                          id="featured-image-box"
                          onclick="openMediaBrowser('featured')">
@@ -383,7 +383,7 @@ ob_start();
                 </div>
                 
                 <div class="sidebar-section">
-                    <div class="sidebar-title">🔗 URL Slug</div>
+                    <div class="sidebar-title">🔗 URL Slug <span class="tip"><span class="tip-text">The URL path for this page. Auto-generated from title if left empty.</span></span></div>
                     <input type="text" name="slug" id="slug" class="form-input" 
                            placeholder="page-url-slug"
                            value="<?= esc($page['slug'] ?? '') ?>">
@@ -391,7 +391,7 @@ ob_start();
                 </div>
                 
                 <div class="sidebar-section">
-                    <div class="sidebar-title">📊 Menu Order</div>
+                    <div class="sidebar-title">📊 Menu Order <span class="tip"><span class="tip-text">Lower numbers appear first in navigation menus.</span></span></div>
                     <input type="number" name="menu_order" class="form-input" 
                            placeholder="0"
                            value="<?= (int)($page['menu_order'] ?? 0) ?>"
@@ -432,7 +432,7 @@ ob_start();
                     </div>
                     
                     <div class="form-group">
-                        <label class="form-label">Focus Keyword</label>
+                        <label class="form-label">Focus Keyword <span class="tip"><span class="tip-text">The main keyword you want this page to rank for in search engines.</span></span></label>
                         <input type="text" name="focus_keyword" id="focus-keyword" class="form-input" 
                                placeholder="Main keyword to optimize for"
                                oninput="analyzeSeo()">

@@ -73,7 +73,7 @@ $flashError = \Core\Session::getFlash('error');
         <!-- Location Card -->
         <div class="card">
             <div class="card-header">
-                <h2 class="card-title">📍 Display Location</h2>
+                <h2 class="card-title">📍 Display Location</h2> <span class="tip"><span class="tip-text">Where this menu appears on the site. Each location can have one menu.</span></span>
             </div>
             <div class="card-body">
                 <p class="section-intro">Choose where this menu should appear on your site:</p>
@@ -121,7 +121,7 @@ $flashError = \Core\Session::getFlash('error');
             <div class="card-body">
                 <div class="settings-grid">
                     <div class="form-group">
-                        <label for="max_depth">Maximum Depth</label>
+                        <label for="max_depth">Maximum Depth</label> <span class="tip"><span class="tip-text">How many levels of sub-items are allowed (1 = flat, 3 = nested).</span></span>
                         <select id="max_depth" name="max_depth" class="form-control">
                             <?php for ($i = 1; $i <= 5; $i++): ?>
                                 <option value="<?= $i ?>" <?= ($menu['max_depth'] ?? 3) == $i ? 'selected' : '' ?>>

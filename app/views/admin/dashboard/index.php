@@ -59,7 +59,7 @@ ob_start();
                 <div class="stat-icon primary">📄</div>
             </div>
             <div class="stat-value"><?= $pagesTotal ?></div>
-            <div class="stat-label">Total Pages</div>
+            <div class="stat-label">Total Pages <span class="tip"><span class="tip-text">All pages including drafts and published.</span></span></div>
             <div class="stat-change positive">
                 <span><?= $pagesPublished ?> published</span>
             </div>
@@ -70,7 +70,7 @@ ob_start();
                 <div class="stat-icon success">📝</div>
             </div>
             <div class="stat-value"><?= $articlesTotal ?></div>
-            <div class="stat-label">Total Articles</div>
+            <div class="stat-label">Total Articles <span class="tip"><span class="tip-text">Blog posts and news articles across all categories.</span></span></div>
             <div class="stat-change positive">
                 <span><?= $articlesPublished ?> published</span>
             </div>
@@ -81,7 +81,7 @@ ob_start();
                 <div class="stat-icon warning">🖼️</div>
             </div>
             <div class="stat-value"><?= $mediaCount ?></div>
-            <div class="stat-label">Media Files</div>
+            <div class="stat-label">Media Files <span class="tip"><span class="tip-text">Images, documents and other uploaded files.</span></span></div>
         </div>
         
         <div class="stat-card">

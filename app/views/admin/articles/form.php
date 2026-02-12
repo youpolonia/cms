@@ -396,7 +396,7 @@ ob_start();
                     </div>
                     
                     <div class="sidebar-section">
-                        <div class="sidebar-title">🖼️ Featured Image</div>
+                        <div class="sidebar-title">🖼️ Featured Image <span class="tip"><span class="tip-text">Displayed at the top of the article and in article listings.</span></span></div>
                         <div class="featured-image-box <?= !empty($article['featured_image']) ? 'has-image' : '' ?>" 
                              id="featured-image-box"
                              onclick="openMediaBrowser('featured')">
@@ -443,7 +443,7 @@ ob_start();
                     </div>
                     
                     <div class="sidebar-section">
-                        <div class="sidebar-title">🔗 URL Slug</div>
+                        <div class="sidebar-title">🔗 URL Slug <span class="tip"><span class="tip-text">The URL path for this article. Auto-generated from title if left empty.</span></span></div>
                         <input type="text" name="slug" id="slug" class="form-input" 
                                placeholder="article-url-slug"
                                value="<?= esc($article['slug'] ?? '') ?>">
@@ -484,7 +484,7 @@ ob_start();
                         
                         <div class="form-group" style="background: var(--sidebar-bg); padding: 0.75rem; border-radius: 8px; border: 1px solid var(--primary);">
                             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-                                <label class="form-label" style="color: var(--primary); margin: 0;">🎯 Focus Keyword</label>
+                                <label class="form-label" style="color: var(--primary); margin: 0;">🎯 Focus Keyword <span class="tip"><span class="tip-text">The main search term you want this article to rank for.</span></span></label>
                                 <?php if ($aiConfigured): ?>
                                 <button type="button" class="btn btn-ai btn-sm" onclick="aiGenerate('generate_focus_keyword')">✨ Suggest</button>
                                 <?php endif; ?>

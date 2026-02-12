@@ -891,6 +891,88 @@ function isActive(string $path): string {
             display: flex;
         }
     }
+
+    /* ============================================
+       INLINE HELP TOOLTIPS
+       ============================================ */
+    .tip {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 16px;
+        height: 16px;
+        font-size: 10px;
+        font-weight: 700;
+        line-height: 1;
+        color: var(--color-text-muted);
+        background: var(--color-bg-tertiary);
+        border: 1px solid var(--color-border);
+        border-radius: 50%;
+        cursor: help;
+        position: relative;
+        vertical-align: middle;
+        margin-left: 4px;
+        transition: color .15s, border-color .15s, background .15s;
+        user-select: none;
+        flex-shrink: 0;
+    }
+    .tip:hover {
+        color: var(--color-accent);
+        border-color: var(--color-accent);
+        background: var(--color-accent-muted);
+    }
+    .tip::before { content: "?"; }
+
+    /* Tooltip bubble */
+    .tip-text {
+        visibility: hidden;
+        opacity: 0;
+        position: absolute;
+        z-index: 9999;
+        bottom: calc(100% + 8px);
+        left: 50%;
+        transform: translateX(-50%);
+        width: max-content;
+        max-width: 280px;
+        padding: 8px 12px;
+        font-size: 12px;
+        font-weight: 400;
+        line-height: 1.5;
+        color: #e2e8f0;
+        background: #1e293b;
+        border: 1px solid #334155;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,.3);
+        pointer-events: none;
+        transition: opacity .15s, visibility .15s;
+        white-space: normal;
+        text-align: left;
+    }
+    .tip-text::after {
+        content: "";
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        border: 5px solid transparent;
+        border-top-color: #334155;
+    }
+    .tip:hover .tip-text {
+        visibility: visible;
+        opacity: 1;
+    }
+    /* Flip tooltip below if near top */
+    .tip.tip-down .tip-text {
+        bottom: auto;
+        top: calc(100% + 8px);
+    }
+    .tip.tip-down .tip-text::after {
+        top: auto;
+        bottom: 100%;
+        border-top-color: transparent;
+        border-bottom-color: #334155;
+    }
+
     </style>
 </head>
 <body>

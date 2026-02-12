@@ -365,7 +365,7 @@ $username = \Core\Session::getAdminUsername() ?? 'Admin';
 <!-- Industry -->
 <div class="atb-section">
     <div class="atb-section-head">
-        <span class="atb-section-title">Industry</span>
+        <span class="atb-section-title">Industry <span class="tip"><span class="tip-text">Choose the business type — AI tailors layout, imagery and tone accordingly.</span></span></span>
         <span class="atb-section-hint">pick one</span>
     </div>
     <div class="atb-chips" id="atbIndustry" data-name="industry">
@@ -439,7 +439,7 @@ $username = \Core\Session::getAdminUsername() ?? 'Admin';
 <!-- Style -->
 <div class="atb-section">
     <div class="atb-section-head">
-        <span class="atb-section-title">Design Style</span>
+        <span class="atb-section-title">Design Style <span class="tip"><span class="tip-text">The visual approach for the theme. Each style produces a distinctly different look.</span></span></span>
     </div>
     <div class="atb-chips" id="atbStyle" data-name="style">
         <div class="atb-chip selected" data-value="minimalist"><span class="style-bar" style="background:linear-gradient(90deg,#f8f8f8,#e0e0e0)"></span> Minimalist</div>
@@ -462,7 +462,7 @@ $username = \Core\Session::getAdminUsername() ?? 'Admin';
 <!-- Mood -->
 <div class="atb-section">
     <div class="atb-section-head">
-        <span class="atb-section-title">Color Mood</span>
+        <span class="atb-section-title">Color Mood <span class="tip"><span class="tip-text">Sets the overall color temperature and emotional feel of the design.</span></span></span>
     </div>
     <div class="atb-chips" id="atbMood" data-name="mood">
         <div class="atb-chip selected" data-value="light"><span class="mood-dot" style="background:#f8f9fa"></span> Light</div>
@@ -484,7 +484,7 @@ $username = \Core\Session::getAdminUsername() ?? 'Admin';
 <div class="atb-row-2">
     <?php if (!empty($aiModels)): ?>
     <div class="atb-field">
-        <label class="atb-label">AI Model</label>
+        <label class="atb-label">AI Model <span class="tip"><span class="tip-text">Better models produce higher quality themes but cost more. Premium recommended.</span></span></label>
         <select class="atb-select" id="atbModel">
             <?php foreach ($aiModels as $m): ?>
             <option value="<?= esc($m['provider']) ?>:<?= esc($m['model']) ?>"<?= $m['isDefault'] ? ' selected' : '' ?> data-tier="<?= esc($m['tier']) ?>">
@@ -495,7 +495,7 @@ $username = \Core\Session::getAdminUsername() ?? 'Admin';
     </div>
     <?php endif; ?>
     <div class="atb-field">
-        <label class="atb-label">Content Language</label>
+        <label class="atb-label">Content Language <span class="tip"><span class="tip-text">Language for all generated text: headings, paragraphs, buttons, menus.</span></span></label>
         <select class="atb-select" id="atbLanguage">
             <option value="English" selected>🇬🇧 English</option>
             <option value="Polish">🇵🇱 Polski</option>
