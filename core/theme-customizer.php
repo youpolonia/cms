@@ -344,12 +344,18 @@ if (!function_exists('generate_studio_css_overrides')) {
             '--text' => '--blog-text',
         ];
         
+        // Also set --blog-* for surface/bg/text
+        
         foreach ($colorMap as $path => $var) {
             [$section, $key] = explode('.', $path);
             if (!empty($customs[$section][$key])) {
                 $css .= "    {$var}: {$customs[$section][$key]};\n";
-                // Also set legacy aliases
+                // Also set legacy aliases (--primary → --color-primary)
                 $css .= "    --color" . substr($var, 1) . ": {$customs[$section][$key]};\n";
+                // SaaS uses --color-bg (short form of --color-background)
+                if ($var === '--background') {
+                    $css .= "    --color-bg: {$customs[$section][$key]};\n";
+                }
                 // Also set theme-specific aliases (blog etc.)
                 if (isset($blogMap[$var])) {
                     $css .= "    {$blogMap[$var]}: {$customs[$section][$key]};\n";
@@ -539,6 +545,9 @@ if (!function_exists('_theme_generate_default_schema')) {
                 'primary_color' => ['type' => 'color', 'label' => 'Primary Color', 'default' => $config['colors']['primary'] ?? '#3b82f6'],
                 'secondary_color' => ['type' => 'color', 'label' => 'Secondary Color', 'default' => $config['colors']['secondary'] ?? '#06b6d4'],
                 'accent_color' => ['type' => 'color', 'label' => 'Accent Color', 'default' => $config['colors']['accent'] ?? '#f59e0b'],
+                'bg_color' => ['type' => 'color', 'label' => 'Background Color', 'default' => '#ffffff'],
+                'text_color' => ['type' => 'color', 'label' => 'Text Color', 'default' => '#1e293b'],
+                'dark_color' => ['type' => 'color', 'label' => 'Surface / Dark Color', 'default' => '#f8fafc'],
                 'favicon' => ['type' => 'image', 'label' => 'Favicon', 'default' => null],
                 'og_image' => ['type' => 'image', 'label' => 'Social Share Image (OG)', 'default' => null],
                 'color_mode' => ['type' => 'hidden', 'label' => 'Color Mode', 'default' => 'light'],

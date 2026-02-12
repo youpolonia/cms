@@ -25,7 +25,7 @@
         "secondary_color": ["--secondary", "--color-secondary", "--blog-primary-light"],
         "accent_color": ["--accent", "--color-accent", "--blog-accent"],
         "dark_color": ["--surface", "--color-surface", "--blog-surface"],
-        "bg_color": ["--background", "--color-background", "--blog-bg"],
+        "bg_color": ["--background", "--color-background", "--color-bg", "--blog-bg"],
         "text_color": ["--text", "--color-text", "--blog-text"]
     };
 

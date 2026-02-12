@@ -4050,10 +4050,10 @@ function exitCompare() {
    DARK / LIGHT MODE TOGGLE
    ═══════════════════════════════════════════════════════════ */
 
-const DARK_OVERRIDES = {
-  bg_color: '#1a1a2e', dark_color: '#16213e', text_color: '#e2e8f0',
-  primary_color: null, secondary_color: null, accent_color: null /* keep original */
-};
+/* Fields toggled by dark/light mode */
+const DARK_FIELDS = ['bg_color', 'dark_color', 'text_color'];
+const DARK_DEFAULTS = { bg_color: '#0f172a', dark_color: '#1e293b', text_color: '#e2e8f0' };
+const LIGHT_DEFAULTS = { bg_color: '#ffffff', dark_color: '#f8fafc', text_color: '#1e293b' };
 
 let colorMode = getVal('brand', 'color_mode') || 'light';
 let lightSnapshot = null;
@@ -4075,22 +4075,15 @@ $$('#ts-mode-toggle .ts-mode-btn').forEach(btn => {
 
     if (mode === 'dark') {
       /* Save light values before switching */
-      lightSnapshot = {
-        bg_color: getVal('brand', 'bg_color'),
-        dark_color: getVal('brand', 'dark_color'),
-        text_color: getVal('brand', 'text_color'),
-      };
+      lightSnapshot = {};
+      DARK_FIELDS.forEach(f => { lightSnapshot[f] = getVal('brand', f); });
       /* Apply dark overrides */
-      setVal('brand', 'bg_color', DARK_OVERRIDES.bg_color);
-      setVal('brand', 'dark_color', DARK_OVERRIDES.dark_color);
-      setVal('brand', 'text_color', DARK_OVERRIDES.text_color);
+      DARK_FIELDS.forEach(f => { setVal('brand', f, DARK_DEFAULTS[f]); });
     } else {
       /* Restore light values */
-      if (lightSnapshot) {
-        setVal('brand', 'bg_color', lightSnapshot.bg_color || '');
-        setVal('brand', 'dark_color', lightSnapshot.dark_color || '');
-        setVal('brand', 'text_color', lightSnapshot.text_color || '');
-      }
+      DARK_FIELDS.forEach(f => {
+        setVal('brand', f, (lightSnapshot && lightSnapshot[f]) ? lightSnapshot[f] : LIGHT_DEFAULTS[f]);
+      });
     }
 
     colorMode = mode;
