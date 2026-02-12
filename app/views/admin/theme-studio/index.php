@@ -1365,7 +1365,7 @@ html,body{
           <div class="ts-preview-spinner"></div>
           <div class="ts-preview-loading-text">Loading preview…</div>
         </div>
-        <iframe id="ts-iframe" src="/admin/theme-studio/preview" title="Theme Preview"></iframe>
+        <iframe id="ts-iframe" src="/admin/theme-studio/preview<?= !empty($_GET['theme']) ? '?theme=' . urlencode($_GET['theme']) : '' ?>" title="Theme Preview"></iframe>
       </div>
     </main>
   </div>
@@ -1419,6 +1419,8 @@ html,body{
    ═══════════════════════════════════════════════════════════ */
 
 const CSRF       = <?= json_encode($csrfToken ?? '') ?>;
+const TS_THEME   = <?= json_encode($themeSlug ?? '') ?>;
+const TS_THEME_Q = TS_THEME ? '?theme=' + encodeURIComponent(TS_THEME) : '';
 const SCHEMA     = <?= $schemaJson ?>;
 
 /* Override numeric fields → range sliders with proper min/max/step/unit */
@@ -1645,7 +1647,9 @@ function apiHeaders(isJson) {
 async function api(method, path, body) {
   const opts = { method, headers: apiHeaders(body && !(body instanceof FormData)) };
   if (body) opts.body = (body instanceof FormData) ? body : JSON.stringify(body);
-  const resp = await fetch('/api/theme-studio/' + path, opts);
+  const sep = path.includes('?') ? '&' : '?';
+  const themeQ = TS_THEME ? sep + 'theme=' + encodeURIComponent(TS_THEME) : '';
+  const resp = await fetch('/api/theme-studio/' + path + themeQ, opts);
   if (!resp.ok) throw new Error('API error: ' + resp.status);
   return resp.json();
 }
@@ -3974,7 +3978,7 @@ function enterCompare() {
   beforeLabel.className = 'ts-compare-label';
   beforeLabel.textContent = 'BEFORE';
   const beforeIframe = document.createElement('iframe');
-  beforeIframe.src = '/admin/theme-studio/preview';
+  beforeIframe.src = '/admin/theme-studio/preview' + TS_THEME_Q;
   beforeIframe.style.cssText = 'width:100%;height:100%;border:none';
   before.appendChild(beforeLabel);
   before.appendChild(beforeIframe);
@@ -3990,7 +3994,7 @@ function enterCompare() {
   afterLabel.className = 'ts-compare-label';
   afterLabel.textContent = 'AFTER';
   const afterIframe = document.createElement('iframe');
-  afterIframe.src = '/admin/theme-studio/preview';
+  afterIframe.src = '/admin/theme-studio/preview' + TS_THEME_Q;
   afterIframe.style.cssText = 'width:100%;height:100%;border:none';
   after.appendChild(afterLabel);
   after.appendChild(afterIframe);

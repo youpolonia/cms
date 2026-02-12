@@ -9,11 +9,27 @@ use Core\Response;
 class ThemeStudioController
 {
     /**
+     * Resolve theme slug — supports ?theme=slug override for previewing non-active themes
+     */
+    private function resolveTheme(): string
+    {
+        if (!empty($_GET['theme'])) {
+            $slug = preg_replace('/[^a-z0-9\-_]/', '', strtolower($_GET['theme']));
+            if ($slug && is_dir(\CMS_ROOT . '/themes/' . $slug)) {
+                // Override get_active_theme() for this request
+                $GLOBALS['_active_theme_override'] = $slug;
+                return $slug;
+            }
+        }
+        return get_active_theme();
+    }
+
+    /**
      * Full-screen Theme Studio UI
      */
     public function index(Request $request): void
     {
-        $themeSlug = get_active_theme();
+        $themeSlug = $this->resolveTheme();
         $themeConfig = get_theme_config($themeSlug);
         $schema = theme_get_schema($themeSlug);
         $values = theme_get_all($themeSlug);
@@ -61,6 +77,9 @@ class ThemeStudioController
      */
     public function preview(Request $request): void
     {
+        // Allow previewing non-active themes via ?theme=slug
+        $this->resolveTheme();
+
         // Set flag so templates can add data-studio-field attributes
         define('THEME_STUDIO_PREVIEW', true);
         
@@ -77,7 +96,7 @@ class ThemeStudioController
      */
     public function apiSchema(Request $request): void
     {
-        $themeSlug = get_active_theme();
+        $themeSlug = $this->resolveTheme();
         $config = get_theme_config($themeSlug);
         
         Response::json([
@@ -93,7 +112,7 @@ class ThemeStudioController
      */
     public function apiValues(Request $request): void
     {
-        $themeSlug = get_active_theme();
+        $themeSlug = $this->resolveTheme();
         
         Response::json([
             'ok' => true,
@@ -114,7 +133,7 @@ class ThemeStudioController
             return;
         }
         
-        $themeSlug = get_active_theme();
+        $themeSlug = $this->resolveTheme();
         $label = $body['label'] ?? 'Manual save';
         
         // Save snapshot before changes
@@ -137,7 +156,7 @@ class ThemeStudioController
     public function apiReset(Request $request): void
     {
         $body = $GLOBALS['_JSON_DATA'] ?? json_decode(file_get_contents('php://input'), true);
-        $themeSlug = get_active_theme();
+        $themeSlug = $this->resolveTheme();
         $section = $body['section'] ?? null;
         
         // Save snapshot before reset
@@ -156,7 +175,7 @@ class ThemeStudioController
      */
     public function apiHistory(Request $request): void
     {
-        $themeSlug = get_active_theme();
+        $themeSlug = $this->resolveTheme();
         
         Response::json([
             'ok' => true,
@@ -178,7 +197,7 @@ class ThemeStudioController
             return;
         }
         
-        $themeSlug = get_active_theme();
+        $themeSlug = $this->resolveTheme();
         $result = theme_restore_snapshot($themeSlug, $id);
         
         Response::json([
@@ -237,7 +256,7 @@ class ThemeStudioController
         $url = '/uploads/media/' . $filename;
         
         // Save to customizations
-        $themeSlug = get_active_theme();
+        $themeSlug = $this->resolveTheme();
         theme_set($themeSlug, $section, $field, $url, 'image');
         
         Response::json([
@@ -255,7 +274,7 @@ class ThemeStudioController
      */
     public function apiSections(Request $request): void
     {
-        $themeSlug = get_active_theme();
+        $themeSlug = $this->resolveTheme();
         $config = get_theme_config($themeSlug);
         $sections = $config['homepage_sections'] ?? [];
         $currentOrder = theme_get_section_order($themeSlug);
@@ -297,7 +316,7 @@ class ThemeStudioController
     public function apiSectionsSave(Request $request): void
     {
         $body = $GLOBALS['_JSON_DATA'] ?? json_decode(file_get_contents('php://input'), true);
-        $themeSlug = get_active_theme();
+        $themeSlug = $this->resolveTheme();
 
         $order = $body['order'] ?? null;
         $enabled = $body['enabled'] ?? null;
@@ -373,7 +392,7 @@ class ThemeStudioController
             $ai->setProvider($requestProvider);
         }
         
-        $themeSlug = get_active_theme();
+        $themeSlug = $this->resolveTheme();
         $schema = theme_get_schema($themeSlug);
         $currentValues = theme_get_all($themeSlug);
         

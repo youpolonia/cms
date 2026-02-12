@@ -189,15 +189,17 @@ if (file_exists($mvcRoutesFile)) {
                                 if (empty($token)) {
                                     $token = $_POST['_token'] ?? $_POST['csrf_token'] ?? '';
                                 }
-                                // Finally check JSON body (for AJAX requests)
-                                if (empty($token)) {
-                                    $contentType = $_SERVER['CONTENT_TYPE'] ?? '';
-                                    if (stripos($contentType, 'application/json') !== false) {
-                                        $rawInput = file_get_contents('php://input');
+                                // Always parse JSON body so controllers can access it
+                                // (php://input can only be read once — must cache here)
+                                $contentType = $_SERVER['CONTENT_TYPE'] ?? '';
+                                if (stripos($contentType, 'application/json') !== false && !isset($GLOBALS['_JSON_DATA'])) {
+                                    $rawInput = file_get_contents('php://input');
+                                    if (!empty($rawInput)) {
                                         $data = json_decode($rawInput, true);
                                         if (is_array($data)) {
-                                            $token = $data['_token'] ?? $data['csrf_token'] ?? '';
-                                            // Store raw input for controller to reuse (php://input can only be read once)
+                                            if (empty($token)) {
+                                                $token = $data['_token'] ?? $data['csrf_token'] ?? '';
+                                            }
                                             $GLOBALS['_JSON_INPUT'] = $rawInput;
                                             $GLOBALS['_JSON_DATA'] = $data;
                                         }

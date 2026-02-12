@@ -95,6 +95,11 @@ if (!function_exists('get_active_theme')) {
     {
         static $activeTheme = null;
         
+        // Global override (AI Theme Builder preview, etc.)
+        if (!empty($GLOBALS['_active_theme_override'])) {
+            return $GLOBALS['_active_theme_override'];
+        }
+        
         if ($activeTheme !== null) {
             return $activeTheme;
         }
