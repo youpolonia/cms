@@ -61,5 +61,38 @@
         "shadowStrength": "15",
         "hoverScale": "1.02",
         "transitionSpeed": "200"
-    }
+    },
+    "homepage_sections": [
+        {
+            "id": "hero",
+            "label": "Hero",
+            "icon": "⭐",
+            "required": true
+        },
+        {
+            "id": "featured",
+            "label": "Featured Post",
+            "icon": "📌"
+        },
+        {
+            "id": "recent",
+            "label": "Recent Posts",
+            "icon": "📰"
+        },
+        {
+            "id": "popular",
+            "label": "Popular",
+            "icon": "🔥"
+        },
+        {
+            "id": "categories",
+            "label": "Categories",
+            "icon": "📂"
+        },
+        {
+            "id": "newsletter",
+            "label": "Newsletter",
+            "icon": "✉️"
+        }
+    ]
 }

@@ -247,6 +247,94 @@ class ThemeStudioController
         ]);
     }
     
+    // ─── Section Manager Endpoints ──────────────────────────────
+    
+    /**
+     * GET /api/theme-studio/sections
+     * Returns section definitions, current order, and enabled state for the active theme.
+     */
+    public function apiSections(Request $request): void
+    {
+        $themeSlug = get_active_theme();
+        $config = get_theme_config($themeSlug);
+        $sections = $config['homepage_sections'] ?? [];
+        $currentOrder = theme_get_section_order($themeSlug);
+
+        // Build sections with enabled state
+        $sectionMap = [];
+        foreach ($sections as $sec) {
+            $sectionMap[$sec['id']] = $sec;
+        }
+
+        $orderedSections = [];
+        foreach ($currentOrder as $id) {
+            if (isset($sectionMap[$id])) {
+                $def = $sectionMap[$id];
+                $def['enabled'] = theme_section_enabled($id, $themeSlug);
+                $orderedSections[] = $def;
+                unset($sectionMap[$id]);
+            }
+        }
+        // Append any sections not in the current order (new sections added to theme.json)
+        foreach ($sectionMap as $id => $def) {
+            $def['enabled'] = theme_section_enabled($id, $themeSlug);
+            $orderedSections[] = $def;
+        }
+
+        Response::json([
+            'ok' => true,
+            'theme' => $themeSlug,
+            'sections' => $orderedSections,
+            'order' => $currentOrder,
+        ]);
+    }
+
+    /**
+     * POST /api/theme-studio/sections/save
+     * Saves new order and enabled states.
+     * Body: { "order": ["hero","about",...], "enabled": {"hero":true,"about":false,...} }
+     */
+    public function apiSectionsSave(Request $request): void
+    {
+        $body = $GLOBALS['_JSON_DATA'] ?? json_decode(file_get_contents('php://input'), true);
+        $themeSlug = get_active_theme();
+
+        $order = $body['order'] ?? null;
+        $enabled = $body['enabled'] ?? null;
+
+        if (!is_array($order) || empty($order)) {
+            Response::json(['ok' => false, 'error' => 'Invalid order data']);
+            return;
+        }
+
+        // Validate section IDs against theme config
+        $config = get_theme_config($themeSlug);
+        $validIds = array_column($config['homepage_sections'] ?? [], 'id');
+        $order = array_values(array_filter($order, fn($id) => in_array($id, $validIds)));
+
+        if (empty($order)) {
+            Response::json(['ok' => false, 'error' => 'No valid section IDs']);
+            return;
+        }
+
+        // Save order as JSON
+        theme_set($themeSlug, 'sections', 'order', json_encode($order), 'json');
+
+        // Save enabled states
+        if (is_array($enabled)) {
+            foreach ($enabled as $id => $state) {
+                if (in_array($id, $validIds)) {
+                    theme_set($themeSlug, 'sections', $id . '_enabled', $state ? '1' : '0', 'toggle');
+                }
+            }
+        }
+
+        Response::json([
+            'ok' => true,
+            'order' => $order,
+        ]);
+    }
+
     // ─── AI Endpoints ─────────────────────────────────────────
     
     /**
@@ -277,18 +365,32 @@ class ThemeStudioController
             return;
         }
         
+        // Provider/model override from frontend
+        $requestProvider = $body['provider'] ?? null;
+        $requestModel = $body['model'] ?? null;
+        
+        if ($requestProvider && in_array($requestProvider, $ai->getAvailableProviders())) {
+            $ai->setProvider($requestProvider);
+        }
+        
         $themeSlug = get_active_theme();
         $schema = theme_get_schema($themeSlug);
         $currentValues = theme_get_all($themeSlug);
         
         $systemPrompt = $this->buildAIPrompt($schema, $currentValues, $themeSlug);
         
-        $result = $ai->query($userPrompt, [
+        $queryOptions = [
             'system_prompt' => $systemPrompt,
             'max_tokens' => 4000,
             'temperature' => 0.7,
             'json_mode' => true,
-        ]);
+        ];
+        
+        if ($requestModel) {
+            $queryOptions['model'] = $requestModel;
+        }
+        
+        $result = $ai->query($userPrompt, $queryOptions);
         
         if ($result['ok'] && !empty($result['json'])) {
             Response::json([
@@ -331,6 +433,14 @@ class ThemeStudioController
         $section = $body['section'] ?? '';
         $context = $body['context'] ?? '';
         
+        // Provider/model override from frontend
+        $requestProvider = $body['provider'] ?? null;
+        $requestModel = $body['model'] ?? null;
+        
+        if ($requestProvider && in_array($requestProvider, $ai->getAvailableProviders())) {
+            $ai->setProvider($requestProvider);
+        }
+        
         $schema = theme_get_schema();
         $sectionSchema = $schema[$section] ?? null;
         
@@ -352,12 +462,18 @@ class ThemeStudioController
                 . json_encode($fields, JSON_PRETTY_PRINT) . "\n\n"
                 . "Return JSON with the field keys and generated text values. Be specific and professional, not generic.";
         
-        $result = $ai->query($prompt, [
+        $queryOptions = [
             'system_prompt' => 'You are a professional copywriter. Generate website content based on the business description. Return only valid JSON.',
             'max_tokens' => 2000,
             'temperature' => 0.8,
             'json_mode' => true,
-        ]);
+        ];
+        
+        if ($requestModel) {
+            $queryOptions['model'] = $requestModel;
+        }
+        
+        $result = $ai->query($prompt, $queryOptions);
         
         if ($result['ok'] && !empty($result['json'])) {
             Response::json(['ok' => true, 'content' => $result['json']]);
@@ -559,5 +675,135 @@ PROMPT;
         if ($t < 1/2) return $q;
         if ($t < 2/3) return $p + ($q - $p) * (2/3 - $t) * 6;
         return $p;
+    }
+    
+    // ─── AI Models & Provider Discovery ───────────────────────
+    
+    /**
+     * GET /api/theme-studio/ai/models
+     * Returns available AI providers and their models — read dynamically from ai_settings.json.
+     * User defines models in config (BYOK), we just expose them here.
+     */
+    public function aiModels(Request $request): void
+    {
+        $providers = [];
+        $defaultProvider = null;
+        $defaultModel = null;
+        
+        // Load AI config
+        $settingsPath = \CMS_ROOT . '/config/ai_settings.json';
+        $settings = [];
+        if (file_exists($settingsPath)) {
+            $settings = @json_decode(file_get_contents($settingsPath), true) ?: [];
+        }
+        
+        $defaultProvider = $settings['default_provider'] ?? 'openai';
+        $recommended = $settings['recommended_models'] ?? [];
+        
+        // Provider display names and icons
+        $providerMeta = [
+            'openai'     => ['label' => 'OpenAI',    'icon' => '🟢'],
+            'anthropic'  => ['label' => 'Anthropic',  'icon' => '🟠'],
+            'google'     => ['label' => 'Google',     'icon' => '🔵'],
+            'deepseek'   => ['label' => 'DeepSeek',   'icon' => '🟣'],
+            'huggingface' => ['label' => 'HuggingFace', 'icon' => '🟡'],
+            'ollama'     => ['label' => 'Ollama',     'icon' => '⚪'],
+        ];
+        
+        // Build providers list from config — read actual models from ai_settings.json
+        foreach ($settings['providers'] ?? [] as $provKey => $provConfig) {
+            // Skip disabled or unconfigured providers
+            if (empty($provConfig['enabled'])) continue;
+            if (empty($provConfig['api_key']) && $provKey !== 'ollama') continue;
+            
+            // Skip HuggingFace if it only has text/image/vision (not chat models)
+            if ($provKey === 'huggingface') {
+                $hfModels = $provConfig['models'] ?? [];
+                if (!is_array($hfModels) || isset($hfModels['text'])) continue; // Old format, not chat models
+            }
+            
+            $meta = $providerMeta[$provKey] ?? ['label' => ucfirst($provKey), 'icon' => '⚙️'];
+            $configuredModel = $provConfig['default_model'] ?? null;
+            $configModels = $provConfig['models'] ?? [];
+            
+            // Build model list from config
+            $models = [];
+            foreach ($configModels as $modelId => $modelDef) {
+                if (!is_array($modelDef)) continue; // Skip non-array entries
+                
+                $name = $modelDef['name'] ?? $modelId;
+                $isLegacy = !empty($modelDef['legacy']);
+                $isReasoning = !empty($modelDef['reasoning']) || !empty($modelDef['extended_thinking']);
+                $isRecommended = !empty($modelDef['recommended']);
+                $maxTokens = $modelDef['max_tokens'] ?? 0;
+                $costInput = $modelDef['cost_per_1k_input'] ?? 0;
+                
+                // Determine tier from model properties
+                $tier = 'standard';
+                if ($isReasoning) {
+                    $tier = 'reasoning';
+                } elseif ($isRecommended) {
+                    $tier = 'recommended';
+                } elseif ($isLegacy) {
+                    $tier = 'legacy';
+                } elseif ($costInput >= 0.01) {
+                    $tier = 'premium';
+                } elseif ($costInput >= 0.002) {
+                    $tier = 'pro';
+                } elseif ($costInput > 0) {
+                    $tier = 'fast';
+                }
+                
+                // Build description from properties
+                $desc = '';
+                if ($maxTokens >= 1000000) {
+                    $desc .= (int)($maxTokens / 1000000) . 'M ctx';
+                } elseif ($maxTokens >= 1000) {
+                    $desc .= (int)($maxTokens / 1000) . 'K ctx';
+                }
+                if ($costInput > 0) {
+                    $desc .= ($desc ? ' · ' : '') . '$' . $costInput . '/1K in';
+                }
+                if ($isLegacy) $desc .= ($desc ? ' · ' : '') . 'Legacy';
+                
+                $models[] = [
+                    'id' => $modelId,
+                    'name' => $name,
+                    'tier' => $tier,
+                    'desc' => $desc,
+                    'legacy' => $isLegacy,
+                    'reasoning' => $isReasoning,
+                    'recommended' => $isRecommended,
+                ];
+            }
+            
+            // Sort: recommended first, then non-legacy, then legacy
+            usort($models, function ($a, $b) {
+                if ($a['recommended'] !== $b['recommended']) return $b['recommended'] ? 1 : -1;
+                if ($a['legacy'] !== $b['legacy']) return $a['legacy'] ? 1 : -1;
+                return 0;
+            });
+            
+            if (empty($models)) continue;
+            
+            $providers[$provKey] = [
+                'label' => $meta['label'],
+                'icon' => $meta['icon'],
+                'models' => $models,
+                'configured_model' => $configuredModel,
+            ];
+            
+            if ($provKey === $defaultProvider) {
+                $defaultModel = $configuredModel;
+            }
+        }
+        
+        Response::json([
+            'ok' => true,
+            'providers' => $providers,
+            'default_provider' => $defaultProvider,
+            'default_model' => $defaultModel,
+            'recommended' => $recommended,
+        ]);
     }
 }

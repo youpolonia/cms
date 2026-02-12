@@ -84,5 +84,33 @@
             "name": "404 Not Found",
             "file": "404.php"
         }
-    }
+    },
+    "homepage_sections": [
+        {
+            "id": "hero",
+            "label": "Hero",
+            "icon": "⭐",
+            "required": true
+        },
+        {
+            "id": "services",
+            "label": "Services",
+            "icon": "🔧"
+        },
+        {
+            "id": "testimonials",
+            "label": "Testimonials",
+            "icon": "💬"
+        },
+        {
+            "id": "team",
+            "label": "Team",
+            "icon": "👥"
+        },
+        {
+            "id": "newsletter",
+            "label": "Newsletter",
+            "icon": "✉️"
+        }
+    ]
 }

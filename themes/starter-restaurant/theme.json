@@ -63,5 +63,33 @@
         "shadowStrength": "15",
         "hoverScale": "1.03",
         "transitionSpeed": "300"
-    }
+    },
+    "homepage_sections": [
+        {
+            "id": "hero",
+            "label": "Hero",
+            "icon": "⭐",
+            "required": true
+        },
+        {
+            "id": "about",
+            "label": "About Us",
+            "icon": "👤"
+        },
+        {
+            "id": "pages",
+            "label": "Pages",
+            "icon": "📄"
+        },
+        {
+            "id": "articles",
+            "label": "Articles",
+            "icon": "📰"
+        },
+        {
+            "id": "parallax",
+            "label": "Parallax Divider",
+            "icon": "🖼️"
+        }
+    ]
 }

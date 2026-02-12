@@ -551,6 +551,62 @@ html,body{
 }
 .ts-ai-chip:hover{background:var(--ts-blue);color:var(--ts-bg);border-color:var(--ts-blue)}
 
+/* AI Model Selector */
+.ts-ai-model-bar{
+  display:flex;align-items:center;gap:6px;
+  padding:8px 12px;flex-shrink:0;
+  border-bottom:1px solid var(--ts-border);
+  background:rgba(49,50,68,.5);
+}
+.ts-ai-model-bar label{
+  font-size:11px;color:var(--ts-subtext);font-weight:500;
+  white-space:nowrap;
+}
+.ts-ai-model-select{
+  flex:1;padding:5px 28px 5px 8px;
+  background:var(--ts-surface);border:1px solid var(--ts-border);
+  border-radius:var(--ts-radius-sm);color:var(--ts-text);
+  font-size:12px;font-family:inherit;outline:none;
+  cursor:pointer;appearance:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath fill='%23a6adc8' d='M0 0l5 6 5-6z'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 8px center;
+  transition:border-color var(--ts-transition);
+  min-width:0;
+}
+.ts-ai-model-select:focus{border-color:var(--ts-blue)}
+.ts-ai-model-select optgroup{
+  background:var(--ts-surface);color:var(--ts-subtext);
+  font-weight:700;font-size:11px;
+}
+.ts-ai-model-select option{
+  background:var(--ts-bg);color:var(--ts-text);
+  padding:4px 8px;font-size:12px;
+}
+.ts-ai-model-info{
+  font-size:10px;color:var(--ts-subtext);
+  display:flex;align-items:center;gap:4px;
+  white-space:nowrap;
+}
+.ts-ai-model-tier{
+  display:inline-block;padding:1px 5px;border-radius:3px;
+  font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;
+}
+.ts-ai-model-tier.fast{background:rgba(166,227,161,.15);color:var(--ts-green)}
+.ts-ai-model-tier.pro{background:rgba(137,180,250,.15);color:var(--ts-blue)}
+.ts-ai-model-tier.premium{background:rgba(203,166,247,.15);color:var(--ts-mauve)}
+.ts-ai-model-tier.reasoning{background:rgba(249,226,175,.15);color:var(--ts-yellow)}
+.ts-ai-model-tier.recommended{background:rgba(250,179,135,.15);color:var(--ts-peach)}
+.ts-ai-model-tier.legacy{background:rgba(88,91,112,.2);color:var(--ts-overlay)}
+.ts-ai-model-tier.standard{background:rgba(137,180,250,.1);color:var(--ts-subtext)}
+
+/* AI usage indicator */
+.ts-ai-usage{
+  font-size:10px;color:var(--ts-subtext);
+  text-align:right;padding:2px 12px 0;
+  display:none;
+}
+.ts-ai-usage.visible{display:block}
+
 /* AI input */
 .ts-ai-input-row{
   display:flex;gap:8px;padding:10px 12px;flex-shrink:0;
@@ -657,6 +713,115 @@ html,body{
 .ts-modal-title{font-size:16px;font-weight:700;margin-bottom:8px}
 .ts-modal-text{font-size:13px;color:var(--ts-subtext);margin-bottom:20px;line-height:1.5}
 .ts-modal-actions{display:flex;gap:8px;justify-content:flex-end}
+
+/* ── Tab Navigation ────────────────────────────────────── */
+.ts-tab-nav{
+  display:flex;border-bottom:1px solid var(--ts-border);
+  background:var(--ts-bg);flex-shrink:0;
+}
+.ts-tab-btn{
+  flex:1;padding:10px 12px;
+  background:transparent;border:none;
+  color:var(--ts-subtext);font-size:12px;font-weight:600;
+  cursor:pointer;transition:all var(--ts-transition);
+  border-bottom:2px solid transparent;font-family:inherit;
+  display:flex;align-items:center;justify-content:center;gap:6px;
+}
+.ts-tab-btn:hover{color:var(--ts-text);background:rgba(69,71,90,.3)}
+.ts-tab-btn.active{
+  color:var(--ts-blue);border-bottom-color:var(--ts-blue);
+  background:rgba(137,180,250,.05);
+}
+.ts-tab-content{display:none;flex:1;overflow-y:auto}
+.ts-tab-content.active{display:block}
+
+/* ── Section Manager ───────────────────────────────────── */
+.ts-sections-panel{padding:0}
+.ts-sections-header{
+  padding:16px;border-bottom:1px solid var(--ts-border);
+}
+.ts-sections-header h3{
+  font-size:14px;font-weight:700;color:var(--ts-text);margin-bottom:4px;
+}
+.ts-sections-header p{
+  font-size:12px;color:var(--ts-subtext);
+}
+.ts-sections-list{
+  padding:8px;min-height:100px;
+}
+.ts-section-item{
+  display:flex;align-items:center;gap:10px;
+  padding:10px 12px;margin-bottom:4px;
+  background:var(--ts-bg);border:1px solid var(--ts-border);
+  border-radius:var(--ts-radius-sm);
+  cursor:grab;transition:all 0.15s ease;
+  user-select:none;
+}
+.ts-section-item:active{cursor:grabbing}
+.ts-section-item:hover{border-color:var(--ts-blue);background:rgba(137,180,250,.03)}
+.ts-section-item.dragging{
+  opacity:0.5;border-color:var(--ts-blue);
+  box-shadow:0 4px 12px rgba(0,0,0,.3);
+}
+.ts-section-item.drag-over{
+  border-color:var(--ts-green);
+  box-shadow:0 0 0 2px rgba(166,227,161,.2);
+}
+.ts-section-item.disabled{opacity:0.5}
+.ts-section-item.disabled .ts-section-item-label{color:var(--ts-subtext);text-decoration:line-through}
+
+.ts-section-item-handle{
+  color:var(--ts-overlay);font-size:16px;flex-shrink:0;
+  cursor:grab;width:20px;text-align:center;
+  line-height:1;letter-spacing:-1px;
+}
+.ts-section-item-icon{font-size:18px;flex-shrink:0;width:24px;text-align:center}
+.ts-section-item-label{
+  flex:1;font-size:13px;font-weight:500;color:var(--ts-text);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.ts-section-item-badge{
+  font-size:9px;font-weight:700;text-transform:uppercase;
+  padding:2px 6px;border-radius:3px;
+  background:rgba(203,166,247,.15);color:var(--ts-mauve);
+  letter-spacing:0.5px;flex-shrink:0;
+}
+
+/* Section toggle switch (compact) */
+.ts-section-toggle{
+  position:relative;width:36px;height:20px;flex-shrink:0;
+  cursor:pointer;display:block;
+}
+.ts-section-toggle input{position:absolute;opacity:0;width:0;height:0}
+.ts-section-toggle-track{
+  position:absolute;inset:0;border-radius:10px;
+  background:var(--ts-overlay);
+  transition:background 0.25s ease;
+}
+.ts-section-toggle input:checked + .ts-section-toggle-track{background:var(--ts-green)}
+.ts-section-toggle-thumb{
+  position:absolute;top:2px;left:2px;width:16px;height:16px;
+  border-radius:50%;background:#fff;
+  box-shadow:0 1px 2px rgba(0,0,0,.3);
+  transition:transform 0.25s cubic-bezier(0.4,0,0.2,1);
+  pointer-events:none;
+}
+.ts-section-toggle input:checked ~ .ts-section-toggle-thumb{transform:translateX(16px)}
+.ts-section-toggle input:disabled{cursor:not-allowed}
+.ts-section-toggle input:disabled + .ts-section-toggle-track{background:var(--ts-green);opacity:0.6}
+.ts-section-toggle input:disabled ~ .ts-section-toggle-thumb{transform:translateX(16px)}
+
+.ts-sections-save{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  width:calc(100% - 16px);margin:8px;padding:10px 16px;
+  background:var(--ts-blue);color:var(--ts-bg);border:none;
+  border-radius:var(--ts-radius-sm);font-size:13px;font-weight:600;
+  cursor:pointer;transition:all var(--ts-transition);
+  font-family:inherit;
+}
+.ts-sections-save:hover{background:#a8c7fc;box-shadow:0 0 12px rgba(137,180,250,.3)}
+.ts-sections-save:disabled{opacity:0.5;cursor:default}
+.ts-sections-save.saved{background:var(--ts-green)}
 
 /* ── Responsive ────────────────────────────────────────── */
 /* ── Color Presets ──────────────────────────────────────── */
@@ -765,7 +930,31 @@ html,body{
 
     <!-- ── Control Panel (left sidebar) ────────────────── -->
     <aside id="ts-panel">
-      <div id="ts-panel-sections" class="ts-scroll"></div>
+      <!-- Tab Navigation -->
+      <div class="ts-tab-nav" id="ts-tab-nav">
+        <button class="ts-tab-btn active" data-tab="design" title="Design">🎨 Design</button>
+        <button class="ts-tab-btn" data-tab="sections" title="Sections">📐 Sections</button>
+      </div>
+
+      <!-- Design Tab (existing accordion) -->
+      <div id="ts-panel-sections" class="ts-scroll ts-tab-content active" data-tab="design"></div>
+
+      <!-- Sections Tab (Section Manager) -->
+      <div id="ts-sections-tab" class="ts-scroll ts-tab-content" data-tab="sections" style="display:none">
+        <div class="ts-sections-panel" id="sections-panel">
+          <div class="ts-sections-header">
+            <h3>Homepage Sections</h3>
+            <p>Drag to reorder, toggle to show/hide</p>
+          </div>
+          <div class="ts-sections-list" id="sections-list">
+            <!-- Populated by JS -->
+          </div>
+          <button class="ts-sections-save" id="sections-save-btn">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+            Save Section Order
+          </button>
+        </div>
+      </div>
 
       <!-- AI Chat (shows only if AI is configured) -->
       <?php if (!empty($aiAvailable)): ?>
@@ -775,10 +964,19 @@ html,body{
           <span class="ts-ai-label">AI Assistant</span>
           <svg class="ts-ai-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
         </div>
+        <!-- Model Selector Bar -->
+        <div class="ts-ai-model-bar" id="ts-ai-model-bar">
+          <label for="ts-ai-model">Model:</label>
+          <select class="ts-ai-model-select" id="ts-ai-model">
+            <option value="">Loading models…</option>
+          </select>
+          <span class="ts-ai-model-info" id="ts-ai-model-info"></span>
+        </div>
         <div class="ts-ai-messages ts-scroll" id="ts-ai-messages">
           <div class="ts-ai-welcome">
             <span class="ts-ai-welcome-icon">✨</span>
-            Describe what you'd like and I'll suggest customizations.
+            Describe what you'd like and I'll suggest customizations.<br>
+            <small style="color:var(--ts-overlay)">Choose a model above, then type your prompt below.</small>
           </div>
         </div>
         <div class="ts-ai-chips" id="ts-ai-chips">
@@ -787,7 +985,11 @@ html,body{
           <button class="ts-ai-chip" data-prompt="Make it more modern and minimal">✨ Minimalist</button>
           <button class="ts-ai-chip" data-prompt="Suggest a professional corporate look">💼 Corporate</button>
           <button class="ts-ai-chip" data-prompt="Make the design more playful and colorful">🎨 Playful</button>
+          <button class="ts-ai-chip" data-prompt="I'm a dentist in Warsaw, customize for my clinic">🦷 Dentist</button>
+          <button class="ts-ai-chip" data-prompt="Restaurant in Paris, elegant French cuisine">🍷 Restaurant</button>
+          <button class="ts-ai-chip" data-prompt="Dark mode with neon accents">🌙 Dark neon</button>
         </div>
+        <div class="ts-ai-usage" id="ts-ai-usage"></div>
         <div class="ts-ai-input-row">
           <input class="ts-ai-input" id="ts-ai-input" placeholder="Describe your vision…" autocomplete="off">
           <button class="ts-ai-send" id="ts-ai-send" title="Send to AI">
@@ -871,6 +1073,12 @@ let dirty     = false;
 let saveTimer = null;
 let activeDevice = 'desktop';
 
+/* AI model state */
+let aiProviders   = {};
+let aiSelectedProvider = null;
+let aiSelectedModel    = null;
+let aiTotalTokens = 0;
+
 /* Color picker state */
 let cpickerTarget = null;
 let cpickerHue    = 0;
@@ -918,12 +1126,16 @@ const dom = {
 
 /* AI elements (may be null if AI not available) */
 const aiDom = AI_ON ? {
-  panel   : $('#ts-ai-panel'),
-  toggle  : $('#ts-ai-toggle'),
-  messages: $('#ts-ai-messages'),
-  input   : $('#ts-ai-input'),
-  send    : $('#ts-ai-send'),
-  chips   : $$('.ts-ai-chip'),
+  panel     : $('#ts-ai-panel'),
+  toggle    : $('#ts-ai-toggle'),
+  messages  : $('#ts-ai-messages'),
+  input     : $('#ts-ai-input'),
+  send      : $('#ts-ai-send'),
+  chips     : $$('.ts-ai-chip'),
+  modelBar  : $('#ts-ai-model-bar'),
+  modelSelect: $('#ts-ai-model'),
+  modelInfo : $('#ts-ai-model-info'),
+  usage     : $('#ts-ai-usage'),
 } : null;
 
 
@@ -1849,8 +2061,116 @@ if (AI_ON && aiDom) {
     aiDom.panel.classList.toggle('collapsed');
     if (!aiDom.panel.classList.contains('collapsed')) {
       setTimeout(() => aiDom.input.focus(), 100);
+      /* Load models on first open */
+      if (!aiDom._modelsLoaded) loadAiModels();
     }
   });
+
+  /* ── Model Selector ─────────────────────────────────── */
+
+  async function loadAiModels() {
+    aiDom._modelsLoaded = true;
+    try {
+      const res = await api('GET', 'ai/models');
+      if (!res.ok || !res.providers) {
+        aiDom.modelSelect.innerHTML = '<option value="">No AI models available</option>';
+        return;
+      }
+      
+      aiProviders = res.providers;
+      const defaultProvider = res.default_provider;
+      const defaultModel = res.default_model;
+      
+      let html = '';
+      let firstValue = '';
+      let defaultValue = '';
+      
+      Object.entries(res.providers).forEach(([provKey, prov]) => {
+        /* Split into current and legacy groups */
+        const current = prov.models.filter(m => !m.legacy);
+        const legacy = prov.models.filter(m => m.legacy);
+        
+        if (current.length) {
+          html += '<optgroup label="' + esc(prov.icon + ' ' + prov.label) + '">';
+          current.forEach(m => {
+            const val = provKey + '::' + m.id;
+            if (!firstValue) firstValue = val;
+            const isDefault = (provKey === defaultProvider && m.id === defaultModel);
+            const star = m.recommended ? ' ⭐' : '';
+            const tierLabel = m.tier && m.tier !== 'standard' ? ' [' + m.tier.toUpperCase() + ']' : '';
+            html += '<option value="' + esc(val) + '"' + (isDefault ? ' selected' : '') + '>' +
+                    esc(m.name + tierLabel + star) + '</option>';
+            if (isDefault) defaultValue = val;
+          });
+          html += '</optgroup>';
+        }
+        
+        if (legacy.length) {
+          html += '<optgroup label="' + esc('   ↳ ' + prov.label + ' Legacy') + '">';
+          legacy.forEach(m => {
+            const val = provKey + '::' + m.id;
+            html += '<option value="' + esc(val) + '" style="color:#585b70">' +
+                    esc(m.name) + '</option>';
+          });
+          html += '</optgroup>';
+        }
+      });
+      
+      aiDom.modelSelect.innerHTML = html;
+      
+      /* Set initial selection: configured default > first recommended > first model */
+      const selected = defaultValue || firstValue;
+      if (selected) {
+        aiDom.modelSelect.value = selected;
+        updateModelSelection(selected);
+      }
+    } catch (e) {
+      aiDom.modelSelect.innerHTML = '<option value="">Error loading models</option>';
+      console.error('[Theme Studio] Failed to load AI models:', e);
+    }
+  }
+
+  aiDom.modelSelect.addEventListener('change', () => {
+    updateModelSelection(aiDom.modelSelect.value);
+  });
+
+  function updateModelSelection(val) {
+    if (!val) return;
+    const [provider, model] = val.split('::');
+    aiSelectedProvider = provider;
+    aiSelectedModel = model;
+    
+    /* Find model info for tier badge + description */
+    const prov = aiProviders[provider];
+    if (prov) {
+      const modelDef = prov.models.find(m => m.id === model);
+      if (modelDef) {
+        let infoHtml = '<span class="ts-ai-model-tier ' + esc(modelDef.tier || '') + '">' +
+                       esc(modelDef.tier || '') + '</span>';
+        if (modelDef.desc) {
+          infoHtml += '<span style="font-size:9px;color:var(--ts-overlay)">' + esc(modelDef.desc) + '</span>';
+        }
+        aiDom.modelInfo.innerHTML = infoHtml;
+      } else {
+        aiDom.modelInfo.innerHTML = '';
+      }
+    }
+  }
+
+  function getAiPayload(extra) {
+    const payload = extra || {};
+    if (aiSelectedProvider) payload.provider = aiSelectedProvider;
+    if (aiSelectedModel) payload.model = aiSelectedModel;
+    return payload;
+  }
+
+  function updateUsage(tokens) {
+    if (tokens && tokens > 0) {
+      aiTotalTokens += tokens;
+      aiDom.usage.textContent = aiTotalTokens.toLocaleString() + ' tokens used this session';
+      aiDom.usage.classList.add('visible');
+    }
+  }
 
   /* Quick suggestion chips */
   aiDom.chips.forEach(chip => {
@@ -1878,8 +2198,9 @@ if (AI_ON && aiDom) {
     const welcome = $('.ts-ai-welcome', aiDom.messages);
     if (welcome) welcome.remove();
 
-    /* User message bubble */
-    appendAiMsg(prompt, 'user');
+    /* User message bubble (with model indicator) */
+    const modelLabel = aiSelectedModel ? ' · ' + aiSelectedModel : '';
+    appendAiMsg(prompt, 'user', modelLabel);
 
     /* Typing indicator */
     const typing = document.createElement('div');
@@ -1891,13 +2212,18 @@ if (AI_ON && aiDom) {
     aiDom.messages.scrollTop = aiDom.messages.scrollHeight;
 
     aiDom.send.disabled = true;
+    const startTime = Date.now();
 
     try {
-      const res = await api('POST', 'ai/customize', { prompt });
+      const res = await api('POST', 'ai/customize', getAiPayload({ prompt }));
       typing.remove();
+      
+      const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
+      updateUsage(res.tokens);
 
       if (res.ok && res.changes && Object.keys(res.changes).length > 0) {
-        appendAiResponse(res.message || 'Here are my suggestions:', res.changes);
+        const providerInfo = (res.provider || aiSelectedProvider || '') + ' · ' + elapsed + 's';
+        appendAiResponse(res.message || 'Here are my suggestions:', res.changes, providerInfo);
       } else if (res.ok && res.message) {
         appendAiMsg(res.message, 'assistant');
       } else {
@@ -1908,18 +2234,23 @@ if (AI_ON && aiDom) {
       appendAiMsg('Connection error. Please try again.', 'assistant');
     } finally {
       aiDom.send.disabled = false;
+      aiDom.input.focus();
     }
   }
 
-  function appendAiMsg(text, role) {
+  function appendAiMsg(text, role, extra) {
     const msg = document.createElement('div');
     msg.className = 'ts-ai-msg ' + role;
-    msg.textContent = text;
+    let html = esc(text);
+    if (extra) {
+      html += '<span style="display:block;font-size:10px;opacity:0.5;margin-top:4px">' + esc(extra) + '</span>';
+    }
+    msg.innerHTML = html;
     aiDom.messages.appendChild(msg);
     aiDom.messages.scrollTop = aiDom.messages.scrollHeight;
   }
 
-  function appendAiResponse(text, changes) {
+  function appendAiResponse(text, changes, providerInfo) {
     const msg = document.createElement('div');
     msg.className = 'ts-ai-msg assistant';
 
@@ -1937,7 +2268,7 @@ if (AI_ON && aiDom) {
           '<span class="ts-ai-change-section">' + esc(sLabel) + '</span>' +
           '<span class="ts-ai-change-arrow">→</span>' +
           '<span class="ts-ai-change-field">' + esc(fLabel) + ':</span>' +
-          '<span class="ts-ai-change-value">' + esc(display) + '</span>' +
+          '<span class="ts-ai-change-value">' + esc(display.length > 60 ? display.substring(0, 57) + '...' : display) + '</span>' +
         '</div>';
         entries.push({ section, field, value });
       });
@@ -1945,9 +2276,13 @@ if (AI_ON && aiDom) {
 
     html += '</div>';
     html += '<div class="ts-ai-actions">' +
-      '<button class="ts-btn ts-btn-primary ts-btn-sm ts-ai-apply-btn">Apply All</button>' +
+      '<button class="ts-btn ts-btn-primary ts-btn-sm ts-ai-apply-btn">✓ Apply All (' + entries.length + ')</button>' +
       '<button class="ts-btn ts-btn-ghost ts-btn-sm ts-ai-discard-btn">Discard</button>' +
     '</div>';
+    
+    if (providerInfo) {
+      html += '<div style="font-size:10px;color:var(--ts-overlay);margin-top:6px">' + esc(providerInfo) + '</div>';
+    }
 
     msg.innerHTML = html;
     aiDom.messages.appendChild(msg);
@@ -1964,8 +2299,8 @@ if (AI_ON && aiDom) {
       refreshAllFields();
       sendToPreview();
       scheduleSave();
-      actionsEl.innerHTML = '<span style="color:var(--ts-green);font-size:12px;font-weight:600">✓ Applied</span>';
-      toast('AI suggestions applied', 'success');
+      actionsEl.innerHTML = '<span style="color:var(--ts-green);font-size:12px;font-weight:600">✓ Applied ' + entries.length + ' changes</span>';
+      toast('AI suggestions applied (' + entries.length + ' changes)', 'success');
     });
 
     discardBtn.addEventListener('click', () => {
@@ -2048,6 +2383,192 @@ window.addEventListener('beforeunload', e => {
 renderPanel();
 renderHistory();
 updateUndoRedoButtons();
+
+
+/* ═══════════════════════════════════════════════════════════
+   TAB NAVIGATION
+   ═══════════════════════════════════════════════════════════ */
+
+$$('.ts-tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const tab = btn.dataset.tab;
+    
+    /* Update active tab button */
+    $$('.ts-tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    
+    /* Switch tab content */
+    $$('.ts-tab-content').forEach(tc => {
+      tc.classList.remove('active');
+      tc.style.display = 'none';
+    });
+    
+    const targetContent = $('[data-tab="' + tab + '"].ts-tab-content');
+    if (targetContent) {
+      targetContent.classList.add('active');
+      targetContent.style.display = 'block';
+    }
+    
+    /* Load sections on first switch */
+    if (tab === 'sections' && !sectionsLoaded) {
+      loadSections();
+    }
+  });
+});
+
+
+/* ═══════════════════════════════════════════════════════════
+   SECTION MANAGER — Drag & Drop Sortable
+   ═══════════════════════════════════════════════════════════ */
+
+let sectionsLoaded = false;
+let sectionsData = [];
+let draggedItem = null;
+
+const sectionsList = $('#sections-list');
+const sectionsSaveBtn = $('#sections-save-btn');
+
+async function loadSections() {
+  sectionsList.innerHTML = '<div style="text-align:center;padding:24px;color:var(--ts-subtext);font-size:13px">Loading sections…</div>';
+  try {
+    const res = await api('GET', 'sections');
+    if (res.ok && res.sections) {
+      sectionsData = res.sections;
+      sectionsLoaded = true;
+      renderSections();
+    } else {
+      sectionsList.innerHTML = '<div style="text-align:center;padding:24px;color:var(--ts-red);font-size:13px">Failed to load sections</div>';
+    }
+  } catch (e) {
+    sectionsList.innerHTML = '<div style="text-align:center;padding:24px;color:var(--ts-red);font-size:13px">Error: ' + esc(e.message) + '</div>';
+  }
+}
+
+function renderSections() {
+  sectionsList.innerHTML = '';
+  
+  sectionsData.forEach((sec, idx) => {
+    const item = document.createElement('div');
+    item.className = 'ts-section-item' + (!sec.enabled ? ' disabled' : '');
+    item.dataset.id = sec.id;
+    item.draggable = true;
+    
+    const isRequired = !!sec.required;
+    
+    item.innerHTML =
+      '<span class="ts-section-item-handle">⠿</span>' +
+      '<span class="ts-section-item-icon">' + esc(sec.icon || '📋') + '</span>' +
+      '<span class="ts-section-item-label">' + esc(sec.label || sec.id) + '</span>' +
+      (isRequired ? '<span class="ts-section-item-badge">Required</span>' : '') +
+      '<label class="ts-section-toggle">' +
+        '<input type="checkbox" ' + (sec.enabled ? 'checked' : '') + (isRequired ? ' checked disabled' : '') + '>' +
+        '<span class="ts-section-toggle-track"></span>' +
+        '<span class="ts-section-toggle-thumb"></span>' +
+      '</label>';
+    
+    /* Toggle handler */
+    const checkbox = item.querySelector('input[type="checkbox"]');
+    if (!isRequired) {
+      checkbox.addEventListener('change', () => {
+        sec.enabled = checkbox.checked;
+        item.classList.toggle('disabled', !checkbox.checked);
+      });
+    }
+    
+    /* Drag & Drop */
+    item.addEventListener('dragstart', e => {
+      draggedItem = item;
+      item.classList.add('dragging');
+      e.dataTransfer.effectAllowed = 'move';
+      e.dataTransfer.setData('text/plain', sec.id);
+    });
+    
+    item.addEventListener('dragend', () => {
+      item.classList.remove('dragging');
+      $$('.ts-section-item.drag-over', sectionsList).forEach(el => el.classList.remove('drag-over'));
+      draggedItem = null;
+    });
+    
+    item.addEventListener('dragover', e => {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+      if (draggedItem && draggedItem !== item) {
+        item.classList.add('drag-over');
+      }
+    });
+    
+    item.addEventListener('dragleave', () => {
+      item.classList.remove('drag-over');
+    });
+    
+    item.addEventListener('drop', e => {
+      e.preventDefault();
+      item.classList.remove('drag-over');
+      if (!draggedItem || draggedItem === item) return;
+      
+      /* Reorder in DOM */
+      const allItems = [...sectionsList.querySelectorAll('.ts-section-item')];
+      const fromIdx = allItems.indexOf(draggedItem);
+      const toIdx = allItems.indexOf(item);
+      
+      if (fromIdx < toIdx) {
+        sectionsList.insertBefore(draggedItem, item.nextSibling);
+      } else {
+        sectionsList.insertBefore(draggedItem, item);
+      }
+      
+      /* Update sectionsData order */
+      reorderSectionsData();
+    });
+    
+    sectionsList.appendChild(item);
+  });
+}
+
+function reorderSectionsData() {
+  const orderedIds = [...sectionsList.querySelectorAll('.ts-section-item')].map(el => el.dataset.id);
+  const newData = [];
+  orderedIds.forEach(id => {
+    const sec = sectionsData.find(s => s.id === id);
+    if (sec) newData.push(sec);
+  });
+  sectionsData = newData;
+}
+
+/* Save sections */
+sectionsSaveBtn.addEventListener('click', async () => {
+  reorderSectionsData();
+  
+  const order = sectionsData.map(s => s.id);
+  const enabled = {};
+  sectionsData.forEach(s => { enabled[s.id] = !!s.enabled; });
+  
+  sectionsSaveBtn.disabled = true;
+  sectionsSaveBtn.textContent = 'Saving…';
+  
+  try {
+    const res = await api('POST', 'sections/save', { order, enabled });
+    if (res.ok) {
+      sectionsSaveBtn.classList.add('saved');
+      sectionsSaveBtn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg> Saved!';
+      toast('Section order saved', 'success');
+      /* Reload the preview iframe */
+      dom.iframe.src = dom.iframe.src;
+      setTimeout(() => {
+        sectionsSaveBtn.classList.remove('saved');
+        sectionsSaveBtn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg> Save Section Order';
+        sectionsSaveBtn.disabled = false;
+      }, 2000);
+    } else {
+      throw new Error(res.error || 'Save failed');
+    }
+  } catch (e) {
+    toast('Failed to save sections: ' + e.message, 'error');
+    sectionsSaveBtn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg> Save Section Order';
+    sectionsSaveBtn.disabled = false;
+  }
+});
+
 
 /* Report readiness */
 console.log('[Theme Studio] Initialized for theme:', THEME_SLUG);

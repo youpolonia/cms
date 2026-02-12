@@ -271,7 +271,7 @@ class TemplateController
     /**
      * Website Builder - Unified Theme Builder
      * Build entire website in one interface: header + footer + pages + templates
-     * Route: /admin/jtb/website-builder
+     * Route: /admin/website-builder
      */
     public function websiteBuilder(): void
     {

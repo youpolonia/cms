@@ -314,7 +314,7 @@ if (preg_match('#^/admin/jtb/global-modules/?$#', $jtbUri)) {
 
 
 // JTB Website Builder - Unified Theme Builder
-if (preg_match('#^/admin/jtb/website-builder/?$#', $jtbUri)) {
+if (preg_match('#^/admin/(?:jtb/)?website-builder/?$#', $jtbUri)) {
     require_once CMS_ROOT . '/plugins/jessie-theme-builder/controllers/template-controller.php';
     (new \JessieThemeBuilder\TemplateController())->websiteBuilder();
     exit;

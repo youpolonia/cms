@@ -930,3 +930,74 @@ if (!function_exists('theme_studio_preview_script')) {
     }
 }
 
+if (!function_exists('theme_get_section_order')) {
+    /**
+     * Returns ordered section IDs for the active theme homepage.
+     * Falls back to theme.json homepage_sections order if no custom order saved.
+     *
+     * @param string|null $themeSlug  Theme slug (defaults to active theme)
+     * @return array  Ordered list of section IDs
+     */
+    function theme_get_section_order(?string $themeSlug = null): array
+    {
+        $themeSlug = $themeSlug ?? get_active_theme();
+        $customs = _theme_load_customizations($themeSlug);
+
+        // Check DB for custom order (stored as JSON in sections.order)
+        if (!empty($customs['sections']['order'])) {
+            $order = $customs['sections']['order'];
+            if (is_string($order)) {
+                $order = json_decode($order, true);
+            }
+            if (is_array($order) && !empty($order)) {
+                return $order;
+            }
+        }
+
+        // Fall back to theme.json homepage_sections default order
+        $config = get_theme_config($themeSlug);
+        $sections = $config['homepage_sections'] ?? [];
+        return array_column($sections, 'id');
+    }
+}
+
+if (!function_exists('theme_section_enabled')) {
+    /**
+     * Returns true if a homepage section is enabled.
+     * Required sections are always enabled.
+     * Default: enabled unless explicitly disabled in DB.
+     *
+     * @param string      $sectionId  Section identifier (e.g. 'hero', 'about')
+     * @param string|null $themeSlug  Theme slug (defaults to active theme)
+     * @return bool
+     */
+    function theme_section_enabled(string $sectionId, ?string $themeSlug = null): bool
+    {
+        $themeSlug = $themeSlug ?? get_active_theme();
+
+        // Check if section is required in theme.json
+        $config = get_theme_config($themeSlug);
+        $sections = $config['homepage_sections'] ?? [];
+        foreach ($sections as $sec) {
+            if (($sec['id'] ?? '') === $sectionId && !empty($sec['required'])) {
+                return true; // required sections are always enabled
+            }
+        }
+
+        // Check DB for explicit enabled/disabled state
+        $customs = _theme_load_customizations($themeSlug);
+        $key = $sectionId . '_enabled';
+        if (isset($customs['sections'][$key])) {
+            $val = $customs['sections'][$key];
+            // Handle both string and boolean/int values
+            if ($val === false || $val === 0 || $val === '0') {
+                return false;
+            }
+            return true;
+        }
+
+        // Default: enabled
+        return true;
+    }
+}
+

@@ -1,6 +1,6 @@
 <?php
 /**
- * AI Theme Builder — Pipeline
+ * AI Theme Builder — Pipeline (Pro)
  * 
  * 4-step pipeline:
  * 1. Design Brief → theme.json
@@ -14,19 +14,25 @@ require_once __DIR__ . '/ai-theme-templates.php';
 class AiThemeBuilder
 {
     private $ai;
-    private string $prompt;
-    private string $industry;
-    private string $style;
-    private string $mood;
+    private string $prompt = '';
+    private string $industry = 'business';
+    private string $style = 'modern';
+    private string $mood = 'light';
+    private string $provider = '';
+    private string $model = '';
+    private string $language = 'English';
     private array $steps = [];
+    private array $timings = [];
     private string $slug = '';
 
-    public function __construct(string $prompt, array $options = [])
+    /**
+     * @param array $options  Optional: provider, model, language
+     */
+    public function __construct(array $options = [])
     {
-        $this->prompt = $prompt;
-        $this->industry = $options['industry'] ?? 'business';
-        $this->style = $options['style'] ?? 'modern';
-        $this->mood = $options['mood'] ?? 'light';
+        $this->provider = $options['provider'] ?? '';
+        $this->model    = $options['model'] ?? '';
+        $this->language = $options['language'] ?? 'English';
 
         // Load AI Core
         $aiCorePath = CMS_ROOT . '/plugins/jessie-theme-builder/includes/ai/class-jtb-ai-core.php';
@@ -38,48 +44,121 @@ class AiThemeBuilder
         if (!$this->ai->isConfigured()) {
             throw new \RuntimeException('No AI provider configured. Add API key in Settings → AI Configuration.');
         }
+
+        // Set provider if specified
+        if (!empty($this->provider)) {
+            $this->ai->setProvider($this->provider);
+        }
     }
 
     /**
      * Run the full pipeline
-     * @return array {ok: bool, slug: string, steps: array, error?: string}
+     * @param array $params  prompt, industry, style, mood
+     * @return array {ok, slug, theme_name, steps, timings, summary, model_used, error?}
      */
-    public function generate(): array
+    public function generate(array $params = []): array
     {
+        $this->prompt   = $params['prompt'] ?? '';
+        $this->industry = $params['industry'] ?? 'portfolio';
+        $this->style    = $params['style'] ?? 'minimalist';
+        $this->mood     = $params['mood'] ?? 'light';
+
+        if (empty($this->prompt)) {
+            return ['ok' => false, 'error' => 'Prompt is required'];
+        }
+
+        // Determine display model name for frontend
+        $modelUsed = $this->model ?: ($this->ai->getProvider() . ' default');
+
         try {
             // Step 1: Design Brief
+            $t0 = microtime(true);
             $this->steps['brief'] = ['status' => 'running'];
             $brief = $this->step1_designBrief();
             $this->steps['brief'] = ['status' => 'done', 'data' => $brief];
+            $this->timings['step1'] = (int)((microtime(true) - $t0) * 1000);
 
             // Step 2: HTML Structure
+            $t0 = microtime(true);
             $this->steps['html'] = ['status' => 'running'];
             $html = $this->step2_htmlStructure($brief);
             $this->steps['html'] = ['status' => 'done'];
+            $this->timings['step2'] = (int)((microtime(true) - $t0) * 1000);
 
             // Step 3: CSS Generation
+            $t0 = microtime(true);
             $this->steps['css'] = ['status' => 'running'];
             $css = $this->step3_cssGeneration($brief, $html);
             $this->steps['css'] = ['status' => 'done'];
+            $this->timings['step3'] = (int)((microtime(true) - $t0) * 1000);
 
             // Step 4: Assembly
+            $t0 = microtime(true);
             $this->steps['assembly'] = ['status' => 'running'];
             $slug = $this->step4_assembly($brief, $html, $css);
             $this->steps['assembly'] = ['status' => 'done'];
+            $this->timings['step4'] = (int)((microtime(true) - $t0) * 1000);
+
+            // Build summary
+            $sectionCount = substr_count($html['home_html'] ?? '', '<section');
+            $colorCount = count($brief['colors'] ?? []);
+            $fontCount = 0;
+            if (!empty($brief['typography']['headingFont'])) $fontCount++;
+            if (!empty($brief['typography']['fontFamily'])) $fontCount++;
 
             return [
                 'ok' => true,
                 'slug' => $slug,
                 'theme_name' => $brief['name'] ?? ucfirst($slug),
                 'steps' => $this->steps,
+                'timings' => $this->timings,
+                'model_used' => $modelUsed,
+                'summary' => [
+                    'sections' => max($sectionCount, 1),
+                    'fonts' => $fontCount,
+                    'colors' => $colorCount,
+                ],
             ];
         } catch (\Throwable $e) {
+            // Determine which step failed
+            $failedStep = 1;
+            if (isset($this->timings['step1'])) $failedStep = 2;
+            if (isset($this->timings['step2'])) $failedStep = 3;
+            if (isset($this->timings['step3'])) $failedStep = 4;
+
             return [
                 'ok' => false,
                 'error' => $e->getMessage(),
+                'step' => $failedStep,
                 'steps' => $this->steps,
+                'timings' => $this->timings,
             ];
         }
+    }
+
+    /**
+     * Build query options with provider/model overrides
+     */
+    private function queryOptions(array $base = []): array
+    {
+        if (!empty($this->provider)) {
+            $base['provider'] = $this->provider;
+        }
+        if (!empty($this->model)) {
+            $base['model'] = $this->model;
+        }
+        return $base;
+    }
+
+    /**
+     * Language instruction to prepend to system prompts
+     */
+    private function languageInstruction(): string
+    {
+        if ($this->language && strtolower($this->language) !== 'english') {
+            return "IMPORTANT: Generate ALL text content (titles, descriptions, headings, paragraphs, button labels, placeholder text) in {$this->language}. Only code (HTML tags, CSS, PHP) should remain in English.\n\n";
+        }
+        return '';
     }
 
     /**
@@ -87,8 +166,10 @@ class AiThemeBuilder
      */
     private function step1_designBrief(): array
     {
+        $langInstr = $this->languageInstruction();
+
         $systemPrompt = <<<PROMPT
-You are a professional web designer. Generate a design brief (theme.json) for a website based on the user's description.
+{$langInstr}You are a professional web designer. Generate a design brief (theme.json) for a website based on the user's description.
 
 Return ONLY valid JSON with this exact structure:
 {
@@ -137,12 +218,12 @@ RULES:
 - Choose fonts that match the industry and style
 PROMPT;
 
-        $result = $this->ai->query($this->prompt, [
+        $result = $this->ai->query($this->prompt, $this->queryOptions([
             'system_prompt' => $systemPrompt,
             'max_tokens' => 1000,
             'temperature' => 0.7,
             'json_mode' => true,
-        ]);
+        ]));
 
         $json = $this->extractJson($result);
         if (!$json || empty($json['colors']) || empty($json['typography'])) {
@@ -164,9 +245,10 @@ PROMPT;
     {
         $briefJson = json_encode($brief, JSON_PRETTY_PRINT);
         $siteName = get_site_name();
+        $langInstr = $this->languageInstruction();
 
         $systemPrompt = <<<PROMPT
-You are an expert frontend developer. Generate HTML for a website theme based on the design brief below.
+{$langInstr}You are an expert frontend developer. Generate HTML for a website theme based on the design brief below.
 
 DESIGN BRIEF:
 {$briefJson}
@@ -214,12 +296,12 @@ IMPORTANT: Escape all PHP properly inside JSON strings. Use \\<?php and \\?> for
 Generate content relevant to: {$this->prompt}
 PROMPT;
 
-        $result = $this->ai->query("Generate the HTML structure for this theme", [
+        $result = $this->ai->query("Generate the HTML structure for this theme", $this->queryOptions([
             'system_prompt' => $systemPrompt,
             'max_tokens' => 8000,
             'temperature' => 0.7,
             'json_mode' => true,
-        ]);
+        ]));
 
         $json = $this->extractJson($result);
         if (!$json || empty($json['header_html']) || empty($json['home_html'])) {
@@ -283,11 +365,11 @@ CSS must be complete and production-ready. Minimum 800 lines for a polished them
 DO NOT use Tailwind or any framework. Pure CSS only.
 PROMPT;
 
-        $result = $this->ai->query("Generate the complete CSS stylesheet", [
+        $result = $this->ai->query("Generate the complete CSS stylesheet", $this->queryOptions([
             'system_prompt' => $systemPrompt,
             'max_tokens' => 16000,
             'temperature' => 0.6,
-        ]);
+        ]));
 
         if (!$result['ok'] || empty($result['text'])) {
             throw new \RuntimeException('Step 3 failed: ' . ($result['error'] ?? 'No CSS generated'));
@@ -378,6 +460,86 @@ PROMPT;
         $this->chownRecursive($themeDir);
 
         return $slug;
+    }
+
+    /**
+     * Activate a theme by slug
+     */
+    public function activateTheme(string $slug): bool
+    {
+        $themeDir = CMS_ROOT . '/themes/' . $slug;
+        if (!is_dir($themeDir) || !file_exists($themeDir . '/theme.json')) {
+            return false;
+        }
+
+        try {
+            $pdo = \core\Database::connection();
+            $stmt = $pdo->prepare("UPDATE settings SET value = ? WHERE `key` = 'active_theme'");
+            $stmt->execute([$slug]);
+            if ($stmt->rowCount() === 0) {
+                $stmt = $pdo->prepare("INSERT INTO settings (`key`, value) VALUES ('active_theme', ?)");
+                $stmt->execute([$slug]);
+            }
+            return true;
+        } catch (\Throwable $e) {
+            return false;
+        }
+    }
+
+    /**
+     * Delete a generated theme by slug
+     */
+    public function deleteTheme(string $slug): bool
+    {
+        $themeDir = CMS_ROOT . '/themes/' . $slug;
+        if (!is_dir($themeDir)) {
+            return false;
+        }
+
+        // Safety: only delete AI-generated themes
+        $jsonFile = $themeDir . '/theme.json';
+        if (file_exists($jsonFile)) {
+            $data = @json_decode(file_get_contents($jsonFile), true);
+            if (($data['author'] ?? '') !== 'AI Theme Builder') {
+                return false;
+            }
+        }
+
+        // Check it's not the active theme
+        try {
+            $pdo = \core\Database::connection();
+            $stmt = $pdo->prepare("SELECT value FROM settings WHERE `key` = 'active_theme'");
+            $stmt->execute();
+            $active = $stmt->fetchColumn();
+            if ($active === $slug) {
+                return false; // Cannot delete active theme
+            }
+        } catch (\Throwable $e) {
+            // If we can't check, refuse to delete
+            return false;
+        }
+
+        // Recursively delete
+        $this->deleteDir($themeDir);
+        return true;
+    }
+
+    /**
+     * Recursively delete a directory
+     */
+    private function deleteDir(string $dir): void
+    {
+        if (!is_dir($dir)) return;
+        foreach (scandir($dir) as $item) {
+            if ($item === '.' || $item === '..') continue;
+            $path = $dir . '/' . $item;
+            if (is_dir($path)) {
+                $this->deleteDir($path);
+            } else {
+                @unlink($path);
+            }
+        }
+        @rmdir($dir);
     }
 
     /**

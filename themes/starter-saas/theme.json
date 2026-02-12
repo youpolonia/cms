@@ -61,5 +61,33 @@
         "shadowStrength": "25",
         "hoverScale": "1.03",
         "transitionSpeed": "200"
-    }
+    },
+    "homepage_sections": [
+        {
+            "id": "hero",
+            "label": "Hero",
+            "icon": "⭐",
+            "required": true
+        },
+        {
+            "id": "features",
+            "label": "Features",
+            "icon": "✨"
+        },
+        {
+            "id": "tools",
+            "label": "Tools",
+            "icon": "🔧"
+        },
+        {
+            "id": "showcase",
+            "label": "Showcase",
+            "icon": "🖥️"
+        },
+        {
+            "id": "cta",
+            "label": "Call to Action",
+            "icon": "📣"
+        }
+    ]
 }

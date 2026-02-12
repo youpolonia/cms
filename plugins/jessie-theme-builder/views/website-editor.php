@@ -155,7 +155,7 @@ $pageTitle = 'Website Editor';
 <body>
     <div class="we-toolbar">
         <div class="we-toolbar-section">
-            <a href="/admin/jtb/website-builder" class="we-btn we-btn-secondary">← Back</a>
+            <a href="/admin/website-builder" class="we-btn we-btn-secondary">← Back</a>
             <select class="we-select" id="we-page-select">
                 <option value="">Loading...</option>
             </select>

@@ -50,5 +50,38 @@
         "social_linkedin": "",
         "social_dribbble": "",
         "social_email": ""
-    }
+    },
+    "homepage_sections": [
+        {
+            "id": "hero",
+            "label": "Hero",
+            "icon": "⭐",
+            "required": true
+        },
+        {
+            "id": "about",
+            "label": "About",
+            "icon": "👤"
+        },
+        {
+            "id": "work",
+            "label": "Work",
+            "icon": "💼"
+        },
+        {
+            "id": "skills",
+            "label": "Skills",
+            "icon": "🎯"
+        },
+        {
+            "id": "testimonials",
+            "label": "Testimonials",
+            "icon": "💬"
+        },
+        {
+            "id": "cta",
+            "label": "Call to Action",
+            "icon": "📣"
+        }
+    ]
 }
