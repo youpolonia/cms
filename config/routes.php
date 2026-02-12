@@ -359,6 +359,28 @@ return [
 
     // JTB AI Routes (delegated to plugin router)
 
+
+
+    // API Keys management
+    'GET /admin/api-keys' => ['Admin\\ApiKeysController', 'index', ['auth' => true]],
+    'POST /admin/api-keys/create' => ['Admin\\ApiKeysController', 'create', ['auth' => true, 'csrf' => true]],
+    'POST /admin/api-keys/{id}/toggle' => ['Admin\\ApiKeysController', 'toggle', ['auth' => true, 'csrf' => true]],
+    'POST /admin/api-keys/{id}/delete' => ['Admin\\ApiKeysController', 'delete', ['auth' => true, 'csrf' => true]],
+
+    // ─── REST API v1 (Headless) ───
+    // Auth: API key via X-API-Key header (no session, no CSRF)
+    'GET /api/v1/site' => ['Api\\RestApiController', 'site'],
+    'GET /api/v1/pages' => ['Api\\RestApiController', 'pages'],
+    'GET /api/v1/pages/{slug}' => ['Api\\RestApiController', 'page'],
+    'GET /api/v1/articles' => ['Api\\RestApiController', 'articles'],
+    'GET /api/v1/articles/{slug}' => ['Api\\RestApiController', 'article'],
+    'GET /api/v1/menus' => ['Api\\RestApiController', 'menus'],
+    'GET /api/v1/menus/{location}' => ['Api\\RestApiController', 'menu'],
+    'GET /api/v1/categories' => ['Api\\RestApiController', 'categories'],
+    'GET /api/v1/media' => ['Api\\RestApiController', 'media'],
+    'GET /api/v1/search' => ['Api\\RestApiController', 'search'],
+    'GET /api/v1/theme' => ['Api\\RestApiController', 'theme'],
+
     // FRONT-END ROUTES (Public)
 
     // Home page

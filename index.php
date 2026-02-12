@@ -106,6 +106,19 @@ spl_autoload_register(function($class) {
         }
     }
     
+
+    // Api\SomeController -> app/controllers/api/somecontroller.php
+    if (str_starts_with($class, 'Api\\')) {
+        $controllerName = substr($class, 4); // Remove "Api\"
+        $file = CMS_APP . '/controllers/api/' . strtolower($controllerName) . '.php';
+        if (file_exists($file)) {
+            require_once $file;
+            if (class_exists('App\\Controllers\\Api\\' . $controllerName)) {
+                class_alias('App\\Controllers\\Api\\' . $controllerName, $class);
+            }
+        }
+    }
+
     // Front\SomeController -> app/controllers/front/somecontroller.php
     if (str_starts_with($class, 'Front\\')) {
         $controllerName = substr($class, 6); // Remove "Front\"
