@@ -438,6 +438,30 @@ if (!function_exists('generate_studio_css_overrides')) {
             $css .= "    --transition-speed: {$customs['effects']['transition_speed']};\n";
             $hasVars = true;
         }
+        if (!empty($customs['effects']['gradient'])) {
+            $css .= "    --gradient: {$customs['effects']['gradient']};\n";
+            $hasVars = true;
+        }
+        if (!empty($customs['effects']['box_shadow'])) {
+            $css .= "    --shadow-custom: {$customs['effects']['box_shadow']};\n";
+            $hasVars = true;
+        }
+        
+        // Spacing / Box Model
+        if (!empty($customs['layout']['section_padding'])) {
+            $sp = json_decode($customs['layout']['section_padding'], true);
+            if (is_array($sp)) {
+                $css .= "    --section-margin-top: " . (int)($sp['mt'] ?? 0) . "px;\n";
+                $css .= "    --section-margin-right: " . (int)($sp['mr'] ?? 0) . "px;\n";
+                $css .= "    --section-margin-bottom: " . (int)($sp['mb'] ?? 0) . "px;\n";
+                $css .= "    --section-margin-left: " . (int)($sp['ml'] ?? 0) . "px;\n";
+                $css .= "    --section-padding-top: " . (int)($sp['pt'] ?? 20) . "px;\n";
+                $css .= "    --section-padding-right: " . (int)($sp['pr'] ?? 20) . "px;\n";
+                $css .= "    --section-padding-bottom: " . (int)($sp['pb'] ?? 20) . "px;\n";
+                $css .= "    --section-padding-left: " . (int)($sp['pl'] ?? 20) . "px;\n";
+                $hasVars = true;
+            }
+        }
         
         $css .= "}\n";
         
@@ -515,6 +539,22 @@ if (!function_exists('_theme_generate_default_schema')) {
                 'primary_color' => ['type' => 'color', 'label' => 'Primary Color', 'default' => $config['colors']['primary'] ?? '#3b82f6'],
                 'secondary_color' => ['type' => 'color', 'label' => 'Secondary Color', 'default' => $config['colors']['secondary'] ?? '#06b6d4'],
                 'accent_color' => ['type' => 'color', 'label' => 'Accent Color', 'default' => $config['colors']['accent'] ?? '#f59e0b'],
+                'favicon' => ['type' => 'image', 'label' => 'Favicon', 'default' => null],
+                'og_image' => ['type' => 'image', 'label' => 'Social Share Image (OG)', 'default' => null],
+                'color_mode' => ['type' => 'hidden', 'label' => 'Color Mode', 'default' => 'light'],
+            ]
+        ];
+        
+        // Announcement Bar
+        $schema['announcement'] = [
+            'label' => 'Announcement Bar',
+            'icon' => '📢',
+            'fields' => [
+                'enabled' => ['type' => 'toggle', 'label' => 'Show Announcement Bar', 'default' => false],
+                'text' => ['type' => 'text', 'label' => 'Announcement Text', 'default' => ''],
+                'link' => ['type' => 'text', 'label' => 'Link URL', 'default' => ''],
+                'bg_color' => ['type' => 'color', 'label' => 'Background Color', 'default' => '#6366f1'],
+                'text_color' => ['type' => 'color', 'label' => 'Text Color', 'default' => '#ffffff'],
             ]
         ];
         
@@ -697,6 +737,11 @@ if (!function_exists('_theme_generate_default_schema')) {
                     'label' => 'Border Radius',
                     'default' => $config['layout']['borderRadius'] ?? '12px',
                 ],
+                'section_padding' => [
+                    'type' => 'spacing',
+                    'label' => 'Section Spacing (Box Model)',
+                    'default' => '',
+                ],
             ]
         ];
         
@@ -719,6 +764,16 @@ if (!function_exists('_theme_generate_default_schema')) {
                     'type' => 'text',
                     'label' => 'Transition Speed (ms)',
                     'default' => $config['effects']['transitionSpeed'] ?? '200ms',
+                ],
+                'gradient' => [
+                    'type' => 'gradient',
+                    'label' => 'Background Gradient',
+                    'default' => '',
+                ],
+                'box_shadow' => [
+                    'type' => 'boxshadow',
+                    'label' => 'Box Shadow',
+                    'default' => '',
                 ],
             ]
         ];
