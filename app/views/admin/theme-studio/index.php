@@ -2624,8 +2624,8 @@ function wireEditor(bodyEl, sid, schId) {
   bodyEl.querySelectorAll('.ts-sf-img-btn').forEach(b => {
     b.addEventListener('click', () => {
       const fid = b.dataset.fid;
-      if (typeof JTB_MediaGallery !== 'undefined') {
-        JTB_MediaGallery.open(url => {
+      if (typeof JTB !== 'undefined' && JTB.openMediaGallery) {
+        JTB.openMediaGallery(url => {
           const inp = document.getElementById(fid);
           const thumb = document.getElementById(fid + '-thumb');
           if (inp) inp.value = url;
