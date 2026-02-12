@@ -49,8 +49,6 @@ class ThemeStudioController
             'aiAvailable' => $aiAvailable,
             'pexelsAvailable' => $pexelsAvailable,
             'csrfToken' => csrf_token(),
-            'nativeMode' => $themeConfig['native_mode'] ?? 'light',
-            'colorsAlt' => $themeConfig['colors_alt'] ?? new \stdClass,
         ];
         
         extract($data);

@@ -192,25 +192,6 @@
                 }
             } catch(e) { /* ignore parse errors */ }
         }
-
-        /* Color mode — uses theme-specific alternate palette from theme.json.
-           No !important, just sets CSS variables that the theme already uses. */
-        var nativeMode = window.__TS_NATIVE_MODE || "light";
-        var colorsAlt = window.__TS_COLORS_ALT || {};
-        var cmode = (vals.brand && vals.brand.color_mode) ? vals.brand.color_mode : "default";
-        var altMode = (nativeMode === "dark") ? "light" : "dark";
-
-        if (cmode === altMode && Object.keys(colorsAlt).length > 0) {
-            /* Apply alternate palette — set each CSS variable from theme.json colors_alt */
-            Object.keys(colorsAlt).forEach(function(varName) {
-                document.documentElement.style.setProperty(varName, colorsAlt[varName]);
-            });
-        } else {
-            /* Default mode — remove any overrides we set, let theme CSS take over */
-            Object.keys(colorsAlt).forEach(function(varName) {
-                document.documentElement.style.removeProperty(varName);
-            });
-        }
     }
 
     /* ── Toggle visibility ────────────────────────────────── */

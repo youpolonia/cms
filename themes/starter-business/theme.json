@@ -89,42 +89,28 @@
     {
       "id": "hero",
       "label": "Hero",
-      "icon": "⭐",
+      "icon": "\u2b50",
       "required": true
     },
     {
       "id": "services",
       "label": "Services",
-      "icon": "🔧"
+      "icon": "\ud83d\udd27"
     },
     {
       "id": "testimonials",
       "label": "Testimonials",
-      "icon": "💬"
+      "icon": "\ud83d\udcac"
     },
     {
       "id": "team",
       "label": "Team",
-      "icon": "👥"
+      "icon": "\ud83d\udc65"
     },
     {
       "id": "newsletter",
       "label": "Newsletter",
-      "icon": "✉️"
+      "icon": "\u2709\ufe0f"
     }
-  ],
-  "native_mode": "light",
-  "colors_alt": {
-    "--color-background": "#0f172a",
-    "--color-surface": "#1e293b",
-    "--color-surface_alt": "#334155",
-    "--color-text": "#e2e8f0",
-    "--color-text_light": "#94a3b8",
-    "--color-text_muted": "#64748b",
-    "--color-heading": "#f1f5f9",
-    "--color-border": "#334155",
-    "--color-border_light": "#475569",
-    "--text": "#e2e8f0",
-    "--text-muted": "#94a3b8"
-  }
+  ]
 }

@@ -475,19 +475,6 @@ if (!function_exists('generate_studio_css_overrides')) {
             }
         }
         
-        // Color mode — apply alternate palette from theme.json
-        $colorMode = $customs['brand']['color_mode'] ?? 'default';
-        $config = get_theme_config($themeSlug);
-        $nativeMode = $config['native_mode'] ?? 'light';
-        $altMode = ($nativeMode === 'dark') ? 'light' : 'dark';
-        
-        if ($colorMode === $altMode && !empty($config['colors_alt'])) {
-            foreach ($config['colors_alt'] as $varName => $value) {
-                $css .= "    {$varName}: {$value};\n";
-            }
-            $hasVars = true;
-        }
-        
         $css .= "}\n";
         
         // Custom CSS (appended after :root block)
@@ -569,7 +556,6 @@ if (!function_exists('_theme_generate_default_schema')) {
                 'dark_color' => ['type' => 'color', 'label' => 'Surface Color', 'default' => $config['colors']['surface'] ?? '#f8fafc'],
                 'favicon' => ['type' => 'image', 'label' => 'Favicon', 'default' => null],
                 'og_image' => ['type' => 'image', 'label' => 'Social Share Image (OG)', 'default' => null],
-                'color_mode' => ['type' => 'hidden', 'label' => 'Color Mode', 'default' => 'default'],
             ]
         ];
         
@@ -1025,12 +1011,7 @@ if (!function_exists('theme_studio_preview_script')) {
      */
     function theme_studio_preview_script(): string
     {
-        $themeSlug = get_active_theme();
-        $config = get_theme_config($themeSlug);
-        $nativeMode = json_encode($config['native_mode'] ?? 'light');
-        $colorsAlt = json_encode($config['colors_alt'] ?? new \stdClass, JSON_HEX_TAG);
-        return "<script>window.__TS_NATIVE_MODE={$nativeMode};window.__TS_COLORS_ALT={$colorsAlt};</script>\n" .
-               '<script src="/assets/js/theme-studio-preview.js"></script>';
+        return '<script src="/assets/js/theme-studio-preview.js"></script>';
     }
 }
 

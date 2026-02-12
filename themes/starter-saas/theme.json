@@ -66,41 +66,28 @@
     {
       "id": "hero",
       "label": "Hero",
-      "icon": "⭐",
+      "icon": "\u2b50",
       "required": true
     },
     {
       "id": "features",
       "label": "Features",
-      "icon": "✨"
+      "icon": "\u2728"
     },
     {
       "id": "tools",
       "label": "Tools",
-      "icon": "🔧"
+      "icon": "\ud83d\udd27"
     },
     {
       "id": "showcase",
       "label": "Showcase",
-      "icon": "🖥️"
+      "icon": "\ud83d\udda5\ufe0f"
     },
     {
       "id": "cta",
       "label": "Call to Action",
-      "icon": "📣"
+      "icon": "\ud83d\udce3"
     }
-  ],
-  "native_mode": "dark",
-  "colors_alt": {
-    "--color-bg": "#ffffff",
-    "--color-bg-alt": "#f8fafc",
-    "--color-surface": "#f1f5f9",
-    "--color-surface-elevated": "#ffffff",
-    "--color-surface-hover": "#e2e8f0",
-    "--color-border": "rgba(0,0,0,0.08)",
-    "--color-border-hover": "rgba(0,0,0,0.15)",
-    "--color-text": "#1e293b",
-    "--color-text-muted": "#64748b",
-    "--color-text-heading": "#0f172a"
-  }
+  ]
 }

@@ -55,42 +55,33 @@
     {
       "id": "hero",
       "label": "Hero",
-      "icon": "⭐",
+      "icon": "\u2b50",
       "required": true
     },
     {
       "id": "about",
       "label": "About",
-      "icon": "👤"
+      "icon": "\ud83d\udc64"
     },
     {
       "id": "work",
       "label": "Work",
-      "icon": "💼"
+      "icon": "\ud83d\udcbc"
     },
     {
       "id": "skills",
       "label": "Skills",
-      "icon": "🎯"
+      "icon": "\ud83c\udfaf"
     },
     {
       "id": "testimonials",
       "label": "Testimonials",
-      "icon": "💬"
+      "icon": "\ud83d\udcac"
     },
     {
       "id": "cta",
       "label": "Call to Action",
-      "icon": "📣"
+      "icon": "\ud83d\udce3"
     }
-  ],
-  "native_mode": "dark",
-  "colors_alt": {
-    "--color-background": "#ffffff",
-    "--color-surface": "#f8fafc",
-    "--color-surface-hover": "#f1f5f9",
-    "--color-text": "#1e293b",
-    "--color-text-muted": "#64748b",
-    "--color-border": "rgba(0,0,0,0.1)"
-  }
+  ]
 }

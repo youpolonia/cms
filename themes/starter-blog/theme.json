@@ -66,48 +66,33 @@
     {
       "id": "hero",
       "label": "Hero",
-      "icon": "⭐",
+      "icon": "\u2b50",
       "required": true
     },
     {
       "id": "featured",
       "label": "Featured Post",
-      "icon": "📌"
+      "icon": "\ud83d\udccc"
     },
     {
       "id": "recent",
       "label": "Recent Posts",
-      "icon": "📰"
+      "icon": "\ud83d\udcf0"
     },
     {
       "id": "popular",
       "label": "Popular",
-      "icon": "🔥"
+      "icon": "\ud83d\udd25"
     },
     {
       "id": "categories",
       "label": "Categories",
-      "icon": "📂"
+      "icon": "\ud83d\udcc2"
     },
     {
       "id": "newsletter",
       "label": "Newsletter",
-      "icon": "✉️"
+      "icon": "\u2709\ufe0f"
     }
-  ],
-  "native_mode": "dark",
-  "colors_alt": {
-    "--blog-bg": "#fafaf9",
-    "--blog-surface": "#ffffff",
-    "--blog-surface-light": "#f5f5f4",
-    "--blog-text": "#1c1917",
-    "--blog-text-secondary": "#44403c",
-    "--blog-text-muted": "#78716c",
-    "--blog-border": "#e7e5e4",
-    "--blog-border-light": "#d6d3d1",
-    "--shadow-sm": "0 2px 8px rgba(0,0,0,0.06)",
-    "--shadow-md": "0 4px 16px rgba(0,0,0,0.08)",
-    "--shadow-lg": "0 8px 32px rgba(0,0,0,0.1)",
-    "--gradient-dark": "linear-gradient(180deg, #fafaf9 0%, #f5f5f4 100%)"
-  }
+  ]
 }

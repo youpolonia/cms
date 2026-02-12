@@ -68,37 +68,28 @@
     {
       "id": "hero",
       "label": "Hero",
-      "icon": "⭐",
+      "icon": "\u2b50",
       "required": true
     },
     {
       "id": "about",
       "label": "About Us",
-      "icon": "👤"
+      "icon": "\ud83d\udc64"
     },
     {
       "id": "pages",
       "label": "Pages",
-      "icon": "📄"
+      "icon": "\ud83d\udcc4"
     },
     {
       "id": "articles",
       "label": "Articles",
-      "icon": "📰"
+      "icon": "\ud83d\udcf0"
     },
     {
       "id": "parallax",
       "label": "Parallax Divider",
-      "icon": "🖼️"
+      "icon": "\ud83d\uddbc\ufe0f"
     }
-  ],
-  "native_mode": "dark",
-  "colors_alt": {
-    "--background": "#faf5ef",
-    "--surface": "#ffffff",
-    "--color-surface": "#ffffff",
-    "--text": "#2d1f12",
-    "--text-muted": "#6b5a4a",
-    "--color-border": "rgba(0,0,0,0.1)"
-  }
+  ]
 }

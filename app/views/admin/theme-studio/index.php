@@ -1189,26 +1189,6 @@ html,body{
 .ts-box-val-bottom{bottom:2px;left:50%;transform:translateX(-50%)}
 .ts-box-val-left{left:2px;top:50%;transform:translateY(-50%)}
 
-/* ── Dark/Light Mode Toggle ───────────────────────────── */
-.ts-mode-toggle{
-  display:inline-flex;align-items:center;
-  gap:4px;padding:3px;
-  background:var(--ts-overlay);border-radius:16px;
-  border:1px solid var(--ts-border);
-}
-.ts-mode-btn{
-  width:28px;height:28px;
-  border:none;border-radius:50%;
-  background:transparent;cursor:pointer;
-  display:flex;align-items:center;justify-content:center;
-  font-size:14px;transition:all .15s;
-  color:var(--ts-subtext);
-}
-.ts-mode-btn.active{
-  background:var(--ts-blue);color:var(--ts-bg);
-  box-shadow:0 1px 4px rgba(0,0,0,.2);
-}
-.ts-mode-btn:hover:not(.active){color:var(--ts-text)}
 </style>
 <link rel="stylesheet" href="/plugins/jessie-theme-builder/assets/css/media-gallery.css">
 </head>
@@ -1269,12 +1249,6 @@ html,body{
     </div>
 
     <div class="ts-topbar-sep"></div>
-
-    <!-- Dark/Light Mode -->
-    <div class="ts-mode-toggle" id="ts-mode-toggle" title="Color mode">
-      <button class="ts-mode-btn" data-mode="light" title="Light mode">☀️</button>
-      <button class="ts-mode-btn" data-mode="dark" title="Dark mode">🌙</button>
-    </div>
 
     <!-- Compare (Before/After) -->
     <button class="ts-icon-btn" id="ts-compare-btn" title="Before/After compare (split view)">
@@ -1536,10 +1510,6 @@ if (SCHEMA.effects && !SCHEMA.effects.fields.box_shadow) {
 if (SCHEMA.layout) {
   if (!SCHEMA.layout.fields.section_padding) SCHEMA.layout.fields.section_padding = { type:'spacing', label:'Section Spacing (Box Model)', default:'', _kind:'combined' };
 }
-/* ── Inject color_mode into Brand ── */
-if (SCHEMA.brand && !SCHEMA.brand.fields.color_mode) {
-  SCHEMA.brand.fields.color_mode = { type:'hidden', label:'Color Mode', default:'default' };
-}
 
 /* ── Font Pairing Data ── */
 const FONT_PAIRINGS = {
@@ -1578,8 +1548,6 @@ const FONT_PAIRINGS = {
 const AI_ON      = <?= json_encode(!empty($aiAvailable)) ?>;
 const PEXELS_ON  = <?= json_encode(!empty($pexelsAvailable)) ?>;
 const THEME_SLUG = <?= json_encode($themeSlug ?? '') ?>;
-const NATIVE_MODE = <?= json_encode($nativeMode ?? 'light') ?>;
-const COLORS_ALT  = <?= json_encode($colorsAlt ?? new stdClass, JSON_HEX_TAG) ?>;
 
 let values    = <?= $valuesJson ?>;
 let history   = <?= $historyJson ?>;
@@ -1645,7 +1613,6 @@ const dom = {
 
 /* New feature elements */
 const domCompare    = $('#ts-compare-btn');
-const domModeToggle = $('#ts-mode-toggle');
 const domExtractCanvas = $('#ts-extract-canvas');
 
 /* AI elements (may be null if AI not available) */
@@ -4051,53 +4018,6 @@ function exitCompare() {
 /* ═══════════════════════════════════════════════════════════
    DARK / LIGHT MODE TOGGLE
    ═══════════════════════════════════════════════════════════ */
-
-/* Dark/Light mode — switches ALL CSS variables using theme.json colors_alt.
-   NATIVE_MODE tells us what the theme is by default.
-   COLORS_ALT has the complete alternate palette (CSS variable → value map).
-   Toggle: native mode button = default, opposite = apply colors_alt. */
-let colorMode = getVal('brand', 'color_mode') || 'default';
-const altMode = NATIVE_MODE === 'dark' ? 'light' : 'dark';
-
-function updateModeButtons() {
-  $$('#ts-mode-toggle .ts-mode-btn').forEach(btn => {
-    if (colorMode === 'default') {
-      btn.classList.toggle('active', btn.dataset.mode === NATIVE_MODE);
-    } else {
-      btn.classList.toggle('active', btn.dataset.mode === colorMode);
-    }
-  });
-}
-updateModeButtons();
-
-$$('#ts-mode-toggle .ts-mode-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    const mode = btn.dataset.mode;
-    const isAlt = (mode === altMode);
-
-    if (isAlt && colorMode !== altMode) {
-      /* Switch to alternate mode */
-      colorMode = altMode;
-    } else if (!isAlt && colorMode === altMode) {
-      /* Switch back to native/default */
-      colorMode = 'default';
-    } else {
-      return; /* Already in this mode */
-    }
-
-    setVal('brand', 'color_mode', colorMode);
-    updateModeButtons();
-    sendToPreview();
-    scheduleSave();
-
-    if (colorMode === 'default') {
-      toast('🎨 Theme default colors restored', 'success');
-    } else {
-      toast(colorMode === 'dark' ? '🌙 Dark mode' : '☀️ Light mode', 'success');
-    }
-  });
-});
-
 
 /* ═══════════════════════════════════════════════════════════
    INJECT "EXTRACT FROM IMAGE" INTO PRESETS
