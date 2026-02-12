@@ -589,10 +589,88 @@ if (!function_exists('_theme_generate_default_schema')) {
             'icon' => '⭐',
             'fields' => [
                 'headline' => ['type' => 'text', 'label' => 'Headline', 'default' => ''],
+                'tagline' => ['type' => 'text', 'label' => 'Tagline', 'default' => ''],
+                'badge' => ['type' => 'text', 'label' => 'Badge', 'default' => ''],
+                'label' => ['type' => 'text', 'label' => 'Label', 'default' => ''],
                 'subtitle' => ['type' => 'textarea', 'label' => 'Subtitle', 'default' => ''],
                 'btn_text' => ['type' => 'text', 'label' => 'Button Text', 'default' => ''],
                 'btn_link' => ['type' => 'text', 'label' => 'Button Link', 'default' => '/contact'],
                 'bg_image' => ['type' => 'image', 'label' => 'Background Image', 'default' => null],
+            ]
+        ];
+
+        // Content sections (used by Sections tab)
+        $schema['cta'] = [
+            'label' => 'Call to Action',
+            'icon' => '📣',
+            'fields' => [
+                'title' => ['type' => 'text', 'label' => 'Title', 'default' => ''],
+                'description' => ['type' => 'textarea', 'label' => 'Description', 'default' => ''],
+            ]
+        ];
+        $schema['articles'] = [
+            'label' => 'Articles',
+            'icon' => '📰',
+            'fields' => [
+                'label' => ['type' => 'text', 'label' => 'Section Label', 'default' => ''],
+                'title' => ['type' => 'text', 'label' => 'Title', 'default' => ''],
+                'description' => ['type' => 'textarea', 'label' => 'Description', 'default' => ''],
+                'btn_text' => ['type' => 'text', 'label' => 'Button Text', 'default' => ''],
+                'btn_link' => ['type' => 'text', 'label' => 'Button Link', 'default' => '/articles'],
+            ]
+        ];
+        $schema['pages'] = [
+            'label' => 'Pages Showcase',
+            'icon' => '📄',
+            'fields' => [
+                'label' => ['type' => 'text', 'label' => 'Section Label', 'default' => ''],
+                'title' => ['type' => 'text', 'label' => 'Title', 'default' => ''],
+                'description' => ['type' => 'textarea', 'label' => 'Description', 'default' => ''],
+            ]
+        ];
+        $schema['tools'] = [
+            'label' => 'Tools',
+            'icon' => '🔧',
+            'fields' => [
+                'label' => ['type' => 'text', 'label' => 'Section Label', 'default' => ''],
+                'title' => ['type' => 'text', 'label' => 'Title', 'default' => ''],
+                'description' => ['type' => 'textarea', 'label' => 'Description', 'default' => ''],
+            ]
+        ];
+        $schema['about'] = [
+            'label' => 'About',
+            'icon' => '👋',
+            'fields' => [
+                'label' => ['type' => 'text', 'label' => 'Section Label', 'default' => ''],
+                'title' => ['type' => 'text', 'label' => 'Title', 'default' => ''],
+                'description' => ['type' => 'textarea', 'label' => 'Description', 'default' => ''],
+                'image' => ['type' => 'image', 'label' => 'Image', 'default' => null],
+            ]
+        ];
+        $schema['parallax'] = [
+            'label' => 'Parallax Quote',
+            'icon' => '💬',
+            'fields' => [
+                'quote' => ['type' => 'textarea', 'label' => 'Quote Text', 'default' => ''],
+                'citation' => ['type' => 'text', 'label' => 'Citation', 'default' => ''],
+                'bg_image' => ['type' => 'image', 'label' => 'Background Image', 'default' => null],
+            ]
+        ];
+        $schema['services'] = [
+            'label' => 'Services',
+            'icon' => '💼',
+            'fields' => [
+                'label' => ['type' => 'text', 'label' => 'Section Label', 'default' => ''],
+                'title' => ['type' => 'text', 'label' => 'Title', 'default' => ''],
+                'description' => ['type' => 'textarea', 'label' => 'Description', 'default' => ''],
+            ]
+        ];
+        $schema['skills'] = [
+            'label' => 'Skills',
+            'icon' => '🎯',
+            'fields' => [
+                'label' => ['type' => 'text', 'label' => 'Section Label', 'default' => ''],
+                'title' => ['type' => 'text', 'label' => 'Title', 'default' => ''],
             ]
         ];
         
