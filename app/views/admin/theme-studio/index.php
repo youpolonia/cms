@@ -1529,8 +1529,10 @@ function renderPanel() {
   dom.panelSections.appendChild(presetsEl);
 
   const entries = Object.entries(SCHEMA);
+  /* Content-only sections go in Section Manager, not Design tab */
+  const DESIGN_SECTIONS = new Set(['brand','header','hero','footer','typography','buttons','layout','effects','custom_css','theme_info']);
 
-  entries.forEach(([sectionKey, section], idx) => {
+  entries.filter(([k]) => DESIGN_SECTIONS.has(k)).forEach(([sectionKey, section], idx) => {
     const sEl = document.createElement('div');
     sEl.className = 'ts-section' + (idx === 0 ? ' open' : '');
     sEl.dataset.section = sectionKey;
@@ -2683,12 +2685,14 @@ function collectVals(bodyEl) {
 /* ── Save Section Content ────────────────────────────────── */
 async function saveSecContent(sid, schId, bodyEl, btn) {
   const fv = collectVals(bodyEl);
-  if (!Object.keys(fv).length) return;
+  console.log('[SectionManager] Saving', sid, '→ schema:', schId, 'values:', fv);
+  if (!Object.keys(fv).length) { console.warn('[SectionManager] No values to save'); return; }
   const saveKey = schId || sid;
 
   btn.disabled = true; btn.className = 'ts-sec-save-btn saving'; btn.textContent = '⏳ Saving…';
   try {
     const r = await api('POST', 'save', { data: { [saveKey]: fv } });
+    console.log('[SectionManager] Save response:', r);
     if (r.ok) {
       if (!values[saveKey]) values[saveKey] = {};
       Object.assign(values[saveKey], fv);
@@ -2698,6 +2702,7 @@ async function saveSecContent(sid, schId, bodyEl, btn) {
       setTimeout(() => { btn.className = 'ts-sec-save-btn'; btn.textContent = '💾 Save Changes'; btn.disabled = false; }, 1800);
     } else throw new Error(r.error || 'Save failed');
   } catch(e) {
+    console.error('[SectionManager] Save error:', e);
     btn.className = 'ts-sec-save-btn error'; btn.textContent = '❌ ' + e.message;
     toast('Save failed: ' + e.message, 'error');
     setTimeout(() => { btn.className = 'ts-sec-save-btn'; btn.textContent = '💾 Save Changes'; btn.disabled = false; }, 2500);
