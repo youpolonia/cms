@@ -9,9 +9,10 @@ $heroSubtitle = theme_get('hero.subtitle', get_setting('hero_subtitle') ?: 'Disc
 $heroBtnText  = theme_get('hero.btn_text', 'Browse Articles');
 $heroBtnLink  = theme_get('hero.btn_link', '/articles');
 $heroBadge    = theme_get('hero.badge', get_setting('hero_badge') ?: 'Welcome to ' . get_site_name());
+$heroBgImage  = theme_get('hero.bg_image');
 ?>
 <!-- Hero Section -->
-<section class="hero">
+<section class="hero"<?php if ($heroBgImage): ?> style="background:url(<?= esc($heroBgImage) ?>) center/cover no-repeat"<?php endif; ?> data-ts-bg="hero.bg_image">
     <div class="container">
         <div class="hero-content">
             <div class="hero-badge">
