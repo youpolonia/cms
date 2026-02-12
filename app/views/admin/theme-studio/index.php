@@ -1529,8 +1529,9 @@ function renderPanel() {
   dom.panelSections.appendChild(presetsEl);
 
   const entries = Object.entries(SCHEMA);
-  /* Content-only sections go in Section Manager, not Design tab */
-  const DESIGN_SECTIONS = new Set(['brand','header','hero','footer','typography','buttons','layout','effects','custom_css','theme_info']);
+  /* Content-only sections go in Section Manager, not Design tab.
+     hero is a homepage section — editable via Sections tab only. */
+  const DESIGN_SECTIONS = new Set(['brand','header','footer','typography','buttons','layout','effects','custom_css','theme_info']);
 
   entries.filter(([k]) => DESIGN_SECTIONS.has(k)).forEach(([sectionKey, section], idx) => {
     const sEl = document.createElement('div');
