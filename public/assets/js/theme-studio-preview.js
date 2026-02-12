@@ -187,33 +187,34 @@
             } catch(e) { /* ignore parse errors */ }
         }
 
-        /* Dark mode — inject comprehensive dark overrides */
+        /* Dark mode — independent CSS overlay, does NOT depend on brand fields */
         var darkStyle = document.getElementById("ts-dark-mode-css");
         if (vals.brand && vals.brand.color_mode === "dark") {
-            var bg = vals.brand.bg_color || "#0f172a";
-            var surface = vals.brand.dark_color || "#1e293b";
-            var text = vals.brand.text_color || "#e2e8f0";
+            var primary = vals.brand.primary_color || "var(--primary, #6366f1)";
             if (!darkStyle) {
                 darkStyle = document.createElement("style");
                 darkStyle.id = "ts-dark-mode-css";
                 document.head.appendChild(darkStyle);
             }
-            darkStyle.textContent =
-                "html, body { background-color: " + bg + " !important; color: " + text + " !important; }\n" +
-                "section, .section, [class*='hero'], [class*='cta'], [class*='feature'], [class*='service'], " +
-                "[class*='testimonial'], [class*='newsletter'], [class*='about'], [class*='skill'], [class*='work'], " +
-                "[class*='showcase'], [class*='team'], [class*='parallax'] { background-color: " + bg + " !important; color: " + text + " !important; }\n" +
-                "h1, h2, h3, h4, h5, h6, p, span, li, a, label, blockquote, figcaption, " +
-                ".card, .card-body, [class*='card'], [class*='item'], [class*='content'] " +
-                "{ color: " + text + " !important; }\n" +
-                "a { color: " + (vals.brand.primary_color || "var(--primary)") + " !important; }\n" +
-                "a:hover { opacity: 0.8; }\n" +
-                ".card, [class*='card'], [class*='item'], [class*='box'] { background-color: " + surface + " !important; border-color: rgba(255,255,255,0.1) !important; }\n" +
-                "header, nav, .header, .navbar, [class*='header'], [class*='nav'] { background-color: " + surface + " !important; }\n" +
-                "footer, .footer, [class*='footer'] { background-color: " + surface + " !important; color: " + text + " !important; }\n" +
-                "input, textarea, select { background-color: " + surface + " !important; color: " + text + " !important; border-color: rgba(255,255,255,0.15) !important; }\n";
-        } else {
-            if (darkStyle) { darkStyle.textContent = ""; }
+            darkStyle.textContent = [
+                "/* Theme Studio Dark Mode Overlay */",
+                ":root { --background:#0f172a; --color-background:#0f172a; --color-bg:#0f172a; --blog-bg:#0f172a; --surface:#1e293b; --color-surface:#1e293b; --blog-surface:#1e293b; --text:#e2e8f0; --color-text:#e2e8f0; --blog-text:#e2e8f0; }",
+                "html, body { background-color:#0f172a !important; color:#e2e8f0 !important; }",
+                "section, .section { background-color:#0f172a !important; color:#e2e8f0 !important; }",
+                "[class*='hero'] { color:#e2e8f0 !important; }",
+                "h1,h2,h3,h4,h5,h6 { color:#f1f5f9 !important; }",
+                "p,span,li,label,blockquote,figcaption,small,em,strong,td,th,dt,dd,address { color:#e2e8f0 !important; }",
+                "a:not(.btn):not([class*='btn']) { color:" + primary + " !important; }",
+                ".card,[class*='card'],[class*='item'],[class*='box'],[class*='testimonial'],[class*='service'] { background-color:#1e293b !important; color:#e2e8f0 !important; border-color:rgba(255,255,255,0.08) !important; }",
+                "header,nav,.header,.navbar,[class*='header'],[class*='nav']:not(section) { background-color:#1e293b !important; color:#e2e8f0 !important; }",
+                "footer,.footer,[class*='footer'] { background-color:#1e293b !important; color:#cbd5e1 !important; }",
+                "input,textarea,select { background-color:#1e293b !important; color:#e2e8f0 !important; border-color:rgba(255,255,255,0.12) !important; }",
+                ".btn-outline,[class*='btn-outline'] { border-color:rgba(255,255,255,0.25) !important; color:#e2e8f0 !important; }",
+                "hr { border-color:rgba(255,255,255,0.08) !important; }",
+                "::placeholder { color:#94a3b8 !important; }",
+            ].join("\n");
+        } else if (darkStyle) {
+            darkStyle.textContent = "";
         }
     }
 

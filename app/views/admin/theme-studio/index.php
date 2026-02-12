@@ -4050,13 +4050,8 @@ function exitCompare() {
    DARK / LIGHT MODE TOGGLE
    ═══════════════════════════════════════════════════════════ */
 
-/* Fields toggled by dark/light mode */
-const DARK_FIELDS = ['bg_color', 'dark_color', 'text_color'];
-const DARK_DEFAULTS = { bg_color: '#0f172a', dark_color: '#1e293b', text_color: '#e2e8f0' };
-const LIGHT_DEFAULTS = { bg_color: '#ffffff', dark_color: '#f8fafc', text_color: '#1e293b' };
-
+/* Dark/Light mode — pure overlay, does NOT touch brand fields */
 let colorMode = getVal('brand', 'color_mode') || 'light';
-let lightSnapshot = null;
 
 /* Set initial active state */
 $$('#ts-mode-toggle .ts-mode-btn').forEach(btn => {
@@ -4071,32 +4066,11 @@ $$('#ts-mode-toggle .ts-mode-btn').forEach(btn => {
     $$('#ts-mode-toggle .ts-mode-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
 
-    pushUndo();
-
-    if (mode === 'dark') {
-      /* Save current (light) values before switching */
-      lightSnapshot = {};
-      DARK_FIELDS.forEach(f => {
-        const cur = getVal('brand', f);
-        /* Save actual value or the light default — never empty */
-        lightSnapshot[f] = (cur && cur !== '') ? cur : LIGHT_DEFAULTS[f];
-      });
-      /* Apply dark overrides */
-      DARK_FIELDS.forEach(f => { setVal('brand', f, DARK_DEFAULTS[f]); });
-    } else {
-      /* Restore light values — always use LIGHT_DEFAULTS as safety net */
-      DARK_FIELDS.forEach(f => {
-        const restored = (lightSnapshot && lightSnapshot[f]) ? lightSnapshot[f] : LIGHT_DEFAULTS[f];
-        setVal('brand', f, restored);
-      });
-    }
-
     colorMode = mode;
     setVal('brand', 'color_mode', mode);
-    refreshAllFields();
     sendToPreview();
     scheduleSave();
-    toast(mode === 'dark' ? '🌙 Dark mode' : '☀️ Light mode', 'success');
+    toast(mode === 'dark' ? '🌙 Dark mode applied' : '☀️ Light mode restored', 'success');
   });
 });
 
