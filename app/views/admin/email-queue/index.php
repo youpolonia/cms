@@ -177,8 +177,8 @@ ob_start();
                         <tr>
                             <th style="width: 40px;"><input type="checkbox" id="selectAll" class="eq-checkbox"></th>
                             <th>Recipient</th>
-                            <th>Subject</th>
-                            <th>Status</th>
+                            <th>Subject <span class="tip"><span class="tip-text">Email subject line.</span></span></th>
+                            <th>Status <span class="tip"><span class="tip-text">Pending, Sent or Failed.</span></span></th>
                             <th>Priority</th>
                             <th>Created</th>
                             <th style="width: 140px;">Actions</th>

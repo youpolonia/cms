@@ -42,7 +42,7 @@ ob_start();
             </div>
         </div>
         <div class="stat-value"><?= $stats['score'] ?>%</div>
-        <div class="stat-label">Security Score</div>
+        <div class="stat-label">Security Score</div><span class="tip"><span class="tip-text">Overall security rating. Green = good, Red = needs attention.</span></span>
     </div>
     <div class="stat-card">
         <div class="stat-header">
@@ -81,7 +81,7 @@ ob_start();
 
 <div class="card">
     <div class="card-header">
-        <h2 class="card-title">Security Audit Results</h2>
+        <h2 class="card-title">Security Audit Results</h2><span class="tip"><span class="tip-text">Automated checks of your security configuration.</span></span>
         <div style="display: flex; gap: 1rem; align-items: center;">
             <?php if ($lastScan): ?>
                 <span style="font-size: 0.875rem; color: var(--color-text-muted);">Last scan: <?= esc($lastScan) ?></span>

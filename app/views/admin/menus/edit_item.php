@@ -151,12 +151,12 @@ select.form-control { cursor: pointer; }
                 <?= csrf_field() ?>
 
                 <div class="form-group">
-                    <label for="title">Title <span class="required">*</span></label>
+                    <label for="title">Title<span class="tip"><span class="tip-text">Text displayed in the navigation menu.</span></span> <span class="required">*</span></label>
                     <input type="text" id="title" name="title" class="form-control" value="<?= esc($item['title']) ?>" required placeholder="Link text">
                 </div>
 
                 <div class="form-group">
-                    <label>Icon</label>
+                    <label>Icon</label><span class="tip"><span class="tip-text">Optional Font Awesome icon shown next to the menu item.</span></span>
                     <div class="icon-input-row">
                         <input type="text" id="icon" name="icon" class="form-control" value="<?= esc($item['icon'] ?? '') ?>" placeholder="Click to pick..." readonly>
                         <button type="button" class="clear-btn" id="clearIcon" style="<?= empty($item['icon']) ? 'display:none;' : '' ?>">✕</button>

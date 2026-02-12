@@ -30,7 +30,7 @@ function human_time_diff($timestamp) {
             <div class="stat-icon primary">&#128190;</div>
         </div>
         <div class="stat-value"><?= (int)($stats['total'] ?? 0) ?></div>
-        <div class="stat-label">Total Backups</div>
+        <div class="stat-label">Total Backups</div><span class="tip"><span class="tip-text">All backup files stored on the server.</span></span>
     </div>
     <div class="stat-card">
         <div class="stat-header">
@@ -44,14 +44,14 @@ function human_time_diff($timestamp) {
             <div class="stat-icon primary">&#128451;</div>
         </div>
         <div class="stat-value"><?= (int)($stats['dbBackups'] ?? 0) ?></div>
-        <div class="stat-label">Database Backups</div>
+        <div class="stat-label">Database Backups</div><span class="tip"><span class="tip-text">SQL dumps of the database.</span></span>
     </div>
     <div class="stat-card">
         <div class="stat-header">
             <div class="stat-icon warning">&#128197;</div>
         </div>
         <div class="stat-value"><?= $stats['lastBackup'] ? human_time_diff(strtotime($stats['lastBackup'])) : 'Never' ?></div>
-        <div class="stat-label">Last Backup</div>
+        <div class="stat-label">Last Backup</div><span class="tip"><span class="tip-text">Time since the most recent backup was created.</span></span>
     </div>
 </div>
 

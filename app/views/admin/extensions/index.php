@@ -24,10 +24,10 @@ ob_start();
         <table>
             <thead>
                 <tr>
-                    <th>Extension</th>
+                    <th>Extension <span class="tip"><span class="tip-text">Third-party add-on that extends CMS functionality.</span></span></th>
                     <th>Version</th>
                     <th>Author</th>
-                    <th>Status</th>
+                    <th>Status <span class="tip"><span class="tip-text">Active extensions are loaded on every page.</span></span></th>
                     <th style="width: 220px;">Actions</th>
                 </tr>
             </thead>
@@ -89,7 +89,7 @@ ob_start();
     <table>
         <thead>
             <tr>
-                <th>Extension</th>
+                <th>Extension</th><span class="tip"><span class="tip-text">Third-party add-on extending CMS functionality.</span></span>
                 <th>Version</th>
                 <th>Author</th>
                 <th style="width: 120px;">Actions</th>

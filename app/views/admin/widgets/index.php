@@ -260,9 +260,9 @@ $areaCount = count(array_unique(array_column($widgets, 'area')));
                 <thead>
                     <tr>
                         <th style="width: 36px;"><input type="checkbox" id="selectAll" onchange="toggleSelectAll(this)"></th>
-                        <th>Widget</th>
+                        <th>Widget <span class="tip"><span class="tip-text">Name of the widget.</span></span></th>
                         <th>Type</th>
-                        <th>Area</th>
+                        <th>Area <span class="tip"><span class="tip-text">Where this widget appears (sidebar, footer, etc.).</span></span></th>
                         <?php if ($hasNewColumns ?? false): ?>
                             <th>Visibility</th>
                         <?php endif; ?>

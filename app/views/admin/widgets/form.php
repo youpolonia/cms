@@ -82,7 +82,7 @@ $emojiGrid = [
             <!-- Widget Type Selection -->
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Widget Type</h3>
+                    <h3 class="card-title">Widget Type</h3><span class="tip"><span class="tip-text">The kind of content this widget displays.</span></span>
                 </div>
                 <div class="card-body">
                     <div class="type-grid">
@@ -245,7 +245,7 @@ $emojiGrid = [
                 </div>
                 <div class="card-body">
                     <div class="form-group">
-                        <label for="area">Display Area *</label>
+                        <label for="area">Display Area<span class="tip"><span class="tip-text">Where on the site this widget appears (sidebar, footer, etc.).</span></span> *</label>
                         <select id="area" name="area" class="form-input">
                             <?php foreach ($areas as $key => $label): ?>
                                 <option value="<?= esc($key) ?>" <?= ($widget['area'] ?? 'sidebar') === $key ? 'selected' : '' ?>><?= esc($label) ?></option>

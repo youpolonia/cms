@@ -109,10 +109,10 @@ ob_start();
                 <thead>
                     <tr>
                         <th style="width: 60px;">ID</th>
-                        <th>Name</th>
+                        <th>Name</th><span class="tip"><span class="tip-text">Descriptive name of the scheduled task.</span></span>
                         <th style="width: 100px;">Type</th>
-                        <th style="width: 140px;">Schedule</th>
-                        <th style="width: 100px;">Status</th>
+                        <th style="width: 140px;">Schedule</th><span class="tip"><span class="tip-text">How often this task runs (hourly, daily, etc.).</span></span>
+                        <th style="width: 100px;">Status</th><span class="tip"><span class="tip-text">Active tasks run on schedule. Paused tasks are skipped.</span></span>
                         <th style="width: 160px;">Last Run</th>
                         <th style="width: 200px;">Actions</th>
                     </tr>

@@ -107,9 +107,9 @@ function human_time_diff($timestamp) {
             <table class="table">
                 <thead>
                     <tr>
-                        <th>Version ID</th>
+                        <th>Version ID</th><span class="tip"><span class="tip-text">Revision number. Higher = newer.</span></span>
                         <th style="width: 150px;">Created</th>
-                        <th>Comment</th>
+                        <th>Comment</th><span class="tip"><span class="tip-text">Description of what changed in this version.</span></span>
                         <th style="width: 200px;">Actions</th>
                     </tr>
                 </thead>

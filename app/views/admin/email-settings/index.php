@@ -189,7 +189,7 @@ ob_start();
                     <?= csrf_field() ?>
 
                     <div class="es-form-group">
-                        <label for="from_name" class="es-label">From Name</label>
+                        <label for="from_name" class="es-label">From Name</label><span class="tip"><span class="tip-text">Display name shown as sender (e.g. your site name).</span></span>
                         <input type="text" id="from_name" name="from_name" class="es-input"
                                value="<?= esc($settings['from_name'] ?? '') ?>"
                                placeholder="My CMS">
@@ -197,7 +197,7 @@ ob_start();
                     </div>
 
                     <div class="es-form-group">
-                        <label for="from_email" class="es-label">From Email</label>
+                        <label for="from_email" class="es-label">From Email</label><span class="tip"><span class="tip-text">Email address shown as sender in outgoing emails.</span></span>
                         <input type="email" id="from_email" name="from_email" class="es-input"
                                value="<?= esc($settings['from_email'] ?? '') ?>"
                                placeholder="noreply@example.com">
@@ -241,7 +241,7 @@ ob_start();
             <div class="es-card" style="margin-bottom: 1.5rem;">
                 <div class="es-card-header">
                     <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01"/></svg>
-                    <h2 class="es-card-title">SMTP Configuration</h2>
+                    <h2 class="es-card-title">SMTP Configuration</h2><span class="tip"><span class="tip-text">Server settings for sending emails. Use SMTP for reliable delivery.</span></span>
                 </div>
                 <div class="es-card-body">
                     <?php if ($smtpConfigured): ?>

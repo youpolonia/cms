@@ -43,7 +43,7 @@ if ($settings['is_enabled'] && !empty($settings['enabled_at'])) {
             <div class="stat-icon warning">&#9201;</div>
         </div>
         <div class="stat-value"><?= esc($uptimeDisplay) ?></div>
-        <div class="stat-label">Maintenance Duration</div>
+        <div class="stat-label">Maintenance Duration</div><span class="tip"><span class="tip-text">How long maintenance mode has been active.</span></span>
     </div>
 </div>
 
@@ -55,7 +55,7 @@ if ($settings['is_enabled'] && !empty($settings['enabled_at'])) {
         <!-- Status Card -->
         <div class="card" style="margin-bottom: 1.5rem;">
             <div class="card-header">
-                <h2 class="card-title">Maintenance Status</h2>
+                <h2 class="card-title">Maintenance Status</h2><span class="tip"><span class="tip-text">When enabled, visitors see a maintenance page. Admins can still log in.</span></span>
             </div>
             <div class="card-body" style="text-align: center; padding: 2.5rem 2rem;">
                 <?php if ($settings['is_enabled']): ?>
@@ -95,7 +95,7 @@ if ($settings['is_enabled'] && !empty($settings['enabled_at'])) {
                     <?= csrf_field() ?>
 
                     <div class="form-group">
-                        <label class="form-label" for="message">Maintenance Message</label>
+                        <label class="form-label" for="message">Maintenance Message<span class="tip"><span class="tip-text">Text shown to visitors during maintenance.</span></span></label>
                         <textarea id="message" name="message" class="form-input" rows="4" required><?= esc($settings['message'] ?? '') ?></textarea>
                         <p class="form-hint">This message will be shown to visitors during maintenance</p>
                     </div>

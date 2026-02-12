@@ -95,9 +95,9 @@ $recentPages = count(array_filter($pages, fn($p) => strtotime($p['updated_at'] ?
         <table class="table" id="pages-table">
             <thead>
                 <tr>
-                    <th class="sortable" data-sort="title">Title</th>
+                    <th class="sortable" data-sort="title">Title<span class="tip"><span class="tip-text">Page title as shown to visitors.</span></span></th>
                     <th>Slug</th>
-                    <th class="sortable" data-sort="status">Status</th>
+                    <th class="sortable" data-sort="status">Status<span class="tip"><span class="tip-text">Draft = admin-only. Published = live on site.</span></span></th>
                     <th class="sortable" data-sort="updated_at">Last Updated</th>
                     <th style="width: 100px;">Actions</th>
                 </tr>

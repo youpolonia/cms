@@ -26,7 +26,7 @@ ob_start();
             </div>
 
             <div class="form-group">
-                <label for="status_code">Redirect Type</label>
+                <label for="status_code">Redirect Type</label><span class="tip"><span class="tip-text">301: permanent (SEO-friendly). 302: temporary.</span></span><span class="tip"><span class="tip-text">301: permanent, passes SEO value. 302: temporary, no SEO transfer.</span></span>
                 <select id="status_code" name="status_code">
                     <option value="301" <?= ($redirect['status_code'] ?? 301) == 301 ? 'selected' : '' ?>>301 - Permanent (SEO recommended)</option>
                     <option value="302" <?= ($redirect['status_code'] ?? 0) == 302 ? 'selected' : '' ?>>302 - Temporary</option>

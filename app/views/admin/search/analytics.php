@@ -20,8 +20,8 @@ ob_start();
             <table>
                 <thead>
                     <tr>
-                        <th>Query</th>
-                        <th>Count</th>
+                        <th>Query <span class="tip"><span class="tip-text">What visitors searched for on your site.</span></span></th>
+                        <th>Count <span class="tip"><span class="tip-text">How many times this search was performed.</span></span></th>
                         <th>Avg Results</th>
                     </tr>
                 </thead>

@@ -247,7 +247,7 @@ ob_start();
                 </div>
                 <div class="card-body">
                     <div class="form-row">
-                        <label for="username">Username <span class="required">*</span></label>
+                        <label for="username">Username<span class="tip"><span class="tip-text">Login name. Cannot be changed after creation.</span></span> <span class="required">*</span></label>
                         <input type="text" id="username" name="username" required 
                                value="<?= esc($user['username'] ?? '') ?>" 
                                placeholder="Enter username" 
@@ -257,7 +257,7 @@ ob_start();
                     </div>
 
                     <div class="form-row">
-                        <label for="email">Email Address</label>
+                        <label for="email">Email Address<span class="tip"><span class="tip-text">Used for password recovery and notifications.</span></span></label>
                         <input type="email" id="email" name="email" 
                                value="<?= esc($user['email'] ?? '') ?>" 
                                placeholder="user@example.com"
@@ -274,7 +274,7 @@ ob_start();
                 </div>
                 <div class="card-body">
                     <div class="form-row">
-                        <label for="password">Password <?= $isEdit ? '' : '<span class="required">*</span>' ?></label>
+                        <label for="password">Password<span class="tip"><span class="tip-text">Min 8 characters. Leave blank to keep current password (on edit).</span></span> <?= $isEdit ? '' : '<span class="required">*</span>' ?></label>
                         <input type="password" id="password" name="password" 
                                <?= $isEdit ? '' : 'required' ?> 
                                placeholder="<?= $isEdit ? 'Leave empty to keep current' : 'Enter password' ?>" 

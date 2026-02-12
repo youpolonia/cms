@@ -25,8 +25,8 @@ ob_start();
         <table>
             <thead>
                 <tr>
-                    <th>Source URL</th>
-                    <th>Target URL</th>
+                    <th>Source URL <span class="tip"><span class="tip-text">The old URL that visitors might still use.</span></span></th>
+                    <th>Target URL <span class="tip"><span class="tip-text">Where the old URL redirects to.</span></span></th>
                     <th>Code</th>
                     <th>Hits</th>
                     <th>Status</th>

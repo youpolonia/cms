@@ -254,9 +254,9 @@ $totalItems = array_sum(array_column($menus, 'item_count'));
         <table class="menus-table">
             <thead>
                 <tr>
-                    <th>Menu</th>
-                    <th>Slug</th>
-                    <th>Location</th>
+                    <th>Menu <span class="tip"><span class="tip-text">Name of the navigation menu.</span></span></th>
+                    <th>Slug <span class="tip"><span class="tip-text">Unique identifier used in code. Auto-generated.</span></span></th>
+                    <th>Location <span class="tip"><span class="tip-text">Where this menu is displayed (header, footer, etc.).</span></span></th>
                     <th style="text-align: center;">Items</th>
                     <th style="text-align: center;">Status</th>
                     <th style="width: 110px;">Actions</th>

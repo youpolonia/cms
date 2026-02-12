@@ -550,7 +550,7 @@ textarea.form-control {
                 </div>
                 <div class="card-body">
                     <div class="form-group">
-                        <label for="name">Gallery Name <span class="required">*</span></label>
+                        <label for="name">Gallery Name<span class="tip"><span class="tip-text">Display name of this image gallery.</span></span> <span class="required">*</span></label>
                         <input type="text" id="name" name="name" required
                                value="<?= esc($gallery['name'] ?? '') ?>"
                                placeholder="e.g., Summer Vacation 2025, Product Photos"
@@ -570,7 +570,7 @@ textarea.form-control {
                     </div>
 
                     <div class="form-group">
-                        <label for="description">Description</label>
+                        <label for="description">Description</label><span class="tip"><span class="tip-text">Optional description shown on the gallery page.</span></span>
                         <textarea id="description" name="description" rows="4"
                                   placeholder="Brief description of this gallery for SEO and visitors..."
                                   class="form-control"><?= esc($gallery['description'] ?? '') ?></textarea>

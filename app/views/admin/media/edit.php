@@ -48,12 +48,12 @@ function formatBytes(int $bytes): string {
                 <?= csrf_field() ?>
 
                 <div class="form-group">
-                    <label for="title">Title</label>
+                    <label for="title">Title</label><span class="tip"><span class="tip-text">Display name of the media file.</span></span>
                     <input type="text" id="title" name="title" value="<?= esc($file['title'] ?? '') ?>" placeholder="File title">
                 </div>
 
                 <div class="form-group">
-                    <label for="alt_text">Alt Text</label>
+                    <label for="alt_text">Alt Text</label><span class="tip"><span class="tip-text">Describes the image for screen readers and SEO. Important for accessibility.</span></span>
                     <input type="text" id="alt_text" name="alt_text" value="<?= esc($file['alt_text'] ?? '') ?>" placeholder="Alternative text for accessibility">
                     <p class="form-hint">Describes the image for screen readers and SEO</p>
                 </div>

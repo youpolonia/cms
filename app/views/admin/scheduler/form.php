@@ -14,7 +14,7 @@ ob_start();
             <?= csrf_field() ?>
             
             <div class="form-group">
-                <label class="form-label" for="name">Job Name <span style="color: var(--color-danger);">*</span></label>
+                <label class="form-label" for="name"<span class="tip"><span class="tip-text">A descriptive name for this scheduled task.</span></span>>Job Name <span style="color: var(--color-danger);">*</span></label>
                 <input type="text" id="name" name="name" class="form-input" required 
                        value="<?= esc($job['name'] ?? '') ?>" placeholder="e.g. Daily Backup">
                 <small class="form-hint">A descriptive name for this scheduled job</small>

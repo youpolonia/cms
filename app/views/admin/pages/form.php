@@ -454,7 +454,7 @@ ob_start();
                         <?php endif; ?>
                     </div>
                     <input type="text" name="meta_title" class="form-input" id="meta-title"
-                           placeholder="SEO title (max 60 chars)"
+                           placeholder="SEO title (max 60 chars)"<span class="tip"><span class="tip-text"> <span class="tip"><span class="tip-text">Appears in browser tabs and search results. Keep under 60 chars.</span></span></span></span>
                            value="<?= esc($page['meta_title'] ?? '') ?>"
                            oninput="updateSeoPreview(); updateCharCount(this, 60); analyzeSeo()">
                     <div class="char-count" id="meta-title-count">0/60</div>
@@ -466,7 +466,7 @@ ob_start();
                         <?php endif; ?>
                     </div>
                     <textarea name="meta_description" class="form-textarea" id="meta-desc" rows="2"
-                              placeholder="SEO description (max 160 chars)"
+                              placeholder="SEO description (max 160 chars)"<span class="tip"><span class="tip-text"> <span class="tip"><span class="tip-text">Shown below the title in Google. Keep under 160 chars.</span></span></span></span>
                               oninput="updateSeoPreview(); updateCharCount(this, 160); analyzeSeo()"><?= esc($page['meta_description'] ?? '') ?></textarea>
                     <div class="char-count" id="meta-desc-count">0/160</div>
                     

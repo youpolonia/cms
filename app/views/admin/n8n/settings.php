@@ -425,7 +425,7 @@ input:focus, select:focus, textarea:focus {
                         <label for="auth_type">Authentication Type</label>
                         <select id="auth_type" name="auth_type" onchange="toggleAuthFields()">
                             <option value="none" <?= $config['auth_type'] === 'none' ? 'selected' : '' ?>>None (Public instance)</option>
-                            <option value="apikey" <?= $config['auth_type'] === 'apikey' ? 'selected' : '' ?>>API Key</option>
+                            <option value="apikey" <?= $config['auth_type'] === 'apikey' ? 'selected' : '' ?>>API Key<span class="tip"><span class="tip-text">Authentication key for n8n. Keep this secret.</span></span></option>
                             <option value="basic" <?= $config['auth_type'] === 'basic' ? 'selected' : '' ?>>Basic Auth</option>
                         </select>
                     </div>

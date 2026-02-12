@@ -60,7 +60,7 @@ $flashError = \Core\Session::getFlash('error');
                 </div>
 
                 <div class="form-group">
-                    <label for="description">Description</label>
+                    <label for="description">Description</label><span class="tip"><span class="tip-text">Optional description shown on category archive pages.</span></span>
                     <textarea id="description" name="description" rows="3" 
                               placeholder="Brief description of this category..."
                               class="form-control"><?= esc($category['description'] ?? '') ?></textarea>
@@ -77,7 +77,7 @@ $flashError = \Core\Session::getFlash('error');
             <div class="card-body">
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="parent_id">Parent Category</label>
+                        <label for="parent_id">Parent Category<span class="tip"><span class="tip-text">Nest under another category to create hierarchy.</span></span></label><span class="tip"><span class="tip-text">Nest this under another category to create a hierarchy.</span></span>
                         <select id="parent_id" name="parent_id" class="form-control">
                             <option value="">📁 None (Top Level)</option>
                             <?php foreach ($parents as $parent): ?>

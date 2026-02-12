@@ -313,7 +313,7 @@ $viewerCount = count(array_filter($users, fn($u) => ($u['role'] ?? '') === 'view
                 <tr>
                     <th style="width: 50px;">ID</th>
                     <th>User</th>
-                    <th>Role</th>
+                    <th>Role <span class="tip"><span class="tip-text">Determines what this user can do. Admin has full access.</span></span></th>
                     <th>Last Login</th>
                     <th>Created</th>
                     <th style="width: 100px;">Actions</th>

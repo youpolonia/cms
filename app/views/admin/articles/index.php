@@ -98,8 +98,8 @@ $draftCount = count(array_filter($articles, fn($a) => $a['status'] === 'draft'))
         <thead>
             <tr>
                 <th>Article</th>
-                <th>Category</th>
-                <th>Status</th>
+                <th>Category <span class="tip"><span class="tip-text">Used for organizing and filtering articles.</span></span></th>
+                <th>Status <span class="tip"><span class="tip-text">Draft articles are only visible to admins.</span></span></th>
                 <th>Date</th>
                 <th>Actions</th>
             </tr>

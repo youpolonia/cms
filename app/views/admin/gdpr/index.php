@@ -102,7 +102,7 @@ ob_start();
         <!-- Export Data -->
         <div class="card" style="margin-bottom: 1.5rem;">
             <div class="card-header">
-                <h3 class="card-title" style="font-size: 1rem;">Export Data</h3>
+                <h3 class="card-title" style="font-size: 1rem;">Export Data</h3><span class="tip"><span class="tip-text">Download all data stored for a specific user (GDPR right of access).</span></span>
             </div>
             <div class="card-body">
                 <form method="post" action="/admin/gdpr/export">
@@ -128,7 +128,7 @@ ob_start();
         <!-- Anonymize User -->
         <div class="card" style="margin-bottom: 1.5rem;">
             <div class="card-header">
-                <h3 class="card-title" style="font-size: 1rem;">Anonymize User</h3>
+                <h3 class="card-title" style="font-size: 1rem;">Anonymize User</h3><span class="tip"><span class="tip-text">Replace personal data with anonymous values while keeping content.</span></span>
             </div>
             <div class="card-body">
                 <form method="post" action="/admin/gdpr/anonymize">
@@ -153,7 +153,7 @@ ob_start();
         <!-- Delete User Data -->
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title" style="font-size: 1rem;">Delete User Data</h3>
+                <h3 class="card-title" style="font-size: 1rem;">Delete User Data</h3><span class="tip"><span class="tip-text">Permanently remove all data for a user (GDPR right to erasure).</span></span>
             </div>
             <div class="card-body">
                 <form method="post" action="/admin/gdpr/delete" onsubmit="return confirm('WARNING: This will permanently delete all user data. This action cannot be undone. Are you sure?');">

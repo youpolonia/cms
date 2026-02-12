@@ -74,7 +74,7 @@ $periodLabel = $data['period']['label'] ?? 'Last 7 Days';
 
 <div class="analytics-page">
     <div class="analytics-header">
-        <div class="analytics-title">Analytics <span style="font-size:0.875rem;font-weight:400;color:var(--ctp-subtext0);margin-left:0.5rem"><?= esc($periodLabel) ?></span></div>
+        <div class="analytics-title">Analytics <span<span class="tip"><span class="tip-text">Site visitor and page view statistics.</span></span> style="font-size:0.875rem;font-weight:400;color:var(--ctp-subtext0);margin-left:0.5rem"><?= esc($periodLabel) ?></span></div>
         <div class="analytics-controls">
             <div class="period-selector">
                 <?php foreach ($validPeriods as $p): ?>

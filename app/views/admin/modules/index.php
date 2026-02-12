@@ -99,7 +99,7 @@ function formatBytes($bytes, $precision = 1) {
                             <th style="width: 40px;">
                                 <input type="checkbox" id="select-all" title="Select all">
                             </th>
-                            <th>Module</th>
+                            <th>Module <span class="tip"><span class="tip-text">Built-in feature module.</span></span></th>
                             <th style="width: 100px;">Version</th>
                             <th style="width: 100px;">Files</th>
                             <th style="width: 100px;">Size</th>
