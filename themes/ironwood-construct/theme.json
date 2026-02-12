@@ -1,0 +1,85 @@
+{
+    "name": "Ironwood Construct",
+    "description": "Elegant, minimalist construction theme with dark mood and refined typography",
+    "version": "1.0.0",
+    "author": "AI Theme Builder",
+    "supports": {
+        "theme-builder": true,
+        "custom-header": true,
+        "custom-footer": true,
+        "custom-colors": true
+    },
+    "options": {
+        "show_header": true,
+        "show_footer": true,
+        "body_background": "#0f1215",
+        "preload_fonts": true
+    },
+    "colors": {
+        "primary": "#2a9d8f",
+        "secondary": "#e9c46a",
+        "accent": "#f4a261",
+        "background": "#0f1215",
+        "surface": "#1a1f24",
+        "text": "#e8e6e3",
+        "text_muted": "#a8a6a3",
+        "border": "#2d3439",
+        "success": "#4caf50",
+        "warning": "#ff9800",
+        "error": "#f44336"
+    },
+    "typography": {
+        "fontFamily": "Lato",
+        "headingFont": "Cormorant Garamond",
+        "baseFontSize": "16",
+        "lineHeight": "1.7",
+        "fontWeight": "400",
+        "headingWeight": "600"
+    },
+    "buttons": {
+        "borderRadius": "2",
+        "paddingX": "32",
+        "paddingY": "14",
+        "fontWeight": "600",
+        "uppercase": true,
+        "shadow": true
+    },
+    "layout": {
+        "containerWidth": "1200",
+        "sectionSpacing": "120",
+        "borderRadius": "6"
+    },
+    "homepage_sections": [
+        {
+            "id": "hero",
+            "label": "Hero",
+            "icon": "⭐",
+            "required": true
+        },
+        {
+            "id": "about",
+            "label": "About",
+            "icon": "📖"
+        },
+        {
+            "id": "services",
+            "label": "Services",
+            "icon": "🔨"
+        },
+        {
+            "id": "projects",
+            "label": "Projects",
+            "icon": "🏗️"
+        },
+        {
+            "id": "articles",
+            "label": "Latest News",
+            "icon": "📰"
+        },
+        {
+            "id": "cta",
+            "label": "Contact",
+            "icon": "📞"
+        }
+    ]
+}

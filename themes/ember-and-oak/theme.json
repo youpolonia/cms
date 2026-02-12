@@ -1,0 +1,85 @@
+{
+    "name": "Ember & Oak",
+    "description": "Bold, dramatic restaurant theme with warm fire-inspired accents and confident typography",
+    "version": "1.0.0",
+    "author": "AI Theme Builder",
+    "supports": {
+        "theme-builder": true,
+        "custom-header": true,
+        "custom-footer": true,
+        "custom-colors": true
+    },
+    "options": {
+        "show_header": true,
+        "show_footer": true,
+        "body_background": "#0d0b09",
+        "preload_fonts": true
+    },
+    "colors": {
+        "primary": "#e85a1b",
+        "secondary": "#c9a227",
+        "accent": "#ff7f3f",
+        "background": "#0d0b09",
+        "surface": "#1a1714",
+        "text": "#f2ede8",
+        "text_muted": "#9a918a",
+        "border": "#3d2e1e",
+        "success": "#4a9c5d",
+        "warning": "#d4a024",
+        "error": "#c43d3d"
+    },
+    "typography": {
+        "fontFamily": "Source Sans Pro",
+        "headingFont": "Bebas Neue",
+        "baseFontSize": "17",
+        "lineHeight": "1.7",
+        "fontWeight": "400",
+        "headingWeight": "400"
+    },
+    "buttons": {
+        "borderRadius": "2",
+        "paddingX": "36",
+        "paddingY": "16",
+        "fontWeight": "700",
+        "uppercase": true,
+        "shadow": true
+    },
+    "layout": {
+        "containerWidth": "1240",
+        "sectionSpacing": "130",
+        "borderRadius": "4"
+    },
+    "homepage_sections": [
+        {
+            "id": "hero",
+            "label": "Hero",
+            "icon": "⭐",
+            "required": true
+        },
+        {
+            "id": "about",
+            "label": "Our Story",
+            "icon": "📖"
+        },
+        {
+            "id": "menu",
+            "label": "Featured Menu",
+            "icon": "🍽️"
+        },
+        {
+            "id": "gallery",
+            "label": "Gallery",
+            "icon": "📷"
+        },
+        {
+            "id": "articles",
+            "label": "From Our Kitchen",
+            "icon": "📰"
+        },
+        {
+            "id": "cta",
+            "label": "Reservations",
+            "icon": "🎯"
+        }
+    ]
+}
