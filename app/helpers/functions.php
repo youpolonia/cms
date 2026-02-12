@@ -1277,8 +1277,15 @@ if (!function_exists('get_menu_items_for_render')) {
         try {
             $pdo = db();
 
-            $stmt = $pdo->prepare("SELECT id, name, slug FROM menus WHERE location = :loc1 OR slug = :loc2 LIMIT 1");
-            $stmt->execute(['loc1' => $location, 'loc2' => $location]);
+            // Prefer theme-specific menu, fall back to generic (NULL theme_slug)
+            $theme = function_exists('get_active_theme') ? get_active_theme() : null;
+            $stmt = $pdo->prepare("
+                SELECT id, name, slug FROM menus 
+                WHERE (location = :loc1 OR slug = :loc2)
+                ORDER BY CASE WHEN theme_slug = :theme THEN 0 WHEN theme_slug IS NULL THEN 1 ELSE 2 END
+                LIMIT 1
+            ");
+            $stmt->execute(['loc1' => $location, 'loc2' => $location, 'theme' => $theme]);
             $menu = $stmt->fetch(\PDO::FETCH_ASSOC);
 
             if ($menu) {
@@ -1354,7 +1361,9 @@ if (!function_exists('get_pages_as_menu_items_for_render')) {
     {
         try {
             $pdo = db();
-            $stmt = $pdo->query("SELECT id, slug, title FROM pages WHERE status = 'published' ORDER BY title ASC LIMIT 20");
+            $theme = function_exists('get_active_theme') ? get_active_theme() : null;
+            $stmt = $pdo->prepare("SELECT id, slug, title FROM pages WHERE status = 'published' AND (theme_slug = :theme OR theme_slug IS NULL) ORDER BY title ASC LIMIT 20");
+            $stmt->execute([':theme' => $theme]);
             $pages = $stmt->fetchAll(\PDO::FETCH_ASSOC);
 
             return array_map(function($page) {
