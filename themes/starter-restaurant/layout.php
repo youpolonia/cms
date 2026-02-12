@@ -1,7 +1,7 @@
 <?php
 /**
- * Starter Restaurant Theme Layout
- * Elegant dining experience with warm gold tones and serif typography
+ * La Maison — Premium Restaurant Theme Layout
+ * Cinematic dining aesthetic with warm gold tones and refined serif typography
  */
 
 if (!defined('CMS_ROOT')) {
@@ -167,7 +167,7 @@ $themePath = '/themes/starter-restaurant';
                         <ul class="contact-list">
                             <li><i class="fas fa-map-marker-alt"></i> 42 Gourmet Avenue, London</li>
                             <li><i class="fas fa-phone"></i> +44 20 7946 0958</li>
-                            <li><i class="fas fa-envelope"></i> hello@restaurant.com</li>
+                            <li><i class="fas fa-envelope"></i> hello@lamaison.com</li>
                         </ul>
                     </div>
                     <div class="footer-nav">

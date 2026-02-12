@@ -1,8 +1,8 @@
 <?php
 /**
- * Starter Restaurant — Menu Section (pages)
- * Shows pages as menu categories (Our Menu, Reservations, Events, Gallery)
- * Variables inherited from parent scope: $pagesLabel, $pagesTitle, $pagesDesc, $pages
+ * Starter Restaurant — Explore Section (pages as overlay tiles)
+ * Photo-forward cards with overlay text
+ * Variables inherited from parent scope
  */
 $menuIcons = [
     'our-menu' => 'fas fa-book-open',
@@ -17,32 +17,30 @@ $menuDescriptions = [
     'gallery' => 'A glimpse into our kitchen, dining room, and signature dishes',
 ];
 ?>
-<!-- Menu / Pages Section -->
+<!-- Explore / Pages Section -->
 <?php if (!empty($pages)): ?>
-<section class="section menu-section" id="menu">
+<section class="section" id="menu">
     <div class="container">
-        <div class="section-header">
+        <div class="section-header" data-animate>
             <span class="section-label" data-ts="pages.label"><?= esc($pagesLabel) ?></span>
+            <div class="section-divider"></div>
             <h2 class="section-title" data-ts="pages.title"><?= esc($pagesTitle) ?></h2>
             <p class="section-desc" data-ts="pages.description"><?= esc($pagesDesc) ?></p>
         </div>
-        <div class="menu-grid">
+        <div class="card-grid">
             <?php foreach ($pages as $p): 
                 $icon = $menuIcons[$p['slug']] ?? 'fas fa-utensils';
                 $desc = $menuDescriptions[$p['slug']] ?? esc(mb_strimwidth(strip_tags($p['content']), 0, 120, '...'));
             ?>
-            <a href="/page/<?= esc($p['slug']) ?>" class="menu-card" style="text-decoration:none" data-animate>
-                <div class="menu-card-img">
-                    <?php if (!empty($p['featured_image'])): ?>
-                    <img src="<?= esc($p['featured_image']) ?>" alt="<?= esc($p['title']) ?>" style="width:100%;height:220px;object-fit:cover">
-                    <?php else: ?>
-                    <div class="img-placeholder menu-ph"><i class="<?= $icon ?>"></i></div>
-                    <?php endif; ?>
-                </div>
-                <div class="menu-card-body">
-                    <div class="menu-card-header">
-                        <h3><i class="<?= $icon ?>" style="margin-right:8px;opacity:0.7"></i><?= esc($p['title']) ?></h3>
-                    </div>
+            <a href="/page/<?= esc($p['slug']) ?>" class="card-overlay" data-animate>
+                <?php if (!empty($p['featured_image'])): ?>
+                <img src="<?= esc($p['featured_image']) ?>" alt="<?= esc($p['title']) ?>" loading="lazy">
+                <?php else: ?>
+                <div class="card-ph"><i class="<?= $icon ?>"></i></div>
+                <?php endif; ?>
+                <div class="card-overlay-content">
+                    <div class="card-overlay-icon"><i class="<?= $icon ?>"></i></div>
+                    <h3><?= esc($p['title']) ?></h3>
                     <p><?= $desc ?></p>
                 </div>
             </a>

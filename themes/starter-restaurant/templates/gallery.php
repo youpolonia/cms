@@ -1,8 +1,7 @@
 <?php
 /**
- * Gallery Page Template — Universal (all themes)
- * Renders public galleries with per-gallery display templates:
- * grid | masonry | mosaic | carousel | justified
+ * Gallery Page Template — Restaurant Theme
+ * Elegant gallery with proper hero and restaurant-specific styling
  * 
  * Shows only galleries matching the active theme.
  * Available: $page (array), $content (string)
@@ -45,14 +44,16 @@ foreach ($_galleries as $_g) {
 <link rel="stylesheet" href="/public/css/gallery-layouts.css">
 
 <!-- Gallery Hero -->
-<section style="text-align:center;padding:80px 0 40px">
+<section class="gallery-hero">
     <div class="container">
-        <h1 style="font-size:3rem;font-weight:700;margin-bottom:16px;letter-spacing:-0.03em"><?= esc($page['title'] ?? 'Gallery') ?></h1>
+        <span class="section-label">Gallery</span>
+        <div class="ornament"><i class="fas fa-camera"></i></div>
+        <h1><?= esc($page['title'] ?? 'Our Gallery') ?></h1>
         <?php if (!empty($page['content']) && trim(strip_tags($page['content'])) !== ''): ?>
-        <div style="max-width:600px;margin:0 auto;opacity:0.7;font-size:1.1rem;line-height:1.6"><?= $page['content'] ?></div>
+        <div class="gallery-hero-desc"><?= $page['content'] ?></div>
         <?php endif; ?>
         <?php if ($_totalPhotos > 0): ?>
-        <p style="margin-top:16px;font-size:0.85rem;letter-spacing:0.08em;text-transform:uppercase;opacity:0.35"><?= $_totalPhotos ?> photos · <?= count($_galleries) ?> <?= count($_galleries) === 1 ? 'collection' : 'collections' ?></p>
+        <p class="gallery-hero-stats"><?= $_totalPhotos ?> photos · <?= count($_galleries) ?> <?= count($_galleries) === 1 ? 'collection' : 'collections' ?></p>
         <?php endif; ?>
     </div>
 </section>
@@ -117,7 +118,7 @@ foreach ($_galleries as $_g) {
             <h2>No Galleries Yet</h2>
             <p>Galleries will appear here once created in the admin panel.</p>
             <?php if (function_exists('cms_is_admin_logged_in') && cms_is_admin_logged_in()): ?>
-            <a href="/admin/galleries" style="display:inline-block;margin-top:20px;padding:12px 28px;background:var(--primary, var(--accent,#89b4fa));color:#fff;border-radius:8px;text-decoration:none;font-weight:600;transition:transform 0.2s" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform=''">Manage Galleries</a>
+            <a href="/admin/galleries" class="btn btn-outline" style="margin-top:20px">Manage Galleries</a>
             <?php endif; ?>
         </div>
     </div>

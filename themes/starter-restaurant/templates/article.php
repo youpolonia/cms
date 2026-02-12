@@ -1,5 +1,10 @@
+<?php
+/**
+ * Starter Restaurant — Article Template
+ * Premium reading experience with meta bar
+ */
+?>
 <section class="page-hero">
-    <div class="page-hero-overlay"></div>
     <div class="container">
         <h1 class="page-hero-title"><?= esc($article['title']) ?></h1>
         <div class="page-breadcrumb">
@@ -14,20 +19,20 @@
 
 <section class="page-content-section">
     <div class="container container-narrow">
-        <!-- Meta -->
-        <div style="display:flex;align-items:center;gap:16px;margin-bottom:32px;flex-wrap:wrap;font-size:0.9rem;color:var(--text-muted, #c4a882)">
+        <!-- Article Meta -->
+        <div class="article-meta-bar">
             <?php if (!empty($article['category_name'])): ?>
-            <span style="background:rgba(212,165,116,.1);color:var(--primary, #d4a574);padding:4px 14px;border-radius:4px;font-size:0.8rem;font-weight:600;text-transform:uppercase;letter-spacing:0.05em"><?= esc($article['category_name']) ?></span>
+            <span class="article-category-badge"><?= esc($article['category_name']) ?></span>
             <?php endif; ?>
-            <span><i class="far fa-calendar" style="margin-right:4px"></i> <?= date('M j, Y', strtotime($article['published_at'] ?? $article['created_at'])) ?></span>
+            <span><i class="far fa-calendar"></i> <?= date('F j, Y', strtotime($article['published_at'] ?? $article['created_at'])) ?></span>
             <?php if (!empty($article['views'])): ?>
-            <span><i class="far fa-eye" style="margin-right:4px"></i> <?= number_format($article['views']) ?> views</span>
+            <span><i class="far fa-eye"></i> <?= number_format($article['views']) ?> views</span>
             <?php endif; ?>
         </div>
 
         <?php if (!empty($article['featured_image'])): ?>
-        <div style="margin-bottom:40px;border-radius:8px;overflow:hidden">
-            <img src="<?= esc($article['featured_image']) ?>" alt="<?= esc($article['title']) ?>" style="width:100%">
+        <div class="article-featured-img">
+            <img src="<?= esc($article['featured_image']) ?>" alt="<?= esc($article['title']) ?>">
         </div>
         <?php endif; ?>
 
@@ -35,8 +40,8 @@
             <?= $article['content'] ?>
         </div>
 
-        <div style="margin-top:60px;padding-top:32px;border-top:1px solid rgba(212,165,116,.1);text-align:center">
-            <a href="/articles" class="btn btn-outline"><i class="fas fa-arrow-left" style="margin-right:8px"></i> Back to Articles</a>
+        <div class="article-back-link">
+            <a href="/articles" class="btn btn-outline"><i class="fas fa-arrow-left"></i> Back to Articles</a>
         </div>
     </div>
 </section>
