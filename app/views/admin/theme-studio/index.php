@@ -1261,6 +1261,7 @@ html,body{
     <button class="ts-btn ts-btn-ghost" id="ts-import-btn" title="Import theme settings">⬆ Import</button>
     <input type="file" id="ts-import-file" accept=".json" style="display:none">
     <button class="ts-btn ts-btn-ghost" id="ts-reset-btn">Reset</button>
+    <button class="ts-btn ts-btn-ghost" id="ts-save-btn" title="Save all changes (Ctrl+S)">💾 Save</button>
     <button class="ts-btn ts-btn-primary" id="ts-publish-btn">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
       Publish
@@ -1588,6 +1589,7 @@ const dom = {
   historyList     : $('#ts-history-list'),
   historyClose    : $('#ts-history-close'),
   publishBtn      : $('#ts-publish-btn'),
+  saveBtn         : $('#ts-save-btn'),
   resetBtn        : $('#ts-reset-btn'),
   exportBtn       : $('#ts-export-btn'),
   importBtn       : $('#ts-import-btn'),
@@ -2950,6 +2952,24 @@ function showSaveStatus(state) {
   }
 }
 
+
+/* ═══════════════════════════════════════════════════════════
+   SAVE
+   ═══════════════════════════════════════════════════════════ */
+
+dom.saveBtn.addEventListener('click', () => {
+  clearTimeout(saveTimer);
+  doSave('Manual save');
+});
+
+/* Ctrl+S to save */
+document.addEventListener('keydown', e => {
+  if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+    e.preventDefault();
+    clearTimeout(saveTimer);
+    doSave('Manual save');
+  }
+});
 
 /* ═══════════════════════════════════════════════════════════
    PUBLISH
