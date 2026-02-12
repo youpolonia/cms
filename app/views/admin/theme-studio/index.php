@@ -1429,8 +1429,6 @@ html,body{
 </div>
 
 
-<!-- Hidden file input for color extraction -->
-<input type="file" id="ts-extract-file" accept="image/*" style="display:none">
 <!-- Hidden canvas for color sampling -->
 <canvas id="ts-extract-canvas" style="display:none"></canvas>
 
@@ -1646,7 +1644,6 @@ const dom = {
 /* New feature elements */
 const domCompare    = $('#ts-compare-btn');
 const domModeToggle = $('#ts-mode-toggle');
-const domExtractFile= $('#ts-extract-file');
 const domExtractCanvas = $('#ts-extract-canvas');
 
 /* AI elements (may be null if AI not available) */
@@ -3856,68 +3853,66 @@ secSaveBtn.addEventListener('click', async () => {
    COLOR FROM IMAGE (Extract Palette)
    ═══════════════════════════════════════════════════════════ */
 
-domExtractFile.addEventListener('change', () => {
-  const file = domExtractFile.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = (e) => {
-    const img = new Image();
-    img.onload = () => {
-      const canvas = domExtractCanvas;
-      const ctx = canvas.getContext('2d');
-      const size = 64; /* Sample at small size for speed */
-      canvas.width = size; canvas.height = size;
-      ctx.drawImage(img, 0, 0, size, size);
-      const data = ctx.getImageData(0, 0, size, size).data;
+function extractPaletteFromUrl(imageUrl) {
+  if (!imageUrl) return;
+  toast('Extracting colors…', 'info');
+  const img = new Image();
+  img.crossOrigin = 'anonymous';
+  img.onload = () => {
+    const canvas = domExtractCanvas;
+    const ctx = canvas.getContext('2d');
+    const size = 64; /* Sample at small size for speed */
+    canvas.width = size; canvas.height = size;
+    ctx.drawImage(img, 0, 0, size, size);
+    let data;
+    try { data = ctx.getImageData(0, 0, size, size).data; }
+    catch(e) { toast('Could not read image pixels (CORS)', 'error'); return; }
 
-      /* Collect pixel colors */
-      const pixels = [];
-      for (let i = 0; i < data.length; i += 4) {
-        const r = data[i], g = data[i+1], b = data[i+2], a = data[i+3];
-        if (a < 128) continue; /* Skip transparent */
-        pixels.push([r, g, b]);
-      }
+    /* Collect pixel colors */
+    const pixels = [];
+    for (let i = 0; i < data.length; i += 4) {
+      const r = data[i], g = data[i+1], b = data[i+2], a = data[i+3];
+      if (a < 128) continue;
+      pixels.push([r, g, b]);
+    }
+    if (pixels.length < 10) { toast('Not enough pixel data', 'error'); return; }
 
-      /* Simple k-means with 5 clusters */
-      const k = 5;
-      let centers = pixels.filter((_, i) => i % Math.max(1, Math.floor(pixels.length / k)) === 0).slice(0, k);
-      if (centers.length < k) {
-        while (centers.length < k) centers.push([128, 128, 128]);
-      }
+    /* Simple k-means with 5 clusters */
+    const k = 5;
+    let centers = pixels.filter((_, i) => i % Math.max(1, Math.floor(pixels.length / k)) === 0).slice(0, k);
+    while (centers.length < k) centers.push([128, 128, 128]);
 
-      for (let iter = 0; iter < 10; iter++) {
-        const clusters = centers.map(() => []);
-        pixels.forEach(px => {
-          let minD = Infinity, minI = 0;
-          centers.forEach((c, ci) => {
-            const d = (px[0]-c[0])**2 + (px[1]-c[1])**2 + (px[2]-c[2])**2;
-            if (d < minD) { minD = d; minI = ci; }
-          });
-          clusters[minI].push(px);
+    for (let iter = 0; iter < 10; iter++) {
+      const clusters = centers.map(() => []);
+      pixels.forEach(px => {
+        let minD = Infinity, minI = 0;
+        centers.forEach((c, ci) => {
+          const d = (px[0]-c[0])**2 + (px[1]-c[1])**2 + (px[2]-c[2])**2;
+          if (d < minD) { minD = d; minI = ci; }
         });
-        centers = clusters.map((cl, i) => {
-          if (!cl.length) return centers[i];
-          const avg = [0, 0, 0];
-          cl.forEach(px => { avg[0] += px[0]; avg[1] += px[1]; avg[2] += px[2]; });
-          return avg.map(v => Math.round(v / cl.length));
-        });
-      }
+        clusters[minI].push(px);
+      });
+      centers = clusters.map((cl, i) => {
+        if (!cl.length) return centers[i];
+        const avg = [0, 0, 0];
+        cl.forEach(px => { avg[0] += px[0]; avg[1] += px[1]; avg[2] += px[2]; });
+        return avg.map(v => Math.round(v / cl.length));
+      });
+    }
 
-      /* Sort by saturation (most colorful first) */
-      const hexColors = centers.map(c => rgbToHex(c[0], c[1], c[2]));
-      const sorted = hexColors.map(hex => {
-        const rgb = hexToRgb(hex);
-        const hsv = rgbToHsv(rgb[0], rgb[1], rgb[2]);
-        return { hex, sat: hsv[1], val: hsv[2] };
-      }).sort((a, b) => (b.sat * b.val) - (a.sat * a.val));
+    /* Sort by saturation (most colorful first) */
+    const hexColors = centers.map(c => rgbToHex(c[0], c[1], c[2]));
+    const sorted = hexColors.map(hex => {
+      const rgb = hexToRgb(hex);
+      const hsv = rgbToHsv(rgb[0], rgb[1], rgb[2]);
+      return { hex, sat: hsv[1], val: hsv[2] };
+    }).sort((a, b) => (b.sat * b.val) - (a.sat * a.val));
 
-      showExtractedPalette(sorted.map(s => s.hex));
-    };
-    img.src = e.target.result;
+    showExtractedPalette(sorted.map(s => s.hex));
   };
-  reader.readAsDataURL(file);
-  domExtractFile.value = '';
-});
+  img.onerror = () => toast('Could not load image', 'error');
+  img.src = imageUrl;
+}
 
 function showExtractedPalette(colors) {
   /* Remove previous extracted row */
@@ -4122,7 +4117,15 @@ setTimeout(() => {
     extractBtn.type = 'button';
     extractBtn.className = 'ts-extract-btn';
     extractBtn.innerHTML = '🎨 Extract palette from image…';
-    extractBtn.addEventListener('click', () => domExtractFile.click());
+    extractBtn.addEventListener('click', () => {
+      if (typeof JTB !== 'undefined' && JTB.openMediaGallery) {
+        JTB.openMediaGallery((selectedUrl) => {
+          if (selectedUrl) extractPaletteFromUrl(selectedUrl);
+        });
+      } else {
+        toast('Media gallery not available', 'error');
+      }
+    });
     presetsEl.appendChild(extractBtn);
   }
 }, 0);
