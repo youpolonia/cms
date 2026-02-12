@@ -569,7 +569,7 @@ if (!function_exists('_theme_generate_default_schema')) {
                 'dark_color' => ['type' => 'color', 'label' => 'Surface Color', 'default' => $config['colors']['surface'] ?? '#f8fafc'],
                 'favicon' => ['type' => 'image', 'label' => 'Favicon', 'default' => null],
                 'og_image' => ['type' => 'image', 'label' => 'Social Share Image (OG)', 'default' => null],
-                'color_mode' => ['type' => 'hidden', 'label' => 'Color Mode', 'default' => 'light'],
+                'color_mode' => ['type' => 'hidden', 'label' => 'Color Mode', 'default' => 'default'],
             ]
         ];
         

@@ -1272,7 +1272,7 @@ html,body{
 
     <!-- Dark/Light Mode -->
     <div class="ts-mode-toggle" id="ts-mode-toggle" title="Color mode">
-      <button class="ts-mode-btn active" data-mode="light" title="Light mode">☀️</button>
+      <button class="ts-mode-btn" data-mode="light" title="Light mode">☀️</button>
       <button class="ts-mode-btn" data-mode="dark" title="Dark mode">🌙</button>
     </div>
 
@@ -1538,7 +1538,7 @@ if (SCHEMA.layout) {
 }
 /* ── Inject color_mode into Brand ── */
 if (SCHEMA.brand && !SCHEMA.brand.fields.color_mode) {
-  SCHEMA.brand.fields.color_mode = { type:'hidden', label:'Color Mode', default:'light' };
+  SCHEMA.brand.fields.color_mode = { type:'hidden', label:'Color Mode', default:'default' };
 }
 
 /* ── Font Pairing Data ── */
