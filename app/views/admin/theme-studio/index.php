@@ -736,163 +736,129 @@ html,body{
 .ts-tab-content.active{display:block}
 
 /* ── Section Manager ───────────────────────────────────── */
-.ts-sections-panel{padding:0}
+.ts-sections-panel{padding:0;display:flex;flex-direction:column;height:100%}
 .ts-sections-header{
-  padding:16px;border-bottom:1px solid var(--ts-border);
+  padding:16px 16px 12px;border-bottom:1px solid var(--ts-border);
 }
 .ts-sections-header h3{
-  font-size:14px;font-weight:700;color:var(--ts-text);margin-bottom:4px;
+  font-size:14px;font-weight:700;color:var(--ts-text);margin-bottom:2px;
 }
 .ts-sections-header p{
-  font-size:12px;color:var(--ts-subtext);
+  font-size:11px;color:var(--ts-subtext);line-height:1.4;
 }
 .ts-sections-list{
-  padding:8px;min-height:100px;
+  padding:8px;min-height:100px;flex:1;overflow-y:auto;
 }
-.ts-section-item{
-  display:flex;align-items:center;gap:10px;
-  padding:10px 12px;margin-bottom:4px;
-  background:var(--ts-bg);border:1px solid var(--ts-border);
-  border-radius:var(--ts-radius-sm);
-  cursor:grab;transition:all 0.15s ease;
-  user-select:none;
-}
-.ts-section-item:active{cursor:grabbing}
-.ts-section-item:hover{border-color:var(--ts-blue);background:rgba(137,180,250,.03)}
-.ts-section-item.dragging{
-  opacity:0.5;border-color:var(--ts-blue);
-  box-shadow:0 4px 12px rgba(0,0,0,.3);
-}
-.ts-section-item.drag-over{
-  border-color:var(--ts-green);
-  box-shadow:0 0 0 2px rgba(166,227,161,.2);
-}
-.ts-section-item.disabled{opacity:0.5}
-.ts-section-item.disabled .ts-section-item-label{color:var(--ts-subtext);text-decoration:line-through}
-
-.ts-section-item-handle{
-  color:var(--ts-overlay);font-size:16px;flex-shrink:0;
-  cursor:grab;width:20px;text-align:center;
-  line-height:1;letter-spacing:-1px;
-}
-.ts-section-item-icon{font-size:18px;flex-shrink:0;width:24px;text-align:center}
-.ts-section-item-label{
-  flex:1;font-size:13px;font-weight:500;color:var(--ts-text);
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-}
-.ts-section-item-badge{
-  font-size:9px;font-weight:700;text-transform:uppercase;
-  padding:2px 6px;border-radius:3px;
-  background:rgba(203,166,247,.15);color:var(--ts-mauve);
-  letter-spacing:0.5px;flex-shrink:0;
-}
-
-/* Section toggle switch (compact) */
-.ts-section-toggle{
-  position:relative;width:36px;height:20px;flex-shrink:0;
-  cursor:pointer;display:block;
-}
-.ts-section-toggle input{position:absolute;opacity:0;width:0;height:0}
-.ts-section-toggle-track{
-  position:absolute;inset:0;border-radius:10px;
-  background:var(--ts-overlay);
-  transition:background 0.25s ease;
-}
-.ts-section-toggle input:checked + .ts-section-toggle-track{background:var(--ts-green)}
-.ts-section-toggle-thumb{
-  position:absolute;top:2px;left:2px;width:16px;height:16px;
-  border-radius:50%;background:#fff;
-  box-shadow:0 1px 2px rgba(0,0,0,.3);
-  transition:transform 0.25s cubic-bezier(0.4,0,0.2,1);
-  pointer-events:none;
-}
-.ts-section-toggle input:checked ~ .ts-section-toggle-thumb{transform:translateX(16px)}
-.ts-section-toggle input:disabled{cursor:not-allowed}
-.ts-section-toggle input:disabled + .ts-section-toggle-track{background:var(--ts-green);opacity:0.6}
-.ts-section-toggle input:disabled ~ .ts-section-toggle-thumb{transform:translateX(16px)}
-
+.ts-sections-actions{padding:8px;border-top:1px solid var(--ts-border)}
 .ts-sections-save{
   display:flex;align-items:center;justify-content:center;gap:8px;
-  width:calc(100% - 16px);margin:8px;padding:10px 16px;
+  width:100%;padding:10px 16px;
   background:var(--ts-blue);color:var(--ts-bg);border:none;
   border-radius:var(--ts-radius-sm);font-size:13px;font-weight:600;
-  cursor:pointer;transition:all var(--ts-transition);
-  font-family:inherit;
+  cursor:pointer;transition:all var(--ts-transition);font-family:inherit;
 }
 .ts-sections-save:hover{background:#a8c7fc;box-shadow:0 0 12px rgba(137,180,250,.3)}
 .ts-sections-save:disabled{opacity:0.5;cursor:default}
 .ts-sections-save.saved{background:var(--ts-green)}
 
-/* Section inline editor */
-.ts-section-item-wrap{margin-bottom:4px}
-.ts-section-item-wrap .ts-section-item{margin-bottom:0;border-radius:var(--ts-radius-sm) var(--ts-radius-sm) 0 0}
-.ts-section-item-wrap.collapsed .ts-section-item{border-radius:var(--ts-radius-sm)}
-.ts-section-edit-btn{
-  background:none;border:none;cursor:pointer;padding:4px;
-  color:var(--ts-subtext);font-size:14px;flex-shrink:0;
-  transition:color 0.15s;border-radius:4px;width:28px;height:28px;
-  display:flex;align-items:center;justify-content:center;
-}
-.ts-section-edit-btn:hover{color:var(--ts-blue);background:rgba(137,180,250,.1)}
-.ts-section-item-wrap:not(.collapsed) .ts-section-edit-btn{color:var(--ts-blue)}
-.ts-section-editor{
-  display:none;padding:12px 14px 14px;
-  background:rgba(30,30,46,.6);border:1px solid var(--ts-border);
-  border-top:none;border-radius:0 0 var(--ts-radius-sm) var(--ts-radius-sm);
-}
-.ts-section-item-wrap:not(.collapsed) .ts-section-editor{display:block}
-.ts-section-editor .ts-field{margin-bottom:10px}
-.ts-section-editor .ts-field:last-child{margin-bottom:0}
-.ts-section-editor .ts-field label{
-  display:block;font-size:11px;font-weight:600;color:var(--ts-subtext);
-  margin-bottom:4px;text-transform:uppercase;letter-spacing:0.3px;
-}
-.ts-section-editor .ts-field input[type="text"],
-.ts-section-editor .ts-field textarea{
-  width:100%;padding:7px 10px;font-size:13px;font-family:inherit;
-  background:var(--ts-mantle);border:1px solid var(--ts-border);
-  border-radius:var(--ts-radius-sm);color:var(--ts-text);
-  transition:border-color 0.15s;
-}
-.ts-section-editor .ts-field input:focus,
-.ts-section-editor .ts-field textarea:focus{
-  border-color:var(--ts-blue);outline:none;
-  box-shadow:0 0 0 2px rgba(137,180,250,.15);
-}
-.ts-section-editor .ts-field textarea{min-height:60px;resize:vertical}
-.ts-section-editor .ts-field .ts-img-field{
+/* Section card */
+.ts-sec{margin-bottom:6px;border-radius:var(--ts-radius-sm);overflow:hidden;
+  border:1px solid var(--ts-border);transition:border-color 0.2s}
+.ts-sec:hover{border-color:rgba(137,180,250,.3)}
+.ts-sec.open{border-color:var(--ts-blue)}
+.ts-sec.drag-over{border-color:var(--ts-green);box-shadow:0 0 0 2px rgba(166,227,161,.15)}
+.ts-sec.dragging{opacity:0.4}
+.ts-sec.off{opacity:0.45}
+.ts-sec.off .ts-sec-label{text-decoration:line-through;color:var(--ts-subtext)}
+
+/* Section header row */
+.ts-sec-head{
   display:flex;align-items:center;gap:8px;
+  padding:9px 10px;background:var(--ts-bg);
+  cursor:pointer;user-select:none;
 }
-.ts-section-editor .ts-field .ts-img-preview{
-  width:48px;height:48px;border-radius:6px;border:1px solid var(--ts-border);
+.ts-sec-drag{color:var(--ts-overlay);font-size:14px;cursor:grab;width:18px;
+  text-align:center;flex-shrink:0;line-height:1;letter-spacing:-1px}
+.ts-sec-drag:active{cursor:grabbing}
+.ts-sec-icon{font-size:16px;flex-shrink:0;width:22px;text-align:center}
+.ts-sec-label{flex:1;font-size:13px;font-weight:600;color:var(--ts-text);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ts-sec-badge{font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:0.6px;
+  padding:2px 5px;border-radius:3px;flex-shrink:0;
+  background:rgba(203,166,247,.12);color:var(--ts-mauve)}
+.ts-sec-chevron{width:16px;height:16px;flex-shrink:0;color:var(--ts-subtext);
+  transition:transform 0.2s;transform:rotate(0deg)}
+.ts-sec.open .ts-sec-chevron{transform:rotate(90deg);color:var(--ts-blue)}
+
+/* Toggle switch */
+.ts-sw{position:relative;width:34px;height:18px;flex-shrink:0;cursor:pointer;display:block}
+.ts-sw input{position:absolute;opacity:0;width:0;height:0}
+.ts-sw-track{position:absolute;inset:0;border-radius:9px;background:var(--ts-overlay);transition:background 0.2s}
+.ts-sw input:checked+.ts-sw-track{background:var(--ts-green)}
+.ts-sw-dot{position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:50%;
+  background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.3);transition:transform 0.2s;pointer-events:none}
+.ts-sw input:checked~.ts-sw-dot{transform:translateX(16px)}
+.ts-sw input:disabled{cursor:not-allowed}
+.ts-sw input:disabled+.ts-sw-track{background:var(--ts-green);opacity:0.5}
+.ts-sw input:disabled~.ts-sw-dot{transform:translateX(16px)}
+
+/* Section editor body */
+.ts-sec-body{display:none;padding:0 12px 12px;background:rgba(24,24,37,.7);
+  border-top:1px solid var(--ts-border)}
+.ts-sec.open .ts-sec-body{display:block}
+.ts-sec-fields{padding-top:10px}
+
+/* Fields */
+.ts-sf{margin-bottom:10px}
+.ts-sf:last-child{margin-bottom:0}
+.ts-sf-label{display:flex;align-items:center;gap:6px;margin-bottom:5px;
+  font-size:10.5px;font-weight:700;color:var(--ts-subtext);
+  text-transform:uppercase;letter-spacing:0.5px}
+.ts-sf-label .ts-sf-type{font-weight:500;color:var(--ts-overlay);font-size:9px;
+  padding:1px 4px;border-radius:3px;background:rgba(69,71,90,.5);text-transform:lowercase;letter-spacing:0}
+.ts-sf input[type="text"],.ts-sf textarea{
+  display:block;width:100%;padding:8px 10px;font-size:13px;font-family:inherit;
+  background:var(--ts-mantle);border:1px solid var(--ts-border);
+  border-radius:var(--ts-radius-sm);color:var(--ts-text);transition:all 0.15s;
+  box-sizing:border-box;
+}
+.ts-sf input:focus,.ts-sf textarea:focus{
+  border-color:var(--ts-blue);outline:none;box-shadow:0 0 0 2px rgba(137,180,250,.12)}
+.ts-sf textarea{min-height:64px;resize:vertical;line-height:1.5}
+
+/* Image field */
+.ts-sf-img{display:flex;align-items:center;gap:10px}
+.ts-sf-img-thumb{width:56px;height:56px;border-radius:8px;border:1px dashed var(--ts-border);
   background:var(--ts-mantle);overflow:hidden;flex-shrink:0;
   display:flex;align-items:center;justify-content:center;
-  font-size:18px;color:var(--ts-overlay);
-}
-.ts-section-editor .ts-field .ts-img-preview img{width:100%;height:100%;object-fit:cover}
-.ts-section-editor .ts-field .ts-img-btn{
-  padding:5px 10px;font-size:11px;font-weight:600;
+  font-size:20px;color:var(--ts-overlay);transition:border-color 0.15s}
+.ts-sf-img-thumb:hover{border-color:var(--ts-blue)}
+.ts-sf-img-thumb img{width:100%;height:100%;object-fit:cover}
+.ts-sf-img-actions{display:flex;flex-direction:column;gap:4px}
+.ts-sf-img-btn{padding:5px 10px;font-size:11px;font-weight:600;
   background:var(--ts-surface);border:1px solid var(--ts-border);
   border-radius:var(--ts-radius-sm);color:var(--ts-text);
-  cursor:pointer;transition:all 0.15s;font-family:inherit;
-}
-.ts-section-editor .ts-field .ts-img-btn:hover{border-color:var(--ts-blue);color:var(--ts-blue)}
-.ts-section-editor-actions{
-  display:flex;gap:8px;margin-top:12px;padding-top:10px;
-  border-top:1px solid var(--ts-border);
-}
-.ts-section-editor-save{
-  flex:1;padding:7px 12px;font-size:12px;font-weight:600;
-  background:var(--ts-green);color:var(--ts-bg);border:none;
-  border-radius:var(--ts-radius-sm);cursor:pointer;font-family:inherit;
-  transition:all 0.15s;
-}
-.ts-section-editor-save:hover{opacity:0.9}
-.ts-section-editor-save:disabled{opacity:0.5;cursor:default}
-.ts-section-no-fields{
-  padding:16px;text-align:center;font-size:12px;color:var(--ts-subtext);
-  font-style:italic;
-}
+  cursor:pointer;transition:all 0.15s;font-family:inherit;text-align:left}
+.ts-sf-img-btn:hover{border-color:var(--ts-blue);color:var(--ts-blue)}
+.ts-sf-img-clear{padding:3px 8px;font-size:10px;color:var(--ts-red);
+  background:none;border:none;cursor:pointer;font-family:inherit}
+.ts-sf-img-clear:hover{text-decoration:underline}
+
+/* Section save bar */
+.ts-sec-save-bar{display:flex;gap:8px;margin-top:12px;padding-top:10px;
+  border-top:1px solid var(--ts-border)}
+.ts-sec-save-btn{
+  flex:1;display:flex;align-items:center;justify-content:center;gap:6px;
+  padding:8px 14px;font-size:12px;font-weight:600;
+  background:var(--ts-green);color:var(--ts-crust);border:none;
+  border-radius:var(--ts-radius-sm);cursor:pointer;font-family:inherit;transition:all 0.15s}
+.ts-sec-save-btn:hover{filter:brightness(1.1)}
+.ts-sec-save-btn:disabled{opacity:0.5;cursor:default}
+.ts-sec-save-btn.saving{background:var(--ts-blue)}
+.ts-sec-save-btn.saved{background:var(--ts-green)}
+.ts-sec-save-btn.error{background:var(--ts-red)}
+.ts-sec-nofields{padding:14px;text-align:center;font-size:12px;
+  color:var(--ts-subtext);font-style:italic}
 
 /* ── Responsive ────────────────────────────────────────── */
 /* ── Color Presets ──────────────────────────────────────── */
@@ -1015,15 +981,17 @@ html,body{
         <div class="ts-sections-panel" id="sections-panel">
           <div class="ts-sections-header">
             <h3>Homepage Sections</h3>
-            <p>Drag to reorder, toggle to show/hide</p>
+            <p>Drag to reorder · Toggle visibility · Click to edit content</p>
           </div>
           <div class="ts-sections-list" id="sections-list">
             <!-- Populated by JS -->
           </div>
-          <button class="ts-sections-save" id="sections-save-btn">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
-            Save Section Order
-          </button>
+          <div class="ts-sections-actions">
+            <button class="ts-sections-save" id="sections-save-btn">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+              Save Layout
+            </button>
+          </div>
         </div>
       </div>
 
@@ -2494,393 +2462,290 @@ $$('.ts-tab-btn').forEach(btn => {
 
 let sectionsLoaded = false;
 let sectionsData = [];
-let draggedWrap = null;
+let dragEl = null;
 
-const sectionsList = $('#sections-list');
-const sectionsSaveBtn = $('#sections-save-btn');
+const secList = $('#sections-list');
+const secSaveBtn = $('#sections-save-btn');
 
+/* ── Schema Mapping ──────────────────────────────────────── */
+const SEC_MAP = {
+  features:'articles', showcase:'pages', recent:'articles',
+  categories:'pages', newsletter:'cta', testimonials:'articles', work:'pages'
+};
+function schemaOf(id) { return SCHEMA[id] ? id : (SEC_MAP[id] && SCHEMA[SEC_MAP[id]]) ? SEC_MAP[id] : null; }
+function fieldsOf(id) { const s = schemaOf(id); return s && SCHEMA[s] ? SCHEMA[s].fields : null; }
+
+/* ── Load ────────────────────────────────────────────────── */
 async function loadSections() {
-  sectionsList.innerHTML = '<div style="text-align:center;padding:24px;color:var(--ts-subtext);font-size:13px">Loading sections…</div>';
+  secList.innerHTML = '<div style="text-align:center;padding:32px;color:var(--ts-subtext)"><div style="font-size:24px;margin-bottom:8px">⏳</div><div style="font-size:12px">Loading sections…</div></div>';
   try {
-    const res = await api('GET', 'sections');
-    if (res.ok && res.sections) {
-      sectionsData = res.sections;
-      sectionsLoaded = true;
-      renderSections();
-    } else {
-      sectionsList.innerHTML = '<div style="text-align:center;padding:24px;color:var(--ts-red);font-size:13px">Failed to load sections</div>';
-    }
-  } catch (e) {
-    sectionsList.innerHTML = '<div style="text-align:center;padding:24px;color:var(--ts-red);font-size:13px">Error: ' + esc(e.message) + '</div>';
+    const r = await api('GET', 'sections');
+    if (r.ok && r.sections) { sectionsData = r.sections; sectionsLoaded = true; renderSec(); }
+    else secList.innerHTML = '<div style="text-align:center;padding:24px;color:var(--ts-red);font-size:13px">Failed to load</div>';
+  } catch(e) {
+    secList.innerHTML = '<div style="text-align:center;padding:24px;color:var(--ts-red);font-size:13px">' + esc(e.message) + '</div>';
   }
 }
 
-/**
- * Map homepage_section ID → schema section ID.
- * Some sections use different data-ts names (e.g. "features" file uses "articles.*" data-ts).
- * This mapping resolves the correct schema section for editing.
- */
-function sectionSchemaId(sectionId) {
-  /* Direct match first */
-  if (SCHEMA[sectionId]) return sectionId;
-  /* Common mappings (theme section file → data-ts section) */
-  const map = {
-    'features': 'articles',
-    'showcase': 'pages',
-    'recent': 'articles',
-    'categories': 'pages',
-    'newsletter': 'cta',
-    'testimonials': 'articles',
-    'services': 'services',
-    'work': 'pages',
-  };
-  const mapped = map[sectionId];
-  if (mapped && SCHEMA[mapped]) return mapped;
-  return null;
-}
+/* ── Build Field HTML ────────────────────────────────────── */
+function buildField(sid, key, def, val) {
+  const fid = 'sf-' + sid + '-' + key;
+  const v = val !== undefined && val !== null && val !== '' ? val : (def.default || '');
+  let h = '<div class="ts-sf"><div class="ts-sf-label"><span>' + esc(def.label || key) + '</span><span class="ts-sf-type">' + def.type + '</span></div>';
 
-/** Get schema fields for a section ID (from SCHEMA global) */
-function getSectionFields(sectionId) {
-  const schemaId = sectionSchemaId(sectionId);
-  if (!schemaId || !SCHEMA[schemaId]) return null;
-  return SCHEMA[schemaId].fields || null;
-}
-
-/** Build inline editor HTML for a section */
-function buildSectionEditor(sectionId) {
-  const schemaId = sectionSchemaId(sectionId);
-  const fields = getSectionFields(sectionId);
-  if (!fields || Object.keys(fields).length === 0) {
-    return '<div class="ts-section-no-fields">No editable fields for this section</div>';
-  }
-
-  let html = '';
-  for (const [key, def] of Object.entries(fields)) {
-    const val = (values[schemaId] && values[schemaId][key]) || def.default || '';
-    const fieldId = 'sec-' + sectionId + '-' + key;
-
-    html += '<div class="ts-field">';
-    html += '<label for="' + fieldId + '">' + esc(def.label || key) + '</label>';
-
-    if (def.type === 'textarea') {
-      html += '<textarea id="' + fieldId + '" data-section="' + sectionId + '" data-key="' + key + '" rows="3">' + esc(val) + '</textarea>';
-    } else if (def.type === 'image') {
-      html += '<div class="ts-img-field">';
-      html += '<div class="ts-img-preview" id="' + fieldId + '-preview">';
-      if (val) {
-        html += '<img src="' + esc(val) + '">';
-      } else {
-        html += '🖼️';
-      }
-      html += '</div>';
-      html += '<button type="button" class="ts-img-btn" data-field-id="' + fieldId + '" data-section="' + sectionId + '" data-key="' + key + '">Choose Image</button>';
-      html += '<input type="hidden" id="' + fieldId + '" data-section="' + sectionId + '" data-key="' + key + '" value="' + esc(val) + '">';
-      html += '</div>';
-    } else if (def.type === 'color') {
-      html += '<div style="display:flex;gap:8px;align-items:center">';
-      html += '<input type="color" id="' + fieldId + '" data-section="' + sectionId + '" data-key="' + key + '" value="' + esc(val || '#000000') + '" style="width:36px;height:30px;border:1px solid var(--ts-border);border-radius:4px;cursor:pointer;background:var(--ts-mantle);padding:2px">';
-      html += '<input type="text" data-mirror="' + fieldId + '" value="' + esc(val) + '" style="flex:1" placeholder="#hex">';
-      html += '</div>';
-    } else if (def.type === 'toggle') {
-      html += '<label class="ts-section-toggle" style="margin-top:4px">';
-      html += '<input type="checkbox" id="' + fieldId + '" data-section="' + sectionId + '" data-key="' + key + '"' + (val ? ' checked' : '') + '>';
-      html += '<span class="ts-section-toggle-track"></span>';
-      html += '<span class="ts-section-toggle-thumb"></span>';
-      html += '</label>';
-    } else {
-      html += '<input type="text" id="' + fieldId + '" data-section="' + sectionId + '" data-key="' + key + '" value="' + esc(val) + '" placeholder="' + esc(def.label || '') + '">';
-    }
-
-    html += '</div>';
-  }
-
-  html += '<div class="ts-section-editor-actions">';
-  html += '<button type="button" class="ts-section-editor-save" data-section="' + sectionId + '">💾 Save Section</button>';
-  html += '</div>';
-  return html;
-}
-
-function renderSections() {
-  sectionsList.innerHTML = '';
-  
-  sectionsData.forEach((sec) => {
-    /* Wrapper div */
-    const wrap = document.createElement('div');
-    wrap.className = 'ts-section-item-wrap collapsed';
-    wrap.dataset.id = sec.id;
-
-    /* Header row (drag handle + icon + label + edit btn + toggle) */
-    const item = document.createElement('div');
-    item.className = 'ts-section-item' + (!sec.enabled ? ' disabled' : '');
-    item.dataset.id = sec.id;
-    item.draggable = true;
-    
-    const isRequired = !!sec.required;
-    const hasFields = !!getSectionFields(sec.id);
-    
-    item.innerHTML =
-      '<span class="ts-section-item-handle">⠿</span>' +
-      '<span class="ts-section-item-icon">' + esc(sec.icon || '📋') + '</span>' +
-      '<span class="ts-section-item-label">' + esc(sec.label || sec.id) + '</span>' +
-      (isRequired ? '<span class="ts-section-item-badge">Required</span>' : '') +
-      (hasFields ? '<button type="button" class="ts-section-edit-btn" title="Edit content">✏️</button>' : '') +
-      '<label class="ts-section-toggle">' +
-        '<input type="checkbox" ' + (sec.enabled ? 'checked' : '') + (isRequired ? ' checked disabled' : '') + '>' +
-        '<span class="ts-section-toggle-track"></span>' +
-        '<span class="ts-section-toggle-thumb"></span>' +
-      '</label>';
-    
-    /* Toggle handler */
-    const checkbox = item.querySelector('input[type="checkbox"]');
-    if (!isRequired) {
-      checkbox.addEventListener('change', () => {
-        sec.enabled = checkbox.checked;
-        item.classList.toggle('disabled', !checkbox.checked);
-      });
-    }
-
-    /* Edit button → expand/collapse editor */
-    const editBtn = item.querySelector('.ts-section-edit-btn');
-    if (editBtn) {
-      editBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        const isOpen = !wrap.classList.contains('collapsed');
-        /* Close all others */
-        $$('.ts-section-item-wrap:not(.collapsed)', sectionsList).forEach(w => w.classList.add('collapsed'));
-        if (!isOpen) {
-          wrap.classList.remove('collapsed');
-        }
-      });
-    }
-
-    /* Editor panel */
-    const editor = document.createElement('div');
-    editor.className = 'ts-section-editor';
-    if (hasFields) {
-      editor.innerHTML = buildSectionEditor(sec.id);
-      bindEditorEvents(editor, sec.id);
-    }
-    
-    /* Drag & Drop — on the wrapper */
-    item.addEventListener('dragstart', e => {
-      draggedWrap = wrap;
-      wrap.classList.add('dragging');
-      e.dataTransfer.effectAllowed = 'move';
-      e.dataTransfer.setData('text/plain', sec.id);
-    });
-    
-    item.addEventListener('dragend', () => {
-      wrap.classList.remove('dragging');
-      $$('.ts-section-item-wrap.drag-over', sectionsList).forEach(el => el.classList.remove('drag-over'));
-      draggedWrap = null;
-    });
-    
-    wrap.addEventListener('dragover', e => {
-      e.preventDefault();
-      e.dataTransfer.dropEffect = 'move';
-      if (draggedWrap && draggedWrap !== wrap) {
-        wrap.classList.add('drag-over');
-      }
-    });
-    
-    wrap.addEventListener('dragleave', () => {
-      wrap.classList.remove('drag-over');
-    });
-    
-    wrap.addEventListener('drop', e => {
-      e.preventDefault();
-      wrap.classList.remove('drag-over');
-      if (!draggedWrap || draggedWrap === wrap) return;
-      
-      const allWraps = [...sectionsList.querySelectorAll('.ts-section-item-wrap')];
-      const fromIdx = allWraps.indexOf(draggedWrap);
-      const toIdx = allWraps.indexOf(wrap);
-      
-      if (fromIdx < toIdx) {
-        sectionsList.insertBefore(draggedWrap, wrap.nextSibling);
-      } else {
-        sectionsList.insertBefore(draggedWrap, wrap);
-      }
-      
-      reorderSectionsData();
-    });
-
-    wrap.appendChild(item);
-    wrap.appendChild(editor);
-    sectionsList.appendChild(wrap);
-  });
-}
-
-/** Bind events inside a section editor panel */
-function bindEditorEvents(editorEl, sectionId) {
-  /* Save button */
-  const saveBtn = editorEl.querySelector('.ts-section-editor-save');
-  if (saveBtn) {
-    saveBtn.addEventListener('click', () => saveSectionContent(sectionId, editorEl));
-  }
-
-  /* Image buttons → open JTB Media Gallery */
-  editorEl.querySelectorAll('.ts-img-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const fieldId = btn.dataset.fieldId;
-      const secId = btn.dataset.section;
-      const key = btn.dataset.key;
-      openMediaForSection(fieldId, secId, key);
-    });
-  });
-
-  /* Color mirror sync */
-  editorEl.querySelectorAll('input[data-mirror]').forEach(mirror => {
-    const colorInput = editorEl.querySelector('#' + mirror.dataset.mirror);
-    if (!colorInput) return;
-    mirror.addEventListener('input', () => { colorInput.value = mirror.value; });
-    colorInput.addEventListener('input', () => { mirror.value = colorInput.value; });
-  });
-
-  /* Live preview on input change (debounced) */
-  let previewTimer = null;
-  editorEl.querySelectorAll('input[data-section], textarea[data-section]').forEach(inp => {
-    inp.addEventListener('input', () => {
-      clearTimeout(previewTimer);
-      previewTimer = setTimeout(() => sendSectionPreview(sectionId, editorEl), 300);
-    });
-  });
-  editorEl.querySelectorAll('input[type="checkbox"][data-section]').forEach(inp => {
-    inp.addEventListener('change', () => sendSectionPreview(sectionId, editorEl));
-  });
-}
-
-/** Collect field values from a section editor */
-function collectSectionValues(editorEl) {
-  const data = {};
-  editorEl.querySelectorAll('[data-section][data-key]').forEach(el => {
-    const key = el.dataset.key;
-    if (el.type === 'checkbox') {
-      data[key] = el.checked;
-    } else {
-      data[key] = el.value;
-    }
-  });
-  return data;
-}
-
-/** Save section content to DB */
-async function saveSectionContent(sectionId, editorEl) {
-  const schemaId = sectionSchemaId(sectionId) || sectionId;
-  const btn = editorEl.querySelector('.ts-section-editor-save');
-  const fieldValues = collectSectionValues(editorEl);
-  if (Object.keys(fieldValues).length === 0) return;
-
-  btn.disabled = true;
-  btn.textContent = 'Saving…';
-
-  try {
-    const payload = { data: { [schemaId]: fieldValues } };
-    const res = await api('POST', 'save', payload);
-    if (res.ok) {
-      /* Update local values cache */
-      if (!values[schemaId]) values[schemaId] = {};
-      Object.assign(values[schemaId], fieldValues);
-
-      btn.textContent = '✅ Saved!';
-      toast('Section "' + sectionId + '" saved', 'success');
-      /* Reload preview */
-      dom.iframe.src = dom.iframe.src;
-      setTimeout(() => { btn.textContent = '💾 Save Section'; btn.disabled = false; }, 1500);
-    } else {
-      throw new Error(res.error || 'Save failed');
-    }
-  } catch (e) {
-    btn.textContent = '❌ Error';
-    toast('Save failed: ' + e.message, 'error');
-    setTimeout(() => { btn.textContent = '💾 Save Section'; btn.disabled = false; }, 2000);
-  }
-}
-
-/** Send live preview update via postMessage */
-function sendSectionPreview(sectionId, editorEl) {
-  const schemaId = sectionSchemaId(sectionId) || sectionId;
-  const fieldValues = collectSectionValues(editorEl);
-  const iframeWin = dom.iframe.contentWindow;
-  if (!iframeWin) return;
-
-  /* Send each field as a postMessage update (use schemaId for data-ts matching) */
-  for (const [key, val] of Object.entries(fieldValues)) {
-    iframeWin.postMessage({
-      type: 'themeStudio',
-      action: 'update',
-      section: schemaId,
-      field: key,
-      value: val,
-    }, '*');
-  }
-}
-
-/** Open media gallery for section image field */
-function openMediaForSection(fieldId, sectionId, key) {
-  if (typeof JTB_MediaGallery !== 'undefined') {
-    JTB_MediaGallery.open(function(url) {
-      const input = document.getElementById(fieldId);
-      const preview = document.getElementById(fieldId + '-preview');
-      if (input) input.value = url;
-      if (preview) preview.innerHTML = '<img src="' + esc(url) + '">';
-      /* Trigger preview */
-      const editor = input.closest('.ts-section-editor');
-      if (editor) sendSectionPreview(sectionId, editor);
-    });
+  if (def.type === 'textarea') {
+    h += '<textarea id="' + fid + '" data-s="' + sid + '" data-k="' + key + '" rows="3" placeholder="' + esc(def.label || '') + '">' + esc(v) + '</textarea>';
+  } else if (def.type === 'image') {
+    h += '<div class="ts-sf-img">';
+    h += '<div class="ts-sf-img-thumb" id="' + fid + '-thumb">' + (v ? '<img src="' + esc(v) + '">' : '🖼️') + '</div>';
+    h += '<div class="ts-sf-img-actions">';
+    h += '<button type="button" class="ts-sf-img-btn" data-fid="' + fid + '">📁 Choose image</button>';
+    if (v) h += '<button type="button" class="ts-sf-img-clear" data-fid="' + fid + '">✕ Remove</button>';
+    h += '</div>';
+    h += '<input type="hidden" id="' + fid + '" data-s="' + sid + '" data-k="' + key + '" value="' + esc(v) + '">';
+    h += '</div>';
+  } else if (def.type === 'color') {
+    h += '<div style="display:flex;gap:8px;align-items:center">';
+    h += '<input type="color" id="' + fid + '" data-s="' + sid + '" data-k="' + key + '" value="' + esc(v || '#000000') + '" style="width:36px;height:32px;border:1px solid var(--ts-border);border-radius:4px;cursor:pointer;background:var(--ts-mantle);padding:2px">';
+    h += '<input type="text" data-mirror="' + fid + '" value="' + esc(v) + '" style="flex:1" placeholder="#hex">';
+    h += '</div>';
+  } else if (def.type === 'toggle') {
+    h += '<label class="ts-sw" style="margin-top:2px"><input type="checkbox" id="' + fid + '" data-s="' + sid + '" data-k="' + key + '"' + (v ? ' checked' : '') + '>';
+    h += '<span class="ts-sw-track"></span><span class="ts-sw-dot"></span></label>';
   } else {
-    /* Fallback: simple prompt */
-    const url = prompt('Enter image URL:');
-    if (url) {
-      const input = document.getElementById(fieldId);
-      const preview = document.getElementById(fieldId + '-preview');
-      if (input) input.value = url;
-      if (preview) preview.innerHTML = '<img src="' + esc(url) + '">';
+    h += '<input type="text" id="' + fid + '" data-s="' + sid + '" data-k="' + key + '" value="' + esc(v) + '" placeholder="' + esc(def.label || '') + '">';
+  }
+  h += '</div>';
+  return h;
+}
+
+/* ── Render All Sections ─────────────────────────────────── */
+function renderSec() {
+  secList.innerHTML = '';
+  sectionsData.forEach(sec => {
+    const sid = sec.id;
+    const schId = schemaOf(sid);
+    const fields = fieldsOf(sid);
+    const hasFields = fields && Object.keys(fields).length > 0;
+    const isReq = !!sec.required;
+
+    /* Card */
+    const card = document.createElement('div');
+    card.className = 'ts-sec' + (!sec.enabled ? ' off' : '');
+    card.dataset.id = sid;
+
+    /* Header */
+    const head = document.createElement('div');
+    head.className = 'ts-sec-head';
+    head.draggable = true;
+    head.innerHTML =
+      '<span class="ts-sec-drag">⠿</span>' +
+      '<span class="ts-sec-icon">' + esc(sec.icon || '📋') + '</span>' +
+      '<span class="ts-sec-label">' + esc(sec.label || sid) + '</span>' +
+      (isReq ? '<span class="ts-sec-badge">Required</span>' : '') +
+      '<svg class="ts-sec-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>' +
+      '<label class="ts-sw" onclick="event.stopPropagation()">' +
+        '<input type="checkbox"' + (sec.enabled ? ' checked' : '') + (isReq ? ' checked disabled' : '') + '>' +
+        '<span class="ts-sw-track"></span><span class="ts-sw-dot"></span>' +
+      '</label>';
+
+    /* Toggle visibility */
+    const cb = head.querySelector('input[type="checkbox"]');
+    if (!isReq) cb.addEventListener('change', () => { sec.enabled = cb.checked; card.classList.toggle('off', !cb.checked); });
+
+    /* Click header → expand/collapse */
+    head.addEventListener('click', e => {
+      if (e.target.closest('.ts-sw') || e.target.closest('.ts-sec-drag')) return;
+      const wasOpen = card.classList.contains('open');
+      /* Close others */
+      $$('.ts-sec.open', secList).forEach(c => c.classList.remove('open'));
+      if (!wasOpen && hasFields) card.classList.add('open');
+    });
+
+    /* Drag */
+    head.addEventListener('dragstart', e => {
+      dragEl = card; card.classList.add('dragging');
+      e.dataTransfer.effectAllowed = 'move';
+      e.dataTransfer.setData('text/plain', sid);
+    });
+    head.addEventListener('dragend', () => {
+      card.classList.remove('dragging');
+      $$('.ts-sec.drag-over', secList).forEach(c => c.classList.remove('drag-over'));
+      dragEl = null;
+    });
+    card.addEventListener('dragover', e => {
+      e.preventDefault(); if (dragEl && dragEl !== card) card.classList.add('drag-over');
+    });
+    card.addEventListener('dragleave', () => card.classList.remove('drag-over'));
+    card.addEventListener('drop', e => {
+      e.preventDefault(); card.classList.remove('drag-over');
+      if (!dragEl || dragEl === card) return;
+      const cards = [...secList.querySelectorAll('.ts-sec')];
+      const fi = cards.indexOf(dragEl), ti = cards.indexOf(card);
+      if (fi < ti) secList.insertBefore(dragEl, card.nextSibling);
+      else secList.insertBefore(dragEl, card);
+      reorderData();
+    });
+
+    /* Body (editor) */
+    const body = document.createElement('div');
+    body.className = 'ts-sec-body';
+
+    if (hasFields) {
+      let fieldsHtml = '<div class="ts-sec-fields">';
+      for (const [key, def] of Object.entries(fields)) {
+        const curVal = schId && values[schId] ? values[schId][key] : undefined;
+        fieldsHtml += buildField(sid, key, def, curVal);
+      }
+      fieldsHtml += '<div class="ts-sec-save-bar">';
+      fieldsHtml += '<button type="button" class="ts-sec-save-btn" data-sid="' + sid + '">💾 Save Changes</button>';
+      fieldsHtml += '</div></div>';
+      body.innerHTML = fieldsHtml;
+      wireEditor(body, sid, schId);
+    } else {
+      body.innerHTML = '<div class="ts-sec-nofields">This section has no editable text fields.<br>It displays dynamic content (articles, pages, etc.)</div>';
     }
+
+    card.appendChild(head);
+    card.appendChild(body);
+    secList.appendChild(card);
+  });
+}
+
+/* ── Wire Editor Events ──────────────────────────────────── */
+function wireEditor(bodyEl, sid, schId) {
+  /* Save btn */
+  const btn = bodyEl.querySelector('.ts-sec-save-btn');
+  if (btn) btn.addEventListener('click', () => saveSecContent(sid, schId, bodyEl, btn));
+
+  /* Image choose */
+  bodyEl.querySelectorAll('.ts-sf-img-btn').forEach(b => {
+    b.addEventListener('click', () => {
+      const fid = b.dataset.fid;
+      if (typeof JTB_MediaGallery !== 'undefined') {
+        JTB_MediaGallery.open(url => {
+          const inp = document.getElementById(fid);
+          const thumb = document.getElementById(fid + '-thumb');
+          if (inp) inp.value = url;
+          if (thumb) thumb.innerHTML = '<img src="' + esc(url) + '">';
+          previewSec(sid, schId, bodyEl);
+        });
+      } else {
+        const url = prompt('Image URL:');
+        if (url) {
+          const inp = document.getElementById(fid);
+          const thumb = document.getElementById(fid + '-thumb');
+          if (inp) inp.value = url;
+          if (thumb) thumb.innerHTML = '<img src="' + esc(url) + '">';
+        }
+      }
+    });
+  });
+
+  /* Image clear */
+  bodyEl.querySelectorAll('.ts-sf-img-clear').forEach(b => {
+    b.addEventListener('click', () => {
+      const fid = b.dataset.fid;
+      const inp = document.getElementById(fid);
+      const thumb = document.getElementById(fid + '-thumb');
+      if (inp) inp.value = '';
+      if (thumb) thumb.innerHTML = '🖼️';
+      b.remove();
+      previewSec(sid, schId, bodyEl);
+    });
+  });
+
+  /* Color mirrors */
+  bodyEl.querySelectorAll('[data-mirror]').forEach(m => {
+    const c = document.getElementById(m.dataset.mirror);
+    if (!c) return;
+    m.addEventListener('input', () => { c.value = m.value; previewSec(sid, schId, bodyEl); });
+    c.addEventListener('input', () => { m.value = c.value; previewSec(sid, schId, bodyEl); });
+  });
+
+  /* Live preview on typing (debounced) */
+  let pt = null;
+  bodyEl.querySelectorAll('[data-s][data-k]').forEach(el => {
+    const evt = el.type === 'checkbox' ? 'change' : 'input';
+    el.addEventListener(evt, () => { clearTimeout(pt); pt = setTimeout(() => previewSec(sid, schId, bodyEl), 250); });
+  });
+}
+
+/* ── Collect Values ──────────────────────────────────────── */
+function collectVals(bodyEl) {
+  const d = {};
+  bodyEl.querySelectorAll('[data-s][data-k]').forEach(el => {
+    d[el.dataset.k] = el.type === 'checkbox' ? el.checked : el.value;
+  });
+  return d;
+}
+
+/* ── Save Section Content ────────────────────────────────── */
+async function saveSecContent(sid, schId, bodyEl, btn) {
+  const fv = collectVals(bodyEl);
+  if (!Object.keys(fv).length) return;
+  const saveKey = schId || sid;
+
+  btn.disabled = true; btn.className = 'ts-sec-save-btn saving'; btn.textContent = '⏳ Saving…';
+  try {
+    const r = await api('POST', 'save', { data: { [saveKey]: fv } });
+    if (r.ok) {
+      if (!values[saveKey]) values[saveKey] = {};
+      Object.assign(values[saveKey], fv);
+      btn.className = 'ts-sec-save-btn saved'; btn.textContent = '✅ Saved!';
+      toast('"' + sid + '" saved', 'success');
+      dom.iframe.src = dom.iframe.src; /* Full preview reload */
+      setTimeout(() => { btn.className = 'ts-sec-save-btn'; btn.textContent = '💾 Save Changes'; btn.disabled = false; }, 1800);
+    } else throw new Error(r.error || 'Save failed');
+  } catch(e) {
+    btn.className = 'ts-sec-save-btn error'; btn.textContent = '❌ ' + e.message;
+    toast('Save failed: ' + e.message, 'error');
+    setTimeout(() => { btn.className = 'ts-sec-save-btn'; btn.textContent = '💾 Save Changes'; btn.disabled = false; }, 2500);
   }
 }
 
-function reorderSectionsData() {
-  const orderedIds = [...sectionsList.querySelectorAll('.ts-section-item-wrap')].map(el => el.dataset.id);
-  const newData = [];
-  orderedIds.forEach(id => {
-    const sec = sectionsData.find(s => s.id === id);
-    if (sec) newData.push(sec);
-  });
-  sectionsData = newData;
+/* ── Live Preview ────────────────────────────────────────── */
+function previewSec(sid, schId, bodyEl) {
+  const fv = collectVals(bodyEl);
+  const w = dom.iframe.contentWindow;
+  if (!w) return;
+  const key = schId || sid;
+  for (const [k, v] of Object.entries(fv)) {
+    w.postMessage({ type:'themeStudio', action:'update', section:key, field:k, value:v }, '*');
+  }
 }
 
-/* Save sections */
-sectionsSaveBtn.addEventListener('click', async () => {
-  reorderSectionsData();
-  
+/* ── Reorder Data ────────────────────────────────────────── */
+function reorderData() {
+  const ids = [...secList.querySelectorAll('.ts-sec')].map(c => c.dataset.id);
+  const nd = []; ids.forEach(id => { const s = sectionsData.find(x => x.id === id); if (s) nd.push(s); });
+  sectionsData = nd;
+}
+
+/* ── Save Layout (order + enabled) ───────────────────────── */
+secSaveBtn.addEventListener('click', async () => {
+  reorderData();
   const order = sectionsData.map(s => s.id);
-  const enabled = {};
-  sectionsData.forEach(s => { enabled[s.id] = !!s.enabled; });
-  
-  sectionsSaveBtn.disabled = true;
-  sectionsSaveBtn.textContent = 'Saving…';
-  
+  const enabled = {}; sectionsData.forEach(s => { enabled[s.id] = !!s.enabled; });
+
+  secSaveBtn.disabled = true; secSaveBtn.textContent = 'Saving…';
   try {
-    const res = await api('POST', 'sections/save', { order, enabled });
-    if (res.ok) {
-      sectionsSaveBtn.classList.add('saved');
-      sectionsSaveBtn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg> Saved!';
-      toast('Section order saved', 'success');
-      /* Reload the preview iframe */
+    const r = await api('POST', 'sections/save', { order, enabled });
+    if (r.ok) {
+      secSaveBtn.classList.add('saved');
+      secSaveBtn.innerHTML = '✅ Saved!';
+      toast('Layout saved', 'success');
       dom.iframe.src = dom.iframe.src;
       setTimeout(() => {
-        sectionsSaveBtn.classList.remove('saved');
-        sectionsSaveBtn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg> Save Section Order';
-        sectionsSaveBtn.disabled = false;
+        secSaveBtn.classList.remove('saved');
+        secSaveBtn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg> Save Layout';
+        secSaveBtn.disabled = false;
       }, 2000);
-    } else {
-      throw new Error(res.error || 'Save failed');
-    }
-  } catch (e) {
-    toast('Failed to save sections: ' + e.message, 'error');
-    sectionsSaveBtn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg> Save Section Order';
-    sectionsSaveBtn.disabled = false;
+    } else throw new Error(r.error || 'Failed');
+  } catch(e) {
+    toast('Error: ' + e.message, 'error');
+    secSaveBtn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg> Save Layout';
+    secSaveBtn.disabled = false;
   }
 });
 
