@@ -35,8 +35,8 @@ $showFooter = $themeOptions['show_footer'] ?? true;
 $preloadFonts = $themeOptions['preload_fonts'] ?? true;
 
 // Site info
-$siteName = get_site_name();
-$siteLogo = get_site_logo();
+$siteName = theme_get('brand.site_name', get_site_name());
+$siteLogo = theme_get('brand.logo', get_site_logo());
 
 // Page context
 $pageSlug = $page['slug'] ?? '';

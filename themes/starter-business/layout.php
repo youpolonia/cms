@@ -7,8 +7,8 @@
 if (!defined('CMS_ROOT')) exit;
 
 $themeConfig = get_theme_config();
-$siteName    = get_site_name();
-$siteLogo    = get_site_logo();
+$siteName    = theme_get('brand.site_name', get_site_name());
+$siteLogo    = theme_get('brand.logo', get_site_logo());
 $bodyClass   = function_exists('get_body_class') ? get_body_class() : '';
 
 $options = $themeConfig['options'] ?? [];

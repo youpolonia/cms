@@ -26,8 +26,8 @@ $themeConfig = get_theme_config();
 $themeOptions = $themeConfig['options'] ?? [];
 $showHeader = $themeOptions['show_header'] ?? true;
 $showFooter = $themeOptions['show_footer'] ?? true;
-$siteName = get_site_name();
-$siteLogo = get_site_logo();
+$siteName = theme_get('brand.site_name', get_site_name());
+$siteLogo = theme_get('brand.logo', get_site_logo());
 $isTbPage = !empty($page['is_tb_page']);
 
 $pageData = $page ?? [];
