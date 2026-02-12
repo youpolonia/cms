@@ -1,3 +1,10 @@
+/* CSS Variables — Theme Studio integration */
+:root {
+    --primary: #d4a574;
+    --secondary: #b8860b;
+    --accent: #fef3c7;
+}
+
 /* ═══════════════════════════════════════════════════════════════
    Starter Restaurant Theme — Premium CSS
    Elegant dining experience with warm gold tones

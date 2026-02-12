@@ -1,3 +1,10 @@
+/* CSS Variables — Theme Studio integration */
+:root {
+    --primary: #10b981;
+    --secondary: #065f46;
+    --accent: #84cc16;
+}
+
 /* ============================================================
    STARTER PORTFOLIO — Premium Creative Theme
    A bold, asymmetric portfolio with stunning animations
