@@ -79,6 +79,7 @@ require_once __DIR__ . '/core/csrf.php';
 if (file_exists(CMS_APP . '/helpers/functions.php')) {
     require_once CMS_APP . '/helpers/functions.php';
     require_once CMS_ROOT . '/core/i18n.php';
+    require_once CMS_ROOT . '/core/white-label.php';
     require_once CMS_ROOT . '/core/theme-customizer.php';
 }
 

@@ -362,6 +362,11 @@ return [
 
 
 
+
+    // White Label
+    'GET /admin/white-label' => ['Admin\\WhiteLabelController', 'index', ['auth' => true]],
+    'POST /admin/white-label/save' => ['Admin\\WhiteLabelController', 'save', ['auth' => true, 'csrf' => true]],
+
     // Languages (i18n)
     'GET /admin/languages' => ['Admin\\LanguagesController', 'index', ['auth' => true]],
     'POST /admin/languages/toggle/{id}' => ['Admin\\LanguagesController', 'toggle', ['auth' => true, 'csrf' => true]],

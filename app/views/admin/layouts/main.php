@@ -21,7 +21,7 @@ function isActive(string $path): string {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= esc($title ?? 'Admin') ?> - Jessie AI-CMS</title>
+    <title><?= function_exists("wl_admin_title") ? wl_admin_title($title ?? "Admin") : esc($title ?? "Admin") . " - Jessie AI-CMS" ?></title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -980,8 +980,7 @@ function isActive(string $path): string {
         <aside class="admin-sidebar" id="sidebar">
             <div class="sidebar-header">
                 <a href="/admin" class="sidebar-logo">
-                    <span class="sidebar-logo-icon">🤖</span>
-                    <span>Jessie</span>
+                    <?= function_exists("wl_sidebar_brand") ? wl_sidebar_brand() : '<span class="sidebar-logo-icon">🤖</span><span>Jessie</span>' ?>
                 </a>
             </div>
             
