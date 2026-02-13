@@ -123,6 +123,7 @@ return [
             ['label' => '📋 Logs', 'url' => '/admin/logs'],
             ['label' => '💾 Backup', 'url' => '/admin/backup'],
             ['label' => '🔑 API Keys', 'url' => '/admin/api-keys'],
+            ['label' => '🌐 Languages', 'url' => '/admin/languages'],
             ['label' => '🔥 Maintenance', 'url' => '/admin/maintenance'],
             ['label' => '🔒 Security', 'url' => '/admin/security-dashboard'],
             ['label' => '🛡️ GDPR Tools', 'url' => '/admin/gdpr-tools'],

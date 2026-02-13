@@ -361,6 +361,14 @@ return [
 
 
 
+
+    // Languages (i18n)
+    'GET /admin/languages' => ['Admin\\LanguagesController', 'index', ['auth' => true]],
+    'POST /admin/languages/toggle/{id}' => ['Admin\\LanguagesController', 'toggle', ['auth' => true, 'csrf' => true]],
+    'POST /admin/languages/default/{id}' => ['Admin\\LanguagesController', 'setDefault', ['auth' => true, 'csrf' => true]],
+    'POST /admin/languages/add' => ['Admin\\LanguagesController', 'add', ['auth' => true, 'csrf' => true]],
+    'POST /api/languages/set' => ['Admin\\LanguagesController', 'setLocale', ['auth' => true]],
+
     // API Keys management
     'GET /admin/api-keys' => ['Admin\\ApiKeysController', 'index', ['auth' => true]],
     'POST /admin/api-keys/create' => ['Admin\\ApiKeysController', 'create', ['auth' => true, 'csrf' => true]],
