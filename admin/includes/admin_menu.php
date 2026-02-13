@@ -111,6 +111,10 @@ return [
         ]
     ],
     
+    'ai-chat' => [
+        'label' => '💬 AI Assistant',
+        'url' => '/admin/ai-chat',
+    ],
     'system' => [
         'label' => '⚙️ System',
         'type' => 'dropdown',

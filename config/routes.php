@@ -363,6 +363,12 @@ return [
 
 
 
+
+    // AI Chat Assistant
+    'GET /admin/ai-chat' => ['Admin\\AiChatController', 'index', ['auth' => true]],
+    'POST /api/ai-chat/send' => ['Admin\\AiChatController', 'send', ['auth' => true]],
+    'POST /api/ai-chat/clear' => ['Admin\\AiChatController', 'clear', ['auth' => true]],
+
     // White Label
     'GET /admin/white-label' => ['Admin\\WhiteLabelController', 'index', ['auth' => true]],
     'POST /admin/white-label/save' => ['Admin\\WhiteLabelController', 'save', ['auth' => true, 'csrf' => true]],
