@@ -1,0 +1,85 @@
+{
+    "name": "NexusFlow",
+    "description": "AI-powered banking for freelancers with instant invoicing and multi-currency accounts.",
+    "version": "1.0.0",
+    "author": "AI Theme Builder",
+    "supports": {
+        "theme-builder": true,
+        "custom-header": true,
+        "custom-footer": true,
+        "custom-colors": true
+    },
+    "options": {
+        "show_header": true,
+        "show_footer": true,
+        "body_background": "#0a0e14",
+        "preload_fonts": true
+    },
+    "colors": {
+        "primary": "#c2185b",
+        "secondary": "#00838f",
+        "accent": "#00bcd4",
+        "background": "#0a0e14",
+        "surface": "#131a24",
+        "text": "#e8eef7",
+        "text_muted": "#a0b1c9",
+        "border": "#2a3548",
+        "success": "#4caf50",
+        "warning": "#ff9800",
+        "error": "#f44336"
+    },
+    "typography": {
+        "fontFamily": "Merriweather",
+        "headingFont": "Mulish",
+        "baseFontSize": "16",
+        "lineHeight": "1.7",
+        "fontWeight": "400",
+        "headingWeight": "700"
+    },
+    "buttons": {
+        "borderRadius": "16",
+        "paddingX": "32",
+        "paddingY": "14",
+        "fontWeight": "600",
+        "uppercase": true,
+        "shadow": true
+    },
+    "layout": {
+        "containerWidth": "1200",
+        "sectionSpacing": "120",
+        "borderRadius": "16"
+    },
+    "homepage_sections": [
+        {
+            "id": "hero",
+            "label": "Hero",
+            "icon": "fas fa-star"
+        },
+        {
+            "id": "stats",
+            "label": "Stats \/ Numbers",
+            "icon": "fas fa-chart-bar"
+        },
+        {
+            "id": "testimonials",
+            "label": "Testimonials",
+            "icon": "fas fa-quote-right"
+        },
+        {
+            "id": "pricing",
+            "label": "Pricing Preview",
+            "icon": "fas fa-tags"
+        },
+        {
+            "id": "cta",
+            "label": "Call to Action",
+            "icon": "fas fa-bullhorn"
+        },
+        {
+            "id": "features",
+            "label": "Features",
+            "icon": "✨"
+        }
+    ],
+    "thumbnail": "thumbnail.svg"
+}

@@ -1,0 +1,80 @@
+{
+    "name": "Chiaroscuro Studio",
+    "description": "Award-winning photography studio specializing in weddings, portraits, events, and commercial shoots.",
+    "version": "1.0.0",
+    "author": "AI Theme Builder",
+    "supports": {
+        "theme-builder": true,
+        "custom-header": true,
+        "custom-footer": true,
+        "custom-colors": true
+    },
+    "options": {
+        "show_header": true,
+        "show_footer": true,
+        "body_background": "#0a0806",
+        "preload_fonts": true
+    },
+    "colors": {
+        "primary": "#b91d1d",
+        "secondary": "#0d9488",
+        "accent": "#d4af37",
+        "background": "#0a0806",
+        "surface": "#1a1612",
+        "text": "#f5f3f0",
+        "text_muted": "#a8a29e",
+        "border": "#3d2e1e",
+        "success": "#10b981",
+        "warning": "#f59e0b",
+        "error": "#ef4444"
+    },
+    "typography": {
+        "fontFamily": "Overpass",
+        "headingFont": "Bitter",
+        "baseFontSize": "16",
+        "lineHeight": "1.7",
+        "fontWeight": "400",
+        "headingWeight": "700"
+    },
+    "buttons": {
+        "borderRadius": "4",
+        "paddingX": "32",
+        "paddingY": "14",
+        "fontWeight": "600",
+        "uppercase": true,
+        "shadow": true
+    },
+    "layout": {
+        "containerWidth": "1200",
+        "sectionSpacing": "120",
+        "borderRadius": "8"
+    },
+    "homepage_sections": [
+        {
+            "id": "hero",
+            "label": "Hero",
+            "icon": "fas fa-star"
+        },
+        {
+            "id": "about",
+            "label": "About \/ Intro",
+            "icon": "fas fa-info-circle"
+        },
+        {
+            "id": "testimonials",
+            "label": "Testimonials",
+            "icon": "fas fa-quote-right"
+        },
+        {
+            "id": "cta",
+            "label": "Call to Action",
+            "icon": "fas fa-bullhorn"
+        },
+        {
+            "id": "gallery",
+            "label": "Gallery",
+            "icon": "🖼️"
+        }
+    ],
+    "thumbnail": "thumbnail.svg"
+}

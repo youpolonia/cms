@@ -1,0 +1,85 @@
+{
+    "name": "Lexington Legal Group",
+    "description": "A prestigious law firm specializing in corporate law, mergers & acquisitions, and intellectual property with 30+ years of experience.",
+    "version": "1.0.0",
+    "author": "AI Theme Builder",
+    "supports": {
+        "theme-builder": true,
+        "custom-header": true,
+        "custom-footer": true,
+        "custom-colors": true
+    },
+    "options": {
+        "show_header": true,
+        "show_footer": true,
+        "body_background": "#0f0f0f",
+        "preload_fonts": true
+    },
+    "colors": {
+        "primary": "#c2185b",
+        "secondary": "#2d6a4f",
+        "accent": "#d4a03a",
+        "background": "#0f0f0f",
+        "surface": "#1a1a1a",
+        "text": "#f0f0f0",
+        "text_muted": "#b0b0b0",
+        "border": "#3d2e1e",
+        "success": "#4caf50",
+        "warning": "#ff9800",
+        "error": "#f44336"
+    },
+    "typography": {
+        "fontFamily": "Inter",
+        "headingFont": "Inter",
+        "baseFontSize": "16",
+        "lineHeight": "1.7",
+        "fontWeight": "400",
+        "headingWeight": "700"
+    },
+    "buttons": {
+        "borderRadius": "4",
+        "paddingX": "32",
+        "paddingY": "14",
+        "fontWeight": "600",
+        "uppercase": true,
+        "shadow": true
+    },
+    "layout": {
+        "containerWidth": "1200",
+        "sectionSpacing": "120",
+        "borderRadius": "8"
+    },
+    "homepage_sections": [
+        {
+            "id": "hero",
+            "label": "Hero",
+            "icon": "fas fa-star"
+        },
+        {
+            "id": "about",
+            "label": "About \/ Intro",
+            "icon": "fas fa-info-circle"
+        },
+        {
+            "id": "services",
+            "label": "Services",
+            "icon": "fas fa-concierge-bell"
+        },
+        {
+            "id": "testimonials",
+            "label": "Testimonials",
+            "icon": "fas fa-quote-right"
+        },
+        {
+            "id": "team",
+            "label": "Team Preview",
+            "icon": "fas fa-users"
+        },
+        {
+            "id": "cta",
+            "label": "Call to Action",
+            "icon": "fas fa-bullhorn"
+        }
+    ],
+    "thumbnail": "thumbnail.svg"
+}

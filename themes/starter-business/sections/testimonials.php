@@ -21,7 +21,7 @@ $articlesDesc  = theme_get('articles.description', 'Stay informed with our lates
             <a href="/article/<?= esc($a['slug']) ?>" class="service-card" style="text-decoration:none">
                 <?php if (!empty($a['featured_image'])): ?>
                 <div style="margin:-40px -32px 24px;border-radius:16px 16px 0 0;overflow:hidden;height:180px">
-                    <img src="<?= esc($a['featured_image']) ?>" alt="<?= esc($a['title']) ?>" style="width:100%;height:100%;object-fit:cover">
+                    <img loading="lazy" decoding="async" src="<?= esc($a['featured_image']) ?>" alt="<?= esc($a['title']) ?>" style="width:100%;height:100%;object-fit:cover">
                 </div>
                 <?php else: ?>
                 <div class="service-icon">

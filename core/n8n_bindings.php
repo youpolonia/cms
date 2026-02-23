@@ -92,6 +92,12 @@ function n8n_bindings_get(string $eventKey): ?array
  */
 function n8n_bindings_known_events(): array
 {
+    // Use the central event registry if available
+    if (function_exists('cms_event_known_events')) {
+        return cms_event_known_events();
+    }
+
+    // Fallback to legacy list
     return [
         [
             'key' => 'content.published',

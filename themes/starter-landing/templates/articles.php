@@ -23,7 +23,7 @@
             <article class="article-card fade-in-up">
                 <div class="article-card-image">
                     <?php if (!empty($article['featured_image'])): ?>
-                    <img src="<?= esc($article['featured_image']) ?>" alt="<?= esc($article['title']) ?>" loading="lazy">
+                    <img decoding="async" loading="lazy" src="<?= esc($article['featured_image']) ?>" alt="<?= esc($article['title']) ?>" loading="lazy">
                     <?php else: ?>
                     📝
                     <?php endif; ?>

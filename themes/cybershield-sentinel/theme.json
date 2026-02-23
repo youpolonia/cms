@@ -1,0 +1,85 @@
+{
+    "name": "CyberShield Sentinel",
+    "description": "Enterprise-grade cybersecurity theme with ocean-blue tones and golden accents for trust and authority",
+    "version": "1.0.0",
+    "author": "AI Theme Builder",
+    "supports": {
+        "theme-builder": true,
+        "custom-header": true,
+        "custom-footer": true,
+        "custom-colors": true
+    },
+    "options": {
+        "show_header": true,
+        "show_footer": true,
+        "body_background": "#080c12",
+        "preload_fonts": true
+    },
+    "colors": {
+        "primary": "#3d9eb8",
+        "secondary": "#d4a043",
+        "accent": "#5bb8cf",
+        "background": "#080c12",
+        "surface": "#0f151e",
+        "text": "#e8edf2",
+        "text_muted": "#8a9bb0",
+        "border": "#1c2636",
+        "success": "#2e9e6a",
+        "warning": "#d4a043",
+        "error": "#c94a4a"
+    },
+    "typography": {
+        "fontFamily": "Red Hat Display",
+        "headingFont": "Cormorant Garamond",
+        "baseFontSize": "17",
+        "lineHeight": "1.75",
+        "fontWeight": "400",
+        "headingWeight": "600"
+    },
+    "buttons": {
+        "borderRadius": "2",
+        "paddingX": "36",
+        "paddingY": "16",
+        "fontWeight": "600",
+        "uppercase": true,
+        "shadow": false
+    },
+    "layout": {
+        "containerWidth": "1140",
+        "sectionSpacing": "140",
+        "borderRadius": "4"
+    },
+    "homepage_sections": [
+        {
+            "id": "hero",
+            "label": "Hero",
+            "icon": "fas fa-star"
+        },
+        {
+            "id": "stats",
+            "label": "Stats \/ Numbers",
+            "icon": "fas fa-chart-bar"
+        },
+        {
+            "id": "testimonials",
+            "label": "Testimonials",
+            "icon": "fas fa-quote-right"
+        },
+        {
+            "id": "cta",
+            "label": "Call to Action",
+            "icon": "fas fa-bullhorn"
+        },
+        {
+            "id": "features",
+            "label": "Features",
+            "icon": "✨"
+        },
+        {
+            "id": "clients",
+            "label": "Clients \/ Logos",
+            "icon": "🏢"
+        }
+    ],
+    "thumbnail": "thumbnail.svg"
+}

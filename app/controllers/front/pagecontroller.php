@@ -10,7 +10,11 @@ class PageController
 {
     public function show(Request $request): void
     {
+        // Support both /page/{slug} and direct routes like /features
         $slug = $request->param('slug');
+        if (!$slug) {
+            $slug = trim(parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH), '/');
+        }
         $pdo = db();
         
         $isPreview = isset($_GET['preview']) && $_GET['preview'] === '1';
@@ -39,15 +43,33 @@ class PageController
         // Get template from page
         $template = $page['template'] ?? 'default';
         
-        // Check if template exists in active theme (for custom theme pages)
-        $themeTemplates = ['services', 'projects', 'about', 'contact', 'home'];
-        if (in_array($template, $themeTemplates)) {
-            require_once CMS_ROOT . '/includes/thememanager.php';
-            $output = \ThemeManager::render_theme_view_public($template, [
-                'page' => $page,
-                'title' => $page['title'] ?? '',
-                'description' => $page['meta_description'] ?? ''
-            ]);
+        // Security: sanitize template name (prevent path traversal)
+        $template = preg_replace('/[^a-zA-Z0-9_-]/', '', $template);
+        
+        // Check if template exists in active theme — dynamic: any .php in templates/ dir
+        $themeTemplatePath = theme_path('templates/' . $template . '.php');
+        if ($template !== 'default' && file_exists($themeTemplatePath)) {
+            // Render template within theme layout directly
+            $themeDir = theme_path();
+            $layoutFile = $themeDir . '/layout.php';
+            
+            // Make page data available to template
+            $title = $page['title'] ?? '';
+            $description = $page['meta_description'] ?? '';
+            
+            ob_start();
+            include $themeTemplatePath;
+            $content = ob_get_clean();
+            
+            // Render layout with $content
+            if (file_exists($layoutFile)) {
+                ob_start();
+                include $layoutFile;
+                $output = ob_get_clean();
+            } else {
+                $output = $content;
+            }
+            
             // Inject admin toolbar if logged in
             if (function_exists('cms_inject_admin_toolbar')) {
                 $output = cms_inject_admin_toolbar($output, [

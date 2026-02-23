@@ -33,6 +33,13 @@ return [
     'POST /admin/articles/{id}/delete' => ['Admin\\ArticlesController', 'destroy', ['auth' => true, 'csrf' => true]],
     'POST /admin/articles/preview' => ['Admin\\ArticlesController', 'preview', ['auth' => true]],
 
+    // Contact Submissions
+    'GET /admin/contact-submissions' => ['Admin\\ContactSubmissionsController', 'index', ['auth' => true]],
+    'GET /admin/contact-submissions/{id}' => ['Admin\\ContactSubmissionsController', 'show', ['auth' => true]],
+    'POST /admin/contact-submissions/{id}/status' => ['Admin\\ContactSubmissionsController', 'updateStatus', ['auth' => true, 'csrf' => true]],
+    'POST /admin/contact-submissions/{id}/delete' => ['Admin\\ContactSubmissionsController', 'destroy', ['auth' => true, 'csrf' => true]],
+    'POST /admin/contact-submissions/bulk' => ['Admin\\ContactSubmissionsController', 'bulkAction', ['auth' => true, 'csrf' => true]],
+
     // Categories CRUD
     'GET /admin/categories' => ['Admin\\CategoriesController', 'index', ['auth' => true]],
     'GET /admin/categories/create' => ['Admin\\CategoriesController', 'create', ['auth' => true]],
@@ -338,14 +345,49 @@ return [
     'POST /api/theme-studio/sections/save' => ['Admin\\ThemeStudioController', 'apiSectionsSave', ['auth' => true, 'csrf' => true]],
     'GET /api/theme-studio/ai/models' => ['Admin\\ThemeStudioController', 'aiModels', ['auth' => true]],
 
+    // Theme Studio — Menu Management
+    'GET /api/theme-studio/menus' => ['Admin\\ThemeStudioController', 'apiMenus', ['auth' => true]],
+    'POST /api/theme-studio/menus/item' => ['Admin\\ThemeStudioController', 'apiMenuAddItem', ['auth' => true, 'csrf' => true]],
+    'POST /api/theme-studio/menus/item/update' => ['Admin\\ThemeStudioController', 'apiMenuUpdateItem', ['auth' => true, 'csrf' => true]],
+    'POST /api/theme-studio/menus/item/delete' => ['Admin\\ThemeStudioController', 'apiMenuDeleteItem', ['auth' => true, 'csrf' => true]],
+    'POST /api/theme-studio/menus/reorder' => ['Admin\\ThemeStudioController', 'apiMenuReorder', ['auth' => true, 'csrf' => true]],
+
+    // Visual Editor AI
+    'POST /api/visual-editor/ai' => ['Admin\\ThemeStudioController', 'veAi', ['auth' => true, 'csrf' => true]],
+    'POST /api/visual-editor/save-page' => ['Admin\\ThemeStudioController', 'vePageSave', ['auth' => true, 'csrf' => true]],
+
     // AI Theme Builder
     'GET /admin/ai-theme-builder' => ['Admin\\AiThemeBuilderController', 'index', ['auth' => true]],
+    'GET /admin/ai-theme-builder/wizard' => ['Admin\\AiThemeBuilderController', 'wizard', ['auth' => true]],
     'POST /api/ai-theme-builder/generate' => ['Admin\\AiThemeBuilderController', 'generate', ['auth' => true, 'csrf' => true]],
     'POST /api/ai-theme-builder/apply' => ['Admin\\AiThemeBuilderController', 'apply', ['auth' => true, 'csrf' => true]],
     'GET /admin/ai-theme-builder/preview' => ['Admin\\AiThemeBuilderController', 'preview', ['auth' => true]],
     'GET /admin/docs' => ['Admin\\DocsController', 'index', ['auth' => true]],
     'GET /api/docs/search' => ['Admin\\DocsController', 'search', ['auth' => true]],
     'POST /api/ai-theme-builder/delete' => ['Admin\\AiThemeBuilderController', 'delete', ['auth' => true, 'csrf' => true]],
+    'POST /api/ai-theme-builder/generate-stream' => ['Admin\\AiThemeBuilderController', 'generateStream', ['auth' => true, 'csrf' => true]],
+    'GET /api/ai-theme-builder/export' => ['Admin\\AiThemeBuilderController', 'export', ['auth' => true]],
+    'POST /api/ai-theme-builder/refine' => ['Admin\\AiThemeBuilderController', 'refine', ['auth' => true, 'csrf' => true]],
+    'POST /api/ai-theme-builder/regenerate-css' => ['Admin\\AiThemeBuilderController', 'regenerateCss', ['auth' => true, 'csrf' => true]],
+    'POST /api/ai-theme-builder/update-brief' => ['Admin\\AiThemeBuilderController', 'updateBrief', ['auth' => true, 'csrf' => true]],
+
+    // AI Theme Builder — Wizard API (multi-step)
+    'GET /api/ai-theme-builder/check-providers' => ['Admin\\AiThemeBuilderController', 'checkProviders', ['auth' => true]],
+    'POST /api/ai-theme-builder/wizard/brief' => ['Admin\\AiThemeBuilderController', 'wizardBrief', ['auth' => true, 'csrf' => true]],
+    'POST /api/ai-theme-builder/wizard/layout' => ['Admin\\AiThemeBuilderController', 'wizardLayout', ['auth' => true, 'csrf' => true]],
+    'POST /api/ai-theme-builder/wizard/layout-stream' => ['Admin\\AiThemeBuilderController', 'wizardLayoutStream', ['auth' => true, 'csrf' => true]],
+    'POST /api/ai-theme-builder/wizard/page' => ['Admin\\AiThemeBuilderController', 'wizardPage', ['auth' => true, 'csrf' => true]],
+    'POST /api/ai-theme-builder/wizard/finalize' => ['Admin\\AiThemeBuilderController', 'wizardFinalize', ['auth' => true, 'csrf' => true]],
+    'POST /api/ai-theme-builder/wizard/upload-images' => ['Admin\\AiThemeBuilderController', 'wizardUploadImages', ['auth' => true, 'csrf' => true]],
+    'POST /api/ai-theme-builder/wizard/search-images' => ['Admin\\AiThemeBuilderController', 'searchImages', ['auth' => true, 'csrf' => true]],
+    'POST /api/ai-theme-builder/wizard/analyze-inspiration' => ['Admin\\AiThemeBuilderController', 'analyzeInspiration', ['auth' => true, 'csrf' => true]],
+
+    // AI Theme Builder — Content-first wizard endpoints
+    'POST /api/ai-theme-builder/wizard/content-plan' => ['Admin\\AiThemeBuilderController', 'wizardContentPlan', ['auth' => true, 'csrf' => true]],
+    'POST /api/ai-theme-builder/wizard/generate-content' => ['Admin\\AiThemeBuilderController', 'wizardGenerateContent', ['auth' => true, 'csrf' => true]],
+    'POST /api/ai-theme-builder/wizard/rewrite-content' => ['Admin\\AiThemeBuilderController', 'wizardRewriteContent', ['auth' => true, 'csrf' => true]],
+    'POST /api/ai-theme-builder/wizard/seo-check' => ['Admin\\AiThemeBuilderController', 'wizardSeoCheck', ['auth' => true, 'csrf' => true]],
+    'POST /api/ai-theme-builder/wizard/regenerate-section' => ['Admin\\AiThemeBuilderController', 'regenerateSection', ['auth' => true, 'csrf' => true]],
 
     'GET /admin/jessie-theme-builder' => ['Admin\\JtbController', 'index', ['auth' => true]],
     'GET /admin/jessie-theme-builder/edit/{id}' => ['Admin\\JtbController', 'edit', ['auth' => true]],
@@ -386,19 +428,42 @@ return [
     'POST /admin/api-keys/{id}/toggle' => ['Admin\\ApiKeysController', 'toggle', ['auth' => true, 'csrf' => true]],
     'POST /admin/api-keys/{id}/delete' => ['Admin\\ApiKeysController', 'delete', ['auth' => true, 'csrf' => true]],
 
-    // ─── REST API v1 (Headless) ───
-    // Auth: API key via X-API-Key header (no session, no CSRF)
-    'GET /api/v1/site' => ['Api\\RestApiController', 'site'],
-    'GET /api/v1/pages' => ['Api\\RestApiController', 'pages'],
-    'GET /api/v1/pages/{slug}' => ['Api\\RestApiController', 'page'],
-    'GET /api/v1/articles' => ['Api\\RestApiController', 'articles'],
-    'GET /api/v1/articles/{slug}' => ['Api\\RestApiController', 'article'],
-    'GET /api/v1/menus' => ['Api\\RestApiController', 'menus'],
-    'GET /api/v1/menus/{location}' => ['Api\\RestApiController', 'menu'],
-    'GET /api/v1/categories' => ['Api\\RestApiController', 'categories'],
-    'GET /api/v1/media' => ['Api\\RestApiController', 'media'],
-    'GET /api/v1/search' => ['Api\\RestApiController', 'search'],
-    'GET /api/v1/theme' => ['Api\\RestApiController', 'theme'],
+    // === PUBLIC REST API v1 ===
+    // Read-only public API, no auth required, CORS enabled
+    
+    // Site information
+    'GET /api/v1/site' => ['Api\\SiteApiController', 'index', ['cors' => true]],
+    'OPTIONS /api/v1/site' => ['Api\\SiteApiController', 'index', ['cors' => true]],
+    
+    // Articles
+    'GET /api/v1/articles' => ['Api\\ArticlesApiController', 'index', ['cors' => true]],
+    'GET /api/v1/articles/{slug}' => ['Api\\ArticlesApiController', 'show', ['cors' => true]],
+    'OPTIONS /api/v1/articles' => ['Api\\ArticlesApiController', 'index', ['cors' => true]],
+    'OPTIONS /api/v1/articles/{slug}' => ['Api\\ArticlesApiController', 'show', ['cors' => true]],
+    
+    // Pages
+    'GET /api/v1/pages' => ['Api\\PagesApiController', 'index', ['cors' => true]],
+    'GET /api/v1/pages/{slug}' => ['Api\\PagesApiController', 'show', ['cors' => true]],
+    'OPTIONS /api/v1/pages' => ['Api\\PagesApiController', 'index', ['cors' => true]],
+    'OPTIONS /api/v1/pages/{slug}' => ['Api\\PagesApiController', 'show', ['cors' => true]],
+    
+    // Menus
+    'GET /api/v1/menus' => ['Api\\MenusApiController', 'index', ['cors' => true]],
+    'GET /api/v1/menus/{location}' => ['Api\\MenusApiController', 'show', ['cors' => true]],
+    'OPTIONS /api/v1/menus' => ['Api\\MenusApiController', 'index', ['cors' => true]],
+    'OPTIONS /api/v1/menus/{location}' => ['Api\\MenusApiController', 'show', ['cors' => true]],
+
+    // === REST API v1 — WRITE ENDPOINTS (Bearer token auth) ===
+
+    // Articles — write
+    'POST /api/v1/articles' => ['Api\\ArticlesApiController', 'store', ['cors' => true]],
+    'PUT /api/v1/articles/{slug}' => ['Api\\ArticlesApiController', 'update', ['cors' => true]],
+    'DELETE /api/v1/articles/{slug}' => ['Api\\ArticlesApiController', 'destroy', ['cors' => true]],
+
+    // Pages — write
+    'POST /api/v1/pages' => ['Api\\PagesApiController', 'store', ['cors' => true]],
+    'PUT /api/v1/pages/{slug}' => ['Api\\PagesApiController', 'update', ['cors' => true]],
+    'DELETE /api/v1/pages/{slug}' => ['Api\\PagesApiController', 'destroy', ['cors' => true]],
 
     // FRONT-END ROUTES (Public)
 
@@ -413,8 +478,201 @@ return [
     'GET /article/{slug}' => ['Front\\ArticleController', 'show'],
     'GET /blog' => ['Front\\ArticlesController', 'index'],
     
-    // Features page
-    'GET /features' => ['Front\\FeaturesController', 'index'],
+    // Gallery
+    'GET /gallery' => ['Front\\GalleryController', 'index'],
     
+    // Features page — rendered through active theme via PageController
+    'GET /features' => ['Front\\PageController', 'show'],
+
+    // Contact form submission (AJAX)
+    'POST /api/contact' => ['Front\\ContactController', 'submit'],
+
+    // Frontend search
+    'GET /search' => ['Front\\SearchController', 'index'],
+
+    // RSS feed
+    'GET /feed' => ['Front\\FeedController', 'rss'],
+    'GET /rss' => ['Front\\FeedController', 'rss'],
+    'GET /feed.xml' => ['Front\\FeedController', 'rss'],
+
+    // robots.txt + favicon (dynamic)
+    'GET /robots.txt' => ['Front\\SeoController', 'robots'],
+    'GET /favicon.ico' => ['Front\\SeoController', 'favicon'],
+    
+    // A/B Testing
+    'GET /admin/ab-testing' => ['Admin\\AbTestController', 'index', ['auth' => true, 'role' => 'admin']],
+    'GET /admin/ab-testing/create' => ['Admin\\AbTestController', 'create', ['auth' => true, 'role' => 'admin']],
+    'POST /admin/ab-testing/store' => ['Admin\\AbTestController', 'store', ['auth' => true, 'csrf' => true, 'role' => 'admin']],
+    'GET /admin/ab-testing/{id}/edit' => ['Admin\\AbTestController', 'edit', ['auth' => true, 'role' => 'admin']],
+    'POST /admin/ab-testing/{id}/update' => ['Admin\\AbTestController', 'update', ['auth' => true, 'csrf' => true, 'role' => 'admin']],
+    'POST /admin/ab-testing/{id}/toggle' => ['Admin\\AbTestController', 'toggle', ['auth' => true, 'csrf' => true, 'role' => 'admin']],
+    'POST /admin/ab-testing/{id}/complete' => ['Admin\\AbTestController', 'complete', ['auth' => true, 'csrf' => true, 'role' => 'admin']],
+    'POST /admin/ab-testing/{id}/delete' => ['Admin\\AbTestController', 'delete', ['auth' => true, 'csrf' => true, 'role' => 'admin']],
+    'GET /admin/ab-testing/{id}/results' => ['Admin\\AbTestController', 'results', ['auth' => true, 'role' => 'admin']],
+    'GET /api/ab-tests' => ['Admin\\AbTestController', 'apiList'],
+    'POST /api/ab-track' => ['Admin\\AbTestController', 'apiTrack'],
+
+    // Content Calendar
+    'GET /admin/content-calendar' => ['Admin\\ContentCalendarController', 'index', ['auth' => true, 'role' => 'editor']],
+
+    // Shop frontend
+    'GET /shop' => ['Front\\ShopController', 'index'],
+    'GET /shop/category/{slug}' => ['Front\\ShopController', 'category'],
+    'POST /shop/review/submit' => ['Front\\ShopController', 'submitReview'],
+    'POST /shop/review/{id}/helpful' => ['Front\\ShopController', 'reviewHelpful'],
+    // Digital downloads
+    'GET /shop/download/{token}' => ['Front\\ShopController', 'download'],
+    // Wishlist
+    'GET /shop/wishlist' => ['Front\\ShopController', 'wishlist'],
+    'POST /shop/wishlist/toggle' => ['Front\\ShopController', 'wishlistToggle'],
+    'POST /shop/wishlist/remove' => ['Front\\ShopController', 'wishlistRemove'],
+
+    'GET /shop/{slug}' => ['Front\\ShopController', 'product'],
+    'GET /cart' => ['Front\\ShopController', 'cart'],
+    'POST /cart/add' => ['Front\\ShopController', 'addToCart'],
+    'POST /cart/update' => ['Front\\ShopController', 'updateCart'],
+    'POST /cart/remove' => ['Front\\ShopController', 'removeFromCart'],
+    'GET /checkout' => ['Front\\ShopController', 'checkout'],
+    'POST /checkout' => ['Front\\ShopController', 'processCheckout', ['csrf' => true]],
+    'GET /order/thank-you/{number}' => ['Front\\ShopController', 'thankYou'],
+
+    // Shop admin
+    'GET /admin/shop' => ['Admin\\ShopController', 'dashboard', ['auth' => true, 'role' => 'admin']],
+    'GET /admin/shop/products' => ['Admin\\ShopController', 'products', ['auth' => true, 'role' => 'admin']],
+    'GET /admin/shop/products/create' => ['Admin\\ShopController', 'productCreate', ['auth' => true, 'role' => 'admin']],
+    'GET /admin/shop/products/{id}/edit' => ['Admin\\ShopController', 'productEdit', ['auth' => true, 'role' => 'admin']],
+    'POST /admin/shop/products/store' => ['Admin\\ShopController', 'productStore', ['auth' => true, 'csrf' => true, 'role' => 'admin']],
+    'POST /admin/shop/products/{id}/update' => ['Admin\\ShopController', 'productUpdate', ['auth' => true, 'csrf' => true, 'role' => 'admin']],
+    'POST /admin/shop/products/{id}/delete' => ['Admin\\ShopController', 'productDelete', ['auth' => true, 'csrf' => true, 'role' => 'admin']],
+    'GET /admin/shop/categories' => ['Admin\\ShopController', 'categories', ['auth' => true, 'role' => 'admin']],
+    'POST /admin/shop/categories/store' => ['Admin\\ShopController', 'categoryStore', ['auth' => true, 'csrf' => true, 'role' => 'admin']],
+    'POST /admin/shop/categories/{id}/update' => ['Admin\\ShopController', 'categoryUpdate', ['auth' => true, 'csrf' => true, 'role' => 'admin']],
+    'POST /admin/shop/categories/{id}/delete' => ['Admin\\ShopController', 'categoryDelete', ['auth' => true, 'csrf' => true, 'role' => 'admin']],
+    'GET /admin/shop/orders' => ['Admin\\ShopController', 'orders', ['auth' => true, 'role' => 'admin']],
+    'GET /admin/shop/orders/{id}' => ['Admin\\ShopController', 'orderView', ['auth' => true, 'role' => 'admin']],
+    'POST /admin/shop/orders/{id}/status' => ['Admin\\ShopController', 'orderUpdateStatus', ['auth' => true, 'csrf' => true, 'role' => 'admin']],
+    'POST /admin/shop/orders/{id}/tracking' => ['Admin\\ShopController', 'orderUpdateTracking', ['auth' => true, 'csrf' => true, 'role' => 'admin']],
+    'GET /admin/shop/orders/{id}/invoice' => ['Admin\\ShopController', 'orderInvoice', ['auth' => true, 'role' => 'admin']],
+    'POST /admin/shop/digital-upload' => ['Admin\\ShopController', 'digitalUpload', ['auth' => true, 'csrf' => true, 'role' => 'admin']],
+    'GET /admin/shop/settings' => ['Admin\\ShopController', 'settings', ['auth' => true, 'role' => 'admin']],
+    'POST /admin/shop/settings' => ['Admin\\ShopController', 'settingsSave', ['auth' => true, 'csrf' => true, 'role' => 'admin']],
+
+    // Product Reviews
+    'GET /admin/shop/reviews' => ['Admin\\ShopController', 'reviews', ['auth' => true, 'role' => 'admin']],
+    'POST /admin/shop/reviews/{id}/approve' => ['Admin\\ShopController', 'reviewApprove', ['auth' => true, 'csrf' => true, 'role' => 'admin']],
+    'POST /admin/shop/reviews/{id}/reject' => ['Admin\\ShopController', 'reviewReject', ['auth' => true, 'csrf' => true, 'role' => 'admin']],
+    'POST /admin/shop/reviews/{id}/delete' => ['Admin\\ShopController', 'reviewDelete', ['auth' => true, 'csrf' => true, 'role' => 'admin']],
+    'POST /admin/shop/reviews/{id}/reply' => ['Admin\\ShopController', 'reviewReply', ['auth' => true, 'csrf' => true, 'role' => 'admin']],
+
+    // Shop AI
+    'POST /api/shop/ai/generate' => ['Admin\\ShopController', 'aiGenerate', ['auth' => true]],
+    'POST /api/shop/ai/seo' => ['Admin\\ShopController', 'aiSeo', ['auth' => true]],
+    'POST /api/shop/ai/price' => ['Admin\\ShopController', 'aiPrice', ['auth' => true]],
+    'POST /api/shop/ai/review-summary' => ['Admin\\ShopController', 'aiReviewSummary', ['auth' => true]],
+
+    // CRM
+    'GET /admin/crm' => ['Admin\\CrmController', 'dashboard', ['auth' => true, 'role' => 'admin']],
+    'GET /admin/crm/contacts' => ['Admin\\CrmController', 'contacts', ['auth' => true, 'role' => 'admin']],
+    'GET /admin/crm/contacts/create' => ['Admin\\CrmController', 'contactCreate', ['auth' => true, 'role' => 'admin']],
+    'POST /admin/crm/contacts/store' => ['Admin\\CrmController', 'contactStore', ['auth' => true, 'csrf' => true, 'role' => 'admin']],
+    'GET /admin/crm/contacts/{id}' => ['Admin\\CrmController', 'contactView', ['auth' => true, 'role' => 'admin']],
+    'GET /admin/crm/contacts/{id}/edit' => ['Admin\\CrmController', 'contactEdit', ['auth' => true, 'role' => 'admin']],
+    'POST /admin/crm/contacts/{id}/update' => ['Admin\\CrmController', 'contactUpdate', ['auth' => true, 'csrf' => true, 'role' => 'admin']],
+    'POST /admin/crm/contacts/{id}/delete' => ['Admin\\CrmController', 'contactDelete', ['auth' => true, 'csrf' => true, 'role' => 'admin']],
+    'POST /admin/crm/activities/add' => ['Admin\\CrmController', 'activityAdd', ['auth' => true, 'csrf' => true, 'role' => 'admin']],
+    'POST /admin/crm/activities/{id}/complete' => ['Admin\\CrmController', 'activityComplete', ['auth' => true, 'csrf' => true, 'role' => 'admin']],
+    'GET /admin/crm/pipeline' => ['Admin\\CrmController', 'pipeline', ['auth' => true, 'role' => 'admin']],
+    'POST /admin/crm/deals/create' => ['Admin\\CrmController', 'dealCreate', ['auth' => true, 'csrf' => true, 'role' => 'admin']],
+    'POST /admin/crm/deals/{id}/update' => ['Admin\\CrmController', 'dealUpdate', ['auth' => true, 'csrf' => true, 'role' => 'admin']],
+    'POST /admin/crm/deals/{id}/delete' => ['Admin\\CrmController', 'dealDelete', ['auth' => true, 'csrf' => true, 'role' => 'admin']],
+    'GET /admin/crm/import' => ['Admin\\CrmController', 'importPage', ['auth' => true, 'role' => 'admin']],
+    'POST /admin/crm/import' => ['Admin\\CrmController', 'importFromSubmissions', ['auth' => true, 'csrf' => true, 'role' => 'admin']],
+
+    // Social Media Manager
+    'GET /admin/social-media' => ['Admin\\SocialMediaController', 'dashboard', ['auth' => true, 'role' => 'admin']],
+    'GET /admin/social-media/accounts' => ['Admin\\SocialMediaController', 'accounts', ['auth' => true, 'role' => 'admin']],
+    'GET /admin/social-media/connect/{platform}' => ['Admin\\SocialMediaController', 'connect', ['auth' => true, 'role' => 'admin']],
+    'GET /admin/social-media/callback/{platform}' => ['Admin\\SocialMediaController', 'callback', ['auth' => true, 'role' => 'admin']],
+    'GET /admin/social-media/calendar' => ['Admin\\SocialMediaController', 'calendar', ['auth' => true, 'role' => 'admin']],
+    'POST /admin/social-media/generate' => ['Admin\\SocialMediaController', 'generate', ['auth' => true, 'csrf' => true, 'role' => 'admin']],
+    'POST /admin/social-media/schedule' => ['Admin\\SocialMediaController', 'schedule', ['auth' => true, 'csrf' => true, 'role' => 'admin']],
+    'POST /admin/social-media/publish/{id}' => ['Admin\\SocialMediaController', 'publish', ['auth' => true, 'csrf' => true, 'role' => 'admin']],
+    'POST /admin/social-media/delete/{id}' => ['Admin\\SocialMediaController', 'delete', ['auth' => true, 'csrf' => true, 'role' => 'admin']],
+    'POST /admin/social-media/settings' => ['Admin\\SocialMediaController', 'settings', ['auth' => true, 'csrf' => true, 'role' => 'admin']],
+
+    // AI Chatbot
+    'POST /api/chat' => ['Front\\ChatController', 'message'],
+    'GET /api/chat/config' => ['Front\\ChatController', 'config'],
+    'GET /admin/chat-settings' => ['Admin\\ChatSettingsController', 'index', ['auth' => true, 'role' => 'admin']],
+    'POST /admin/chat-settings' => ['Admin\\ChatSettingsController', 'save', ['auth' => true, 'csrf' => true, 'role' => 'admin']],
+    'GET /admin/chat-settings/sessions' => ['Admin\\ChatSettingsController', 'sessions', ['auth' => true, 'role' => 'admin']],
+
+    // System updates
+    'GET /admin/updates' => ['Admin\\UpdateController', 'index', ['auth' => true, 'role' => 'admin']],
+    'POST /admin/updates/check' => ['Admin\\UpdateController', 'check', ['auth' => true, 'csrf' => true, 'role' => 'admin']],
+
+    // Form Builder
+    'POST /form/{slug}' => ['Front\\FormController', 'submit'],
+    'GET /admin/form-builder' => ['Admin\\FormBuilderController', 'index', ['auth' => true, 'role' => 'admin']],
+    'GET /admin/form-builder/create' => ['Admin\\FormBuilderController', 'create', ['auth' => true, 'role' => 'admin']],
+    'GET /admin/form-builder/edit/{id}' => ['Admin\\FormBuilderController', 'edit', ['auth' => true, 'role' => 'admin']],
+    'POST /admin/form-builder/store' => ['Admin\\FormBuilderController', 'store', ['auth' => true, 'csrf' => true, 'role' => 'admin']],
+    'POST /admin/form-builder/update/{id}' => ['Admin\\FormBuilderController', 'update', ['auth' => true, 'csrf' => true, 'role' => 'admin']],
+    'POST /admin/form-builder/delete/{id}' => ['Admin\\FormBuilderController', 'delete', ['auth' => true, 'csrf' => true, 'role' => 'admin']],
+    'GET /admin/form-builder/submissions/{id}' => ['Admin\\FormBuilderController', 'submissions', ['auth' => true, 'role' => 'admin']],
+    'GET /admin/form-builder/export/{id}' => ['Admin\\FormBuilderController', 'exportCsv', ['auth' => true, 'role' => 'admin']],
+    'POST /admin/form-builder/mark-read/{id}' => ['Admin\\FormBuilderController', 'markRead', ['auth' => true, 'csrf' => true, 'role' => 'admin']],
+    'GET /form-embed/{slug}.js' => ['Front\\FormController', 'embed'],
+
+    // Pop-ups
+    'GET /admin/popups' => ['Admin\\PopupsController', 'index', ['auth' => true, 'role' => 'admin']],
+    'GET /admin/popups/create' => ['Admin\\PopupsController', 'create', ['auth' => true, 'role' => 'admin']],
+    'GET /admin/popups/{id}/edit' => ['Admin\\PopupsController', 'edit', ['auth' => true, 'role' => 'admin']],
+    'POST /admin/popups/store' => ['Admin\\PopupsController', 'store', ['auth' => true, 'csrf' => true, 'role' => 'admin']],
+    'POST /admin/popups/{id}/update' => ['Admin\\PopupsController', 'update', ['auth' => true, 'csrf' => true, 'role' => 'admin']],
+    'POST /admin/popups/{id}/delete' => ['Admin\\PopupsController', 'delete', ['auth' => true, 'csrf' => true, 'role' => 'admin']],
+    'POST /admin/popups/{id}/toggle' => ['Admin\\PopupsController', 'toggle', ['auth' => true, 'csrf' => true, 'role' => 'admin']],
+    'GET /admin/popups/{id}/submissions' => ['Admin\\PopupsController', 'submissions', ['auth' => true, 'role' => 'admin']],
+    'GET /admin/popups/{id}/export' => ['Admin\\PopupsController', 'exportCsv', ['auth' => true, 'role' => 'admin']],
+    'GET /api/popups' => ['Admin\\PopupsController', 'apiList'],
+    'POST /api/popup-submit' => ['Admin\\PopupsController', 'apiSubmit'],
+    'POST /api/popup-track' => ['Admin\\PopupsController', 'apiTrack'],
+
+    // ─── Shop Coupons ───
+    'GET /admin/shop/coupons' => ['Admin\\ShopController', 'coupons', ['auth' => true, 'role' => 'admin']],
+    'GET /admin/shop/coupons/create' => ['Admin\\ShopController', 'couponCreate', ['auth' => true, 'role' => 'admin']],
+    'GET /admin/shop/coupons/{id}/edit' => ['Admin\\ShopController', 'couponEdit', ['auth' => true, 'role' => 'admin']],
+    'POST /admin/shop/coupons/store' => ['Admin\\ShopController', 'couponStore', ['auth' => true, 'csrf' => true, 'role' => 'admin']],
+    'POST /admin/shop/coupons/{id}/update' => ['Admin\\ShopController', 'couponUpdate', ['auth' => true, 'csrf' => true, 'role' => 'admin']],
+    'POST /admin/shop/coupons/{id}/delete' => ['Admin\\ShopController', 'couponDelete', ['auth' => true, 'csrf' => true, 'role' => 'admin']],
+    'POST /admin/shop/coupons/{id}/toggle' => ['Admin\\ShopController', 'couponToggle', ['auth' => true, 'csrf' => true, 'role' => 'admin']],
+    'POST /cart/coupon/apply' => ['Front\\ShopController', 'applyCoupon'],
+    'POST /cart/coupon/remove' => ['Front\\ShopController', 'removeCoupon'],
+
+    // ─── Shop Reviews ───
+    'GET /admin/shop/reviews' => ['Admin\\ShopController', 'reviews', ['auth' => true, 'role' => 'admin']],
+    'POST /admin/shop/reviews/{id}/approve' => ['Admin\\ShopController', 'reviewApprove', ['auth' => true, 'csrf' => true, 'role' => 'admin']],
+    'POST /admin/shop/reviews/{id}/reject' => ['Admin\\ShopController', 'reviewReject', ['auth' => true, 'csrf' => true, 'role' => 'admin']],
+    'POST /admin/shop/reviews/{id}/delete' => ['Admin\\ShopController', 'reviewDelete', ['auth' => true, 'csrf' => true, 'role' => 'admin']],
+    'POST /admin/shop/reviews/{id}/reply' => ['Admin\\ShopController', 'reviewReply', ['auth' => true, 'csrf' => true, 'role' => 'admin']],
+    'POST /shop/review/submit' => ['Front\\ShopController', 'submitReview'],
+    'POST /shop/review/{id}/helpful' => ['Front\\ShopController', 'reviewHelpful'],
+
+    // ─── Shop Order Tracking ───
+    'POST /admin/shop/orders/{id}/tracking' => ['Admin\\ShopController', 'orderUpdateTracking', ['auth' => true, 'csrf' => true, 'role' => 'admin']],
+
+    // ─── Shop Abandoned Carts ───
+    'GET /admin/shop/abandoned-carts' => ['Admin\\ShopController', 'abandonedCarts', ['auth' => true, 'role' => 'admin']],
+    'POST /admin/shop/abandoned-carts/send-reminders' => ['Admin\\ShopController', 'abandonedCartsSendReminders', ['auth' => true, 'csrf' => true, 'role' => 'admin']],
+
+    // ─── Shop Analytics ───
+    'GET /admin/shop/analytics' => ['Admin\\ShopController', 'analytics', ['auth' => true, 'role' => 'admin']],
+
+    // ─── Shop AI ───
+    'POST /api/shop/ai/generate' => ['Admin\\ShopController', 'aiGenerate', ['auth' => true]],
+    'POST /api/shop/ai/seo' => ['Admin\\ShopController', 'aiSeo', ['auth' => true]],
+    'POST /api/shop/ai/price' => ['Admin\\ShopController', 'aiPrice', ['auth' => true]],
+    'POST /api/shop/ai/review-summary' => ['Admin\\ShopController', 'aiReviewSummary', ['auth' => true]],
+
     // Page slug catch-all handled by PageController via router notFound handler
 ];

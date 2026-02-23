@@ -3,31 +3,34 @@ declare(strict_types=1);
 
 namespace App\Controllers\Admin;
 
-use Core\Request;
-use Core\Response;
-
 class AiChatController
 {
     /**
      * GET /admin/ai-chat — AI Chat Assistant page
      */
-    public function index(Request $request): void
+    public function index(): void
     {
-        $pdo = db();
+        $pdo = \core\Database::connection();
         
         // Load AI settings for model selector
         $aiSettingsFile = \CMS_ROOT . '/config/ai_settings.json';
         $models = [];
         if (file_exists($aiSettingsFile)) {
             $config = json_decode(file_get_contents($aiSettingsFile), true) ?: [];
-            foreach ($config['providers'] ?? [] as $provider) {
-                if (empty($provider['api_key'])) continue;
-                foreach ($provider['models'] ?? [] as $model) {
-                    if (!($model['enabled'] ?? true)) continue;
+            foreach ($config['providers'] ?? [] as $provId => $provider) {
+                if (!is_array($provider)) continue;
+                if (empty($provider['api_key']) || !($provider['enabled'] ?? true)) continue;
+                // Skip non-chat providers (e.g. HuggingFace image/vision models)
+                if (isset($provider['chat_capable']) && !$provider['chat_capable']) continue;
+                $provName = $provider['name'] ?? (is_string($provId) ? ucfirst($provId) : 'Unknown');
+                foreach ($provider['models'] ?? [] as $modelId => $model) {
+                    if (!is_array($model)) continue;
+                    $mId = is_string($modelId) ? $modelId : ($model['id'] ?? $modelId);
+                    $mName = $model['name'] ?? $mId;
                     $models[] = [
-                        'id' => $model['id'],
-                        'name' => $model['name'] ?? $model['id'],
-                        'provider' => $provider['name'] ?? $provider['id'],
+                        'id' => $mId,
+                        'name' => $mName,
+                        'provider' => $provName,
                     ];
                 }
             }
@@ -40,7 +43,7 @@ class AiChatController
             'title' => 'AI Assistant',
             'models' => $models,
             'history' => $history,
-            'csrfToken' => csrf_token(),
+            'csrfToken' => \csrf_token(),
         ];
 
         extract($data);
@@ -76,13 +79,16 @@ class AiChatController
 
         $config = json_decode(file_get_contents($aiSettingsFile), true) ?: [];
 
-        // Find provider + model
+        // Find provider + model (supports assoc arrays: providers.{id} and models.{id})
         $provider = null;
         $modelConfig = null;
-        foreach ($config['providers'] ?? [] as $p) {
-            if (empty($p['api_key'])) continue;
-            foreach ($p['models'] ?? [] as $m) {
-                if ($m['id'] === $model) {
+        foreach ($config['providers'] ?? [] as $pId => $p) {
+            if (!is_array($p) || empty($p['api_key']) || !($p['enabled'] ?? true)) continue;
+            $p['_id'] = is_string($pId) ? $pId : ($p['id'] ?? $pId);
+            foreach ($p['models'] ?? [] as $mId => $m) {
+                if (!is_array($m)) continue;
+                $resolvedId = is_string($mId) ? $mId : ($m['id'] ?? $mId);
+                if ($resolvedId === $model) {
                     $provider = $p;
                     $modelConfig = $m;
                     break 2;
@@ -92,12 +98,15 @@ class AiChatController
 
         // Fallback to first available
         if (!$provider) {
-            foreach ($config['providers'] ?? [] as $p) {
-                if (!empty($p['api_key']) && !empty($p['models'])) {
+            foreach ($config['providers'] ?? [] as $pId => $p) {
+                if (!is_array($p) || empty($p['api_key']) || !($p['enabled'] ?? true)) continue;
+                $p['_id'] = is_string($pId) ? $pId : ($p['id'] ?? $pId);
+                foreach ($p['models'] ?? [] as $mId => $m) {
+                    if (!is_array($m)) continue;
                     $provider = $p;
-                    $modelConfig = $p['models'][0];
-                    $model = $modelConfig['id'];
-                    break;
+                    $modelConfig = $m;
+                    $model = is_string($mId) ? $mId : ($m['id'] ?? $mId);
+                    break 2;
                 }
             }
         }
@@ -159,14 +168,14 @@ class AiChatController
      */
     private function buildSystemPrompt(): string
     {
-        $pdo = db();
+        $pdo = \core\Database::connection();
 
         // Gather CMS stats
         $pageCount = (int)$pdo->query("SELECT COUNT(*) FROM pages")->fetchColumn();
         $articleCount = (int)$pdo->query("SELECT COUNT(*) FROM articles")->fetchColumn();
         $mediaCount = 0;
         try { $mediaCount = (int)$pdo->query("SELECT COUNT(*) FROM media")->fetchColumn(); } catch (\Throwable $e) {}
-        $theme = function_exists('get_active_theme') ? get_active_theme() : 'unknown';
+        $theme = function_exists('get_active_theme') ? \get_active_theme() : 'unknown';
         $siteName = $pdo->query("SELECT `value` FROM settings WHERE `key`='site_name'")->fetchColumn() ?: 'My Site';
 
         return <<<PROMPT
@@ -210,8 +219,20 @@ PROMPT;
      */
     private function callAI(array $provider, string $model, array $messages): string
     {
-        $providerId = strtolower($provider['id'] ?? $provider['name'] ?? '');
+        $providerId = strtolower($provider['_id'] ?? $provider['id'] ?? $provider['name'] ?? '');
         $apiKey = $provider['api_key'];
+
+        // DeepSeek model ID mapping (config names → API names)
+        if (str_contains($providerId, 'deepseek')) {
+            $dsMap = ['deepseek-v3' => 'deepseek-chat', 'deepseek-r1' => 'deepseek-reasoner'];
+            $model = $dsMap[$model] ?? $model;
+        }
+
+        // OpenAI reasoning models: no temperature, system→user, max_completion_tokens
+        $isOpenAiReasoning = false;
+        if (str_contains($providerId, 'openai')) {
+            $isOpenAiReasoning = preg_match('/^(o1|o3|o4)/', $model);
+        }
 
         // Map provider to endpoint
         if (str_contains($providerId, 'openai')) {
@@ -268,38 +289,77 @@ PROMPT;
             ]);
         } else {
             // OpenAI / DeepSeek compatible
-            $body = json_encode([
+            $payload = [
                 'model' => $model,
                 'messages' => $messages,
-                'max_tokens' => 4096,
-                'temperature' => 0.7,
-            ]);
+            ];
+            if ($isOpenAiReasoning) {
+                // Reasoning models: no temperature, no system role, use max_completion_tokens
+                $payload['max_completion_tokens'] = 4096;
+                // Convert system messages to user messages
+                $payload['messages'] = array_map(function($m) {
+                    return $m['role'] === 'system' ? ['role' => 'user', 'content' => $m['content']] : $m;
+                }, $payload['messages']);
+            } else {
+                $payload['max_tokens'] = 4096;
+                $payload['temperature'] = 0.7;
+            }
+            $body = json_encode($payload);
         }
 
-        // cURL
-        $ch = curl_init($url);
-        curl_setopt_array($ch, [
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_POST => true,
-            CURLOPT_POSTFIELDS => $body,
-            CURLOPT_HTTPHEADER => $headers,
-            CURLOPT_TIMEOUT => 120,
-            CURLOPT_CONNECTTIMEOUT => 10,
-        ]);
+        // cURL with retry on 429/529 (rate limit / overloaded)
+        $maxRetries = 3;
+        $response = '';
+        $httpCode = 0;
+        for ($attempt = 0; $attempt <= $maxRetries; $attempt++) {
+            if ($attempt > 0) {
+                usleep($attempt * 1500000); // 1.5s, 3s, 4.5s backoff
+            }
+            $ch = curl_init($url);
+            curl_setopt_array($ch, [
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_POST => true,
+                CURLOPT_POSTFIELDS => $body,
+                CURLOPT_HTTPHEADER => $headers,
+                CURLOPT_TIMEOUT => 120,
+                CURLOPT_CONNECTTIMEOUT => 10,
+            ]);
 
-        $response = curl_exec($ch);
-        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        $error = curl_error($ch);
-        curl_close($ch);
+            $response = curl_exec($ch);
+            $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            $error = curl_error($ch);
+            curl_close($ch);
 
-        if ($error) {
-            throw new \RuntimeException("Network error: {$error}");
+            if ($error) {
+                throw new \RuntimeException("Network error: {$error}");
+            }
+            // Retry on overloaded (529) or rate limit (429)
+            if (in_array($httpCode, [429, 529]) && $attempt < $maxRetries) {
+                continue;
+            }
+            break;
         }
 
         if ($httpCode >= 400) {
             $errData = json_decode($response, true);
             $errMsg = $errData['error']['message'] ?? $errData['error'] ?? "HTTP {$httpCode}";
             if (is_array($errMsg)) $errMsg = json_encode($errMsg);
+            // User-friendly messages for common errors
+            if ($httpCode === 529) {
+                throw new \RuntimeException("Model is currently overloaded (tried {$maxRetries}x). Try a different model or wait a moment.");
+            }
+            if ($httpCode === 429) {
+                throw new \RuntimeException("Rate limit exceeded. Wait a moment and try again.");
+            }
+            if ($httpCode === 401) {
+                throw new \RuntimeException("Invalid API key for " . ucfirst($providerId) . ". Check Settings → AI.");
+            }
+            if ($httpCode === 402 || str_contains(strtolower($errMsg), 'insufficient') || str_contains(strtolower($errMsg), 'billing')) {
+                throw new \RuntimeException("No credits/funds on your " . ucfirst($providerId) . " account. Add billing at provider dashboard.");
+            }
+            if ($httpCode === 404) {
+                throw new \RuntimeException("Model '{$model}' not found. It may not be available on your plan.");
+            }
             throw new \RuntimeException($errMsg);
         }
 

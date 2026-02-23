@@ -1,5 +1,16 @@
 config.php
 config/*.local.php
+config/credentials.php
+config/ai_settings.json
+config/n8n_settings.json
+config/n8n_bindings.json
+config/automation_platforms.json
+config/automation_rules.json
+config/email_settings.json
+config/ai_email_automation.json
+config/ai_hf_settings.json
+config/general_settings.json
+config/sites.json
 .env
 .env.*
 logs/
@@ -13,7 +24,6 @@ vendor/
 php_server.log
 .github/
 deepseek-thinking-claude-3.5-sonnet-cline-mcp/
-config/ai_settings.json
 
 # Backup files
 *.backup*
@@ -41,3 +51,15 @@ __pycache__/
 
 # MCP servers (dead)
 mcp-*/
+
+# Sensitive config files (extra safety)
+config/installed_plugins.json
+config/media_library_index.json
+config/scheduled_tasks.php
+config/automations.json
+
+# Digital product uploads (contain purchased files)
+uploads/digital/
+
+# Backups in CMS dir
+*.bak-*

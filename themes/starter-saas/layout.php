@@ -68,7 +68,7 @@ $themeDir = '/themes/starter-saas';
         <div class="header-inner">
             <a href="/" class="logo" data-ts="brand.logo">
                 <?php if ($siteLogo): ?>
-                    <div class="logo-icon"><img src="<?= esc($siteLogo) ?>" alt="<?= esc($siteName) ?>"></div>
+                    <div class="logo-icon"><img loading="lazy" decoding="async" src="<?= esc($siteLogo) ?>" alt="<?= esc($siteName) ?>"></div>
                 <?php else: ?>
                     <div class="logo-icon"><i class="fas fa-rocket"></i></div>
                 <?php endif; ?>
@@ -93,7 +93,7 @@ $themeDir = '/themes/starter-saas';
 <?php if ($isTbPage): ?>
     <?= $content ?? '' ?>
 <?php else: ?>
-    <main class="main-content">
+    <main id="main-content" class="main-content">
         <?= $content ?? '' ?>
     </main>
 <?php endif; ?>
@@ -105,7 +105,7 @@ $themeDir = '/themes/starter-saas';
             <div class="footer-brand">
                 <a href="/" class="logo" data-ts="brand.logo">
                     <?php if ($siteLogo): ?>
-                        <div class="logo-icon"><img src="<?= esc($siteLogo) ?>" alt="<?= esc($siteName) ?>"></div>
+                        <div class="logo-icon"><img loading="lazy" decoding="async" src="<?= esc($siteLogo) ?>" alt="<?= esc($siteName) ?>"></div>
                     <?php else: ?>
                         <div class="logo-icon"><i class="fas fa-rocket"></i></div>
                     <?php endif; ?>

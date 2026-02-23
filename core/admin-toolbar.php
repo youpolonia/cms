@@ -167,11 +167,11 @@ function cms_admin_toolbar(array $context = []): string {
 body.has-admin-toolbar {
     padding-top: 36px !important;
 }
-/* Fix for themes with fixed headers */
-body.has-admin-toolbar .site-header,
-body.has-admin-toolbar header,
-body.has-admin-toolbar [class*="header"],
-body.has-admin-toolbar nav:first-of-type {
+/* Fix for themes with fixed headers — only target the outer header element */
+body.has-admin-toolbar > header,
+body.has-admin-toolbar > .site-header,
+body.has-admin-toolbar header#siteHeader,
+body.has-admin-toolbar header[id] {
     top: 36px !important;
 }
 @media (max-width: 768px) {
@@ -187,6 +187,11 @@ body.has-admin-toolbar nav:first-of-type {
     </a>
     <span class="tb-sep"></span>
 HTML;
+
+    // Visual Editor button (always present on frontend)
+    if (function_exists('cms_visual_editor_toolbar_button')) {
+        $html .= cms_visual_editor_toolbar_button();
+    }
     
     // Edit button (if we have a page/article)
     if ($editUrl) {

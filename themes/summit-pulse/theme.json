@@ -1,0 +1,85 @@
+{
+    "name": "Summit Pulse",
+    "description": "Dynamic climbing center theme with organic warmth and energetic flow",
+    "version": "1.0.0",
+    "author": "AI Theme Builder",
+    "supports": {
+        "theme-builder": true,
+        "custom-header": true,
+        "custom-footer": true,
+        "custom-colors": true
+    },
+    "options": {
+        "show_header": true,
+        "show_footer": true,
+        "body_background": "#0d1a1f",
+        "preload_fonts": true
+    },
+    "colors": {
+        "primary": "#3ba5b5",
+        "secondary": "#d4a03a",
+        "accent": "#5ec4d4",
+        "background": "#0d1a1f",
+        "surface": "#152830",
+        "text": "#f0f5f7",
+        "text_muted": "#9bb3bc",
+        "border": "#2a4048",
+        "success": "#4eba8a",
+        "warning": "#e5a84d",
+        "error": "#d95f5f"
+    },
+    "typography": {
+        "fontFamily": "Merriweather",
+        "headingFont": "Mulish",
+        "baseFontSize": "17",
+        "lineHeight": "1.75",
+        "fontWeight": "400",
+        "headingWeight": "800"
+    },
+    "buttons": {
+        "borderRadius": "24",
+        "paddingX": "28",
+        "paddingY": "14",
+        "fontWeight": "700",
+        "uppercase": false,
+        "shadow": true
+    },
+    "layout": {
+        "containerWidth": "1180",
+        "sectionSpacing": "130",
+        "borderRadius": "18"
+    },
+    "homepage_sections": [
+        {
+            "id": "hero",
+            "label": "Hero",
+            "icon": "fas fa-star"
+        },
+        {
+            "id": "services",
+            "label": "Services",
+            "icon": "fas fa-concierge-bell"
+        },
+        {
+            "id": "testimonials",
+            "label": "Testimonials",
+            "icon": "fas fa-quote-right"
+        },
+        {
+            "id": "pricing",
+            "label": "Pricing Preview",
+            "icon": "fas fa-tags"
+        },
+        {
+            "id": "cta",
+            "label": "Call to Action",
+            "icon": "fas fa-bullhorn"
+        },
+        {
+            "id": "gallery",
+            "label": "Gallery",
+            "icon": "🖼️"
+        }
+    ],
+    "thumbnail": "thumbnail.svg"
+}

@@ -326,6 +326,12 @@ if (!function_exists('resolve_front_template')) {
 if (file_exists(CMS_ROOT . '/core/admin-toolbar.php')) {
     require_once CMS_ROOT . '/core/admin-toolbar.php';
 }
+if (file_exists(CMS_ROOT . '/core/admin-image-placeholder.php')) {
+    require_once CMS_ROOT . '/core/admin-image-placeholder.php';
+}
+if (file_exists(CMS_ROOT . '/core/admin-visual-editor.php')) {
+    require_once CMS_ROOT . '/core/admin-visual-editor.php';
+}
 
 if (!function_exists('render')) {
     /**
@@ -372,6 +378,33 @@ if (!function_exists('cms_inject_admin_toolbar')) {
         }
         // Inject after <body> tag (with optional attributes)
         $html = preg_replace('/(<body[^>]*>)/i', '$1' . "\n" . $toolbar, $html, 1);
+        
+        // Inject admin image placeholder assets before </body>
+        if (function_exists('cms_admin_image_placeholder_assets')) {
+            ob_start();
+            cms_admin_image_placeholder_assets();
+            $assets = ob_get_clean();
+            if ($assets) {
+                $html = str_replace('</body>', $assets . "\n</body>", $html);
+            }
+        }
+        
+        // Inject visual editor dependencies (Media Gallery) before </body>
+        if (function_exists('cms_visual_editor_dependencies')) {
+            $veDeps = cms_visual_editor_dependencies();
+            if ($veDeps) {
+                $html = str_replace('</body>', $veDeps . "\n</body>", $html);
+            }
+        }
+        
+        // Inject visual editor assets before </body>
+        if (function_exists('cms_visual_editor_assets')) {
+            $veAssets = cms_visual_editor_assets();
+            if ($veAssets) {
+                $html = str_replace('</body>', $veAssets . "\n</body>", $html);
+            }
+        }
+        
         return $html;
     }
 }
@@ -399,6 +432,7 @@ if (!function_exists('render_with_theme')) {
         $data['_theme'] = $themeName;
         $data['_themeConfig'] = $themeConfig;
         $data['_themeUrl'] = theme_url();
+        $data['themePath'] = '/themes/' . $themeName;
 
         // Theme MUST have layout.php to use theme system
         if (!file_exists($layoutPath)) {
@@ -1178,6 +1212,18 @@ if (!function_exists('render_seo_meta')) {
         if (empty($ogImage) && $siteLogo) {
             $ogImage = $siteLogo;
         }
+        // Fallback to theme thumbnail if no OG image set
+        if (empty($ogImage)) {
+            $activeTheme = function_exists('get_active_theme') ? get_active_theme() : '';
+            if ($activeTheme) {
+                $thumbPath = (defined('CMS_ROOT') ? CMS_ROOT : dirname(__DIR__, 2)) . '/themes/' . $activeTheme . '/thumbnail.svg';
+                if (file_exists($thumbPath)) {
+                    $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
+                    $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
+                    $ogImage = $protocol . '://' . $host . '/themes/' . $activeTheme . '/thumbnail.svg';
+                }
+            }
+        }
 
         $html = '<title>' . esc($title) . '</title>' . "\n";
 
@@ -1545,4 +1591,33 @@ if (!function_exists('get_body_class')) {
 
         return implode(' ', $classes);
     }
+}
+
+// ═══════════════════════════════════════════════════════════
+// IMAGE OPTIMIZATION HELPER
+// ═══════════════════════════════════════════════════════════
+
+if (!function_exists('cms_img')) {
+    /**
+     * Output an optimized <img> tag with lazy loading and srcset
+     */
+    function cms_img(string $src, string $alt = '', string $class = '', string $sizes = '100vw'): string {
+        require_once CMS_ROOT . '/core/image_optimizer.php';
+        return ImageOptimizer::imgTag($src, $alt, $class, $sizes);
+    }
+}
+
+// Register chat widget function (loads only function, not the heavy AI class)
+if (!function_exists('ai_theme_chat_widget')) {
+    require_once CMS_ROOT . '/core/chatbot-widget.php';
+}
+
+// Event system — connects CMS actions to n8n webhooks & automation rules
+if (!function_exists('cms_event')) {
+    require_once CMS_ROOT . '/core/events.php';
+}
+
+// A/B testing frontend widget
+if (!function_exists('cms_ab_testing_widget')) {
+    require_once CMS_ROOT . '/core/ab-widget.php';
 }

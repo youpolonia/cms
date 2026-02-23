@@ -1,0 +1,85 @@
+{
+    "name": "Sentinel Shield",
+    "description": "Zero-trust identity management with passwordless authentication and compliance reporting",
+    "version": "1.0.0",
+    "author": "AI Theme Builder",
+    "supports": {
+        "theme-builder": true,
+        "custom-header": true,
+        "custom-footer": true,
+        "custom-colors": true
+    },
+    "options": {
+        "show_header": true,
+        "show_footer": true,
+        "body_background": "#faf8f5",
+        "preload_fonts": true
+    },
+    "colors": {
+        "primary": "#b91c1c",
+        "secondary": "#0891b2",
+        "accent": "#dc2626",
+        "background": "#faf8f5",
+        "surface": "#ffffff",
+        "text": "#1c1917",
+        "text_muted": "#78716c",
+        "border": "#e7e5e4",
+        "success": "#059669",
+        "warning": "#d97706",
+        "error": "#dc2626"
+    },
+    "typography": {
+        "fontFamily": "Figtree",
+        "headingFont": "Fraunces",
+        "baseFontSize": "17",
+        "lineHeight": "1.8",
+        "fontWeight": "400",
+        "headingWeight": "700"
+    },
+    "buttons": {
+        "borderRadius": "6",
+        "paddingX": "28",
+        "paddingY": "13",
+        "fontWeight": "600",
+        "uppercase": false,
+        "shadow": true
+    },
+    "layout": {
+        "containerWidth": "1240",
+        "sectionSpacing": "140",
+        "borderRadius": "10"
+    },
+    "homepage_sections": [
+        {
+            "id": "hero",
+            "label": "Hero",
+            "icon": "fas fa-star"
+        },
+        {
+            "id": "stats",
+            "label": "Stats \/ Numbers",
+            "icon": "fas fa-chart-bar"
+        },
+        {
+            "id": "testimonials",
+            "label": "Testimonials",
+            "icon": "fas fa-quote-right"
+        },
+        {
+            "id": "faq",
+            "label": "FAQ Preview",
+            "icon": "fas fa-question-circle"
+        },
+        {
+            "id": "cta",
+            "label": "Call to Action",
+            "icon": "fas fa-bullhorn"
+        },
+        {
+            "id": "features",
+            "label": "Features",
+            "icon": "✨"
+        }
+    ],
+    "thumbnail": "thumbnail.svg"
+}

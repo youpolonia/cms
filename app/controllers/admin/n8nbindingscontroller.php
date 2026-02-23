@@ -113,41 +113,21 @@ class N8nBindingsController
     private function groupEventsByCategory(array $events): array
     {
         $groups = [
-            'content' => [
-                'icon' => '📄',
-                'label' => 'Content Events',
-                'events' => []
-            ],
-            'user' => [
-                'icon' => '👤',
-                'label' => 'User Events',
-                'events' => []
-            ],
-            'form' => [
-                'icon' => '📝',
-                'label' => 'Form Events',
-                'events' => []
-            ],
-            'emailqueue' => [
-                'icon' => '📧',
-                'label' => 'Email Events',
-                'events' => []
-            ],
-            'scheduler' => [
-                'icon' => '⏰',
-                'label' => 'Scheduler Events',
-                'events' => []
-            ],
-            'media' => [
-                'icon' => '🖼️',
-                'label' => 'Media Events',
-                'events' => []
-            ],
-            'comment' => [
-                'icon' => '💬',
-                'label' => 'Comment Events',
-                'events' => []
-            ]
+            'content' => ['icon' => '📄', 'label' => 'Content Events', 'events' => []],
+            'article' => ['icon' => '📰', 'label' => 'Article Events', 'events' => []],
+            'page' => ['icon' => '📃', 'label' => 'Page Events', 'events' => []],
+            'user' => ['icon' => '👤', 'label' => 'User Events', 'events' => []],
+            'form' => ['icon' => '📝', 'label' => 'Form Events', 'events' => []],
+            'comment' => ['icon' => '💬', 'label' => 'Comment Events', 'events' => []],
+            'media' => ['icon' => '🖼️', 'label' => 'Media Events', 'events' => []],
+            'email' => ['icon' => '📧', 'label' => 'Email Events', 'events' => []],
+            'emailqueue' => ['icon' => '📧', 'label' => 'Email Queue Events', 'events' => []],
+            'chatbot' => ['icon' => '🤖', 'label' => 'Chatbot Events', 'events' => []],
+            'crm' => ['icon' => '👥', 'label' => 'CRM Events', 'events' => []],
+            'shop' => ['icon' => '🛒', 'label' => 'Shop Events', 'events' => []],
+            'theme' => ['icon' => '🎨', 'label' => 'Theme Events', 'events' => []],
+            'system' => ['icon' => '⚙️', 'label' => 'System Events', 'events' => []],
+            'scheduler' => ['icon' => '⏰', 'label' => 'Scheduler Events', 'events' => []],
         ];
 
         foreach ($events as $event) {

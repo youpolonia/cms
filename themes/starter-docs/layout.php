@@ -36,7 +36,7 @@
       </div>
     </nav>
   </aside>
-  <main class="docs-content">
+  <main id="main-content" class="docs-content">
     <div class="content-inner"><?= $content ?></div>
   </main>
 </div>

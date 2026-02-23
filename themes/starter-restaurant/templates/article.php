@@ -3,10 +3,11 @@
  * Starter Restaurant — Article Template
  * Premium reading experience with meta bar
  */
+$articleId = $article['id'] ?? 0;
 ?>
 <section class="page-hero">
     <div class="container">
-        <h1 class="page-hero-title"><?= esc($article['title']) ?></h1>
+        <h1 class="page-hero-title" data-article-id="<?= (int)$articleId ?>" data-page-field="title"><?= esc($article['title']) ?></h1>
         <div class="page-breadcrumb">
             <a href="/">Home</a>
             <span class="breadcrumb-sep"><i class="fas fa-chevron-right"></i></span>
@@ -32,11 +33,11 @@
 
         <?php if (!empty($article['featured_image'])): ?>
         <div class="article-featured-img">
-            <img src="<?= esc($article['featured_image']) ?>" alt="<?= esc($article['title']) ?>">
+            <img loading="lazy" decoding="async" src="<?= esc($article['featured_image']) ?>" alt="<?= esc($article['title']) ?>">
         </div>
         <?php endif; ?>
 
-        <div class="prose">
+        <div class="prose" data-article-id="<?= (int)$articleId ?>" data-page-field="content">
             <?= $article['content'] ?>
         </div>
 

@@ -12,6 +12,8 @@ $heroHeadline = theme_get('hero.headline', 'A Culinary Journey Through Italy');
 $heroSubtitle = theme_get('hero.subtitle', 'Handmade pasta, wood-fired specialties, and an award-winning wine cellar in the heart of the city.');
 $heroBtnText  = theme_get('hero.btn_text', 'Reserve a Table');
 $heroBtnLink  = theme_get('hero.btn_link', '/page/reservations');
+$heroBtn2Text = theme_get('hero.btn2_text', 'View Menu');
+$heroBtn2Link = theme_get('hero.btn2_link', '#menu');
 $heroBgImage  = theme_get('hero.bg_image');
 $heroBadge    = theme_get('hero.badge', 'Est. 2008');
 

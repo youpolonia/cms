@@ -10,7 +10,7 @@ try {
 <section class="featured-article">
   <a href="/articles/<?= esc($featured['slug']) ?>" class="featured-link">
     <?php if ($featured['featured_image']): ?>
-    <img src="<?= esc($featured['featured_image']) ?>" alt="<?= esc($featured['title']) ?>">
+    <img loading="lazy" decoding="async" src="<?= esc($featured['featured_image']) ?>" alt="<?= esc($featured['title']) ?>">
     <?php else: ?>
     <div class="featured-placeholder"></div>
     <?php endif; ?>
@@ -30,7 +30,7 @@ try {
     <?php foreach ($grid as $art): ?>
     <article class="article-card">
       <?php if ($art['featured_image']): ?>
-      <a href="/articles/<?= esc($art['slug']) ?>" class="card-image"><img src="<?= esc($art['featured_image']) ?>" alt="<?= esc($art['title']) ?>" loading="lazy"></a>
+      <a href="/articles/<?= esc($art['slug']) ?>" class="card-image"><img decoding="async" loading="lazy" src="<?= esc($art['featured_image']) ?>" alt="<?= esc($art['title']) ?>" loading="lazy"></a>
       <?php endif; ?>
       <div class="card-body">
         <h3><a href="/articles/<?= esc($art['slug']) ?>"><?= esc($art['title']) ?></a></h3>

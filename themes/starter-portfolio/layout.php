@@ -82,7 +82,7 @@ $googleFontsUrl = "https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@3
         <div class="header-inner">
             <a href="/" class="site-brand" data-ts="brand.logo">
                 <?php if ($siteLogo): ?>
-                    <img src="<?= esc($siteLogo) ?>" alt="<?= esc($siteName) ?>" class="site-logo">
+                    <img loading="lazy" decoding="async" src="<?= esc($siteLogo) ?>" alt="<?= esc($siteName) ?>" class="site-logo">
                 <?php else: ?>
                     <span class="site-name" data-ts="brand.site_name"><?= esc($siteName) ?></span>
                 <?php endif; ?>
@@ -121,7 +121,7 @@ $googleFontsUrl = "https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@3
                 <div class="footer-brand">
                     <a href="/" class="footer-logo-link" data-ts="brand.logo">
                         <?php if ($siteLogo): ?>
-                            <img src="<?= esc($siteLogo) ?>" alt="<?= esc($siteName) ?>" class="footer-logo">
+                            <img loading="lazy" decoding="async" src="<?= esc($siteLogo) ?>" alt="<?= esc($siteName) ?>" class="footer-logo">
                         <?php else: ?>
                             <span class="footer-name"><?= esc($siteName) ?></span>
                         <?php endif; ?>

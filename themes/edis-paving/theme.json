@@ -1,0 +1,91 @@
+{
+    "name": "Edi's Paving Contractors",
+    "description": "Premium dark theme for established paving and groundworks contractors",
+    "version": "1.0.0",
+    "author": "AI Theme Builder",
+    "supports": {
+        "theme-builder": true,
+        "custom-header": true,
+        "custom-footer": true,
+        "custom-colors": true
+    },
+    "options": {
+        "show_header": true,
+        "show_footer": true,
+        "body_background": "#0d0d0d",
+        "preload_fonts": true
+    },
+    "colors": {
+        "primary": "#c9a227",
+        "secondary": "#8b7355",
+        "accent": "#e8b923",
+        "background": "#0d0d0d",
+        "surface": "#1a1a1a",
+        "text": "#f0ede6",
+        "text_muted": "#9a958a",
+        "border": "#2d2d2d",
+        "success": "#5d8a4a",
+        "warning": "#d4a017",
+        "error": "#a63d3d"
+    },
+    "typography": {
+        "fontFamily": "Source Sans 3",
+        "headingFont": "Bebas Neue",
+        "baseFontSize": "17",
+        "lineHeight": "1.75",
+        "fontWeight": "400",
+        "headingWeight": "400"
+    },
+    "buttons": {
+        "borderRadius": "2",
+        "paddingX": "36",
+        "paddingY": "16",
+        "fontWeight": "600",
+        "uppercase": true,
+        "shadow": false
+    },
+    "layout": {
+        "containerWidth": "1280",
+        "sectionSpacing": "130",
+        "borderRadius": "4"
+    },
+    "homepage_sections": [
+        {
+            "id": "hero",
+            "label": "Hero",
+            "icon": "⭐",
+            "required": true
+        },
+        {
+            "id": "about",
+            "label": "Our Heritage",
+            "icon": "🏆"
+        },
+        {
+            "id": "services",
+            "label": "Services",
+            "icon": "🔨"
+        },
+        {
+            "id": "projects",
+            "label": "Recent Projects",
+            "icon": "📸"
+        },
+        {
+            "id": "testimonials",
+            "label": "Client Reviews",
+            "icon": "💬"
+        },
+        {
+            "id": "articles",
+            "label": "Latest News",
+            "icon": "📰"
+        },
+        {
+            "id": "cta",
+            "label": "Get a Quote",
+            "icon": "📞"
+        }
+    ],
+    "thumbnail": "thumbnail.svg"
+}

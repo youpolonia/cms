@@ -16,7 +16,7 @@
         <p class="hero-subtitle" data-ts="hero.subtitle"><?= esc($heroSubtitle) ?></p>
         <div class="hero-actions">
             <a href="<?= esc($heroBtnLink) ?>" class="btn btn-primary" data-ts="hero.btn_text" data-ts-href="hero.btn_link"><?= esc($heroBtnText) ?></a>
-            <a href="#menu" class="btn btn-ghost"><i class="fas fa-book-open"></i> View Menu</a>
+            <a href="<?= esc($heroBtn2Link ?? '#menu') ?>" class="btn btn-ghost" data-ts="hero.btn2_text" data-ts-href="hero.btn2_link"><i class="fas fa-book-open"></i> <?= esc($heroBtn2Text ?? 'View Menu') ?></a>
         </div>
     </div>
     <div class="hero-scroll">

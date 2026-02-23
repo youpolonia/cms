@@ -9,201 +9,150 @@ use Core\Session;
 
 /**
  * Email Settings Controller
- * Manages email configuration via config/email_settings.json
+ * Manages SMTP configuration via the `settings` table (key/value).
+ *
+ * Keys: smtp_host, smtp_port, smtp_user, smtp_pass,
+ *       smtp_encryption, smtp_from_email, smtp_from_name
  */
 class EmailSettingsController
 {
-    /**
-     * Display email settings form
-     */
+    /** Setting keys managed on this page */
+    private const KEYS = [
+        'smtp_host',
+        'smtp_port',
+        'smtp_user',
+        'smtp_pass',
+        'smtp_encryption',
+        'smtp_from_email',
+        'smtp_from_name',
+    ];
+
+    /* ─── helpers ─── */
+
+    private function loadSettings(): array
+    {
+        $pdo = db();
+        $defaults = [
+            'smtp_host'       => '',
+            'smtp_port'       => '587',
+            'smtp_user'       => '',
+            'smtp_pass'       => '',
+            'smtp_encryption' => 'tls',
+            'smtp_from_email' => '',
+            'smtp_from_name'  => '',
+        ];
+
+        $placeholders = implode(',', array_fill(0, count(self::KEYS), '?'));
+        $stmt = $pdo->prepare("SELECT `key`, `value` FROM settings WHERE `key` IN ($placeholders)");
+        $stmt->execute(self::KEYS);
+
+        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+            if (array_key_exists($row['key'], $defaults)) {
+                $defaults[$row['key']] = $row['value'] ?? '';
+            }
+        }
+
+        return $defaults;
+    }
+
+    private function saveSetting(string $key, string $value): void
+    {
+        $pdo = db();
+        $stmt = $pdo->prepare(
+            "INSERT INTO settings (`key`, `value`, `group_name`, `updated_at`)
+             VALUES (?, ?, 'email', NOW())
+             ON DUPLICATE KEY UPDATE `value` = VALUES(`value`), `updated_at` = NOW()"
+        );
+        $stmt->execute([$key, $value]);
+    }
+
+    /* ─── GET /admin/email-settings ─── */
+
     public function index(Request $request): void
     {
-        // Load email settings helper
-        require_once CMS_ROOT . '/core/settings_email.php';
-
-        $settings = email_settings_get();
-
-        // Check SMTP config status from config.php
-        $smtpConfigured = defined('SMTP_HOST') && SMTP_HOST !== '';
-
-        // Get email queue stats if table exists
-        $queueStats = $this->getQueueStats();
+        $settings = $this->loadSettings();
 
         render('admin/email-settings/index', [
             'settings' => $settings,
-            'smtpConfigured' => $smtpConfigured,
-            'smtpHost' => defined('SMTP_HOST') ? SMTP_HOST : null,
-            'smtpPort' => defined('SMTP_PORT') ? SMTP_PORT : null,
-            'smtpUser' => defined('SMTP_USER') ? SMTP_USER : null,
-            'smtpEncryption' => defined('SMTP_ENCRYPTION') ? SMTP_ENCRYPTION : 'tls',
-            'queueStats' => $queueStats,
-            'success' => Session::getFlash('success'),
-            'error' => Session::getFlash('error')
+            'success'  => Session::getFlash('success'),
+            'error'    => Session::getFlash('error'),
         ]);
     }
 
-    /**
-     * Update email settings
-     */
+    /* ─── POST /admin/email-settings ─── */
+
     public function update(Request $request): void
     {
-        require_once CMS_ROOT . '/core/settings_email.php';
+        $validEncryptions = ['tls', 'ssl', 'none'];
 
-        $updated = [
-            'from_name'      => trim($request->post('from_name', '')),
-            'from_email'     => trim($request->post('from_email', '')),
-            'reply_to_email' => trim($request->post('reply_to_email', '')),
-            'send_mode'      => trim($request->post('send_mode', 'smtp')),
+        $input = [
+            'smtp_host'       => trim($request->post('smtp_host', '')),
+            'smtp_port'       => trim($request->post('smtp_port', '587')),
+            'smtp_user'       => trim($request->post('smtp_user', '')),
+            'smtp_pass'       => $request->post('smtp_pass', ''),
+            'smtp_encryption' => trim($request->post('smtp_encryption', 'tls')),
+            'smtp_from_email' => trim($request->post('smtp_from_email', '')),
+            'smtp_from_name'  => trim($request->post('smtp_from_name', '')),
         ];
 
-        // Validate email addresses
-        if (!empty($updated['from_email']) && !filter_var($updated['from_email'], FILTER_VALIDATE_EMAIL)) {
+        // Validate encryption value
+        if (!in_array($input['smtp_encryption'], $validEncryptions, true)) {
+            $input['smtp_encryption'] = 'tls';
+        }
+
+        // Validate port
+        $port = (int)$input['smtp_port'];
+        if ($port < 1 || $port > 65535) {
+            $input['smtp_port'] = '587';
+        }
+
+        // Validate from_email if provided
+        if ($input['smtp_from_email'] !== '' && !filter_var($input['smtp_from_email'], FILTER_VALIDATE_EMAIL)) {
             Session::flash('error', 'Invalid From Email address.');
             Response::redirect('/admin/email-settings');
         }
 
-        if (!empty($updated['reply_to_email']) && !filter_var($updated['reply_to_email'], FILTER_VALIDATE_EMAIL)) {
-            Session::flash('error', 'Invalid Reply-To Email address.');
-            Response::redirect('/admin/email-settings');
+        // If password field is blank and we already have one saved, keep the old value
+        if ($input['smtp_pass'] === '') {
+            $existing = $this->loadSettings();
+            $input['smtp_pass'] = $existing['smtp_pass'];
         }
 
-        // Normalize send_mode
-        if (!in_array($updated['send_mode'], ['smtp', 'phpmail'], true)) {
-            $updated['send_mode'] = 'smtp';
+        foreach ($input as $key => $value) {
+            $this->saveSetting($key, $value);
         }
 
-        email_settings_update($updated);
-
-        Session::flash('success', 'Email settings saved successfully.');
+        Session::flash('success', 'SMTP settings saved successfully.');
         Response::redirect('/admin/email-settings');
     }
 
-    /**
-     * Send a test email
-     */
+    /* ─── POST /admin/email-settings/test ─── */
+
     public function testEmail(Request $request): void
     {
-        require_once CMS_ROOT . '/core/settings_email.php';
-
         $testTo = trim($request->post('test_email', ''));
 
-        if (empty($testTo) || !filter_var($testTo, FILTER_VALIDATE_EMAIL)) {
+        if ($testTo === '' || !filter_var($testTo, FILTER_VALIDATE_EMAIL)) {
             Session::flash('error', 'Please enter a valid email address for the test.');
             Response::redirect('/admin/email-settings');
         }
 
-        $settings = email_settings_get();
+        // Load the mailer
+        require_once CMS_ROOT . '/core/mailer.php';
 
-        // Try to send test email
-        $result = $this->sendTestEmail($testTo, $settings);
+        $subject = 'Test Email from Jessie CMS';
+        $body    = "This is a test email sent from your Jessie CMS.\n\n"
+                 . "If you received this, your email configuration is working.\n\n"
+                 . "Timestamp: " . date('Y-m-d H:i:s') . "\n";
 
-        if ($result['success']) {
+        $ok = cms_send_email($testTo, $subject, $body);
+
+        if ($ok) {
             Session::flash('success', 'Test email sent successfully to ' . htmlspecialchars($testTo));
         } else {
-            Session::flash('error', 'Failed to send test email: ' . htmlspecialchars($result['error']));
+            Session::flash('error', 'Failed to send test email. Check the error log for details.');
         }
 
         Response::redirect('/admin/email-settings');
-    }
-
-    /**
-     * Get email queue statistics
-     */
-    private function getQueueStats(): array
-    {
-        $stats = [
-            'pending' => 0,
-            'sending' => 0,
-            'sent' => 0,
-            'failed' => 0,
-            'total' => 0
-        ];
-
-        try {
-            $pdo = db();
-
-            // Check if email_queue table exists
-            $stmt = $pdo->query("SHOW TABLES LIKE 'email_queue'");
-            if ($stmt->rowCount() === 0) {
-                return $stats;
-            }
-
-            $stmt = $pdo->query("SELECT status, COUNT(*) as cnt FROM email_queue GROUP BY status");
-            while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-                $stats[$row['status']] = (int)$row['cnt'];
-            }
-            $stats['total'] = array_sum($stats);
-        } catch (\Exception $e) {
-            // Table might not exist, return empty stats
-        }
-
-        return $stats;
-    }
-
-    /**
-     * Send a test email using configured settings
-     */
-    private function sendTestEmail(string $to, array $settings): array
-    {
-        $fromName = $settings['from_name'] ?: 'CMS System';
-        $fromEmail = $settings['from_email'] ?: 'noreply@localhost';
-        $subject = 'Test Email from CMS';
-        $body = "This is a test email sent from your CMS.\n\nConfiguration:\n";
-        $body .= "- Send Mode: " . $settings['send_mode'] . "\n";
-        $body .= "- From Name: " . $fromName . "\n";
-        $body .= "- From Email: " . $fromEmail . "\n";
-        $body .= "- Reply-To: " . ($settings['reply_to_email'] ?: 'Not set') . "\n";
-        $body .= "\nTimestamp: " . date('Y-m-d H:i:s') . "\n";
-
-        if ($settings['send_mode'] === 'phpmail') {
-            // Use PHP mail() function
-            $headers = "From: {$fromName} <{$fromEmail}>\r\n";
-            if (!empty($settings['reply_to_email'])) {
-                $headers .= "Reply-To: {$settings['reply_to_email']}\r\n";
-            }
-            $headers .= "X-Mailer: PHP/" . phpversion();
-
-            $result = @mail($to, $subject, $body, $headers);
-
-            if ($result) {
-                return ['success' => true];
-            } else {
-                $error = error_get_last();
-                return ['success' => false, 'error' => $error['message'] ?? 'Unknown mail() error'];
-            }
-        } else {
-            // SMTP mode - queue the email or use SMTP directly
-            if (!defined('SMTP_HOST') || SMTP_HOST === '') {
-                return ['success' => false, 'error' => 'SMTP is not configured in config.php'];
-            }
-
-            // Try to queue the email for sending
-            try {
-                $pdo = db();
-
-                // Check if email_queue table exists
-                $stmt = $pdo->query("SHOW TABLES LIKE 'email_queue'");
-                if ($stmt->rowCount() === 0) {
-                    return ['success' => false, 'error' => 'Email queue table does not exist'];
-                }
-
-                $stmt = $pdo->prepare("
-                    INSERT INTO email_queue
-                    (to_email, to_name, subject, body_text, body_html, priority, status, created_at)
-                    VALUES (?, ?, ?, ?, ?, 1, 'pending', NOW())
-                ");
-                $stmt->execute([
-                    $to,
-                    null,
-                    $subject,
-                    $body,
-                    nl2br(htmlspecialchars($body))
-                ]);
-
-                return ['success' => true];
-            } catch (\Exception $e) {
-                return ['success' => false, 'error' => $e->getMessage()];
-            }
-        }
     }
 }

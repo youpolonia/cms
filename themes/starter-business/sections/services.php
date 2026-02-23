@@ -41,7 +41,7 @@ $serviceDescriptions = [
             <a href="/page/<?= esc($p['slug']) ?>" class="service-card" style="text-decoration:none" data-animate>
                 <?php if (!empty($p['featured_image'])): ?>
                 <div style="margin:-24px -24px 16px;border-radius:12px 12px 0 0;overflow:hidden;height:180px">
-                    <img src="<?= esc($p['featured_image']) ?>" alt="<?= esc($p['title']) ?>" loading="lazy" style="width:100%;height:100%;object-fit:cover">
+                    <img decoding="async" loading="lazy" src="<?= esc($p['featured_image']) ?>" alt="<?= esc($p['title']) ?>" loading="lazy" style="width:100%;height:100%;object-fit:cover">
                 </div>
                 <?php else: ?>
                 <div class="service-icon"><i class="<?= $icon ?>"></i></div>

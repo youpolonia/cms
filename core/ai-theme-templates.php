@@ -72,7 +72,7 @@ $themePath = \'/themes/\' . basename(__DIR__);
     ' . $fontsLink . '
     <link rel="stylesheet" href="/assets/css/fontawesome.min.css">
     <link rel="stylesheet" href="/assets/css/tb-frontend.css">
-    <link rel="stylesheet" href="<?= $themePath ?>/assets/css/style.css">
+    <link rel="stylesheet" href="<?= $themePath ?>/assets/css/style.css?v=<?= @filemtime(__DIR__ . "/assets/css/style.css") ?: time() ?>">
     <style>
 <?= $themeCssVariables ?>
 <?= generate_studio_css_overrides() ?>
@@ -81,6 +81,7 @@ $themePath = \'/themes/\' . basename(__DIR__);
 <?= function_exists("theme_render_og_image") ? theme_render_og_image() : "" ?>
 </head>
 <body class="<?= esc(get_body_class() ?? \'\') ?><?= $isTbPage ? \' tb-page\' : \'\' ?>">
+<a href="#main-content" class="skip-nav">Skip to content</a>
 <?= function_exists("theme_render_announcement_bar") ? theme_render_announcement_bar() : "" ?>
 
 <?php if ($showHeader): ?>
@@ -91,7 +92,7 @@ $themePath = \'/themes/\' . basename(__DIR__);
 <?php if ($isTbPage): ?>
     <?= $content ?? \'\' ?>
 <?php else: ?>
-    <main><?= $content ?? \'\' ?></main>
+    <main id="main-content"><?= $content ?? \'\' ?></main>
 <?php endif; ?>
 
 <?php if ($showFooter): ?>
@@ -99,6 +100,8 @@ $themePath = \'/themes/\' . basename(__DIR__);
 <?php endif; ?>
 
 <script src="<?= $themePath ?>/assets/js/main.js"></script>
+<?php if (function_exists(\'cms_ab_testing_widget\')): echo cms_ab_testing_widget(); endif; ?>
+<?php if (function_exists(\'ai_theme_chat_widget\')): echo ai_theme_chat_widget(); endif; ?>
 </body>
 </html>';
 }
@@ -111,14 +114,26 @@ function ai_theme_page_template(): string
     return '<?php
 /**
  * Page Template — AI Generated
+ * Smart rendering: rich AI content (starts with <style, <section, <!--rich-->) renders full-width.
+ * Simple HTML content renders in container-narrow prose wrapper.
  */
+$_pageContent = $page[\'content\'] ?? \'\';
+$_contentTrimmed = ltrim($_pageContent);
+$_isRichContent = (
+    str_starts_with($_contentTrimmed, \'<style\') ||
+    str_starts_with($_contentTrimmed, \'<section\') ||
+    str_starts_with($_contentTrimmed, \'<!--rich-->\')
+);
+
+// Rich AI content includes its own hero section, so skip the default hero
+if (!$_isRichContent):
 ?>
 <section class="page-hero"<?php if (!empty($page[\'featured_image\'])): ?> style="background:url(<?= esc($page[\'featured_image\']) ?>) center/cover no-repeat"<?php endif; ?>>
     <?php if (!empty($page[\'featured_image\'])): ?>
     <div class="page-hero-overlay"></div>
     <?php endif; ?>
     <div class="container">
-        <h1 class="page-hero-title"><?= esc($page[\'title\']) ?></h1>
+        <h1 class="page-hero-title" data-page-id="<?= (int)($page[\'id\'] ?? 0) ?>" data-page-field="title"><?= esc($page[\'title\']) ?></h1>
         <div class="page-breadcrumb">
             <a href="/">Home</a>
             <span class="breadcrumb-sep"><i class="fas fa-chevron-right"></i></span>
@@ -129,11 +144,16 @@ function ai_theme_page_template(): string
 
 <section class="page-content-section">
     <div class="container container-narrow">
-        <div class="prose">
-            <?= $page[\'content\'] ?>
+        <div class="prose" data-page-id="<?= (int)($page[\'id\'] ?? 0) ?>" data-page-field="content">
+            <?= $_pageContent ?>
         </div>
     </div>
-</section>';
+</section>
+<?php else: ?>
+<div data-page-id="<?= (int)($page[\'id\'] ?? 0) ?>" data-page-field="content">
+<?= $_pageContent ?>
+</div>
+<?php endif; ?>';
 }
 
 /**
@@ -148,7 +168,7 @@ function ai_theme_article_template(): string
 ?>
 <section class="page-hero">
     <div class="container">
-        <h1 class="page-hero-title"><?= esc($article[\'title\']) ?></h1>
+        <h1 class="page-hero-title" data-article-id="<?= (int)($article[\'id\'] ?? 0) ?>" data-page-field="title"><?= esc($article[\'title\']) ?></h1>
         <div class="page-breadcrumb">
             <a href="/">Home</a>
             <span class="breadcrumb-sep"><i class="fas fa-chevron-right"></i></span>
@@ -177,7 +197,7 @@ function ai_theme_article_template(): string
         </div>
         <?php endif; ?>
 
-        <div class="prose">
+        <div class="prose" data-article-id="<?= (int)($article[\'id\'] ?? 0) ?>" data-page-field="content">
             <?= $article[\'content\'] ?>
         </div>
 
@@ -191,87 +211,133 @@ function ai_theme_article_template(): string
 /**
  * Articles listing — grid with sidebar categories + pagination
  */
-function ai_theme_articles_template(): string
+function ai_theme_articles_template(string $sidebarHtml = ''): string
 {
+    $sidebarBlock = $sidebarHtml ?: '<?php if (!empty($categories)): ?>
+            <aside class="atpl-sidebar">
+                <div class="atpl-widget">
+                    <h4 class="atpl-widget-title"><i class="fas fa-folder"></i> Categories</h4>
+                    <?php foreach ($categories as $cat): ?>
+                    <a href="/articles?category=<?= esc($cat[\'slug\']) ?>" class="atpl-cat-link">
+                        <span><?= esc($cat[\'name\']) ?></span>
+                        <span class="atpl-cat-count"><?= (int)($cat[\'article_count\'] ?? 0) ?></span>
+                    </a>
+                    <?php endforeach; ?>
+                </div>
+                <div class="atpl-widget">
+                    <h4 class="atpl-widget-title"><i class="fas fa-search"></i> Search Articles</h4>
+                    <form action="/articles" method="get" class="atpl-search-form">
+                        <input type="text" name="q" placeholder="Search..." class="atpl-search-input">
+                        <button type="submit" class="atpl-search-btn"><i class="fas fa-arrow-right"></i></button>
+                    </form>
+                </div>
+            </aside>
+            <?php endif; ?>';
+
     return '<?php
 /**
  * Articles List Template — AI Generated
+ * 2-column layout: article grid + sidebar
  */
 ?>
-<section class="page-hero">
+<style>
+.atpl-hero{padding:calc(var(--section-spacing,.5) * .6) 0;background:var(--surface,#1a1a2e);text-align:center}
+.atpl-hero h1{font-family:var(--heading-font,inherit);font-size:clamp(1.8rem,4vw,2.8rem);margin:0 0 8px;color:var(--text,#fff)}
+.atpl-breadcrumb{display:flex;align-items:center;justify-content:center;gap:8px;font-size:.85rem;color:var(--text-muted,#999)}
+.atpl-breadcrumb a{color:var(--primary,#6c63ff);text-decoration:none}
+.atpl-wrap{display:grid;grid-template-columns:1fr 300px;gap:40px;max-width:var(--container-width,1200px);margin:0 auto;padding:calc(var(--section-spacing,.5) * .8) 20px}
+.atpl-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:24px}
+.atpl-card{background:var(--surface,#1e1e2e);border-radius:var(--border-radius,12px);overflow:hidden;transition:transform .25s,box-shadow .25s;text-decoration:none;color:inherit;display:flex;flex-direction:column;border:1px solid var(--border,#2a2a3a)}
+.atpl-card:hover{transform:translateY(-4px);box-shadow:0 12px 32px rgba(0,0,0,.2)}
+.atpl-card-img{position:relative;aspect-ratio:16/9;overflow:hidden;background:var(--background,#111)}
+.atpl-card-img img{width:100%;height:100%;object-fit:cover;transition:transform .4s}
+.atpl-card:hover .atpl-card-img img{transform:scale(1.05)}
+.atpl-card-img .atpl-placeholder{display:flex;align-items:center;justify-content:center;width:100%;height:100%;font-size:2rem;color:var(--text-muted,#666)}
+.atpl-tag{position:absolute;top:12px;left:12px;background:var(--primary,#6c63ff);color:#fff;font-size:.7rem;padding:4px 10px;border-radius:20px;font-weight:600;text-transform:uppercase;letter-spacing:.05em}
+.atpl-card-body{padding:20px;flex:1;display:flex;flex-direction:column}
+.atpl-date{font-size:.78rem;color:var(--text-muted,#888);margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.atpl-card-body h3{font-family:var(--heading-font,inherit);font-size:1.05rem;margin:0 0 8px;line-height:1.4;color:var(--text,#fff)}
+.atpl-card-body p{font-size:.88rem;color:var(--text-muted,#aaa);line-height:1.6;margin:0;flex:1}
+.atpl-sidebar{display:flex;flex-direction:column;gap:24px}
+.atpl-widget{background:var(--surface,#1e1e2e);border-radius:var(--border-radius,12px);padding:24px;border:1px solid var(--border,#2a2a3a)}
+.atpl-widget-title{font-size:.9rem;font-weight:700;margin:0 0 16px;display:flex;align-items:center;gap:8px;color:var(--text,#fff);text-transform:uppercase;letter-spacing:.05em;font-family:var(--heading-font,inherit)}
+.atpl-cat-link{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border,#2a2a3a);text-decoration:none;color:var(--text-muted,#aaa);font-size:.9rem;transition:color .2s}
+.atpl-cat-link:last-child{border-bottom:0}
+.atpl-cat-link:hover{color:var(--primary,#6c63ff)}
+.atpl-cat-count{background:var(--background,#111);font-size:.75rem;padding:2px 8px;border-radius:10px;min-width:24px;text-align:center}
+.atpl-search-form{display:flex;gap:8px}
+.atpl-search-input{flex:1;padding:10px 14px;border:1px solid var(--border,#2a2a3a);border-radius:var(--border-radius,8px);background:var(--background,#111);color:var(--text,#fff);font-size:.9rem}
+.atpl-search-btn{padding:10px 16px;background:var(--primary,#6c63ff);color:#fff;border:0;border-radius:var(--border-radius,8px);cursor:pointer;transition:opacity .2s}
+.atpl-search-btn:hover{opacity:.85}
+.atpl-pagination{display:flex;align-items:center;justify-content:center;gap:16px;padding:40px 0 0;grid-column:1/-1}
+.atpl-pagination a{padding:10px 20px;border:1px solid var(--border,#2a2a3a);border-radius:var(--border-radius,8px);color:var(--text,#fff);text-decoration:none;font-size:.9rem;transition:border-color .2s,background .2s}
+.atpl-pagination a:hover{border-color:var(--primary,#6c63ff);background:var(--surface,#1e1e2e)}
+.atpl-pagination span{font-size:.85rem;color:var(--text-muted,#888)}
+.atpl-empty{text-align:center;padding:80px 20px;grid-column:1/-1}
+.atpl-empty i{font-size:3rem;color:var(--text-muted,#555);margin-bottom:16px}
+@media(max-width:1024px){.atpl-wrap{grid-template-columns:1fr;}.atpl-sidebar{order:2}}
+@media(max-width:640px){.atpl-grid{grid-template-columns:1fr}}
+</style>
+
+<section class="atpl-hero">
     <div class="container">
-        <h1 class="page-hero-title">Articles</h1>
-        <div class="page-breadcrumb">
+        <h1>Articles</h1>
+        <div class="atpl-breadcrumb">
             <a href="/">Home</a>
-            <span class="breadcrumb-sep"><i class="fas fa-chevron-right"></i></span>
+            <span><i class="fas fa-chevron-right" style="font-size:.6rem"></i></span>
             <span>Articles</span>
         </div>
     </div>
 </section>
 
-<section class="section">
-    <div class="container">
-        <div class="articles-layout">
-            <div>
-                <?php if (!empty($articles)): ?>
-                <div class="articles-grid">
-                    <?php foreach ($articles as $a): ?>
-                    <a href="/article/<?= esc($a[\'slug\']) ?>" class="article-card" data-animate>
-                        <div class="article-card-img">
-                            <?php if (!empty($a[\'featured_image\'])): ?>
-                            <img src="<?= esc($a[\'featured_image\']) ?>" alt="<?= esc($a[\'title\']) ?>" loading="lazy">
-                            <?php else: ?>
-                            <div class="img-placeholder"><i class="fas fa-newspaper"></i></div>
-                            <?php endif; ?>
-                            <?php if (!empty($a[\'category_name\'])): ?>
-                            <span class="article-card-tag"><?= esc($a[\'category_name\']) ?></span>
-                            <?php endif; ?>
-                        </div>
-                        <div class="article-card-body">
-                            <span class="article-card-date"><i class="far fa-calendar"></i> <?= date(\'M j, Y\', strtotime($a[\'published_at\'] ?? $a[\'created_at\'])) ?></span>
-                            <h3><?= esc($a[\'title\']) ?></h3>
-                            <p><?= esc(mb_strimwidth(strip_tags(!empty($a[\'excerpt\']) ? $a[\'excerpt\'] : $a[\'content\']), 0, 130, \'...\')) ?></p>
-                        </div>
-                    </a>
-                    <?php endforeach; ?>
-                </div>
-
-                <?php if ($totalPages > 1): ?>
-                <div class="pagination">
-                    <?php if ($currentPage > 1): ?>
-                    <a href="/articles?page=<?= $currentPage - 1 ?>" class="btn btn-outline"><i class="fas fa-chevron-left"></i> Previous</a>
+<div class="atpl-wrap">
+    <div>
+        <?php if (!empty($articles)): ?>
+        <div class="atpl-grid">
+            <?php foreach ($articles as $a): ?>
+            <a href="/article/<?= esc($a[\'slug\']) ?>" class="atpl-card" data-animate>
+                <div class="atpl-card-img">
+                    <?php if (!empty($a[\'featured_image\'])): ?>
+                    <img src="<?= esc($a[\'featured_image\']) ?>" alt="<?= esc($a[\'title\']) ?>" loading="lazy" decoding="async">
+                    <?php else: ?>
+                    <div class="atpl-placeholder"><i class="fas fa-newspaper"></i></div>
                     <?php endif; ?>
-                    <span class="pagination-info">Page <?= $currentPage ?> of <?= $totalPages ?></span>
-                    <?php if ($currentPage < $totalPages): ?>
-                    <a href="/articles?page=<?= $currentPage + 1 ?>" class="btn btn-outline">Next <i class="fas fa-chevron-right"></i></a>
+                    <?php if (!empty($a[\'category_name\'])): ?>
+                    <span class="atpl-tag"><?= esc($a[\'category_name\']) ?></span>
                     <?php endif; ?>
                 </div>
-                <?php endif; ?>
-
-                <?php else: ?>
-                <div style="text-align:center;padding:60px 0">
-                    <h2>No articles yet</h2>
-                    <p style="opacity:0.6;margin-top:8px">Check back soon for new content.</p>
+                <div class="atpl-card-body">
+                    <span class="atpl-date"><i class="far fa-calendar-alt"></i> <?= date(\'M j, Y\', strtotime($a[\'published_at\'] ?? $a[\'created_at\'])) ?></span>
+                    <h3><?= esc($a[\'title\']) ?></h3>
+                    <p><?= esc(mb_strimwidth(strip_tags(!empty($a[\'excerpt\']) ? $a[\'excerpt\'] : $a[\'content\']), 0, 130, \'...\')) ?></p>
                 </div>
-                <?php endif; ?>
-            </div>
+            </a>
+            <?php endforeach; ?>
+        </div>
 
-            <?php if (!empty($categories)): ?>
-            <aside>
-                <div class="sidebar-widget">
-                    <h4>Categories</h4>
-                    <?php foreach ($categories as $cat): ?>
-                    <a href="/articles?category=<?= esc($cat[\'slug\']) ?>" class="sidebar-cat-link">
-                        <span><?= esc($cat[\'name\']) ?></span>
-                        <span class="sidebar-cat-count"><?= (int)($cat[\'article_count\'] ?? 0) ?></span>
-                    </a>
-                    <?php endforeach; ?>
-                </div>
-            </aside>
+        <?php if ($totalPages > 1): ?>
+        <div class="atpl-pagination">
+            <?php if ($currentPage > 1): ?>
+            <a href="/articles?page=<?= $currentPage - 1 ?>"><i class="fas fa-chevron-left"></i> Previous</a>
+            <?php endif; ?>
+            <span>Page <?= $currentPage ?> of <?= $totalPages ?></span>
+            <?php if ($currentPage < $totalPages): ?>
+            <a href="/articles?page=<?= $currentPage + 1 ?>">Next <i class="fas fa-chevron-right"></i></a>
             <?php endif; ?>
         </div>
+        <?php endif; ?>
+
+        <?php else: ?>
+        <div class="atpl-empty">
+            <i class="fas fa-newspaper"></i>
+            <h2 style="font-weight:400;margin:0 0 8px">No articles yet</h2>
+            <p style="color:var(--text-muted,#888)">Check back soon for new content.</p>
+        </div>
+        <?php endif; ?>
     </div>
-</section>';
+
+    ' . $sidebarBlock . '
+</div>';
 }
 
 /**
@@ -287,7 +353,7 @@ $_galleries = [];
 try {
     $_pdo = \core\Database::connection();
     $_activeTheme = function_exists(\'get_active_theme\') ? get_active_theme() : \'default\';
-    $_galStmt = $_pdo->prepare("SELECT * FROM galleries WHERE is_public = 1 AND (theme = ? OR theme IS NULL OR theme = \'\') ORDER BY sort_order ASC, name ASC");
+    $_galStmt = $_pdo->prepare("SELECT * FROM galleries WHERE is_public = 1 AND theme = ? ORDER BY sort_order ASC, name ASC");
     $_galStmt->execute([$_activeTheme]);
     $_galleries = $_galStmt->fetchAll(\PDO::FETCH_ASSOC);
     foreach ($_galleries as &$_gal) {
@@ -422,7 +488,8 @@ document.addEventListener('DOMContentLoaded', function () {
         mobileToggle.addEventListener('click', function () {
             headerNav.classList.toggle('nav-open');
             mobileToggle.classList.toggle('toggle-active');
-            document.body.classList.toggle('menu-open');
+            document.body.classList.toggle('nav-open');
+            mobileToggle.setAttribute('aria-expanded', document.body.classList.contains('nav-open'));
             if (mobileOverlay) mobileOverlay.classList.toggle('overlay-active');
         });
 
@@ -430,16 +497,18 @@ document.addEventListener('DOMContentLoaded', function () {
             mobileOverlay.addEventListener('click', function () {
                 headerNav.classList.remove('nav-open');
                 mobileToggle.classList.remove('toggle-active');
-                document.body.classList.remove('menu-open');
+                document.body.classList.remove('nav-open');
+                mobileToggle.setAttribute('aria-expanded', 'false');
                 mobileOverlay.classList.remove('overlay-active');
             });
         }
 
-        headerNav.querySelectorAll('.nav-link').forEach(function (link) {
+        headerNav.querySelectorAll('a').forEach(function (link) {
             link.addEventListener('click', function () {
                 headerNav.classList.remove('nav-open');
                 mobileToggle.classList.remove('toggle-active');
-                document.body.classList.remove('menu-open');
+                document.body.classList.remove('nav-open');
+                mobileToggle.setAttribute('aria-expanded', 'false');
                 if (mobileOverlay) mobileOverlay.classList.remove('overlay-active');
             });
         });
@@ -479,7 +548,18 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         }, { threshold: 0.12, rootMargin: '0px 0px -60px 0px' });
         animEls.forEach(function (el) { obs.observe(el); });
+    } else {
+        // Fallback: no IntersectionObserver — show all immediately
+        animEls.forEach(function (el) { el.classList.add('animated'); });
     }
+
+    // Safety net: if any [data-animate] elements are still hidden after 2s, force-show them
+    // This prevents invisible content if JS animation fails for any reason
+    setTimeout(function () {
+        document.querySelectorAll('[data-animate]:not(.animated)').forEach(function (el) {
+            el.classList.add('animated');
+        });
+    }, 2000);
 
     /* ── Hero parallax ── */
     var heroBg = document.querySelector('.hero-bg, .hero__bg');
@@ -499,8 +579,310 @@ document.addEventListener('DOMContentLoaded', function () {
         }, { passive: true });
     }
 
+    /* ── Back to top button ── */
+    var backToTop = document.querySelector('.back-to-top, #backToTop');
+    if (backToTop) {
+        window.addEventListener('scroll', function () {
+            if (window.pageYOffset > 400) {
+                backToTop.classList.add('visible');
+            } else {
+                backToTop.classList.remove('visible');
+            }
+        }, { passive: true });
+        backToTop.addEventListener('click', function (e) {
+            e.preventDefault();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    }
+
+    /* ── FAQ Accordion ── */
+    document.querySelectorAll('.faq-question, .accordion-trigger, [data-accordion]').forEach(function (trigger) {
+        trigger.addEventListener('click', function () {
+            var parent = this.closest('.faq-item, .accordion-item');
+            if (!parent) return;
+            var isActive = parent.classList.contains('active');
+            // Close siblings
+            var container = parent.parentElement;
+            if (container) {
+                container.querySelectorAll('.faq-item.active, .accordion-item.active').forEach(function (item) {
+                    item.classList.remove('active');
+                    var answer = item.querySelector('.faq-answer, .accordion-content');
+                    if (answer) answer.style.maxHeight = null;
+                });
+            }
+            // Toggle current
+            if (!isActive) {
+                parent.classList.add('active');
+                var answer = parent.querySelector('.faq-answer, .accordion-content');
+                if (answer) answer.style.maxHeight = answer.scrollHeight + 'px';
+            }
+        });
+    });
+
+    /* ── Counter animation (stats) ── */
+    var counters = document.querySelectorAll('[data-count], .stat-number, .counter');
+    if (counters.length > 0 && 'IntersectionObserver' in window) {
+        var counterObs = new IntersectionObserver(function (entries) {
+            entries.forEach(function (entry) {
+                if (entry.isIntersecting) {
+                    var el = entry.target;
+                    var target = parseInt(el.getAttribute('data-count') || el.textContent.replace(/[^0-9]/g, ''), 10);
+                    if (isNaN(target) || target === 0) return;
+                    var suffix = el.textContent.replace(/[0-9,. ]/g, '');
+                    var duration = 1500;
+                    var start = 0;
+                    var startTime = null;
+                    function step(ts) {
+                        if (!startTime) startTime = ts;
+                        var progress = Math.min((ts - startTime) / duration, 1);
+                        var eased = 1 - Math.pow(1 - progress, 3);
+                        el.textContent = Math.floor(eased * target).toLocaleString() + suffix;
+                        if (progress < 1) requestAnimationFrame(step);
+                    }
+                    requestAnimationFrame(step);
+                    counterObs.unobserve(el);
+                }
+            });
+        }, { threshold: 0.3 });
+        counters.forEach(function (el) { counterObs.observe(el); });
+    }
+
+    /* ── Lightbox for gallery images ── */
+    document.querySelectorAll('.gallery-item img, .lightbox-trigger img, [data-lightbox] img').forEach(function (img) {
+        img.style.cursor = 'pointer';
+        img.addEventListener('click', function () {
+            var overlay = document.createElement('div');
+            overlay.style.cssText = 'position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.9);display:flex;align-items:center;justify-content:center;cursor:pointer;opacity:0;transition:opacity 0.3s';
+            var bigImg = document.createElement('img');
+            bigImg.src = this.src;
+            bigImg.alt = this.alt || '';
+            bigImg.style.cssText = 'max-width:90vw;max-height:90vh;object-fit:contain;border-radius:8px;transform:scale(0.9);transition:transform 0.3s';
+            overlay.appendChild(bigImg);
+            document.body.appendChild(overlay);
+            requestAnimationFrame(function () { overlay.style.opacity = '1'; bigImg.style.transform = 'scale(1)'; });
+            overlay.addEventListener('click', function () {
+                overlay.style.opacity = '0';
+                setTimeout(function () { overlay.remove(); }, 300);
+            });
+            document.addEventListener('keydown', function escHandler(e) {
+                if (e.key === 'Escape') { overlay.click(); document.removeEventListener('keydown', escHandler); }
+            });
+        });
+    });
+
+    /* ── Dark mode toggle ── */
+    var darkToggle = document.querySelector('[data-dark-toggle], .dark-mode-toggle');
+    if (darkToggle) {
+        var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        var savedTheme = localStorage.getItem('theme-mode');
+        if (savedTheme) {
+            document.documentElement.setAttribute('data-theme', savedTheme);
+        } else if (prefersDark) {
+            document.documentElement.setAttribute('data-theme', 'dark');
+        }
+
+        darkToggle.addEventListener('click', function() {
+            var current = document.documentElement.getAttribute('data-theme');
+            var next = current === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', next);
+            localStorage.setItem('theme-mode', next);
+            this.textContent = next === 'dark' ? '☀️' : '🌙';
+        });
+
+        // Set initial icon
+        var isDark = document.documentElement.getAttribute('data-theme') === 'dark' ||
+                     (!document.documentElement.getAttribute('data-theme') && prefersDark);
+        darkToggle.textContent = isDark ? '☀️' : '🌙';
+    }
+
+    /* ── Contact form AJAX handler ── */
+    document.querySelectorAll('.contact-form, form[action="#"][method="post"]').forEach(function(form) {
+        // Skip if it's clearly not a contact form
+        var hasMessage = form.querySelector('[name="message"], textarea');
+        var hasEmail = form.querySelector('[name="email"], input[type="email"]');
+        if (!hasMessage || !hasEmail) return;
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            var btn = form.querySelector('[type="submit"], button:last-of-type');
+            var originalText = btn ? btn.textContent : '';
+            if (btn) { btn.disabled = true; btn.textContent = 'Sending...'; }
+
+            var data = {};
+            new FormData(form).forEach(function(val, key) { data[key] = val; });
+            data._page_slug = window.location.pathname.replace(/^\/page\//, '').replace(/^\//, '');
+
+            fetch('/api/contact', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            })
+            .then(function(r) { return r.json().then(function(d) { return { ok: r.ok, data: d }; }); })
+            .then(function(res) {
+                // Remove any existing alert
+                var old = form.querySelector('.contact-alert');
+                if (old) old.remove();
+
+                var alert = document.createElement('div');
+                alert.className = 'contact-alert';
+                alert.style.cssText = 'padding:14px 20px;border-radius:8px;margin:16px 0;font-size:0.9rem;';
+
+                if (res.ok && res.data.success) {
+                    alert.style.background = 'rgba(34,197,94,0.15)';
+                    alert.style.color = '#22c55e';
+                    alert.style.border = '1px solid rgba(34,197,94,0.3)';
+                    alert.textContent = res.data.message || 'Message sent successfully!';
+                    form.reset();
+                } else {
+                    alert.style.background = 'rgba(239,68,68,0.15)';
+                    alert.style.color = '#ef4444';
+                    alert.style.border = '1px solid rgba(239,68,68,0.3)';
+                    var errors = res.data.errors || [res.data.error || 'Something went wrong.'];
+                    alert.textContent = Array.isArray(errors) ? errors.join(' ') : errors;
+                }
+                form.insertBefore(alert, form.firstChild);
+                setTimeout(function() { alert.remove(); }, 8000);
+            })
+            .catch(function() {
+                var alert = document.createElement('div');
+                alert.className = 'contact-alert';
+                alert.style.cssText = 'padding:14px 20px;border-radius:8px;margin:16px 0;background:rgba(239,68,68,0.15);color:#ef4444;border:1px solid rgba(239,68,68,0.3);';
+                alert.textContent = 'Network error. Please try again.';
+                form.insertBefore(alert, form.firstChild);
+            })
+            .finally(function() {
+                if (btn) { btn.disabled = false; btn.textContent = originalText; }
+            });
+        });
+    });
+
 });
 JS;
+}
+
+/**
+ * Chat widget JS+CSS — injected before </body> in theme layouts
+ * Self-contained, no dependencies, <8KB
+ */
+function ai_theme_chat_widget(): string
+{
+    return <<<'CHATWIDGET'
+<style>
+.jc-wrap{position:fixed;bottom:20px;right:20px;z-index:99998;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}
+.jc-btn{width:56px;height:56px;border-radius:50%;background:var(--primary,#6366f1);color:#fff;border:none;cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,.3);display:flex;align-items:center;justify-content:center;font-size:24px;transition:transform .2s}
+.jc-btn:hover{transform:scale(1.1)}
+.jc-btn.open{background:#ef4444}
+.jc-box{display:none;position:fixed;bottom:88px;right:20px;width:380px;max-width:calc(100vw - 40px);height:500px;max-height:calc(100vh - 120px);background:#1e293b;border:1px solid #334155;border-radius:16px;box-shadow:0 8px 40px rgba(0,0,0,.4);flex-direction:column;overflow:hidden;z-index:99999}
+.jc-box.visible{display:flex}
+.jc-head{padding:16px;background:#0f172a;border-bottom:1px solid #334155;display:flex;align-items:center;gap:10px}
+.jc-head .dot{width:10px;height:10px;border-radius:50%;background:#22c55e}
+.jc-head h4{margin:0;font-size:.95rem;color:#e2e8f0;font-weight:600}
+.jc-msgs{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px}
+.jc-msg{max-width:85%;padding:10px 14px;border-radius:12px;font-size:.875rem;line-height:1.5;word-wrap:break-word}
+.jc-msg.bot{background:#334155;color:#e2e8f0;border-bottom-left-radius:4px;align-self:flex-start}
+.jc-msg.user{background:var(--primary,#6366f1);color:#fff;border-bottom-right-radius:4px;align-self:flex-end}
+.jc-msg.typing{color:#94a3b8;font-style:italic}
+.jc-sugg{display:flex;flex-wrap:wrap;gap:6px;padding:0 16px 8px}
+.jc-sugg button{padding:6px 12px;border-radius:20px;border:1px solid #334155;background:transparent;color:#94a3b8;font-size:.75rem;cursor:pointer;transition:all .2s}
+.jc-sugg button:hover{border-color:var(--primary,#6366f1);color:#e2e8f0}
+.jc-input{display:flex;padding:12px;border-top:1px solid #334155;gap:8px}
+.jc-input input{flex:1;padding:10px 14px;border-radius:8px;border:1px solid #334155;background:#0f172a;color:#e2e8f0;font-size:.875rem;outline:none}
+.jc-input input:focus{border-color:var(--primary,#6366f1)}
+.jc-input button{padding:10px 16px;border-radius:8px;background:var(--primary,#6366f1);color:#fff;border:none;cursor:pointer;font-size:.875rem;font-weight:600}
+.jc-input button:disabled{opacity:.5;cursor:default}
+@media(max-width:480px){.jc-box{bottom:0;right:0;width:100%;height:100vh;max-height:100vh;border-radius:0}}
+</style>
+<div class="jc-wrap" id="jcWrap" style="display:none">
+    <div class="jc-box" id="jcBox">
+        <div class="jc-head"><span class="dot"></span><h4 id="jcTitle">Chat</h4></div>
+        <div class="jc-msgs" id="jcMsgs"></div>
+        <div class="jc-sugg" id="jcSugg"></div>
+        <div class="jc-input">
+            <input type="text" id="jcIn" placeholder="Type a message..." maxlength="1000" autocomplete="off">
+            <button id="jcSend">Send</button>
+        </div>
+    </div>
+    <button class="jc-btn" id="jcToggle">💬</button>
+</div>
+<script>
+(function(){
+    var wrap=document.getElementById('jcWrap'),box=document.getElementById('jcBox'),
+        msgs=document.getElementById('jcMsgs'),input=document.getElementById('jcIn'),
+        sendBtn=document.getElementById('jcSend'),toggle=document.getElementById('jcToggle'),
+        sugg=document.getElementById('jcSugg'),titleEl=document.getElementById('jcTitle');
+    var sid=localStorage.getItem('jc_sid')||'',cfg=null,busy=false;
+
+    // Load config
+    fetch('/api/chat/config').then(function(r){return r.json()}).then(function(c){
+        cfg=c;
+        if(!c.enabled)return;
+        wrap.style.display='block';
+        if(c.welcome){addMsg(c.welcome,'bot');}
+        if(c.suggestions&&c.suggestions.length){
+            c.suggestions.forEach(function(s){
+                if(!s)return;
+                var b=document.createElement('button');
+                b.textContent=s;
+                b.onclick=function(){input.value=s;send()};
+                sugg.appendChild(b);
+            });
+        }
+    }).catch(function(){});
+
+    toggle.onclick=function(){
+        var open=box.classList.toggle('visible');
+        toggle.textContent=open?'✕':'💬';
+        toggle.classList.toggle('open',open);
+        if(open)input.focus();
+    };
+
+    function addMsg(text,type){
+        var d=document.createElement('div');
+        d.className='jc-msg '+type;
+        // Basic markdown: **bold**, [link](url)
+        var html=text.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
+                      .replace(/\[([^\]]+)\]\(([^)]+)\)/g,'<a href="$2" style="color:inherit;text-decoration:underline">$1</a>')
+                      .replace(/\n/g,'<br>');
+        d.innerHTML=html;
+        msgs.appendChild(d);
+        msgs.scrollTop=msgs.scrollHeight;
+        return d;
+    }
+
+    function send(){
+        var text=input.value.trim();
+        if(!text||busy)return;
+        input.value='';
+        sugg.innerHTML='';
+        addMsg(text,'user');
+        busy=true;
+        sendBtn.disabled=true;
+        var typing=addMsg('Thinking...','bot typing');
+
+        fetch('/api/chat',{
+            method:'POST',
+            headers:{'Content-Type':'application/json'},
+            body:JSON.stringify({message:text,session_id:sid,page_url:location.pathname})
+        })
+        .then(function(r){return r.json()})
+        .then(function(d){
+            typing.remove();
+            if(d.ok){
+                addMsg(d.reply,'bot');
+                if(d.session_id){sid=d.session_id;localStorage.setItem('jc_sid',sid);}
+            }else{
+                addMsg(d.error||'Something went wrong.','bot');
+            }
+        })
+        .catch(function(){typing.remove();addMsg('Connection error. Please try again.','bot');})
+        .finally(function(){busy=false;sendBtn.disabled=false;input.focus();});
+    }
+
+    sendBtn.onclick=send;
+    input.onkeydown=function(e){if(e.key==='Enter')send()};
+})();
+</script>
+CHATWIDGET;
 }
 
 /**

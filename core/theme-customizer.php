@@ -301,11 +301,67 @@ if (!function_exists('theme_get_schema')) {
                     $schema[$section] = $sectionDef;
                 }
             }
+            // Merge fields from DB values that are missing from schema
+            // (handles expanded dynamic patterns like item1_title, item2_title...)
+            $schema = _theme_merge_db_fields_into_schema($schema, $themeSlug);
             return $schema;
         }
         
         // Generate default schema from existing theme.json structure
-        return _theme_generate_default_schema($config, $themeSlug);
+        $schema = _theme_generate_default_schema($config, $themeSlug);
+        $schema = _theme_merge_db_fields_into_schema($schema, $themeSlug);
+        return $schema;
+    }
+}
+
+if (!function_exists('_theme_merge_db_fields_into_schema')) {
+    /**
+     * Auto-add fields from DB (theme_customizations) that exist in values but not in schema.
+     * This handles dynamic patterns like item1_title, item2_title that PHP templates
+     * generate at runtime but aren't visible in source-level parsing.
+     */
+    function _theme_merge_db_fields_into_schema(array $schema, string $themeSlug): array
+    {
+        // Use raw DB values directly — NOT theme_get_all() which calls theme_get_schema() (recursion!)
+        $allValues = _theme_load_customizations($themeSlug);
+        
+        foreach ($allValues as $section => $fields) {
+            if ($section === '_ve_styles') continue; // skip VE overrides
+            if (!is_array($fields)) continue;
+            
+            // Ensure section exists in schema
+            if (!isset($schema[$section])) {
+                $schema[$section] = [
+                    'label' => ucfirst(str_replace('_', ' ', $section)),
+                    'fields' => [],
+                ];
+            }
+            
+            foreach ($fields as $fieldKey => $fieldValue) {
+                if (isset($schema[$section]['fields'][$fieldKey])) continue;
+                
+                // Auto-detect type from key name and value
+                $type = 'text';
+                if (str_contains($fieldKey, 'image') || str_contains($fieldKey, 'avatar') || str_contains($fieldKey, 'bg_')) {
+                    $type = 'image';
+                } elseif (str_contains($fieldKey, 'description') || str_contains($fieldKey, 'quote') ||
+                          str_contains($fieldKey, 'text') || str_contains($fieldKey, 'bio')) {
+                    $type = 'textarea';
+                } elseif (str_contains($fieldKey, 'color')) {
+                    $type = 'color';
+                } elseif (str_contains($fieldKey, 'enabled') || str_contains($fieldKey, 'show_')) {
+                    $type = 'toggle';
+                }
+                
+                $schema[$section]['fields'][$fieldKey] = [
+                    'type' => $type,
+                    'label' => _theme_humanize_label($fieldKey),
+                    'default' => '',
+                ];
+            }
+        }
+        
+        return $schema;
     }
 }
 
@@ -477,13 +533,70 @@ if (!function_exists('generate_studio_css_overrides')) {
         
         $css .= "}\n";
         
-        // Custom CSS (appended after :root block)
+        // Visual Editor per-element CSS overrides
+        if (!empty($customs['_ve_styles'])) {
+            $veCss = "\n/* Visual Editor Overrides */\n";
+            $hasVeStyles = false;
+            foreach ($customs['_ve_styles'] as $dataTs => $jsonVal) {
+                $props = is_string($jsonVal) ? json_decode($jsonVal, true) : (is_array($jsonVal) ? $jsonVal : null);
+                if (!$props || !is_array($props)) continue;
+                $rules = '';
+                foreach ($props as $prop => $val) {
+                    $safeProp = preg_replace('/[^a-z\-]/', '', strtolower($prop));
+                    // Sanitize value: allow quotes/commas for font-family, strip dangerous chars
+                    $safeVal = preg_replace('/[{}<>]/', '', $val);
+                    if ($safeProp && $safeVal !== '') {
+                        $rules .= "    {$safeProp}: {$safeVal};\n";
+                    }
+                }
+                if ($rules) {
+                    $safeTs = htmlspecialchars($dataTs, ENT_QUOTES, 'UTF-8');
+                    $veCss .= "[data-ts=\"{$safeTs}\"] {\n{$rules}}\n";
+                    $hasVeStyles = true;
+                }
+            }
+            if ($hasVeStyles) {
+                $css .= $veCss;
+                $hasVars = true;
+            }
+        }
+
+        // Custom CSS (appended after :root block — last so it can override everything)
         if (!empty($customs['custom_css']['css_code'])) {
             $css .= "\n/* Custom CSS */\n" . $customs['custom_css']['css_code'] . "\n";
             $hasVars = true;
         }
         
         return $hasVars ? $css : '';
+    }
+}
+
+if (!function_exists('ve_google_fonts_link')) {
+    /**
+     * Returns a <link> tag for Google Fonts used in Visual Editor overrides.
+     * Call in <head> before generate_studio_css_overrides().
+     */
+    function ve_google_fonts_link(): string
+    {
+        $customs = _theme_load_customizations();
+        if (empty($customs['_ve_styles'])) return '';
+        $systemFonts = ['system-ui','-apple-system','sans-serif','serif','monospace','inherit','initial','georgia','courier new','arial','verdana','helvetica','times new roman'];
+        $gFonts = [];
+        foreach ($customs['_ve_styles'] as $_ => $jv) {
+            $p = is_string($jv) ? json_decode($jv, true) : (is_array($jv) ? $jv : null);
+            if (!$p || empty($p['font-family'])) continue;
+            $family = preg_replace("/[\"']/", '', explode(',', $p['font-family'])[0]);
+            $family = trim($family);
+            if ($family && !in_array(strtolower($family), $systemFonts)) {
+                $gFonts[$family] = true;
+            }
+        }
+        if (!$gFonts) return '';
+        $parts = [];
+        foreach (array_keys($gFonts) as $f) {
+            $parts[] = 'family=' . urlencode($f) . ':wght@300;400;500;600;700';
+        }
+        return '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?' . implode('&amp;', $parts) . '&amp;display=swap">';
     }
 }
 
@@ -579,7 +692,9 @@ if (!function_exists('_theme_generate_default_schema')) {
             'fields' => [
                 'cta_text' => ['type' => 'text', 'label' => 'CTA Button Text', 'default' => ''],
                 'cta_link' => ['type' => 'text', 'label' => 'CTA Button Link', 'default' => '/contact'],
-                'show_cta' => ['type' => 'toggle', 'label' => 'Show CTA Button', 'default' => false],
+                'show_cta' => ['type' => 'toggle', 'label' => 'Show CTA Button', 'default' => true],
+                'phone' => ['type' => 'text', 'label' => 'Phone Number', 'default' => ''],
+                'email' => ['type' => 'text', 'label' => 'Email Address', 'default' => ''],
             ]
         ];
         
@@ -595,6 +710,8 @@ if (!function_exists('_theme_generate_default_schema')) {
                 'subtitle' => ['type' => 'textarea', 'label' => 'Subtitle', 'default' => ''],
                 'btn_text' => ['type' => 'text', 'label' => 'Button Text', 'default' => ''],
                 'btn_link' => ['type' => 'text', 'label' => 'Button Link', 'default' => '/contact'],
+                'btn2_text' => ['type' => 'text', 'label' => 'Button 2 Text', 'default' => ''],
+                'btn2_link' => ['type' => 'text', 'label' => 'Button 2 Link', 'default' => ''],
                 'bg_image' => ['type' => 'image', 'label' => 'Background Image', 'default' => null],
             ]
         ];
@@ -979,6 +1096,10 @@ if (!function_exists('_theme_discover_data_attributes')) {
                 foreach ($matches as $m) {
                     $variant = $m[1] ?? ''; // '' for data-ts, 'bg' for data-ts-bg, 'href' for data-ts-href
                     $path = $m[2];          // e.g. "about.label"
+
+                    // Skip dynamic PHP expressions (e.g. features.item{$idx+1}_title)
+                    if (str_contains($path, '<' . '?') || str_contains($path, '{$')) continue;
+
                     $parts = explode('.', $path, 2);
                     if (count($parts) < 2) continue;
 

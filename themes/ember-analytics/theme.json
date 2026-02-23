@@ -1,0 +1,80 @@
+{
+    "name": "Ember Analytics",
+    "description": "Warm editorial SaaS theme with terracotta accents and steel blue highlights for data-driven platforms",
+    "version": "1.0.0",
+    "author": "AI Theme Builder",
+    "supports": {
+        "theme-builder": true,
+        "custom-header": true,
+        "custom-footer": true,
+        "custom-colors": true
+    },
+    "options": {
+        "show_header": true,
+        "show_footer": true,
+        "body_background": "#ffffff",
+        "preload_fonts": true
+    },
+    "colors": {
+        "primary": "#0077b6",
+        "secondary": "#00b4d8",
+        "accent": "#90e0ef",
+        "background": "#ffffff",
+        "surface": "#f0f7ff",
+        "text": "#1b2a4a"
+    },
+    "typography": {
+        "fontFamily": "Work Sans",
+        "headingFont": "Nunito",
+        "baseFontSize": "17",
+        "lineHeight": "1.75",
+        "fontWeight": "400",
+        "headingWeight": "700"
+    },
+    "buttons": {
+        "borderRadius": "6",
+        "paddingX": "28",
+        "paddingY": "14",
+        "fontWeight": "600",
+        "uppercase": false,
+        "shadow": true
+    },
+    "layout": {
+        "containerWidth": "1180",
+        "sectionSpacing": "130",
+        "borderRadius": "10"
+    },
+    "homepage_sections": [
+        {
+            "id": "hero",
+            "label": "Hero",
+            "icon": "fas fa-star"
+        },
+        {
+            "id": "stats",
+            "label": "Stats \/ Numbers",
+            "icon": "fas fa-chart-bar"
+        },
+        {
+            "id": "testimonials",
+            "label": "Testimonials",
+            "icon": "fas fa-quote-right"
+        },
+        {
+            "id": "cta",
+            "label": "Call to Action",
+            "icon": "fas fa-bullhorn"
+        },
+        {
+            "id": "features",
+            "label": "Features",
+            "icon": "✨"
+        },
+        {
+            "id": "clients",
+            "label": "Clients \/ Logos",
+            "icon": "🏢"
+        }
+    ],
+    "thumbnail": "thumbnail.svg"
+}

@@ -1,0 +1,85 @@
+{
+    "name": "Scarlet Flow",
+    "description": "A bold, colorful theme for digital marketing agencies with vibrant contrasts and organic curves.",
+    "version": "1.0.0",
+    "author": "AI Theme Builder",
+    "supports": {
+        "theme-builder": true,
+        "custom-header": true,
+        "custom-footer": true,
+        "custom-colors": true
+    },
+    "options": {
+        "show_header": true,
+        "show_footer": true,
+        "body_background": "#faf8f5",
+        "preload_fonts": true
+    },
+    "colors": {
+        "primary": "#d81b60",
+        "secondary": "#26a69a",
+        "accent": "#ffab00",
+        "background": "#faf8f5",
+        "surface": "#ffffff",
+        "text": "#1a1a1a",
+        "text_muted": "#666666",
+        "border": "#e0d6c9",
+        "success": "#4caf50",
+        "warning": "#ff9800",
+        "error": "#f44336"
+    },
+    "typography": {
+        "fontFamily": "IBM Plex Sans",
+        "headingFont": "Abril Fatface",
+        "baseFontSize": "16",
+        "lineHeight": "1.7",
+        "fontWeight": "400",
+        "headingWeight": "700"
+    },
+    "buttons": {
+        "borderRadius": "16",
+        "paddingX": "32",
+        "paddingY": "14",
+        "fontWeight": "600",
+        "uppercase": true,
+        "shadow": true
+    },
+    "layout": {
+        "containerWidth": "1200",
+        "sectionSpacing": "120",
+        "borderRadius": "16"
+    },
+    "homepage_sections": [
+        {
+            "id": "hero",
+            "label": "Hero",
+            "icon": "fas fa-star"
+        },
+        {
+            "id": "services",
+            "label": "Services",
+            "icon": "fas fa-concierge-bell"
+        },
+        {
+            "id": "portfolio",
+            "label": "Portfolio \/ Projects",
+            "icon": "fas fa-th-large"
+        },
+        {
+            "id": "stats",
+            "label": "Stats \/ Numbers",
+            "icon": "fas fa-chart-bar"
+        },
+        {
+            "id": "testimonials",
+            "label": "Testimonials",
+            "icon": "fas fa-quote-right"
+        },
+        {
+            "id": "cta",
+            "label": "Call to Action",
+            "icon": "fas fa-bullhorn"
+        }
+    ],
+    "thumbnail": "thumbnail.svg"
+}

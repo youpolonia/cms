@@ -1,0 +1,85 @@
+{
+    "name": "TerraForm Landscapes",
+    "description": "Premium landscape contractor specializing in patios, driveways, retaining walls, fencing, and artificial grass.",
+    "version": "1.0.0",
+    "author": "AI Theme Builder",
+    "supports": {
+        "theme-builder": true,
+        "custom-header": true,
+        "custom-footer": true,
+        "custom-colors": true
+    },
+    "options": {
+        "show_header": true,
+        "show_footer": true,
+        "body_background": "#f9f7f2",
+        "preload_fonts": true
+    },
+    "colors": {
+        "primary": "#c4a03a",
+        "secondary": "#5b4a8a",
+        "accent": "#2d6a4f",
+        "background": "#f9f7f2",
+        "surface": "#ffffff",
+        "text": "#1a1410",
+        "text_muted": "#6b6259",
+        "border": "#d4c9b8",
+        "success": "#2d6a4f",
+        "warning": "#b5651d",
+        "error": "#c2185b"
+    },
+    "typography": {
+        "fontFamily": "Rubik",
+        "headingFont": "Bitter",
+        "baseFontSize": "16",
+        "lineHeight": "1.7",
+        "fontWeight": "400",
+        "headingWeight": "700"
+    },
+    "buttons": {
+        "borderRadius": "100",
+        "paddingX": "32",
+        "paddingY": "14",
+        "fontWeight": "600",
+        "uppercase": true,
+        "shadow": true
+    },
+    "layout": {
+        "containerWidth": "1200",
+        "sectionSpacing": "120",
+        "borderRadius": "8"
+    },
+    "homepage_sections": [
+        {
+            "id": "hero",
+            "label": "Hero",
+            "icon": "fas fa-star"
+        },
+        {
+            "id": "about",
+            "label": "About \/ Intro",
+            "icon": "fas fa-info-circle"
+        },
+        {
+            "id": "services",
+            "label": "Services",
+            "icon": "fas fa-concierge-bell"
+        },
+        {
+            "id": "testimonials",
+            "label": "Testimonials",
+            "icon": "fas fa-quote-right"
+        },
+        {
+            "id": "cta",
+            "label": "Call to Action",
+            "icon": "fas fa-bullhorn"
+        },
+        {
+            "id": "gallery",
+            "label": "Gallery",
+            "icon": "🖼️"
+        }
+    ],
+    "thumbnail": "thumbnail.svg"
+}

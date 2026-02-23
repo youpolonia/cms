@@ -26,7 +26,7 @@ try {
 
 <article class="single-article">
   <?php if ($articleImage): ?>
-  <img src="<?= esc($articleImage) ?>" alt="<?= esc($articleTitle) ?>" class="article-header-image">
+  <img loading="lazy" decoding="async" src="<?= esc($articleImage) ?>" alt="<?= esc($articleTitle) ?>" class="article-header-image">
   <?php endif; ?>
 
   <h1><?= esc($articleTitle) ?></h1>
@@ -57,7 +57,7 @@ try {
     <?php foreach ($related as $rel): ?>
     <a href="/articles/<?= esc($rel['slug']) ?>" class="related-card">
       <?php if (!empty($rel['featured_image'])): ?>
-      <img src="<?= esc($rel['featured_image']) ?>" alt="<?= esc($rel['title']) ?>" loading="lazy">
+      <img decoding="async" loading="lazy" src="<?= esc($rel['featured_image']) ?>" alt="<?= esc($rel['title']) ?>" loading="lazy">
       <?php endif; ?>
       <h4><?= esc($rel['title']) ?></h4>
     </a>

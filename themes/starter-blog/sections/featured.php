@@ -11,7 +11,7 @@
         <a href="/article/<?= esc($featured['slug']) ?>" class="featured-card" style="text-decoration:none">
             <div class="featured-image">
                 <?php if (!empty($featured['featured_image'])): ?>
-                <img src="<?= esc($featured['featured_image']) ?>" alt="<?= esc($featured['title']) ?>">
+                <img loading="lazy" decoding="async" src="<?= esc($featured['featured_image']) ?>" alt="<?= esc($featured['title']) ?>">
                 <?php else: ?>
                 <div style="width:100%;height:100%;background:var(--blog-surface-light);display:flex;align-items:center;justify-content:center">
                     <i class="fas fa-newspaper" style="font-size:3rem;color:var(--blog-border-light)"></i>

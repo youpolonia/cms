@@ -1,0 +1,86 @@
+{
+    "name": "Kaiseki Noir",
+    "description": "Modern Japanese fusion with omakase elegance",
+    "version": "1.0.0",
+    "author": "AI Theme Builder",
+    "supports": {
+        "theme-builder": true,
+        "custom-header": true,
+        "custom-footer": true,
+        "custom-colors": true
+    },
+    "options": {
+        "show_header": true,
+        "show_footer": true,
+        "body_background": "#0a0e12",
+        "preload_fonts": true
+    },
+    "colors": {
+        "primary": "#2d89a8",
+        "secondary": "#c4923d",
+        "accent": "#3da8c4",
+        "background": "#0a0e12",
+        "surface": "#131920",
+        "text": "#f0f3f7",
+        "text_muted": "#9ca8b8",
+        "border": "#1f2937",
+        "success": "#3da87f",
+        "warning": "#c48f3d",
+        "error": "#a83d5e"
+    },
+    "typography": {
+        "fontFamily": "Jost",
+        "headingFont": "Cardo",
+        "baseFontSize": "17",
+        "lineHeight": "1.8",
+        "fontWeight": "400",
+        "headingWeight": "700"
+    },
+    "buttons": {
+        "borderRadius": "2",
+        "paddingX": "36",
+        "paddingY": "16",
+        "fontWeight": "500",
+        "uppercase": false,
+        "shadow": true
+    },
+    "layout": {
+        "containerWidth": "1280",
+        "sectionSpacing": "160",
+        "borderRadius": "4"
+    },
+    "homepage_sections": [
+        {
+            "id": "hero",
+            "label": "Hero",
+            "icon": "⭐",
+            "required": true
+        },
+        {
+            "id": "about",
+            "label": "About",
+            "icon": "📖"
+        },
+        {
+            "id": "menu",
+            "label": "Omakase Menu",
+            "icon": "🍱"
+        },
+        {
+            "id": "gallery",
+            "label": "Gallery",
+            "icon": "📸"
+        },
+        {
+            "id": "testimonials",
+            "label": "Testimonials",
+            "icon": "💬"
+        },
+        {
+            "id": "cta",
+            "label": "Reservations",
+            "icon": "🎯"
+        }
+    ],
+    "thumbnail": "thumbnail.svg"
+}

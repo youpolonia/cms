@@ -261,11 +261,11 @@ $username = \Core\Session::getAdminUsername() ?? 'Admin';
         margin-bottom: 10px; text-transform: uppercase; letter-spacing: .05em;
     }
     .atb-theme-item {
-        display: flex; align-items: center; justify-content: space-between;
+        display: flex; align-items: center; justify-content: space-between; gap: 8px;
         padding: 8px 12px; background: var(--ctp-surface0); border-radius: 8px;
         margin-bottom: 5px; font-size: 12px;
     }
-    .atb-theme-item-name { font-weight: 500; }
+    .atb-theme-item-name { font-weight: 500; flex: 1; }
     .atb-theme-item-actions { display: flex; gap: 4px; }
     .atb-theme-item-actions button, .atb-theme-item-actions a {
         background: none; border: none; color: var(--ctp-blue); cursor: pointer;
@@ -337,6 +337,17 @@ $username = \Core\Session::getAdminUsername() ?? 'Admin';
     .tip-text::after{content:"";position:absolute;top:100%;left:50%;transform:translateX(-50%);border:5px solid transparent;border-top-color:#334155}
     .tip:hover .tip-text{visibility:visible;opacity:1}
 
+    /* Edit Panel */
+    .atb-edit-panel .atb-btn { transition: all .2s; }
+    .atb-edit-panel .atb-btn:hover { background: var(--ctp-surface1) !important; }
+    .atb-edit-panel .atb-btn:disabled { opacity: .5; cursor: wait; }
+    .atb-color-input { -webkit-appearance: none; border: none; padding: 2px; }
+    .atb-color-input::-webkit-color-swatch-wrapper { padding: 0; }
+    .atb-color-input::-webkit-color-swatch { border: none; border-radius: 6px; }
+    .atb-edit-status { font-size: 11px; color: var(--ctp-green); margin-top: 8px; text-align: center; display: none; }
+    .atb-edit-status.visible { display: block; }
+    .atb-edit-status.error { color: var(--ctp-red); }
+
 </style>
 </head>
 <body>
@@ -345,7 +356,7 @@ $username = \Core\Session::getAdminUsername() ?? 'Admin';
     <div class="atb-topbar-left">
         <a href="/admin"><i class="fas fa-arrow-left"></i> Admin</a>
         <div class="atb-topbar-title">
-            🤖 AI Theme Builder <span class="badge">Beta</span>
+            <img src="/assets/images/jessie-logo.svg" alt="Jessie" width="28" height="28" style="vertical-align:middle;margin-right:8px"> AI Theme Builder <span class="badge">Beta</span>
         </div>
     </div>
     <div style="font-size:12px;color:var(--ctp-subtext0);"><?= esc($username) ?></div>
@@ -555,12 +566,86 @@ $username = \Core\Session::getAdminUsername() ?? 'Admin';
     <button class="atb-btn atb-btn-delete" id="atbDelete" title="Delete"><i class="fas fa-trash"></i></button>
 </div>
 
+<!-- Post-Generation Edit Panel -->
+<div class="atb-edit-panel" id="atbEditPanel" style="display:none;">
+    <div class="atb-divider"></div>
+    <div class="atb-section">
+        <div class="atb-section-head">
+            <span class="atb-section-title">✏️ Refine Theme</span>
+        </div>
+
+        <!-- Quick color edits -->
+        <div class="atb-row-2" style="margin-bottom:12px">
+            <div class="atb-field">
+                <label class="atb-label">Primary Color</label>
+                <input type="color" class="atb-color-input" id="atbEditPrimary" value="#6366f1" style="width:100%;height:34px;border:1px solid var(--ctp-surface1);border-radius:8px;background:var(--ctp-surface0);cursor:pointer;">
+            </div>
+            <div class="atb-field">
+                <label class="atb-label">Secondary Color</label>
+                <input type="color" class="atb-color-input" id="atbEditSecondary" value="#ec4899" style="width:100%;height:34px;border:1px solid var(--ctp-surface1);border-radius:8px;background:var(--ctp-surface0);cursor:pointer;">
+            </div>
+        </div>
+        <div class="atb-row-2" style="margin-bottom:12px">
+            <div class="atb-field">
+                <label class="atb-label">Background</label>
+                <input type="color" class="atb-color-input" id="atbEditBg" value="#ffffff" style="width:100%;height:34px;border:1px solid var(--ctp-surface1);border-radius:8px;background:var(--ctp-surface0);cursor:pointer;">
+            </div>
+            <div class="atb-field">
+                <label class="atb-label">Text Color</label>
+                <input type="color" class="atb-color-input" id="atbEditText" value="#1a1a2e" style="width:100%;height:34px;border:1px solid var(--ctp-surface1);border-radius:8px;background:var(--ctp-surface0);cursor:pointer;">
+            </div>
+        </div>
+
+        <button class="atb-btn" id="atbApplyColors" style="width:100%;background:var(--ctp-surface0);color:var(--ctp-text);border:1px solid var(--ctp-surface1);margin-bottom:10px;">
+            <i class="fas fa-palette"></i> Apply Color Changes
+        </button>
+
+        <!-- CSS regeneration -->
+        <div class="atb-field">
+            <label class="atb-label">CSS Instructions (optional)</label>
+            <textarea class="atb-textarea" id="atbCssInstructions" rows="2" style="min-height:50px" placeholder="e.g. Make the hero section taller, add more animations, use glassmorphism cards..."></textarea>
+        </div>
+        <button class="atb-btn" id="atbRegenCss" style="width:100%;background:var(--ctp-surface0);color:var(--ctp-text);border:1px solid var(--ctp-surface1);margin-bottom:10px;">
+            <i class="fas fa-sync-alt"></i> Regenerate CSS
+        </button>
+
+        <div class="atb-divider"></div>
+
+        <!-- AI Chat Refinement -->
+        <label class="atb-label" style="margin-bottom:6px">🤖 AI Refinement</label>
+        <div style="display:flex;gap:6px;margin-bottom:10px;">
+            <input type="text" id="atbChatInput" class="atb-textarea" style="min-height:36px;height:36px;padding:8px 12px;resize:none;flex:1" placeholder="e.g. Make hero taller, add gradient to cards...">
+            <button class="atb-btn" id="atbChatSend" style="background:var(--ctp-blue);color:var(--ctp-crust);border:none;flex-shrink:0;padding:8px 14px;">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </div>
+        <div id="atbChatLog" style="max-height:120px;overflow-y:auto;font-size:11px;color:var(--ctp-subtext0);margin-bottom:10px;"></div>
+
+        <div class="atb-divider"></div>
+        <label class="atb-label" style="margin-bottom:8px">⚡ Quick Actions</label>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;">
+            <button class="atb-btn" id="atbVariantDark" style="flex:1;background:var(--ctp-surface0);color:var(--ctp-text);border:1px solid var(--ctp-surface1);font-size:11px;padding:8px;" title="Generate dark mode variant">
+                🌙 Dark Variant
+            </button>
+            <button class="atb-btn" id="atbVariantLight" style="flex:1;background:var(--ctp-surface0);color:var(--ctp-text);border:1px solid var(--ctp-surface1);font-size:11px;padding:8px;" title="Generate light mode variant">
+                ☀️ Light Variant
+            </button>
+            <button class="atb-btn" id="atbExportZip" style="flex:1;background:var(--ctp-surface0);color:var(--ctp-text);border:1px solid var(--ctp-surface1);font-size:11px;padding:8px;" title="Download theme as .zip">
+                📦 Export .zip
+            </button>
+        </div>
+    </div>
+</div>
+
 <!-- Previously Generated -->
 <?php if (!empty($generatedThemes)): ?>
 <div class="atb-previous">
     <h3>Previously Generated</h3>
     <?php foreach ($generatedThemes as $gt): ?>
     <div class="atb-theme-item" id="theme-<?= esc($gt['slug']) ?>">
+        <?php if (file_exists(CMS_ROOT . '/themes/' . $gt['slug'] . '/thumbnail.svg')): ?>
+        <img src="/themes/<?= esc($gt['slug']) ?>/thumbnail.svg" alt="<?= esc($gt['name']) ?> preview" style="width:48px;height:36px;border-radius:4px;object-fit:cover;flex-shrink:0;border:1px solid var(--ctp-surface1)">
+        <?php endif; ?>
         <span class="atb-theme-item-name"><?= esc($gt['name']) ?></span>
         <div class="atb-theme-item-actions">
             <button onclick="previewTheme('<?= esc($gt['slug']) ?>')" title="Preview"><i class="fas fa-eye"></i></button>
@@ -635,70 +720,113 @@ $username = \Core\Session::getAdminUsername() ?? 'Admin';
         divErr.classList.remove('visible');
         divAct.classList.remove('visible');
         divTim.classList.remove('visible');
+        $('atbEditPanel') && ($('atbEditPanel').style.display = 'none');
         currentSlug = null;
 
         for (let i = 1; i <= 4; i++) $('step'+i).className = 'atb-step';
-        let stepTimer = simulateSteps();
 
+        const modelVal = selModel ? selModel.value : '';
+        const payload = {
+            prompt,
+            industry: getChipValue('atbIndustry'),
+            style: getChipValue('atbStyle'),
+            mood: getChipValue('atbMood'),
+            provider: modelVal.split(':')[0] || '',
+            model: modelVal.split(':')[1] || '',
+            language: selLang ? selLang.value : 'English',
+        };
+
+        // Use SSE streaming for real-time progress
         try {
-            const modelVal = selModel ? selModel.value : '';
-            const res = await fetch('/api/ai-theme-builder/generate', {
+            const res = await fetch('/api/ai-theme-builder/generate-stream', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': CSRF },
-                body: JSON.stringify({
-                    prompt,
-                    industry: getChipValue('atbIndustry'),
-                    style: getChipValue('atbStyle'),
-                    mood: getChipValue('atbMood'),
-                    provider: modelVal.split(':')[0] || '',
-                    model: modelVal.split(':')[1] || '',
-                    language: selLang ? selLang.value : 'English',
-                }),
+                body: JSON.stringify(payload),
             });
 
-            clearInterval(stepTimer);
-            const data = await res.json();
+            const reader = res.body.getReader();
+            const decoder = new TextDecoder();
+            let buffer = '';
+            let finalData = null;
 
-            if (data.ok) {
+            while (true) {
+                const { done, value } = await reader.read();
+                if (done) break;
+                buffer += decoder.decode(value, { stream: true });
+
+                // Parse SSE events from buffer
+                const lines = buffer.split('\n');
+                buffer = lines.pop() || ''; // Keep incomplete line
+
+                let eventType = '';
+                for (const line of lines) {
+                    if (line.startsWith('event: ')) {
+                        eventType = line.slice(7).trim();
+                    } else if (line.startsWith('data: ')) {
+                        try {
+                            const data = JSON.parse(line.slice(6));
+                            if (eventType === 'step') {
+                                const s = data.step;
+                                if (data.status === 'running') {
+                                    $('step'+s).className = 'atb-step active';
+                                    // Mark previous as done
+                                    for (let i = 1; i < s; i++) $('step'+i).className = 'atb-step done';
+                                } else if (data.status === 'done') {
+                                    $('step'+s).className = 'atb-step done';
+                                }
+                            } else if (eventType === 'complete') {
+                                finalData = data;
+                            } else if (eventType === 'error') {
+                                divErr.textContent = data.error || 'Generation failed';
+                                divErr.classList.add('visible');
+                            }
+                        } catch (e) { /* skip malformed */ }
+                        eventType = '';
+                    }
+                }
+            }
+
+            if (finalData && finalData.ok) {
                 for (let i = 1; i <= 4; i++) $('step'+i).className = 'atb-step done';
-                currentSlug = data.slug;
+                currentSlug = finalData.slug;
                 divAct.classList.add('visible');
-                $('atbStudio').href = '/admin/theme-studio?theme=' + encodeURIComponent(data.slug);
+                $('atbStudio').href = '/admin/theme-studio?theme=' + encodeURIComponent(finalData.slug);
 
-                if (data.timings) {
+                if (finalData.timings) {
                     let h = '';
-                    if (data.timings.step1) h += '<span>Brief: '+(data.timings.step1/1000).toFixed(1)+'s</span>';
-                    if (data.timings.step2) h += '<span>HTML: '+(data.timings.step2/1000).toFixed(1)+'s</span>';
-                    if (data.timings.step3) h += '<span>CSS: '+(data.timings.step3/1000).toFixed(1)+'s</span>';
-                    if (data.timings.step4) h += '<span>Assembly: '+(data.timings.step4/1000).toFixed(1)+'s</span>';
-                    if (data.model_used) h += '<span>Model: '+data.model_used+'</span>';
+                    if (finalData.timings.step1) h += '<span>Brief: '+(finalData.timings.step1/1000).toFixed(1)+'s</span>';
+                    if (finalData.timings.step2) h += '<span>HTML: '+(finalData.timings.step2/1000).toFixed(1)+'s</span>';
+                    if (finalData.timings.step3) h += '<span>CSS: '+(finalData.timings.step3/1000).toFixed(1)+'s</span>';
+                    if (finalData.timings.step4) h += '<span>Assembly: '+(finalData.timings.step4/1000).toFixed(1)+'s</span>';
+                    if (finalData.model_used) h += '<span>Model: '+finalData.model_used+'</span>';
+                    const cov = finalData.steps?.css?.selector_coverage;
+                    if (cov !== undefined) {
+                        const covIcon = cov >= 90 ? '🟢' : cov >= 70 ? '🟡' : '🔴';
+                        h += '<span>' + covIcon + ' CSS: ' + cov + '%</span>';
+                    }
+                    if (finalData.summary) {
+                        h += '<span>Sections: ' + (finalData.summary.sections||'?') + '</span>';
+                    }
                     divTim.innerHTML = h; divTim.classList.add('visible');
                 }
 
-                showPreview(data.slug);
-            } else {
-                const f = data.step || 1;
+                showPreview(finalData.slug);
+                showEditPanel(finalData.steps?.brief?.data || null);
+            } else if (finalData && !finalData.ok) {
+                const f = finalData.step || 1;
                 for (let i = 1; i <= 4; i++) {
                     $('step'+i).className = i < f ? 'atb-step done' : i === f ? 'atb-step error' : 'atb-step';
                 }
-                divErr.textContent = data.error || 'Generation failed';
+                divErr.textContent = finalData.error || 'Generation failed';
                 divErr.classList.add('visible');
             }
         } catch (err) {
-            clearInterval(stepTimer);
             divErr.textContent = 'Request failed: ' + err.message;
             divErr.classList.add('visible');
         }
 
         btnGen.classList.remove('loading'); btnGen.disabled = false;
     });
-
-    function simulateSteps() {
-        let s = 1; $('step1').className = 'atb-step active';
-        return setInterval(() => {
-            if (s < 4) { $('step'+s).className = 'atb-step done'; s++; $('step'+s).className = 'atb-step active'; }
-        }, 8000);
-    }
 
     function showPreview(slug) {
         prevEmpty.style.display = 'none';
@@ -756,6 +884,7 @@ $username = \Core\Session::getAdminUsername() ?? 'Admin';
         currentSlug = slug; showPreview(slug);
         divAct.classList.add('visible');
         $('atbStudio').href = '/admin/theme-studio?theme=' + encodeURIComponent(slug);
+        showEditPanel(null);
     };
 
     window.setDevice = function(dev, btn) {
@@ -768,6 +897,173 @@ $username = \Core\Session::getAdminUsername() ?? 'Admin';
     window.refreshPreview = function() {
         const f = prevFrame.querySelector('iframe'); if (f) f.src = f.src;
     };
+
+    /* ── Post-Generation Edit Panel ── */
+    function showEditPanel(themeData) {
+        const panel = $('atbEditPanel');
+        if (!panel) return;
+        panel.style.display = 'block';
+        // If we have theme.json colors, populate inputs
+        if (themeData && themeData.colors) {
+            const c = themeData.colors;
+            if (c.primary) $('atbEditPrimary').value = c.primary;
+            if (c.secondary) $('atbEditSecondary').value = c.secondary;
+            if (c.background) $('atbEditBg').value = c.background;
+            if (c.text) $('atbEditText').value = c.text;
+        }
+    }
+
+    function editStatus(msg, isError) {
+        let el = document.querySelector('.atb-edit-status');
+        if (!el) {
+            el = document.createElement('div');
+            el.className = 'atb-edit-status';
+            $('atbEditPanel').appendChild(el);
+        }
+        el.textContent = msg;
+        el.className = 'atb-edit-status visible' + (isError ? ' error' : '');
+        if (!isError) setTimeout(() => el.classList.remove('visible'), 3000);
+    }
+
+    // Apply color changes
+    $('atbApplyColors')?.addEventListener('click', async () => {
+        if (!currentSlug) return;
+        const btn = $('atbApplyColors');
+        btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Updating...';
+        try {
+            const modelVal = selModel ? selModel.value : '';
+            const res = await fetch('/api/ai-theme-builder/update-brief', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': CSRF },
+                body: JSON.stringify({
+                    slug: currentSlug,
+                    changes: {
+                        colors: {
+                            primary: $('atbEditPrimary').value,
+                            secondary: $('atbEditSecondary').value,
+                            background: $('atbEditBg').value,
+                            text: $('atbEditText').value,
+                        }
+                    },
+                    provider: modelVal.split(':')[0] || '',
+                    model: modelVal.split(':')[1] || '',
+                }),
+            });
+            const data = await res.json();
+            if (data.ok) {
+                editStatus('✅ Colors updated & CSS regenerated (' + (data.css_lines||'?') + ' lines)');
+                refreshPreview();
+            } else {
+                editStatus('❌ ' + (data.error || 'Failed'), true);
+            }
+        } catch (e) {
+            editStatus('❌ ' + e.message, true);
+        }
+        btn.disabled = false; btn.innerHTML = '<i class="fas fa-palette"></i> Apply Color Changes';
+    });
+
+    // AI Chat Refinement
+    async function sendRefinement() {
+        const input = $('atbChatInput');
+        const msg = input?.value.trim();
+        if (!msg || !currentSlug) return;
+
+        const log = $('atbChatLog');
+        log.innerHTML += '<div style="margin-bottom:4px;color:var(--ctp-text)">💬 ' + msg.replace(/</g,'&lt;') + '</div>';
+        input.value = '';
+        log.innerHTML += '<div style="margin-bottom:4px;color:var(--ctp-overlay0)"><i class="fas fa-spinner fa-spin"></i> Thinking...</div>';
+        log.scrollTop = log.scrollHeight;
+
+        try {
+            const modelVal = selModel ? selModel.value : '';
+            const res = await fetch('/api/ai-theme-builder/refine', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': CSRF },
+                body: JSON.stringify({
+                    slug: currentSlug, instruction: msg,
+                    provider: modelVal.split(':')[0] || '', model: modelVal.split(':')[1] || '',
+                }),
+            });
+            const data = await res.json();
+            // Remove spinner
+            log.lastChild?.remove();
+            if (data.ok) {
+                log.innerHTML += '<div style="margin-bottom:4px;color:var(--ctp-green)">✅ ' + (data.summary || 'Done') + '</div>';
+                refreshPreview();
+            } else {
+                log.innerHTML += '<div style="margin-bottom:4px;color:var(--ctp-red)">❌ ' + (data.error || 'Failed') + '</div>';
+            }
+        } catch (e) {
+            log.lastChild?.remove();
+            log.innerHTML += '<div style="margin-bottom:4px;color:var(--ctp-red)">❌ ' + e.message + '</div>';
+        }
+        log.scrollTop = log.scrollHeight;
+    }
+    $('atbChatSend')?.addEventListener('click', sendRefinement);
+    $('atbChatInput')?.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendRefinement(); } });
+
+    // Dark/Light variant
+    async function createVariant(mood) {
+        if (!currentSlug) return;
+        const btn = mood === 'dark' ? $('atbVariantDark') : $('atbVariantLight');
+        btn.disabled = true;
+        const darkColors = { background: '#0f1115', surface: '#1a1d25', text: '#e2e8f0', text_muted: '#94a3b8', border: '#2d3748' };
+        const lightColors = { background: '#fafbfc', surface: '#ffffff', text: '#1a202c', text_muted: '#64748b', border: '#e2e8f0' };
+        try {
+            const modelVal = selModel ? selModel.value : '';
+            const res = await fetch('/api/ai-theme-builder/update-brief', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': CSRF },
+                body: JSON.stringify({
+                    slug: currentSlug,
+                    changes: { colors: mood === 'dark' ? darkColors : lightColors },
+                    provider: modelVal.split(':')[0] || '', model: modelVal.split(':')[1] || '',
+                }),
+            });
+            const data = await res.json();
+            if (data.ok) { editStatus('✅ ' + mood + ' variant applied'); refreshPreview(); }
+            else editStatus('❌ ' + (data.error || 'Failed'), true);
+        } catch (e) { editStatus('❌ ' + e.message, true); }
+        btn.disabled = false;
+    }
+    $('atbVariantDark')?.addEventListener('click', () => createVariant('dark'));
+    $('atbVariantLight')?.addEventListener('click', () => createVariant('light'));
+
+    // Export .zip
+    $('atbExportZip')?.addEventListener('click', () => {
+        if (!currentSlug) return;
+        window.open('/api/ai-theme-builder/export?theme=' + encodeURIComponent(currentSlug), '_blank');
+    });
+
+    // Regenerate CSS
+    $('atbRegenCss')?.addEventListener('click', async () => {
+        if (!currentSlug) return;
+        const btn = $('atbRegenCss');
+        btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Regenerating...';
+        try {
+            const modelVal = selModel ? selModel.value : '';
+            const res = await fetch('/api/ai-theme-builder/regenerate-css', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': CSRF },
+                body: JSON.stringify({
+                    slug: currentSlug,
+                    instructions: $('atbCssInstructions')?.value || '',
+                    provider: modelVal.split(':')[0] || '',
+                    model: modelVal.split(':')[1] || '',
+                }),
+            });
+            const data = await res.json();
+            if (data.ok) {
+                editStatus('✅ CSS regenerated — ' + (data.css_lines||'?') + ' lines, ' + (data.coverage||'?') + '% coverage');
+                refreshPreview();
+            } else {
+                editStatus('❌ ' + (data.error || 'Failed'), true);
+            }
+        } catch (e) {
+            editStatus('❌ ' + e.message, true);
+        }
+        btn.disabled = false; btn.innerHTML = '<i class="fas fa-sync-alt"></i> Regenerate CSS';
+    });
 })();
 </script>
 </body>

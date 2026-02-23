@@ -23,11 +23,11 @@
                 <?php endif; ?>
             </div>
 
-            <h1><?= esc($article['title']) ?></h1>
+            <h1 data-article-id="<?= (int)($article['id'] ?? 0) ?>" data-page-field="title"><?= esc($article['title']) ?></h1>
 
             <?php if (!empty($article['featured_image'])): ?>
             <div class="page-featured-image">
-                <img src="<?= esc($article['featured_image']) ?>" alt="<?= esc($article['title']) ?>">
+                <img loading="lazy" decoding="async" src="<?= esc($article['featured_image']) ?>" alt="<?= esc($article['title']) ?>">
             </div>
             <?php endif; ?>
 

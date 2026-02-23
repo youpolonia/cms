@@ -524,6 +524,13 @@ function ai_content_generate_google(array $config, string $prompt): array {
 function ai_content_generate_deepseek(array $config, string $prompt): array {
     $apiKey = $config['api_key'] ?? '';
     $model = $config['model'] ?? 'deepseek-chat';
+
+    // Map friendly names to API model names
+    $modelMap = [
+        'deepseek-v3' => 'deepseek-chat',
+        'deepseek-r1' => 'deepseek-reasoner',
+    ];
+    $model = $modelMap[$model] ?? $model;
     $baseUrl = rtrim(!empty($config['base_url']) ? $config['base_url'] : 'https://api.deepseek.com/v1', '/');
 
     if (empty($apiKey)) {

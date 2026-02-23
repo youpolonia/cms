@@ -1,0 +1,86 @@
+{
+    "name": "Foundation Forge",
+    "description": "Bold, minimalist theme for construction and groundwork contractors",
+    "version": "1.0.0",
+    "author": "AI Theme Builder",
+    "supports": {
+        "theme-builder": true,
+        "custom-header": true,
+        "custom-footer": true,
+        "custom-colors": true
+    },
+    "options": {
+        "show_header": true,
+        "show_footer": true,
+        "body_background": "#0f1219",
+        "preload_fonts": true
+    },
+    "colors": {
+        "primary": "#00b4d8",
+        "secondary": "#0077b6",
+        "accent": "#ff9e00",
+        "background": "#0f1219",
+        "surface": "#1a1f2e",
+        "text": "#e8eaed",
+        "text_muted": "#a0a6b8",
+        "border": "#2d3548",
+        "success": "#4ade80",
+        "warning": "#fbbf24",
+        "error": "#f87171"
+    },
+    "typography": {
+        "fontFamily": "Manrope",
+        "headingFont": "Rajdhani",
+        "baseFontSize": "16",
+        "lineHeight": "1.7",
+        "fontWeight": "400",
+        "headingWeight": "700"
+    },
+    "buttons": {
+        "borderRadius": "4",
+        "paddingX": "32",
+        "paddingY": "14",
+        "fontWeight": "600",
+        "uppercase": true,
+        "shadow": true
+    },
+    "layout": {
+        "containerWidth": "1200",
+        "sectionSpacing": "120",
+        "borderRadius": "8"
+    },
+    "homepage_sections": [
+        {
+            "id": "hero",
+            "label": "Hero",
+            "icon": "⭐",
+            "required": true
+        },
+        {
+            "id": "services",
+            "label": "Our Services",
+            "icon": "🛠️"
+        },
+        {
+            "id": "projects",
+            "label": "Recent Projects",
+            "icon": "🏗️"
+        },
+        {
+            "id": "about",
+            "label": "About Us",
+            "icon": "📖"
+        },
+        {
+            "id": "articles",
+            "label": "Industry Insights",
+            "icon": "📰"
+        },
+        {
+            "id": "cta",
+            "label": "Get a Quote",
+            "icon": "🎯"
+        }
+    ],
+    "thumbnail": "thumbnail.svg"
+}

@@ -22,9 +22,12 @@ return [
             ['label' => '🖼️ Media', 'url' => '/admin/media'],
             ['label' => '🎨 Galleries', 'url' => '/admin/galleries'],
             ['label' => '💬 Comments', 'url' => '/admin/comments'],
+            ['label' => '📬 Contact Forms', 'url' => '/admin/contact-submissions'],
             ['label' => '📋 Navigation', 'url' => '/admin/menus'],
             ['label' => '🧩 Widgets', 'url' => '/admin/widgets'],
             ['label' => '💡 Suggestions', 'url' => '/admin/content-suggestions'],
+            ['label' => '📅 Calendar', 'url' => '/admin/content-calendar'],
+            ['label' => '📋 Form Builder', 'url' => '/admin/form-builder'],
         ]
     ],
     
@@ -70,18 +73,49 @@ return [
             ['label' => '🔍 Insights', 'url' => '/admin/ai-insights'],
             ['label' => '📋 AI Logs', 'url' => '/admin/ai-logs'],
             ['label' => '⚙️ AI Settings', 'url' => '/admin/ai-settings'],
+            ['label' => '🤖 AI Chatbot', 'url' => '/admin/chat-settings'],
         ]
     ],
     
+    'shop' => [
+        'label' => '🛒 Shop',
+        'type' => 'dropdown',
+        'items' => [
+            ['label' => '📊 Dashboard', 'url' => '/admin/shop'],
+            ['label' => '📦 Products', 'url' => '/admin/shop/products'],
+            ['label' => '📁 Categories', 'url' => '/admin/shop/categories'],
+            ['label' => '🧾 Orders', 'url' => '/admin/shop/orders'],
+            ['label' => '⭐ Reviews', 'url' => '/admin/shop/reviews'],
+            ['label' => '🏷️ Coupons', 'url' => '/admin/shop/coupons'],
+            ['label' => '🛒 Abandoned Carts', 'url' => '/admin/shop/abandoned-carts'],
+            ['label' => '📈 Analytics', 'url' => '/admin/shop/analytics'],
+            ['label' => '⚙️ Settings', 'url' => '/admin/shop/settings'],
+        ]
+    ],
+    'crm' => [
+        'label' => '👥 CRM',
+        'type' => 'dropdown',
+        'items' => [
+            ['label' => '📊 Dashboard', 'url' => '/admin/crm'],
+            ['label' => '👤 Contacts', 'url' => '/admin/crm/contacts'],
+            ['label' => '🏗️ Pipeline', 'url' => '/admin/crm/pipeline'],
+            ['label' => '➕ Add Contact', 'url' => '/admin/crm/contacts/create'],
+        ]
+    ],
     'marketing' => [
         'label' => '📢 Marketing',
         'type' => 'dropdown',
         'items' => [
+            ['label' => '📱 Social Media', 'url' => '/admin/social-media'],
+            ['label' => '📅 Social Calendar', 'url' => '/admin/social-media/calendar'],
+            ['label' => '🔗 Social Accounts', 'url' => '/admin/social-media/accounts'],
             ['label' => '📧 Email Campaigns', 'url' => '/admin/email-campaigns'],
             ['label' => '📫 Email Queue', 'url' => '/admin/email-queue'],
             ['label' => '⚙️ Email Settings', 'url' => '/admin/email-settings'],
             ['label' => '📈 Analytics', 'url' => '/admin/analytics'],
             ['label' => '🔔 Notifications', 'url' => '/admin/notifications'],
+            ['label' => '🔬 A/B Testing', 'url' => '/admin/ab-testing'],
+            ['label' => '🎯 Pop-ups', 'url' => '/admin/popups'],
         ]
     ],
     
@@ -134,6 +168,7 @@ return [
             ['label' => '🛡️ GDPR Tools', 'url' => '/admin/gdpr-tools'],
             ['label' => '📜 Version Control', 'url' => '/admin/version-control'],
             ['label' => '🞱 Clear Cache', 'url' => '/admin/clear-cache'],
+            ['label' => '🔄 Updates', 'url' => '/admin/updates'],
         ]
     ],
     

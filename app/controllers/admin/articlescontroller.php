@@ -104,6 +104,13 @@ class ArticlesController
 
         $newId = $pdo->lastInsertId();
 
+        // Fire events
+        $eventPayload = ['id' => (int)$newId, 'title' => $title, 'slug' => $slug, 'status' => $status, 'excerpt' => mb_substr($excerpt ?: '', 0, 200)];
+        if (function_exists('cms_event') && $status === 'published') {
+            cms_event('article.published', $eventPayload);
+            cms_event('content.published', array_merge($eventPayload, ['type' => 'article']));
+        }
+
         Session::flash('success', 'Article created successfully.');
         
         // If draft, stay on edit page to continue working
@@ -180,6 +187,17 @@ class ArticlesController
         $stmt = $pdo->prepare("UPDATE articles SET title = ?, slug = ?, excerpt = ?, content = ?, status = ?, category_id = ?, featured_image = ?, featured_image_alt = ?, featured_image_title = ?, meta_title = ?, meta_description = ?, meta_keywords = ?, focus_keyword = ?, published_at = ?, updated_at = NOW() WHERE id = ?");
         $stmt->execute([$title, $slug, $excerpt, $content, $status, $category_id, $featured_image, $featured_image_alt, $featured_image_title, $meta_title, $meta_description, $meta_keywords, $focus_keyword, $published_at, $id]);
 
+        // Fire events
+        $eventPayload = ['id' => $id, 'title' => $title, 'slug' => $slug, 'status' => $status, 'old_status' => $article['status']];
+        $wasPublished = ($article['status'] !== 'published' && $status === 'published');
+        if ($wasPublished) {
+            cms_event('article.published', $eventPayload);
+            cms_event('content.published', array_merge($eventPayload, ['type' => 'article']));
+        } else {
+            cms_event('article.updated', $eventPayload);
+            cms_event('content.updated', array_merge($eventPayload, ['type' => 'article']));
+        }
+
         Session::flash('success', 'Article updated successfully.');
         
         // If draft, stay on edit page to continue working
@@ -195,8 +213,15 @@ class ArticlesController
         $id = (int)$request->param('id');
 
         $pdo = db();
+        // Get article data before deletion for event
+        $stmt = $pdo->prepare("SELECT title, slug FROM articles WHERE id = ?");
+        $stmt->execute([$id]);
+        $delArticle = $stmt->fetch(\PDO::FETCH_ASSOC);
+
         $stmt = $pdo->prepare("DELETE FROM articles WHERE id = ?");
         $stmt->execute([$id]);
+
+        cms_event('content.deleted', ['id' => $id, 'type' => 'article', 'title' => $delArticle['title'] ?? '', 'slug' => $delArticle['slug'] ?? '']);
 
         Session::flash('success', 'Article deleted successfully.');
         Response::redirect('/admin/articles');

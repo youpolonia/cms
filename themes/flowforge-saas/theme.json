@@ -1,0 +1,85 @@
+{
+    "name": "FlowForge",
+    "description": "Intuitive project management with AI-powered planning",
+    "version": "1.0.0",
+    "author": "AI Theme Builder",
+    "supports": {
+        "theme-builder": true,
+        "custom-header": true,
+        "custom-footer": true,
+        "custom-colors": true
+    },
+    "options": {
+        "show_header": true,
+        "show_footer": true,
+        "body_background": "#ffffff",
+        "preload_fonts": true
+    },
+    "colors": {
+        "primary": "#d45a1e",
+        "secondary": "#2a8bb8",
+        "accent": "#c9a227",
+        "background": "#ffffff",
+        "surface": "#f8f9fa",
+        "text": "#1a1a2e",
+        "text_muted": "#6c757d",
+        "border": "#e0e0e0",
+        "success": "#2d6a4f",
+        "warning": "#b5651d",
+        "error": "#c2185b"
+    },
+    "typography": {
+        "fontFamily": "Inter",
+        "headingFont": "Inter",
+        "baseFontSize": "16",
+        "lineHeight": "1.7",
+        "fontWeight": "400",
+        "headingWeight": "700"
+    },
+    "buttons": {
+        "borderRadius": "4",
+        "paddingX": "32",
+        "paddingY": "14",
+        "fontWeight": "600",
+        "uppercase": true,
+        "shadow": true
+    },
+    "layout": {
+        "containerWidth": "1200",
+        "sectionSpacing": "120",
+        "borderRadius": "8"
+    },
+    "homepage_sections": [
+        {
+            "id": "hero",
+            "label": "Hero",
+            "icon": "fas fa-star"
+        },
+        {
+            "id": "testimonials",
+            "label": "Testimonials",
+            "icon": "fas fa-quote-right"
+        },
+        {
+            "id": "pricing",
+            "label": "Pricing Preview",
+            "icon": "fas fa-tags"
+        },
+        {
+            "id": "faq",
+            "label": "FAQ Preview",
+            "icon": "fas fa-question-circle"
+        },
+        {
+            "id": "cta",
+            "label": "Call to Action",
+            "icon": "fas fa-bullhorn"
+        },
+        {
+            "id": "features",
+            "label": "Features",
+            "icon": "✨"
+        }
+    ],
+    "thumbnail": "thumbnail.svg"
+}

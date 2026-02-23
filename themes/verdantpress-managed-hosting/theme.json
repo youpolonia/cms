@@ -1,0 +1,80 @@
+{
+    "name": "VerdantPress",
+    "description": "Premium WordPress hosting with automated workflows and expert support",
+    "version": "1.0.0",
+    "author": "AI Theme Builder",
+    "supports": {
+        "theme-builder": true,
+        "custom-header": true,
+        "custom-footer": true,
+        "custom-colors": true
+    },
+    "options": {
+        "show_header": true,
+        "show_footer": true,
+        "body_background": "#0a0e27",
+        "preload_fonts": true
+    },
+    "colors": {
+        "primary": "#3a86ff",
+        "secondary": "#5e60ce",
+        "accent": "#48bfe3",
+        "background": "#0a0e27",
+        "surface": "#141a3d",
+        "text": "#caf0f8"
+    },
+    "typography": {
+        "fontFamily": "Rubik",
+        "headingFont": "Bitter",
+        "baseFontSize": "17",
+        "lineHeight": "1.75",
+        "fontWeight": "400",
+        "headingWeight": "800"
+    },
+    "buttons": {
+        "borderRadius": "6",
+        "paddingX": "36",
+        "paddingY": "16",
+        "fontWeight": "600",
+        "uppercase": false,
+        "shadow": true
+    },
+    "layout": {
+        "containerWidth": "1280",
+        "sectionSpacing": "140",
+        "borderRadius": "12"
+    },
+    "homepage_sections": [
+        {
+            "id": "hero",
+            "label": "Hero",
+            "icon": "fas fa-star"
+        },
+        {
+            "id": "stats",
+            "label": "Stats \/ Numbers",
+            "icon": "fas fa-chart-bar"
+        },
+        {
+            "id": "testimonials",
+            "label": "Testimonials",
+            "icon": "fas fa-quote-right"
+        },
+        {
+            "id": "pricing",
+            "label": "Pricing Preview",
+            "icon": "fas fa-tags"
+        },
+        {
+            "id": "cta",
+            "label": "Call to Action",
+            "icon": "fas fa-bullhorn"
+        },
+        {
+            "id": "features",
+            "label": "Features",
+            "icon": "✨"
+        }
+    ],
+    "thumbnail": "thumbnail.svg"
+}

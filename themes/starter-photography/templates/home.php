@@ -41,7 +41,7 @@ try {
         <?php foreach ($_articles as $_a): ?>
         <a href="/article/<?= esc($_a['slug']) ?>" class="work-item">
             <?php if (!empty($_a['featured_image'])): ?>
-            <img src="/uploads/media/<?= esc($_a['featured_image']) ?>" alt="<?= esc($_a['title']) ?>" loading="lazy">
+            <img decoding="async" loading="lazy" src="/uploads/media/<?= esc($_a['featured_image']) ?>" alt="<?= esc($_a['title']) ?>" loading="lazy">
             <?php else: ?>
             <div style="width:100%;height:100%;background:#1a1a1a;"></div>
             <?php endif; ?>

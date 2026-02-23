@@ -73,7 +73,7 @@ try {
             <div class="gallery-carousel-track">
                 <?php foreach ($_gallery['images'] as $_img): ?>
                 <div class="gallery-item" data-src="/uploads/media/<?= esc($_img['filename']) ?>">
-                    <img src="/uploads/media/<?= esc($_img['filename']) ?>" 
+                    <img loading="lazy" decoding="async" src="/uploads/media/<?= esc($_img['filename']) ?>" 
                          alt="<?= esc($_img['title'] ?? $_img['original_name'] ?? '') ?>" loading="lazy">
                     <?php if (!empty($_img['title'])): ?>
                     <div class="gallery-caption"><span><?= esc($_img['title']) ?></span></div>
@@ -92,7 +92,7 @@ try {
         <div class="gallery-layout-<?= esc($_template) ?>">
             <?php foreach ($_gallery['images'] as $_img): ?>
             <div class="gallery-item" data-src="/uploads/media/<?= esc($_img['filename']) ?>">
-                <img src="/uploads/media/<?= esc($_img['filename']) ?>" 
+                <img loading="lazy" decoding="async" src="/uploads/media/<?= esc($_img['filename']) ?>" 
                      alt="<?= esc($_img['title'] ?? $_img['original_name'] ?? '') ?>" loading="lazy">
                 <?php if (!empty($_img['title'])): ?>
                 <div class="gallery-caption"><span><?= esc($_img['title']) ?></span></div>

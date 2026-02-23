@@ -1,0 +1,86 @@
+{
+    "name": "Structural Vision",
+    "description": "A sophisticated dark theme for architecture firms emphasizing bold geometry and refined minimalism",
+    "version": "1.0.0",
+    "author": "AI Theme Builder",
+    "supports": {
+        "theme-builder": true,
+        "custom-header": true,
+        "custom-footer": true,
+        "custom-colors": true
+    },
+    "options": {
+        "show_header": true,
+        "show_footer": true,
+        "body_background": "#0a0c10",
+        "preload_fonts": true
+    },
+    "colors": {
+        "primary": "#c4b5a0",
+        "secondary": "#8a9a8e",
+        "accent": "#d4c4b0",
+        "background": "#0a0c10",
+        "surface": "#12151a",
+        "text": "#e8e6e3",
+        "text_muted": "#9a9590",
+        "border": "#2a2d32",
+        "success": "#7d9a7a",
+        "warning": "#c9a86c",
+        "error": "#b86b6b"
+    },
+    "typography": {
+        "fontFamily": "Archivo",
+        "headingFont": "Cormorant Garamond",
+        "baseFontSize": "17",
+        "lineHeight": "1.75",
+        "fontWeight": "400",
+        "headingWeight": "600"
+    },
+    "buttons": {
+        "borderRadius": "2",
+        "paddingX": "36",
+        "paddingY": "16",
+        "fontWeight": "500",
+        "uppercase": true,
+        "shadow": false
+    },
+    "layout": {
+        "containerWidth": "1280",
+        "sectionSpacing": "140",
+        "borderRadius": "4"
+    },
+    "homepage_sections": [
+        {
+            "id": "hero",
+            "label": "Hero",
+            "icon": "⭐",
+            "required": true
+        },
+        {
+            "id": "about",
+            "label": "Philosophy",
+            "icon": "📐"
+        },
+        {
+            "id": "projects",
+            "label": "Portfolio",
+            "icon": "🏛️"
+        },
+        {
+            "id": "services",
+            "label": "Services",
+            "icon": "📋"
+        },
+        {
+            "id": "articles",
+            "label": "Journal",
+            "icon": "📰"
+        },
+        {
+            "id": "cta",
+            "label": "Start a Project",
+            "icon": "🎯"
+        }
+    ],
+    "thumbnail": "thumbnail.svg"
+}

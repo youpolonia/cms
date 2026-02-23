@@ -54,6 +54,7 @@ class CommentsController
     {
         $id = (int)$request->param('id');
         $this->updateStatus($id, 'approved');
+        cms_event('comment.approved', ['id' => $id]);
         Session::flash('success', 'Comment approved.');
         Response::redirect('/admin/comments');
     }

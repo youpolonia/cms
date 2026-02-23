@@ -118,4 +118,43 @@ class SettingsModel {
             return false;
         }
     }
+
+    /**
+     * Get a single value from the `settings` key-value table.
+     */
+    public static function getValue(string $key, mixed $default = null): mixed
+    {
+        try {
+            $pdo = \core\Database::connection();
+            $stmt = $pdo->prepare("SELECT `value` FROM `settings` WHERE `key` = ? LIMIT 1");
+            $stmt->execute([$key]);
+            $row = $stmt->fetch(\PDO::FETCH_ASSOC);
+            return $row ? $row['value'] : $default;
+        } catch (\Throwable $e) {
+            error_log('SettingsModel::getValue error: ' . $e->getMessage());
+            return $default;
+        }
+    }
+
+    /**
+     * Set a value in the `settings` key-value table (upsert).
+     */
+    public static function set(string $key, string $value, string $group = 'general'): bool
+    {
+        try {
+            $pdo = \core\Database::connection();
+            $stmt = $pdo->prepare("SELECT COUNT(*) FROM `settings` WHERE `key` = ?");
+            $stmt->execute([$key]);
+            if ((int)$stmt->fetchColumn() > 0) {
+                $stmt = $pdo->prepare("UPDATE `settings` SET `value` = ?, `group_name` = ?, `updated_at` = NOW() WHERE `key` = ?");
+                return $stmt->execute([$value, $group, $key]);
+            } else {
+                $stmt = $pdo->prepare("INSERT INTO `settings` (`key`, `value`, `group_name`, `updated_at`) VALUES (?, ?, ?, NOW())");
+                return $stmt->execute([$key, $value, $group]);
+            }
+        } catch (\Throwable $e) {
+            error_log('SettingsModel::set error: ' . $e->getMessage());
+            return false;
+        }
+    }
 }

@@ -1,0 +1,11 @@
+{
+    "enabled": false,
+    "base_url": "http://your-n8n-instance:5678",
+    "auth_type": "apikey",
+    "api_key": "",
+    "webhook_secret": "",
+    "username": "",
+    "password": "",
+    "timeout": 10,
+    "verify_ssl": true
+}

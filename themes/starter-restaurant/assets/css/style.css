@@ -46,7 +46,7 @@ body {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
-body.menu-open { overflow: hidden; }
+body.nav-open { overflow: hidden; }
 img { max-width: 100%; height: auto; display: block; }
 a { color: var(--primary); text-decoration: none; transition: color var(--transition); }
 a:hover { color: var(--primary-light); }
@@ -449,19 +449,18 @@ p { margin-bottom: 1rem; }
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 100px;
-    align-items: center;
+    align-items: start;
 }
 .about-images { position: relative; }
 .about-img-main {
     position: relative;
     width: 100%;
-    aspect-ratio: 3/4;
+    aspect-ratio: 4/3;
     border-radius: var(--radius-lg);
     overflow: hidden;
     background: var(--surface);
 }
-.about-img-main img,
-.about-img-main[style*="background"] {
+.about-img-main img {
     width: 100%;
     height: 100%;
     object-fit: cover;

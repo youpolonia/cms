@@ -22,7 +22,7 @@
     <?= render_menu('header', ['wrap' => false, 'class' => 'overlay-links', 'fallback_to_pages' => true]); ?>
   </nav>
 </div>
-<main class="site-main"><?= $content ?></main>
+<main id="main-content" class="site-main"><?= $content ?></main>
 <footer class="site-footer">
   <div class="container footer-inner">
     <span data-ts="footer.copyright">&copy; <?= date('Y') ?> <?= esc(get_site_name()) ?></span>

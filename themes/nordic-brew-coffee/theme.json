@@ -1,0 +1,80 @@
+{
+    "name": "Nordic Brew",
+    "description": "Minimalist Scandinavian coffee experience with clean lines and warm natural tones",
+    "version": "1.0.0",
+    "author": "AI Theme Builder",
+    "supports": {
+        "theme-builder": true,
+        "custom-header": true,
+        "custom-footer": true,
+        "custom-colors": true
+    },
+    "options": {
+        "show_header": true,
+        "show_footer": true,
+        "body_background": "#ffffff",
+        "preload_fonts": true
+    },
+    "colors": {
+        "primary": "#b76e79",
+        "secondary": "#c9a0a0",
+        "accent": "#e8c4c4",
+        "background": "#ffffff",
+        "surface": "#fdf2f2",
+        "text": "#4a2c2a"
+    },
+    "typography": {
+        "fontFamily": "Be Vietnam Pro",
+        "headingFont": "Fraunces",
+        "baseFontSize": "17",
+        "lineHeight": "1.75",
+        "fontWeight": "400",
+        "headingWeight": "700"
+    },
+    "buttons": {
+        "borderRadius": "2",
+        "paddingX": "28",
+        "paddingY": "14",
+        "fontWeight": "600",
+        "uppercase": true,
+        "shadow": false
+    },
+    "layout": {
+        "containerWidth": "1140",
+        "sectionSpacing": "140",
+        "borderRadius": "4"
+    },
+    "homepage_sections": [
+        {
+            "id": "hero",
+            "label": "Hero",
+            "icon": "fas fa-star"
+        },
+        {
+            "id": "about",
+            "label": "About \/ Intro",
+            "icon": "fas fa-info-circle"
+        },
+        {
+            "id": "testimonials",
+            "label": "Testimonials",
+            "icon": "fas fa-quote-right"
+        },
+        {
+            "id": "cta",
+            "label": "Call to Action",
+            "icon": "fas fa-bullhorn"
+        },
+        {
+            "id": "menu",
+            "label": "Menu (Food)",
+            "icon": "🍽️"
+        },
+        {
+            "id": "gallery",
+            "label": "Gallery",
+            "icon": "🖼️"
+        }
+    ],
+    "thumbnail": "thumbnail.svg"
+}

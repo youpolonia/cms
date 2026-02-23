@@ -78,7 +78,7 @@ $isTbPage = !empty($page['is_tb_page']);
                 <!-- Logo -->
                 <a href="/" class="site-logo" aria-label="<?php echo esc($siteName); ?> — Home" data-ts="brand.logo">
                     <?php if (!empty($siteLogo)): ?>
-                        <img src="<?php echo esc($siteLogo); ?>" alt="<?php echo esc($siteName); ?>" class="logo-img">
+                        <img loading="lazy" decoding="async" src="<?php echo esc($siteLogo); ?>" alt="<?php echo esc($siteName); ?>" class="logo-img">
                     <?php else: ?>
                         <span class="logo-text" data-ts="brand.site_name"><?php echo esc($siteName); ?></span>
                     <?php endif; ?>
@@ -133,7 +133,7 @@ $isTbPage = !empty($page['is_tb_page']);
                     <div class="footer-col footer-about">
                         <a href="/" class="footer-logo" aria-label="<?php echo esc($siteName); ?>" data-ts="brand.logo">
                             <?php if (!empty($siteLogo)): ?>
-                                <img src="<?php echo esc($siteLogo); ?>" alt="<?php echo esc($siteName); ?>" class="footer-logo-img">
+                                <img loading="lazy" decoding="async" src="<?php echo esc($siteLogo); ?>" alt="<?php echo esc($siteName); ?>" class="footer-logo-img">
                             <?php else: ?>
                                 <span class="footer-logo-text" data-ts="brand.site_name"><?php echo esc($siteName); ?></span>
                             <?php endif; ?>

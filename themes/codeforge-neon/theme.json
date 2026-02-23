@@ -1,0 +1,80 @@
+{
+    "name": "CodeForge Neon",
+    "description": "A futuristic AI platform theme with rose accents and clean minimal aesthetics",
+    "version": "1.0.0",
+    "author": "AI Theme Builder",
+    "supports": {
+        "theme-builder": true,
+        "custom-header": true,
+        "custom-footer": true,
+        "custom-colors": true
+    },
+    "options": {
+        "show_header": true,
+        "show_footer": true,
+        "body_background": "#030712",
+        "preload_fonts": true
+    },
+    "colors": {
+        "primary": "#2563eb",
+        "secondary": "#3b82f6",
+        "accent": "#60a5fa",
+        "background": "#030712",
+        "surface": "#111827",
+        "text": "#f9fafb"
+    },
+    "typography": {
+        "fontFamily": "Be Vietnam Pro",
+        "headingFont": "DM Serif Display",
+        "baseFontSize": "17",
+        "lineHeight": "1.75",
+        "fontWeight": "400",
+        "headingWeight": "400"
+    },
+    "buttons": {
+        "borderRadius": "6",
+        "paddingX": "36",
+        "paddingY": "16",
+        "fontWeight": "600",
+        "uppercase": false,
+        "shadow": true
+    },
+    "layout": {
+        "containerWidth": "1180",
+        "sectionSpacing": "140",
+        "borderRadius": "12"
+    },
+    "homepage_sections": [
+        {
+            "id": "hero",
+            "label": "Hero",
+            "icon": "fas fa-star"
+        },
+        {
+            "id": "about",
+            "label": "About \/ Intro",
+            "icon": "fas fa-info-circle"
+        },
+        {
+            "id": "stats",
+            "label": "Stats \/ Numbers",
+            "icon": "fas fa-chart-bar"
+        },
+        {
+            "id": "testimonials",
+            "label": "Testimonials",
+            "icon": "fas fa-quote-right"
+        },
+        {
+            "id": "cta",
+            "label": "Call to Action",
+            "icon": "fas fa-bullhorn"
+        },
+        {
+            "id": "features",
+            "label": "Features",
+            "icon": "✨"
+        }
+    ],
+    "thumbnail": "thumbnail.svg"
+}

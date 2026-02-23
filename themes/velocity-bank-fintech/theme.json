@@ -1,0 +1,85 @@
+{
+    "name": "Velocity Bank",
+    "description": "Next-gen digital banking platform for freelancers with instant invoicing and AI-powered insights",
+    "version": "1.0.0",
+    "author": "AI Theme Builder",
+    "supports": {
+        "theme-builder": true,
+        "custom-header": true,
+        "custom-footer": true,
+        "custom-colors": true
+    },
+    "options": {
+        "show_header": true,
+        "show_footer": true,
+        "body_background": "#0a0d14",
+        "preload_fonts": true
+    },
+    "colors": {
+        "primary": "#d64073",
+        "secondary": "#3db8a6",
+        "accent": "#ff6b9d",
+        "background": "#0a0d14",
+        "surface": "#12161f",
+        "text": "#e8ecf2",
+        "text_muted": "#8f97a8",
+        "border": "#1e2430",
+        "success": "#3db8a6",
+        "warning": "#f59e0b",
+        "error": "#ef4444"
+    },
+    "typography": {
+        "fontFamily": "Manrope",
+        "headingFont": "EB Garamond",
+        "baseFontSize": "17",
+        "lineHeight": "1.75",
+        "fontWeight": "400",
+        "headingWeight": "600"
+    },
+    "buttons": {
+        "borderRadius": "8",
+        "paddingX": "36",
+        "paddingY": "16",
+        "fontWeight": "600",
+        "uppercase": false,
+        "shadow": true
+    },
+    "layout": {
+        "containerWidth": "1280",
+        "sectionSpacing": "140",
+        "borderRadius": "12"
+    },
+    "homepage_sections": [
+        {
+            "id": "hero",
+            "label": "Hero",
+            "icon": "fas fa-star"
+        },
+        {
+            "id": "stats",
+            "label": "Stats \/ Numbers",
+            "icon": "fas fa-chart-bar"
+        },
+        {
+            "id": "testimonials",
+            "label": "Testimonials",
+            "icon": "fas fa-quote-right"
+        },
+        {
+            "id": "pricing",
+            "label": "Pricing Preview",
+            "icon": "fas fa-tags"
+        },
+        {
+            "id": "cta",
+            "label": "Call to Action",
+            "icon": "fas fa-bullhorn"
+        },
+        {
+            "id": "features",
+            "label": "Features",
+            "icon": "✨"
+        }
+    ],
+    "thumbnail": "thumbnail.svg"
+}

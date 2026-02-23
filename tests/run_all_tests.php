@@ -42,6 +42,10 @@ $tests = [
     'EventBusTest.php',
     'MvcControllersTest.php',
     'ContentRendererTest.php',
+    'RateLimitTest.php',
+    'ImageOptimizerTest.php',
+    'ModelTest.php',
+    'ApiTest.php',
 ];
 
 $totalPassed = 0;

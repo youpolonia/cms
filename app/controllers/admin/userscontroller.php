@@ -11,6 +11,7 @@ class UsersController
 {
     public function index(Request $request): void
     {
+        Session::requireRole('admin');
         $pdo = db();
         $stmt = $pdo->query("SELECT id, username, email, role, last_login, created_at FROM admins ORDER BY id ASC");
         $users = $stmt->fetchAll(\PDO::FETCH_ASSOC);
@@ -33,6 +34,7 @@ class UsersController
 
     public function store(Request $request): void
     {
+        Session::requireRole('admin');
         $username = trim($request->post('username', ''));
         $email = trim($request->post('email', '')) ?: null;
         $password = $request->post('password', '');
@@ -86,6 +88,8 @@ class UsersController
 
         $stmt = $pdo->prepare("INSERT INTO admins (username, email, password_hash, role, created_at) VALUES (?, ?, ?, ?, NOW())");
         $stmt->execute([$username, $email, $password_hash, $role]);
+
+        cms_event('user.registered', ['username' => $username, 'email' => $email, 'role' => $role]);
 
         Session::flash('success', 'User created successfully.');
         Response::redirect('/admin/users');
@@ -173,12 +177,15 @@ class UsersController
             $stmt->execute([$username, $email, $role, $id]);
         }
 
+        cms_event('user.updated', ['id' => $id, 'username' => $username, 'email' => $email, 'role' => $role]);
+
         Session::flash('success', 'User updated successfully.');
         Response::redirect('/admin/users');
     }
 
     public function destroy(Request $request): void
     {
+        Session::requireRole('admin');
         $id = (int)$request->param('id');
         $currentUserId = Session::getAdminId();
 
@@ -202,8 +209,15 @@ class UsersController
             Response::redirect('/admin/users');
         }
 
+        // Get user info for event
+        $delStmt = $pdo->prepare("SELECT username, email FROM admins WHERE id = ?");
+        $delStmt->execute([$id]);
+        $delUser = $delStmt->fetch(\PDO::FETCH_ASSOC);
+
         $stmt = $pdo->prepare("DELETE FROM admins WHERE id = ?");
         $stmt->execute([$id]);
+
+        cms_event('user.deleted', ['id' => $id, 'username' => $delUser['username'] ?? '', 'email' => $delUser['email'] ?? '']);
 
         Session::flash('success', 'User deleted successfully.');
         Response::redirect('/admin/users');

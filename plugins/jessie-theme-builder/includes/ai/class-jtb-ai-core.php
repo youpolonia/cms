@@ -188,6 +188,16 @@ class JTB_AI_Core
     /**
      * Get available providers
      */
+
+    /**
+     * Get classified info about the last error.
+     */
+    public function getLastErrorInfo(): ?array
+    {
+        if (empty($this->lastError)) return null;
+        return self::classifyError($this->lastError, $this->provider);
+    }
+
     public function getAvailableProviders(): array
     {
         $available = [];
@@ -303,6 +313,12 @@ class JTB_AI_Core
         } else {
             $this->usageStats['errors']++;
             $this->lastError = $result['error'] ?? 'Unknown error';
+            // Classify the error for user-friendly display
+            $result['error_info'] = self::classifyError(
+                $this->lastError,
+                $result['provider'] ?? $provider,
+                $result['http_code'] ?? 0
+            );
         }
 
         // Parse JSON if requested and response is valid
@@ -421,6 +437,407 @@ class JTB_AI_Core
     /**
      * Call HuggingFace API
      */
+
+
+    /**
+     * Check health/status of all configured AI providers.
+     * Returns array of provider statuses with balance info where available.
+     * Uses minimal API calls (tiny prompt or balance endpoints).
+     */
+    public function checkProviderHealth(): array
+    {
+        $results = [];
+        $providers = ['openai', 'anthropic', 'deepseek', 'google'];
+
+        foreach ($providers as $provider) {
+            $config = $this->config[$provider] ?? [];
+            if (empty($config['api_key'])) {
+                $results[$provider] = [
+                    'status' => 'not_configured',
+                    'message' => 'No API key',
+                    'icon' => '⚙️',
+                ];
+                continue;
+            }
+
+            try {
+                $result = $this->probeProvider($provider, $config);
+                $results[$provider] = $result;
+            } catch (\Throwable $e) {
+                $results[$provider] = [
+                    'status' => 'error',
+                    'message' => $e->getMessage(),
+                    'icon' => '❌',
+                ];
+            }
+        }
+
+        return $results;
+    }
+
+    /**
+     * Probe a single provider for health status.
+     */
+    private function probeProvider(string $provider, array $config): array
+    {
+        switch ($provider) {
+            case 'deepseek':
+                return $this->probeDeepSeek($config);
+            case 'anthropic':
+                return $this->probeAnthropic($config);
+            case 'openai':
+                return $this->probeOpenAI($config);
+            case 'google':
+                return $this->probeGoogle($config);
+            default:
+                return ['status' => 'unknown', 'message' => 'Unknown provider', 'icon' => '❓'];
+        }
+    }
+
+    private function probeDeepSeek(array $config): array
+    {
+        $baseUrl = rtrim($config['base_url'] ?? 'https://api.deepseek.com', '/');
+
+        // DeepSeek has a balance endpoint
+        $ch = curl_init($baseUrl . '/user/balance');
+        curl_setopt_array($ch, [
+            CURLOPT_HTTPHEADER => ['Authorization: Bearer ' . $config['api_key']],
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_TIMEOUT => 10,
+            CURLOPT_CONNECTTIMEOUT => 5,
+        ]);
+        $response = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+
+        if ($httpCode === 200) {
+            $data = json_decode($response, true);
+            $balance = null;
+            if (!empty($data['balance_infos'])) {
+                foreach ($data['balance_infos'] as $bi) {
+                    if (($bi['currency'] ?? '') === 'USD') {
+                        $balance = (float)($bi['total_balance'] ?? 0);
+                    }
+                }
+            }
+            if ($balance !== null) {
+                if ($balance < 0.10) {
+                    return ['status' => 'low_balance', 'balance' => $balance, 'currency' => 'USD',
+                            'message' => "Balance: \${$balance} — critically low!", 'icon' => '🔴'];
+                } elseif ($balance < 1.00) {
+                    return ['status' => 'warning', 'balance' => $balance, 'currency' => 'USD',
+                            'message' => "Balance: \${$balance} — running low", 'icon' => '🟡'];
+                } else {
+                    return ['status' => 'ok', 'balance' => $balance, 'currency' => 'USD',
+                            'message' => "Balance: \${$balance}", 'icon' => '🟢'];
+                }
+            }
+            return ['status' => 'ok', 'message' => 'Connected', 'icon' => '🟢'];
+        }
+
+        if ($httpCode === 401 || $httpCode === 403) {
+            return ['status' => 'auth_error', 'message' => 'Invalid API key', 'icon' => '🔑'];
+        }
+        return ['status' => 'error', 'message' => "HTTP {$httpCode}", 'icon' => '❌'];
+    }
+
+    private function probeAnthropic(array $config): array
+    {
+        // Anthropic has no balance API. Send a minimal request to check auth + credits.
+        $ch = curl_init('https://api.anthropic.com/v1/messages');
+        curl_setopt_array($ch, [
+            CURLOPT_POST => true,
+            CURLOPT_POSTFIELDS => json_encode([
+                'model' => 'claude-sonnet-4-20250514',
+                'max_tokens' => 5,
+                'messages' => [['role' => 'user', 'content' => 'Hi']],
+            ]),
+            CURLOPT_HTTPHEADER => [
+                'x-api-key: ' . $config['api_key'],
+                'anthropic-version: 2023-06-01',
+                'Content-Type: application/json',
+            ],
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_TIMEOUT => 15,
+            CURLOPT_CONNECTTIMEOUT => 5,
+        ]);
+        $response = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+
+        $data = json_decode($response, true);
+
+        if ($httpCode === 200) {
+            return ['status' => 'ok', 'message' => 'Connected & working', 'icon' => '🟢'];
+        }
+
+        $errorMsg = $data['error']['message'] ?? '';
+        $errorType = $data['error']['type'] ?? '';
+        $errorLower = strtolower($errorMsg);
+
+        if (str_contains($errorLower, 'credit balance') || str_contains($errorLower, 'billing')
+            || $httpCode === 402) {
+            return ['status' => 'no_credits', 'message' => 'No credits — top up required',
+                    'icon' => '🔴', 'link' => 'https://console.anthropic.com/settings/billing'];
+        }
+        if ($httpCode === 401 || str_contains($errorLower, 'invalid') || $errorType === 'authentication_error') {
+            return ['status' => 'auth_error', 'message' => 'Invalid API key', 'icon' => '🔑'];
+        }
+        if ($httpCode === 429 || str_contains($errorLower, 'rate')) {
+            return ['status' => 'rate_limited', 'message' => 'Rate limited — wait and retry',
+                    'icon' => '🟡'];
+        }
+        if ($httpCode >= 500) {
+            return ['status' => 'server_error', 'message' => 'Server error — temporary',
+                    'icon' => '🟡'];
+        }
+        if (str_contains($errorLower, 'not_found') || str_contains($errorLower, 'model')) {
+            // Model not available but key works — still connected
+            return ['status' => 'ok', 'message' => 'Connected (default model may need update)',
+                    'icon' => '🟢'];
+        }
+
+        return ['status' => 'error', 'message' => $errorMsg ?: "HTTP {$httpCode}", 'icon' => '❌'];
+    }
+
+    private function probeOpenAI(array $config): array
+    {
+        // OpenAI: list models endpoint is cheap and checks auth
+        $ch = curl_init('https://api.openai.com/v1/models');
+        curl_setopt_array($ch, [
+            CURLOPT_HTTPHEADER => ['Authorization: Bearer ' . $config['api_key']],
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_TIMEOUT => 10,
+            CURLOPT_CONNECTTIMEOUT => 5,
+        ]);
+        $response = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+
+        if ($httpCode === 200) {
+            // Key is valid. OpenAI doesn't expose balance via API.
+            // Do a minimal completion to test quota.
+            $ch2 = curl_init('https://api.openai.com/v1/chat/completions');
+            curl_setopt_array($ch2, [
+                CURLOPT_POST => true,
+                CURLOPT_POSTFIELDS => json_encode([
+                    'model' => 'gpt-4o-mini',
+                    'max_tokens' => 5,
+                    'messages' => [['role' => 'user', 'content' => 'Hi']],
+                ]),
+                CURLOPT_HTTPHEADER => [
+                    'Authorization: Bearer ' . $config['api_key'],
+                    'Content-Type: application/json',
+                ],
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_TIMEOUT => 15,
+                CURLOPT_CONNECTTIMEOUT => 5,
+            ]);
+            $resp2 = curl_exec($ch2);
+            $http2 = curl_getinfo($ch2, CURLINFO_HTTP_CODE);
+            curl_close($ch2);
+
+            if ($http2 === 200) {
+                return ['status' => 'ok', 'message' => 'Connected & working', 'icon' => '🟢'];
+            }
+
+            $data2 = json_decode($resp2, true);
+            $errMsg = strtolower($data2['error']['message'] ?? '');
+            if (str_contains($errMsg, 'quota') || str_contains($errMsg, 'billing') || $http2 === 429) {
+                if (str_contains($errMsg, 'exceeded') || str_contains($errMsg, 'insufficient_quota')) {
+                    return ['status' => 'no_credits', 'message' => 'Quota exceeded — add credits',
+                            'icon' => '🔴', 'link' => 'https://platform.openai.com/account/billing'];
+                }
+                return ['status' => 'rate_limited', 'message' => 'Rate limited — try later',
+                        'icon' => '🟡'];
+            }
+            // Models list works but completion fails — partial
+            return ['status' => 'ok', 'message' => 'Connected (check model access)',
+                    'icon' => '🟢'];
+        }
+
+        $data = json_decode($response, true);
+        $errMsg = strtolower($data['error']['message'] ?? '');
+
+        if ($httpCode === 401) {
+            return ['status' => 'auth_error', 'message' => 'Invalid API key', 'icon' => '🔑'];
+        }
+        if (str_contains($errMsg, 'quota') || str_contains($errMsg, 'exceeded')) {
+            return ['status' => 'no_credits', 'message' => 'Quota exceeded',
+                    'icon' => '🔴', 'link' => 'https://platform.openai.com/account/billing'];
+        }
+
+        return ['status' => 'error', 'message' => $errMsg ?: "HTTP {$httpCode}", 'icon' => '❌'];
+    }
+
+    private function probeGoogle(array $config): array
+    {
+        // Google: list models to check key validity
+        $ch = curl_init('https://generativelanguage.googleapis.com/v1beta/models?key=' . $config['api_key'] . '&pageSize=1');
+        curl_setopt_array($ch, [
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_TIMEOUT => 10,
+            CURLOPT_CONNECTTIMEOUT => 5,
+        ]);
+        $response = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+
+        if ($httpCode === 200) {
+            // Key valid. Google Gemini API is free tier (with limits), so usually OK.
+            return ['status' => 'ok', 'message' => 'Connected & working', 'icon' => '🟢'];
+        }
+
+        $data = json_decode($response, true);
+        $errMsg = $data['error']['message'] ?? '';
+        $errStatus = $data['error']['status'] ?? '';
+
+        if ($httpCode === 400 && str_contains(strtolower($errMsg), 'api key')) {
+            return ['status' => 'auth_error', 'message' => 'Invalid API key', 'icon' => '🔑'];
+        }
+        if ($httpCode === 403) {
+            if (str_contains(strtolower($errMsg), 'enable') || str_contains(strtolower($errMsg), 'not been used')) {
+                return ['status' => 'not_enabled', 'message' => 'API not enabled in Google Cloud Console',
+                        'icon' => '⚙️', 'link' => 'https://console.cloud.google.com/apis'];
+            }
+            return ['status' => 'auth_error', 'message' => 'Access denied — check API key permissions',
+                    'icon' => '🔑'];
+        }
+        if ($httpCode === 429) {
+            return ['status' => 'rate_limited', 'message' => 'Quota exceeded',
+                    'icon' => '🟡'];
+        }
+
+        return ['status' => 'error', 'message' => $errMsg ?: "HTTP {$httpCode}", 'icon' => '❌'];
+    }
+
+    /**
+     * Classify an AI provider error into a user-friendly category.
+     * Returns: ['type' => string, 'title' => string, 'message' => string, 'action' => string]
+     */
+    public static function classifyError(string $errorMsg, string $provider = '', int $httpCode = 0): array
+    {
+        $errorLower = strtolower($errorMsg);
+        $providerName = ucfirst($provider ?: 'AI');
+
+        // No credits / insufficient balance
+        if (str_contains($errorLower, 'credit balance') || str_contains($errorLower, 'insufficient_quota')
+            || str_contains($errorLower, 'billing') || str_contains($errorLower, 'payment required')
+            || str_contains($errorLower, 'exceeded your current quota') || str_contains($errorLower, 'insufficient balance')
+            || str_contains($errorLower, 'account has insufficient') || $httpCode === 402) {
+            $links = [
+                'anthropic' => 'https://console.anthropic.com/settings/billing',
+                'openai'    => 'https://platform.openai.com/account/billing',
+                'deepseek'  => 'https://platform.deepseek.com/top_up',
+                'google'    => 'https://console.cloud.google.com/billing',
+            ];
+            $link = $links[$provider] ?? '';
+            return [
+                'type'    => 'no_credits',
+                'title'   => "{$providerName}: No Credits",
+                'message' => "Your {$providerName} account has run out of credits. Top up your balance or switch to a different AI provider.",
+                'action'  => $link ? "Top up at: {$link}" : "Add credits to your {$providerName} account.",
+                'link'    => $link,
+            ];
+        }
+
+        // Rate limiting
+        if (str_contains($errorLower, 'rate limit') || str_contains($errorLower, 'too many requests')
+            || str_contains($errorLower, 'rate_limit') || $httpCode === 429) {
+            return [
+                'type'    => 'rate_limit',
+                'title'   => "{$providerName}: Rate Limited",
+                'message' => "Too many requests to {$providerName}. Wait a moment and try again, or switch to a different provider.",
+                'action'  => 'Wait 30-60 seconds, then retry.',
+            ];
+        }
+
+        // Authentication errors
+        if (str_contains($errorLower, 'invalid.*api.key') || str_contains($errorLower, 'authentication')
+            || str_contains($errorLower, 'unauthorized') || str_contains($errorLower, 'invalid x-api-key')
+            || str_contains($errorLower, 'api key not valid') || $httpCode === 401 || $httpCode === 403) {
+            return [
+                'type'    => 'auth_error',
+                'title'   => "{$providerName}: Authentication Failed",
+                'message' => "The API key for {$providerName} is invalid or expired. Update it in Settings → AI Configuration.",
+                'action'  => 'Go to Settings → AI Configuration to update your API key.',
+            ];
+        }
+
+        // Not configured
+        if (str_contains($errorLower, 'not configured') || str_contains($errorLower, 'api key not')) {
+            return [
+                'type'    => 'not_configured',
+                'title'   => "{$providerName}: Not Configured",
+                'message' => "{$providerName} is not set up. Add your API key in Settings → AI Configuration.",
+                'action'  => 'Go to Settings → AI Configuration.',
+            ];
+        }
+
+        // Model not found
+        if (str_contains($errorLower, 'model not found') || str_contains($errorLower, 'does not exist')
+            || str_contains($errorLower, 'invalid model') || str_contains($errorLower, 'not_found_error')) {
+            return [
+                'type'    => 'model_error',
+                'title'   => "{$providerName}: Model Not Available",
+                'message' => "The selected AI model is not available. It may have been deprecated or your plan doesn't include it.",
+                'action'  => 'Try a different model or check your plan.',
+            ];
+        }
+
+        // Content policy / safety
+        if (str_contains($errorLower, 'content policy') || str_contains($errorLower, 'safety')
+            || str_contains($errorLower, 'blocked') || str_contains($errorLower, 'content_filter')) {
+            return [
+                'type'    => 'content_blocked',
+                'title'   => "{$providerName}: Content Blocked",
+                'message' => "The AI provider blocked this request due to content policy. Try rephrasing your prompt.",
+                'action'  => 'Modify your prompt and try again.',
+            ];
+        }
+
+        // Timeout
+        if (str_contains($errorLower, 'timeout') || str_contains($errorLower, 'timed out')
+            || str_contains($errorLower, 'deadline exceeded') || $httpCode === 408 || $httpCode === 504) {
+            return [
+                'type'    => 'timeout',
+                'title'   => "{$providerName}: Timeout",
+                'message' => "The AI took too long to respond. The server may be overloaded.",
+                'action'  => 'Try again, or switch to a faster model.',
+            ];
+        }
+
+        // Server errors
+        if ($httpCode >= 500 || str_contains($errorLower, 'server error') || str_contains($errorLower, 'overloaded')
+            || str_contains($errorLower, 'internal error') || str_contains($errorLower, 'service unavailable')) {
+            return [
+                'type'    => 'server_error',
+                'title'   => "{$providerName}: Server Error",
+                'message' => "The {$providerName} servers are experiencing issues. This is usually temporary.",
+                'action'  => 'Wait a few minutes and try again.',
+            ];
+        }
+
+        // cURL / network errors
+        if (str_contains($errorLower, 'curl') || str_contains($errorLower, 'connection')
+            || str_contains($errorLower, 'resolve host') || str_contains($errorLower, 'network')) {
+            return [
+                'type'    => 'network_error',
+                'title'   => 'Network Error',
+                'message' => "Could not connect to {$providerName}. Check your internet connection.",
+                'action'  => 'Verify internet connectivity and try again.',
+            ];
+        }
+
+        // Generic fallback
+        return [
+            'type'    => 'unknown',
+            'title'   => "{$providerName}: Error",
+            'message' => $errorMsg,
+            'action'  => 'Try again or switch to a different AI provider.',
+        ];
+    }
+
     private function callHuggingFace(string $prompt, array $options): array
     {
         if (!function_exists('ai_hf_generate_text')) {
@@ -515,9 +932,12 @@ class JTB_AI_Core
 
         $data = json_decode($response, true);
 
+        // Debug: log Anthropic response for troubleshooting
+        @file_put_contents('/tmp/ai_anthropic_debug.log', date('H:i:s') . " HTTP={$httpCode} model={$model} resp_len=" . strlen($response) . "\n" . substr($response, 0, 1000) . "\n\n", FILE_APPEND);
+
         if ($httpCode !== 200) {
             $errorMsg = $data['error']['message'] ?? "HTTP {$httpCode}";
-            return ['ok' => false, 'error' => $errorMsg];
+            return ['ok' => false, 'error' => $errorMsg, 'http_code' => $httpCode];
         }
 
         $text = $data['choices'][0]['message']['content'] ?? null;
@@ -549,6 +969,7 @@ class JTB_AI_Core
         $requestBody = [
             'model' => $model,
             'max_tokens' => $options['max_tokens'] ?? 2000,
+            'temperature' => $options['temperature'] ?? 0.7,
             'messages' => [
                 ['role' => 'user', 'content' => $prompt]
             ]
@@ -628,22 +1049,35 @@ class JTB_AI_Core
             'deepseek-code-v3' => 'deepseek-coder',
         ];
         $model = $modelMap[$model] ?? $model;
+        $isReasoner = ($model === 'deepseek-reasoner');
         $messages = [];
 
-        if (!empty($systemPrompt)) {
-            $messages[] = ['role' => 'system', 'content' => $systemPrompt];
+        if ($isReasoner) {
+            // DeepSeek R1: NO system role, merge into user message
+            $userContent = $prompt;
+            if (!empty($systemPrompt)) {
+                $userContent = $systemPrompt . "\n\n" . $prompt;
+            }
+            $messages[] = ['role' => 'user', 'content' => $userContent];
+        } else {
+            if (!empty($systemPrompt)) {
+                $messages[] = ['role' => 'system', 'content' => $systemPrompt];
+            }
+            $messages[] = ['role' => 'user', 'content' => $prompt];
         }
-        $messages[] = ['role' => 'user', 'content' => $prompt];
 
         $requestBody = [
             'model' => $model,
             'messages' => $messages,
             'max_tokens' => $options['max_tokens'] ?? 8000,
-            'temperature' => $options['temperature'] ?? 0.7
         ];
 
-        if (!empty($options['json_mode'])) {
-            $requestBody['response_format'] = ['type' => 'json_object'];
+        // DeepSeek R1: no temperature, no json_mode
+        if (!$isReasoner) {
+            $requestBody['temperature'] = $options['temperature'] ?? 0.7;
+            if (!empty($options['json_mode'])) {
+                $requestBody['response_format'] = ['type' => 'json_object'];
+            }
         }
 
         $ch = curl_init($apiUrl);
@@ -677,6 +1111,12 @@ class JTB_AI_Core
 
         $text = $data['choices'][0]['message']['content'] ?? null;
         $tokensUsed = ($data['usage']['total_tokens'] ?? 0);
+
+        // DeepSeek R1: strip any <think> tags that leak into content
+        if ($isReasoner && $text) {
+            $text = preg_replace('/<think>[\s\S]*?<\/think>/i', '', $text);
+            $text = trim($text);
+        }
 
         return [
             'ok' => !empty($text),
@@ -732,14 +1172,15 @@ class JTB_AI_Core
             $requestBody['generationConfig']['responseMimeType'] = 'application/json';
         }
 
-        $apiUrl = "https://generativelanguage.googleapis.com/v1beta/models/{$model}:generateContent?key=" . $config['api_key'];
+        $apiUrl = "https://generativelanguage.googleapis.com/v1beta/models/{$model}:generateContent";
 
         $ch = curl_init($apiUrl);
         curl_setopt_array($ch, [
             CURLOPT_POST => true,
             CURLOPT_POSTFIELDS => json_encode($requestBody),
             CURLOPT_HTTPHEADER => [
-                'Content-Type: application/json'
+                'Content-Type: application/json',
+                'x-goog-api-key: ' . $config['api_key'],
             ],
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_TIMEOUT => 300

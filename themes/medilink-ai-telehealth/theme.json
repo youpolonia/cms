@@ -1,0 +1,85 @@
+{
+    "name": "MediLink AI",
+    "description": "AI-powered telehealth platform connecting patients with specialists instantly",
+    "version": "1.0.0",
+    "author": "AI Theme Builder",
+    "supports": {
+        "theme-builder": true,
+        "custom-header": true,
+        "custom-footer": true,
+        "custom-colors": true
+    },
+    "options": {
+        "show_header": true,
+        "show_footer": true,
+        "body_background": "#0a121f",
+        "preload_fonts": true
+    },
+    "colors": {
+        "primary": "#00c9b7",
+        "secondary": "#ff6b8b",
+        "accent": "#6a5af9",
+        "background": "#0a121f",
+        "surface": "#131e32",
+        "text": "#e6f1ff",
+        "text_muted": "#8ca3c2",
+        "border": "#1e2d4a",
+        "success": "#00d4aa",
+        "warning": "#ffb347",
+        "error": "#ff5e7d"
+    },
+    "typography": {
+        "fontFamily": "Inter",
+        "headingFont": "Inter",
+        "baseFontSize": "18",
+        "lineHeight": "1.7",
+        "fontWeight": "400",
+        "headingWeight": "700"
+    },
+    "buttons": {
+        "borderRadius": "6",
+        "paddingX": "36",
+        "paddingY": "16",
+        "fontWeight": "700",
+        "uppercase": true,
+        "shadow": true
+    },
+    "layout": {
+        "containerWidth": "1280",
+        "sectionSpacing": "140",
+        "borderRadius": "12"
+    },
+    "homepage_sections": [
+        {
+            "id": "hero",
+            "label": "Hero",
+            "icon": "fas fa-star"
+        },
+        {
+            "id": "stats",
+            "label": "Stats \/ Numbers",
+            "icon": "fas fa-chart-bar"
+        },
+        {
+            "id": "testimonials",
+            "label": "Testimonials",
+            "icon": "fas fa-quote-right"
+        },
+        {
+            "id": "pricing",
+            "label": "Pricing Preview",
+            "icon": "fas fa-tags"
+        },
+        {
+            "id": "cta",
+            "label": "Call to Action",
+            "icon": "fas fa-bullhorn"
+        },
+        {
+            "id": "features",
+            "label": "Features",
+            "icon": "✨"
+        }
+    ],
+    "thumbnail": "thumbnail.svg"
+}

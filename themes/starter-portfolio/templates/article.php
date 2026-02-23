@@ -9,13 +9,13 @@
          &nbsp;/&nbsp; <?= number_format($article['views']) ?> views
         <?php endif; ?>
     </div>
-    <h1 class="page-hero-title"><?= esc($article['title']) ?></h1>
+    <h1 class="page-hero-title" data-article-id="<?= (int)($article['id'] ?? 0) ?>" data-page-field="title"><?= esc($article['title']) ?></h1>
 </section>
 
 <div class="page-content">
     <?php if (!empty($article['featured_image'])): ?>
     <div style="margin-bottom:40px;border-radius:12px;overflow:hidden;border:1px solid var(--color-border)">
-        <img src="<?= esc($article['featured_image']) ?>" alt="<?= esc($article['title']) ?>" style="width:100%">
+        <img loading="lazy" decoding="async" src="<?= esc($article['featured_image']) ?>" alt="<?= esc($article['title']) ?>" style="width:100%">
     </div>
     <?php endif; ?>
 

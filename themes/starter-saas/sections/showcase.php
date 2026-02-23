@@ -32,7 +32,7 @@ $pageIcons = [
             <a href="/page/<?= esc($p['slug']) ?>" class="feature-card glass-card" style="text-decoration:none">
                 <?php if (!empty($p['featured_image'])): ?>
                 <div style="margin:-32px -28px 20px;border-radius:16px 16px 0 0;overflow:hidden;height:180px">
-                    <img src="<?= esc($p['featured_image']) ?>" alt="<?= esc($p['title']) ?>" loading="lazy" style="width:100%;height:100%;object-fit:cover">
+                    <img decoding="async" loading="lazy" src="<?= esc($p['featured_image']) ?>" alt="<?= esc($p['title']) ?>" loading="lazy" style="width:100%;height:100%;object-fit:cover">
                 </div>
                 <?php else: ?>
                 <div class="feature-icon"><i class="<?= $icon ?>"></i></div>

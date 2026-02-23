@@ -25,7 +25,7 @@
                     <a href="/article/<?= esc($a['slug']) ?>" class="card-standard" data-animate>
                         <div class="card-img">
                             <?php if (!empty($a['featured_image'])): ?>
-                            <img src="<?= esc($a['featured_image']) ?>" alt="<?= esc($a['title']) ?>" loading="lazy">
+                            <img decoding="async" loading="lazy" src="<?= esc($a['featured_image']) ?>" alt="<?= esc($a['title']) ?>" loading="lazy">
                             <?php else: ?>
                             <div class="img-placeholder"><i class="fas fa-newspaper"></i></div>
                             <?php endif; ?>

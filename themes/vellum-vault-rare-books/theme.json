@@ -1,0 +1,82 @@
+{
+    "name": "Vellum & Vault",
+    "description": "A luxurious digital gallery for antiquarian books, first editions, and rare manuscripts.",
+    "version": "1.0.0",
+    "author": "AI Theme Builder",
+    "supports": {
+        "theme-builder": true,
+        "custom-header": true,
+        "custom-footer": true,
+        "custom-colors": true
+    },
+    "options": {
+        "show_header": true,
+        "show_footer": true,
+        "body_background": "#0f0c08",
+        "preload_fonts": true
+    },
+    "colors": {
+        "primary": "#2a8bb8",
+        "secondary": "#c4a03a",
+        "accent": "#8a9a8e",
+        "background": "#0f0c08",
+        "surface": "#1a1410",
+        "text": "#f5f1e8",
+        "text_muted": "#b8b2a3",
+        "border": "#3d2e1e",
+        "success": "#5b8f5b",
+        "warning": "#d4a03a",
+        "error": "#b86d6d"
+    },
+    "typography": {
+        "fontFamily": "Inter",
+        "headingFont": "Sora",
+        "baseFontSize": "17",
+        "lineHeight": "1.75",
+        "fontWeight": "400",
+        "headingWeight": "600"
+    },
+    "buttons": {
+        "borderRadius": "2",
+        "paddingX": "36",
+        "paddingY": "16",
+        "fontWeight": "600",
+        "uppercase": true,
+        "shadow": true
+    },
+    "layout": {
+        "containerWidth": "1280",
+        "sectionSpacing": "140",
+        "borderRadius": "4"
+    },
+    "homepage_sections": [
+        {
+            "id": "hero",
+            "label": "Hero",
+            "icon": "fas fa-star"
+        },
+        {
+            "id": "testimonials",
+            "label": "Testimonials",
+            "icon": "fas fa-quote-right"
+        },
+        {
+            "id": "articles",
+            "label": "Recent Articles",
+            "icon": "fas fa-newspaper"
+        },
+        {
+            "id": "featured",
+            "label": "featured"
+        },
+        {
+            "id": "vault",
+            "label": "vault"
+        },
+        {
+            "id": "appointment",
+            "label": "appointment"
+        }
+    ],
+    "thumbnail": "thumbnail.svg"
+}

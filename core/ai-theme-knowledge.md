@@ -1,3 +1,6 @@
+jaskolki
+jaskolki
+jaskolki
 # AI Theme Builder — Knowledge Base
 # This file is the AI's complete reference for generating CMS themes.
 # Read this BEFORE generating any code. Follow every rule precisely.
@@ -66,8 +69,8 @@ themes/{slug}/
     "error": "#hex"
   },
   "typography": {
-    "fontFamily": "Inter",
-    "headingFont": "Playfair Display",
+    "fontFamily": "(pick a UNIQUE body font — NOT Inter, Open Sans, or Roboto)",
+    "headingFont": "(pick a UNIQUE heading font — NOT Playfair Display or Inter)",
     "baseFontSize": "16",
     "lineHeight": "1.7",
     "fontWeight": "400",
@@ -238,8 +241,29 @@ These attributes make content editable via Theme Studio's live preview.
 - `articles.label`, `articles.title`, `articles.description`, `articles.btn_text`, `articles.btn_link`
 - `cta.title`, `cta.description`, `cta.btn_text`, `cta.btn_link`, `cta.bg_image`
 - `footer.description`, `footer.copyright`
-- `header.cta_text`, `header.cta_link`
+- `header.cta_text`, `header.cta_link`, `header.phone`, `header.email`
 - `brand.site_name`, `brand.logo`
+
+### ⚠️ CRITICAL RULE: Every theme_get() MUST have a data-ts attribute
+If you use `theme_get('section.field')` anywhere in your HTML, the element displaying that value
+MUST also have `data-ts="section.field"` (or `data-ts-bg`/`data-ts-href` as appropriate).
+Without `data-ts`, the field won't appear in Theme Studio and users can't edit it.
+
+**Header example (phone + email):**
+```php
+<?php if (theme_get('header.phone')): ?>
+<a href="tel:<?= esc(preg_replace('/[^0-9+]/', '', theme_get('header.phone'))) ?>"
+   data-ts="header.phone">
+    <?= esc(theme_get('header.phone')) ?>
+</a>
+<?php endif; ?>
+<?php if (theme_get('header.email')): ?>
+<a href="mailto:<?= esc(theme_get('header.email')) ?>"
+   data-ts="header.email">
+    <?= esc(theme_get('header.email')) ?>
+</a>
+<?php endif; ?>
+```
 
 ---
 
@@ -312,41 +336,117 @@ $themePath = '/themes/' . basename(__DIR__);
 
 ---
 
-## 7. Required Header Structure
+## 7. Header — Required Elements & Creative Freedom
 
-```html
-<header class="site-header" id="siteHeader">
-    <div class="header-container">
-        <a href="/" class="header-logo" data-ts="brand.logo">
-            <?php if ($tsLogo): ?>
-                <img src="<?= esc($tsLogo) ?>" alt="<?= esc(theme_get('brand.site_name', $siteName)) ?>">
-            <?php else: ?>
-                <span class="logo-text" data-ts="brand.site_name"><?= esc(theme_get('brand.site_name', $siteName)) ?></span>
-            <?php endif; ?>
-        </a>
-        <nav class="header-nav" id="headerNav">
-            <?= render_menu('header', ['class' => 'nav-links', 'link_class' => 'nav-link', 'wrap' => false]) ?>
-        </nav>
-        <a href="<?= esc(theme_get('header.cta_link', '#contact')) ?>"
-           class="header-cta"
-           data-ts="header.cta_text"
-           data-ts-href="header.cta_link">
-            <?= esc(theme_get('header.cta_text', 'Get Started')) ?>
-        </a>
-        <button class="mobile-toggle" id="mobileToggle" aria-label="Menu">
-            <span></span><span></span><span></span>
-        </button>
-    </div>
-</header>
+⚠️ DO NOT copy a template. Design a UNIQUE header HTML structure for each theme from scratch.
+
+### Required IDs (for JavaScript — mobile menu, scroll effect):
+- `id="siteHeader"` on the `<header>` element
+- `id="headerNav"` on the `<nav>` element containing the menu
+- `id="mobileToggle"` on the hamburger `<button>`
+
+### Required PHP snippets (use EXACTLY, but place them in YOUR layout):
+
+**Logo:**
+```php
+<?php if ($tsLogo): ?>
+    <img src="<?= esc($tsLogo) ?>" alt="<?= esc(theme_get('brand.site_name', $siteName)) ?>">
+<?php else: ?>
+    <span data-ts="brand.site_name"><?= esc(theme_get('brand.site_name', $siteName)) ?></span>
+<?php endif; ?>
 ```
 
-Required IDs: `siteHeader`, `headerNav`, `mobileToggle`, `mobileOverlay`
-Required classes: `.site-header`, `.header-container`, `.header-logo`, `.logo-text`, `.header-nav`, `.nav-links`, `.nav-link`, `.header-cta`, `.mobile-toggle`
+**Navigation menu:**
+```php
+<?= render_menu('header', ['class' => 'nav-links', 'link_class' => 'nav-link', 'wrap' => false]) ?>
+```
+
+**CTA button (use theme_get for text + link):**
+```php
+<a href="<?= esc(theme_get('header.cta_link', '#contact')) ?>"
+   data-ts="header.cta_text" data-ts-href="header.cta_link">
+    <?= esc(theme_get('header.cta_text', 'Get Started')) ?>
+</a>
+```
+
+**Mobile hamburger (3 spans for CSS animation):**
+```php
+<button id="mobileToggle" aria-label="Menu"><span></span><span></span><span></span></button>
+```
+
+**Contact info (optional but MUST have data-ts if used):**
+```php
+<?php if (theme_get('header.phone')): ?>
+<a href="tel:<?= esc(preg_replace('/[^0-9+]/', '', theme_get('header.phone'))) ?>"
+   data-ts="header.phone"><?= esc(theme_get('header.phone')) ?></a>
+<?php endif; ?>
+<?php if (theme_get('header.email')): ?>
+<a href="mailto:<?= esc(theme_get('header.email')) ?>"
+   data-ts="header.email"><?= esc(theme_get('header.email')) ?></a>
+<?php endif; ?>
+```
+⚠️ If your header layout includes phone, email, or any theme_get() value — you MUST add the matching `data-ts` attribute.
+
+### CSS class names — INVENT YOUR OWN
+You MUST use different class names for each theme. DO NOT reuse `.site-header`, `.header-container`, `.header-logo` etc.
+Example naming: `.tc-header`, `.tc-nav-wrap`, `.tc-brand` (theme-prefix + descriptive).
+The only JS-dependent hooks are the 3 IDs above plus:
+- `.header-scrolled` — JS adds this to `#siteHeader` on scroll. You MUST style this state.
+- `body.nav-open` — JS adds this when mobile menu opens. You MUST make nav visible.
+
+### LAYOUT — Pick a DIFFERENT approach for EACH theme (NEVER default to option 1):
+1. **Classic horizontal:** Logo left, nav center, CTA right
+2. **Split navigation:** Half nav left of centered logo, half right
+3. **Stacked dual-bar:** Top bar (phone, email, social) + main bar (logo, nav, CTA)
+4. **Centered logo:** Nav left | LOGO center large | CTA + social right
+5. **Left-heavy:** Logo + tagline stacked left, nav + CTA compact right
+6. **Minimal overlay:** Only logo + hamburger visible; nav always in full-screen overlay
+7. **Transparent floating:** Rounded container floating over hero with glassmorphism
+8. **Sidebar-style:** Vertical nav on left edge (desktop), standard top on mobile
+9. **Magazine:** Thin top strip (date, search, social) + large brand banner + nav bar below
+10. **Asymmetric:** Logo in oversized branded block, nav tucked into slim bar beside it
+
+Pick based on industry: restaurants→3 or 5, SaaS→7 or 4, portfolio→6 or 8, corporate→3 or 9, creative→2 or 10.
+
+### CTA text — MUST be industry-specific:
+Restaurant: "Book a Table" | SaaS: "Start Free Trial" | Construction: "Get a Quote" | Law: "Schedule Consultation" | Photography: "View Portfolio" | Fitness: "Join Now" | Education: "Enroll Today" | Healthcare: "Book Appointment"
+NEVER use generic "Get Started" or "Free Quote" for every theme.
+
+### Two visual states (REQUIRED):
+1. **Default:** transparent/semi-transparent, blends with hero section
+2. **Scrolled (`.header-scrolled`):** solid background, backdrop-filter, shadow, optionally smaller
+
+### Mobile menu (`body.nav-open`):
+Vary: slide from right, drop from top, full-screen overlay, drawer with brand panel.
+
 
 ---
 
-## 8. Required Footer Structure
+## 8. Footer Structure — AI-Generated (UNIQUE per theme)
 
+The footer is generated by AI for EACH theme — create a UNIQUE layout every time.
+Only the `<footer class="site-footer">` wrapper and data-ts bindings are required.
+
+### Required elements (must appear in every footer):
+- `<footer class="site-footer">` wrapper
+- Logo/brand (same PHP pattern as header — `$tsLogo` conditional)
+- Description: `data-ts="footer.description"` with `theme_get('footer.description', '...')`
+- Navigation: `<?= render_menu('footer', ['class' => 'footer-links', 'link_class' => 'footer-link', 'wrap' => false]) ?>`
+- Social links: `theme_get('footer.facebook')`, `theme_get('footer.instagram')`, `theme_get('footer.linkedin')`, `theme_get('footer.youtube')` — each wrapped in `<?php if (theme_get('footer.xxx')): ?>` conditional, Font Awesome icons
+- Contact info with data-ts: `footer.address`, `footer.phone`, `footer.email`, `footer.hours` (all optional, each wrapped in `<?php if (theme_get('footer.xxx')): ?>`)
+- Copyright: `data-ts="footer.copyright"` with fallback: `&copy; <?= date('Y') ?> <?= esc(theme_get('brand.site_name', $siteName)) ?>. All rights reserved.`
+
+### Layout variations (pick a DIFFERENT one each time — DO NOT repeat):
+- **Multi-column grid** (3-5 columns: brand, links, services, contact, newsletter)
+- **Centered minimal** (logo + tagline centered, social row, copyright)
+- **Big brand** (large logo/name on left, small links on right)
+- **Split footer** (dark top section with CTA, lighter bottom with links)
+- **Magazine-style** (featured content + links + newsletter signup)
+- **Contact-focused** (address + big phone/email + map placeholder)
+- **Newsletter-focused** (email signup prominent, links secondary)
+- **Two-row** (top row: brand + nav columns, bottom row: social + copyright)
+
+### Example (reference only — DO NOT copy this layout every time):
 ```html
 <footer class="site-footer">
     <div class="footer-top">
@@ -354,20 +454,18 @@ Required classes: `.site-header`, `.header-container`, `.header-logo`, `.logo-te
             <div class="footer-grid">
                 <div class="footer-brand">
                     <a href="/" class="footer-logo" data-ts="brand.logo">
-                        <!-- same logo pattern as header -->
+                        <?php if ($tsLogo): ?>
+                            <img src="<?= esc($tsLogo) ?>" alt="<?= esc(theme_get('brand.site_name', $siteName)) ?>" height="40">
+                        <?php else: ?>
+                            <span class="logo-text" data-ts="brand.site_name"><?= esc(theme_get('brand.site_name', $siteName)) ?></span>
+                        <?php endif; ?>
                     </a>
                     <p class="footer-tagline" data-ts="footer.description">
-                        <?= esc(theme_get('footer.description', 'Default description.')) ?>
+                        <?= esc(theme_get('footer.description', '')) ?>
                     </p>
-                    <div class="footer-social">
-                        <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-                        <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
-                    </div>
                 </div>
-                <!-- Additional footer columns: nav, contact, hours, etc. -->
                 <div class="footer-nav">
-                    <h4>Links</h4>
+                    <h4>Quick Links</h4>
                     <?= render_menu('footer', ['class' => 'footer-links', 'link_class' => 'footer-link', 'wrap' => false]) ?>
                 </div>
             </div>
@@ -383,6 +481,66 @@ Required classes: `.site-header`, `.header-container`, `.header-logo`, `.logo-te
 </footer>
 ```
 
+---
+
+## 8b. Sidebar Structure — AI-Generated (UNIQUE per theme)
+
+The sidebar is used on the articles listing page. Generate a UNIQUE sidebar for each theme.
+
+### Required elements:
+- `<aside>` wrapper element
+- **Categories widget** (MUST have — uses `$categories` array from parent scope):
+  ```php
+  <?php if (!empty($categories)): ?>
+  <?php foreach ($categories as $cat): ?>
+      <a href="/articles?category=<?= esc($cat['slug']) ?>">
+          <?= esc($cat['name']) ?>
+          <span><?= (int)($cat['article_count'] ?? 0) ?></span>
+      </a>
+  <?php endforeach; ?>
+  <?php endif; ?>
+  ```
+
+### Optional widgets (pick 2-3, vary per theme):
+- **Search box**: text input with search icon/button
+- **About blurb**: `data-ts="sidebar.about"` with `theme_get('sidebar.about', '...')`
+- **Newsletter signup**: email input + subscribe button
+- **Tags cloud**: styled inline tags/badges
+- **Social follow**: icons using `theme_get('footer.facebook')` etc.
+- **Recent articles**: heading + placeholder list
+- **Quote / tip**: decorative blockquote with `data-ts="sidebar.quote"`
+
+### Layout variations:
+- **Card-based**: each widget in a styled card with border/shadow
+- **Minimal**: simple sections separated by thin lines
+- **Accent bar**: colored left/top border on each widget
+- **Dark/inverted**: dark bg sidebar contrasting with light content
+- **Sticky**: add `position: sticky; top: 100px` via CSS (not inline)
+
+### Example (reference — DO NOT copy every time):
+```html
+<aside class="articles-sidebar">
+    <?php if (!empty($categories)): ?>
+    <div class="sidebar-block">
+        <h4 class="sidebar-title">Categories</h4>
+        <?php foreach ($categories as $cat): ?>
+        <a href="/articles?category=<?= esc($cat['slug']) ?>" class="sidebar-cat-link">
+            <span><?= esc($cat['name']) ?></span>
+            <span class="cat-count"><?= (int)($cat['article_count'] ?? 0) ?></span>
+        </a>
+        <?php endforeach; ?>
+    </div>
+    <?php endif; ?>
+    <div class="sidebar-block">
+        <h4 class="sidebar-title">Newsletter</h4>
+        <p>Stay updated with our latest articles.</p>
+        <form class="sidebar-newsletter">
+            <input type="email" placeholder="Your email" class="sidebar-input">
+            <button type="button" class="btn btn-primary btn-sm">Subscribe</button>
+        </form>
+    </div>
+</aside>
+```
 ---
 
 ## 9. Required home.php Structure
@@ -488,6 +646,10 @@ Every section file follows this pattern:
     --secondary: #hex;
     --accent: #hex;
     --background: #hex;
+    
+    /* RGB triplets for rgba() usage — MANDATORY */
+    --bg-rgb: R, G, B;         /* e.g. 10, 12, 16 for #0a0c10 */
+    --primary-rgb: R, G, B;    /* e.g. 196, 181, 160 for #c4b5a0 */
     --surface: #hex;
     --surface-elevated: #hex;
     --surface-card: #hex;
@@ -521,7 +683,7 @@ Every section file follows this pattern:
 
 **Header:** `.site-header`, `.site-header.header-scrolled` (with backdrop-filter), `.header-container`, `.header-logo`, `.logo-text`, `.header-nav`, `.nav-links`, `.nav-link` (with ::after underline animation), `.header-cta`, `.mobile-toggle` (3 spans → X on `.toggle-active`), `.mobile-overlay`, `.header-nav.nav-open`
 
-**Hero:** `.hero`, `.hero-bg`, `.hero-overlay`, `.hero-content`, `.hero-title`, `.hero-subtitle`, `.hero-actions`
+**Hero:** `.hero` (min-height: 100vh, padding-top: var(--header-height)), `.hero-bg` (position: absolute, cover), `.hero-overlay` (gradient overlay), `.hero-content` (position: relative, z-index: 2, vertically centered), `.hero-title`, `.hero-subtitle`, `.hero-actions`
 
 **Page templates:** `.page-hero`, `.page-hero-overlay`, `.page-hero-title`, `.page-breadcrumb`, `.breadcrumb-sep`, `.page-content-section`
 
@@ -540,6 +702,8 @@ Every section file follows this pattern:
 **Utility:** `body.tb-page main` (padding-top), `body.menu-open` (overflow:hidden), `img` (max-width:100%)
 
 ### CSS Rules
+- .hero MUST have padding-top: var(--header-height) to prevent fixed header overlap
+- Sections MUST alternate backgrounds: .section:nth-child(odd) uses --background, :nth-child(even) uses --surface or --surface-elevated
 - NEVER use hardcoded hex outside :root — use var(--name) everywhere
 - ALL interactive elements must have transition
 - Hover states: translateY(-2px) + box-shadow for cards/buttons
@@ -619,3 +783,103 @@ These provide 5 layout templates: grid, masonry, mosaic, carousel, justified.
 Plus a full lightbox implementation (keyboard nav, touch swipe).
 
 The gallery template should include both CSS and JS links and query the DB directly.
+
+## 17. Visual Design Principles (CRITICAL for Quality)
+
+### Hero Section — The First Impression
+- **Minimum 90vh height** — hero must dominate the viewport
+- Background: full-bleed image with gradient overlay (0.4-0.6 opacity max)
+- Content vertically centered with ample breathing room
+- Title: bold, 3.5-5rem on desktop, 2-2.5rem on mobile
+- Subtitle: 1.1-1.3rem, max-width 600px, lighter weight
+- CTA buttons: large (padding 16px 36px+), high contrast, visible on the overlay
+- Optional: animated entrance (fade-up), decorative elements (geometric shapes, gradient accents)
+
+### Section Rhythm — Avoid Monotony
+- **Alternate section backgrounds**: Don't use the same bg for consecutive sections
+  Pattern: dark → light → dark → light, or: bg → surface → bg → surface-elevated
+- **Vary layouts between sections**: NOT every section = "container > heading > 3-column grid"
+  Alternate: full-width → contained, grid → split 50/50, cards → list, centered → offset
+- **Visual dividers**: Use at least 2 different separator styles (gradient line, SVG wave, diagonal clip, spacing)
+- **Section minimum content**: Every section must have label + title + description + actual content blocks
+
+### Card Design — The Building Blocks
+- Cards need VISIBLE boundaries: either box-shadow OR distinct background + border
+- Image cards: image fills top portion (aspect-ratio: 16/9 or 3/2), content below
+- Hover: transform: translateY(-4px) + enhanced shadow
+- Dark themes: cards = surface color (#1a-#25 range), NOT same as background
+- Card content: proper padding (24px+), title + description + optional meta
+
+### Color Application Rules
+- **Background sections**: alternate between --background and --surface
+- **Cards**: always --surface or --surface-elevated (never same as parent section)
+- **Text on dark**: --text (light gray #e-range), --text-muted for secondary
+- **Text on light**: --text (dark #1-3 range), --text-muted for secondary
+- **Accent usage**: CTAs, badges, active states, hover highlights — NOT large areas
+- **Gradient overlays on images**: from rgba(bg, 0.7) to transparent, or angled
+
+### Mobile-First Responsive
+- Breakpoints: 1024px (tablet), 768px (large phone), 480px (small phone)
+- Grids: 3col → 2col → 1col
+- Hero text: scale down by ~40% on mobile
+- Navigation: hamburger menu below 768px
+- Section spacing: reduce by 30-40% on mobile
+- Touch targets: minimum 44px height for buttons and links
+
+### Premium Polish Details
+- **Loading states**: skeleton shimmer or fade-in for images
+- **Focus states**: visible outline for accessibility
+- **Selection colors**: custom ::selection matching theme accent
+- **Scrollbar styling**: subtle custom scrollbar on webkit
+- **Image hover**: zoom (scale 1.05) with overflow hidden
+- **Link underlines**: animated (width 0→100% on hover, using ::after)
+- **Section labels**: uppercase, letter-spacing 0.1-0.2em, small font size, accent color
+- **Dividers**: thin gradient line below labels (from accent to transparent)
+
+
+---
+
+## 18. CMS Integration Points — MANDATORY
+
+Generated themes MUST use existing CMS systems, NOT hardcode content.
+
+### Navigation Menus
+The CMS has menu management at `/admin/menus`. Themes use `render_menu()`:
+```php
+// Header — renders the menu assigned to 'header' location
+<?= render_menu('header', ['class' => 'nav-links', 'link_class' => 'nav-link', 'wrap' => false]) ?>
+
+// Footer — renders the menu assigned to 'footer' location  
+<?= render_menu('footer', ['class' => 'footer-links', 'link_class' => 'footer-link', 'wrap' => false]) ?>
+```
+NEVER hardcode `<a href="/about">About</a>` etc. — always use `render_menu()`.
+Available menus are created per-theme in admin (e.g. "Restaurant Navigation", "Saas Footer").
+
+### Widgets
+The CMS has widget management at `/admin/widgets`. Widgets are content blocks assigned to areas (sidebar, footer, etc.).
+Widgets table: `id, name, type, area, content, settings, is_active, sort_order`
+ThemeManager provides: `ThemeManager::render_region_widgets($region, $context)`
+Use `.sidebar-widget` class for widget containers in article sidebar.
+
+### Galleries
+The CMS has gallery management at `/admin/galleries`. Gallery template is a PHP boilerplate (NOT AI-generated).
+Galleries table: `id, name, slug, description, display_template, theme, is_public`
+Gallery images: `gallery_images` table with `filename, title, sort_order`
+Image path: `/uploads/media/{filename}`
+Gallery CSS: `/public/css/gallery-layouts.css` (external, loaded by template)
+Gallery JS: `/public/js/gallery-layouts.js` (external, loaded by template)
+Display templates: grid, masonry, mosaic, carousel
+
+### Media Library
+The CMS has media management at `/admin/media`. All uploaded files go to `/uploads/media/`.
+Media table: `id, filename, original_name, mime_type, path, title, alt_text, folder`
+Pexels images downloaded during theme generation are saved to media library.
+Theme images should reference `/uploads/media/` paths when possible.
+
+### Content Seeding (during theme generation)
+When a theme is generated, the pipeline should:
+1. Create menus: header menu + footer menu matching the theme slug
+2. Seed galleries: 1-2 galleries with Pexels images for the industry  
+3. Seed demo pages: Home, About, Services, Contact, Gallery
+4. Seed demo articles: 3-4 articles with featured images from Pexels
+These ensure the theme looks complete immediately after generation.

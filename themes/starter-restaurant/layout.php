@@ -74,6 +74,7 @@ $themePath = '/themes/starter-restaurant';
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <?php endif; ?>
+    <?= function_exists('ve_google_fonts_link') ? ve_google_fonts_link() : '' ?>
     <link rel="stylesheet" href="/assets/css/fontawesome.min.css">
     <link rel="stylesheet" href="/assets/css/tb-frontend.css">
     <link rel="stylesheet" href="<?= $themePath ?>/assets/css/style.css">
@@ -97,7 +98,7 @@ $themePath = '/themes/starter-restaurant';
             <?php $tsLogo = theme_get('brand.logo') ?: $siteLogo; ?>
             <a href="/" class="header-logo" data-ts="brand.logo">
                 <?php if ($tsLogo): ?>
-                    <img src="<?= esc($tsLogo) ?>" alt="<?= esc(theme_get('brand.site_name', $siteName)) ?>">
+                    <img loading="lazy" decoding="async" src="<?= esc($tsLogo) ?>" alt="<?= esc(theme_get('brand.site_name', $siteName)) ?>">
                 <?php else: ?>
                     <span class="logo-text" data-ts="brand.site_name"><?= esc(theme_get('brand.site_name', $siteName)) ?></span>
                 <?php endif; ?>
@@ -124,7 +125,7 @@ $themePath = '/themes/starter-restaurant';
 <?php if ($isTbPage): ?>
     <?= $content ?? '' ?>
 <?php else: ?>
-    <main>
+    <main id="main-content">
         <?= $content ?? '' ?>
     </main>
 <?php endif; ?>
@@ -141,7 +142,7 @@ $themePath = '/themes/starter-restaurant';
                     <div class="footer-brand">
                         <a href="/" class="footer-logo" data-ts="brand.logo">
                             <?php if ($tsLogo): ?>
-                                <img src="<?= esc($tsLogo) ?>" alt="<?= esc(theme_get('brand.site_name', $siteName)) ?>">
+                                <img loading="lazy" decoding="async" src="<?= esc($tsLogo) ?>" alt="<?= esc(theme_get('brand.site_name', $siteName)) ?>">
                             <?php else: ?>
                                 <span class="logo-text" data-ts="brand.site_name"><?= esc(theme_get('brand.site_name', $siteName)) ?></span>
                             <?php endif; ?>

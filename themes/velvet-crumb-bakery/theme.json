@@ -1,0 +1,81 @@
+{
+    "name": "Velvet Crumb",
+    "description": "Artisan cheesecake boutique with seasonal flavors and luxury gifting",
+    "version": "1.0.0",
+    "author": "AI Theme Builder",
+    "supports": {
+        "theme-builder": true,
+        "custom-header": true,
+        "custom-footer": true,
+        "custom-colors": true
+    },
+    "options": {
+        "show_header": true,
+        "show_footer": true,
+        "body_background": "#fefaf3",
+        "preload_fonts": true
+    },
+    "colors": {
+        "primary": "#8a9a5b",
+        "secondary": "#c67b9d",
+        "accent": "#d4b483",
+        "background": "#fefaf3",
+        "surface": "#ffffff",
+        "text": "#2c2416",
+        "text_muted": "#6b5c43",
+        "border": "#e8dfd1",
+        "success": "#5b8a6f",
+        "warning": "#d4a03a",
+        "error": "#b5656b"
+    },
+    "typography": {
+        "fontFamily": "Inter",
+        "headingFont": "Inter",
+        "baseFontSize": "17",
+        "lineHeight": "1.65",
+        "fontWeight": "400",
+        "headingWeight": "600"
+    },
+    "buttons": {
+        "borderRadius": "2",
+        "paddingX": "36",
+        "paddingY": "16",
+        "fontWeight": "600",
+        "uppercase": true,
+        "shadow": true
+    },
+    "layout": {
+        "containerWidth": "1280",
+        "sectionSpacing": "140",
+        "borderRadius": "6"
+    },
+    "homepage_sections": [
+        {
+            "id": "hero",
+            "label": "Hero",
+            "icon": "fas fa-star"
+        },
+        {
+            "id": "testimonials",
+            "label": "Testimonials",
+            "icon": "fas fa-quote-right"
+        },
+        {
+            "id": "flavors",
+            "label": "flavors"
+        },
+        {
+            "id": "seasonal",
+            "label": "seasonal"
+        },
+        {
+            "id": "gifting",
+            "label": "gifting"
+        },
+        {
+            "id": "delivery",
+            "label": "delivery"
+        }
+    ],
+    "thumbnail": "thumbnail.svg"
+}

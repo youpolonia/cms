@@ -1,0 +1,91 @@
+{
+    "name": "Titan Pave",
+    "description": "Bold, dark construction theme with striking amber accents and powerful typography",
+    "version": "1.0.0",
+    "author": "AI Theme Builder",
+    "supports": {
+        "theme-builder": true,
+        "custom-header": true,
+        "custom-footer": true,
+        "custom-colors": true
+    },
+    "options": {
+        "show_header": true,
+        "show_footer": true,
+        "body_background": "#0b0d0f",
+        "preload_fonts": true
+    },
+    "colors": {
+        "primary": "#ff8c00",
+        "secondary": "#1a73e8",
+        "accent": "#00d4aa",
+        "background": "#0b0d0f",
+        "surface": "#151719",
+        "text": "#f0f2f4",
+        "text_muted": "#9ca3af",
+        "border": "#2a2d32",
+        "success": "#22c55e",
+        "warning": "#fbbf24",
+        "error": "#ef4444"
+    },
+    "typography": {
+        "fontFamily": "Outfit",
+        "headingFont": "Anton",
+        "baseFontSize": "17",
+        "lineHeight": "1.65",
+        "fontWeight": "400",
+        "headingWeight": "400"
+    },
+    "buttons": {
+        "borderRadius": "2",
+        "paddingX": "36",
+        "paddingY": "16",
+        "fontWeight": "600",
+        "uppercase": true,
+        "shadow": true
+    },
+    "layout": {
+        "containerWidth": "1280",
+        "sectionSpacing": "130",
+        "borderRadius": "4"
+    },
+    "homepage_sections": [
+        {
+            "id": "hero",
+            "label": "Hero",
+            "icon": "⭐",
+            "required": true
+        },
+        {
+            "id": "about",
+            "label": "About Us",
+            "icon": "📖"
+        },
+        {
+            "id": "services",
+            "label": "Our Services",
+            "icon": "🔧"
+        },
+        {
+            "id": "projects",
+            "label": "Project Gallery",
+            "icon": "🏗️"
+        },
+        {
+            "id": "testimonials",
+            "label": "Testimonials",
+            "icon": "💬"
+        },
+        {
+            "id": "articles",
+            "label": "Latest News",
+            "icon": "📰"
+        },
+        {
+            "id": "cta",
+            "label": "Get In Touch",
+            "icon": "📞"
+        }
+    ],
+    "thumbnail": "thumbnail.svg"
+}

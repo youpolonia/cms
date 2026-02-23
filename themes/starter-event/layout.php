@@ -20,7 +20,7 @@
     <button class="mobile-toggle" aria-label="Menu">☰</button>
   </div>
 </header>
-<main class="site-main"><?= $content ?></main>
+<main id="main-content" class="site-main"><?= $content ?></main>
 <footer class="site-footer">
   <div class="container footer-grid">
     <div class="footer-col"><h4 data-ts="brand.site_name"><?= esc(get_site_name()) ?></h4><p data-ts="footer.description">The premier tech conference bringing together innovators, creators, and leaders.</p></div>

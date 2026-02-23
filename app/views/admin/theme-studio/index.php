@@ -747,6 +747,46 @@ html,body{
 .ts-modal-text{font-size:13px;color:var(--ts-subtext);margin-bottom:20px;line-height:1.5}
 .ts-modal-actions{display:flex;gap:8px;justify-content:flex-end}
 
+/* ── Navigation Tab ────────────────────────────────────── */
+.ts-nav-panel{padding:12px}
+.ts-nav-menu-group{margin-bottom:20px}
+.ts-nav-menu-title{display:flex;align-items:center;justify-content:space-between;padding:8px 12px;background:rgba(49,50,68,0.5);border-radius:8px;margin-bottom:8px;font-size:13px;font-weight:600;color:var(--ts-text)}
+.ts-nav-menu-title .location-badge{font-size:10px;padding:2px 8px;background:var(--ts-accent);color:#fff;border-radius:12px;font-weight:500;text-transform:uppercase;letter-spacing:0.5px}
+.ts-nav-items{list-style:none;margin:0;padding:0}
+.ts-nav-item{display:flex;align-items:center;gap:8px;padding:8px 10px;margin:2px 0;background:rgba(30,30,46,0.6);border:1px solid rgba(69,71,90,0.3);border-radius:6px;cursor:grab;transition:all 0.15s}
+.ts-nav-item:hover{background:rgba(49,50,68,0.6);border-color:rgba(69,71,90,0.6)}
+.ts-nav-item.dragging{opacity:0.5;border-color:var(--ts-accent)}
+.ts-nav-item.drag-over{border-top:2px solid var(--ts-accent);margin-top:0}
+.ts-nav-item .drag-handle{cursor:grab;color:var(--ts-subtext);font-size:12px;flex-shrink:0;width:16px;text-align:center}
+.ts-nav-item .item-icon{width:16px;text-align:center;color:var(--ts-subtext);font-size:11px;flex-shrink:0}
+.ts-nav-item .item-title{flex:1;font-size:13px;color:var(--ts-text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ts-nav-item .item-url{font-size:10px;color:var(--ts-subtext);max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex-shrink:0}
+.ts-nav-item .item-actions{display:flex;gap:4px;flex-shrink:0}
+.ts-nav-item .item-actions button{background:none;border:none;color:var(--ts-subtext);cursor:pointer;padding:2px 4px;border-radius:4px;font-size:12px;line-height:1}
+.ts-nav-item .item-actions button:hover{background:rgba(69,71,90,0.5);color:var(--ts-text)}
+.ts-nav-item .item-actions button.delete-btn:hover{color:#f38ba8}
+.ts-nav-item.inactive{opacity:0.4}
+.ts-nav-add-bar{display:flex;gap:6px;margin-top:8px}
+.ts-nav-add-bar button{flex:1;padding:7px 10px;background:rgba(49,50,68,0.4);border:1px dashed rgba(69,71,90,0.5);border-radius:6px;color:var(--ts-subtext);cursor:pointer;font-size:12px;transition:all 0.15s}
+.ts-nav-add-bar button:hover{background:rgba(49,50,68,0.7);border-color:var(--ts-accent);color:var(--ts-text)}
+/* Item edit inline form */
+.ts-nav-edit-form{display:flex;flex-direction:column;gap:6px;padding:10px 12px;background:rgba(30,30,46,0.8);border:1px solid rgba(69,71,90,0.5);border-radius:8px;margin:4px 0}
+.ts-nav-edit-form .form-row{display:flex;gap:6px;align-items:center}
+.ts-nav-edit-form .form-row label{font-size:11px;color:var(--ts-subtext);width:40px;flex-shrink:0}
+.ts-nav-edit-form input,.ts-nav-edit-form select{flex:1;padding:5px 8px;background:rgba(30,30,46,0.9);border:1px solid rgba(69,71,90,0.5);border-radius:4px;color:var(--ts-text);font-size:12px}
+.ts-nav-edit-form input:focus,.ts-nav-edit-form select:focus{border-color:var(--ts-accent);outline:none}
+.ts-nav-edit-form .form-actions{display:flex;gap:6px;justify-content:flex-end;margin-top:4px}
+.ts-nav-edit-form .btn-sm{padding:4px 12px;border-radius:4px;font-size:11px;cursor:pointer;border:none}
+.ts-nav-edit-form .btn-save{background:var(--ts-accent);color:#fff}
+.ts-nav-edit-form .btn-save:hover{opacity:0.9}
+.ts-nav-edit-form .btn-cancel{background:rgba(69,71,90,0.5);color:var(--ts-text)}
+.ts-nav-edit-form .btn-cancel:hover{background:rgba(69,71,90,0.7)}
+.ts-nav-empty{text-align:center;padding:20px;color:var(--ts-subtext);font-size:12px;opacity:0.6}
+.ts-nav-page-picker{max-height:160px;overflow-y:auto;border:1px solid rgba(69,71,90,0.5);border-radius:4px;margin-top:4px}
+.ts-nav-page-picker .page-option{display:flex;align-items:center;gap:8px;padding:6px 10px;cursor:pointer;font-size:12px;color:var(--ts-text)}
+.ts-nav-page-picker .page-option:hover{background:rgba(49,50,68,0.5)}
+.ts-nav-page-picker .page-option .page-slug{font-size:10px;color:var(--ts-subtext)}
+
 /* ── Tab Navigation ────────────────────────────────────── */
 .ts-tab-nav{
   display:flex;border-bottom:1px solid var(--ts-border);
@@ -1217,7 +1257,7 @@ html,body{
 
     <div class="ts-topbar-sep"></div>
 
-    <div class="ts-topbar-title">
+    <div class="ts-topbar-title"><img src="/assets/images/jessie-logo.svg" alt="Jessie" width="24" height="24" style="vertical-align:middle;margin-right:6px">
       <span>Theme Studio:</span>
       <span class="ts-theme-name"><?= htmlspecialchars($themeName ?? 'Theme') ?></span>
     </div>
@@ -1297,6 +1337,7 @@ html,body{
       <div class="ts-tab-nav" id="ts-tab-nav">
         <button class="ts-tab-btn active" data-tab="design" title="Design">🎨 Design <span class="tip"><span class="tip-text">Colors, fonts, spacing and visual style of your theme.</span></span></button>
         <button class="ts-tab-btn" data-tab="sections" title="Sections">📐 Sections <span class="tip"><span class="tip-text">Reorder, show/hide homepage sections with drag &amp; drop.</span></span></button>
+        <button class="ts-tab-btn" data-tab="navigation" title="Navigation">🧭 Nav <span class="tip"><span class="tip-text">Manage header and footer navigation menus.</span></span></button>
       </div>
 
       <!-- Design Tab (existing accordion) -->
@@ -1364,6 +1405,13 @@ html,body{
       </div>
       <?php endif; ?>
     </aside>
+
+      <!-- Navigation Tab -->
+      <div id="ts-nav-tab" class="ts-scroll ts-tab-content" data-tab="navigation" style="display:none">
+        <div class="ts-nav-panel" id="nav-panel">
+          <div style="text-align:center;padding:30px;color:var(--ts-subtext);font-size:13px">Loading menus...</div>
+        </div>
+      </div>
 
     <!-- ── Preview Area (right side) ───────────────────── -->
     <main id="ts-preview">
@@ -3550,6 +3598,10 @@ $$('.ts-tab-btn').forEach(btn => {
     if (tab === 'sections' && !sectionsLoaded) {
       loadSections();
     }
+    /* Load navigation menus on first switch */
+    if (tab === 'navigation' && !navMenusLoaded) {
+      loadNavMenus();
+    }
   });
 });
 
@@ -4101,6 +4153,333 @@ if (file_exists($jtbMediaPath)) {
     jtb_render_media_gallery_modal($csrfToken ?? '', $pexelsKey);
 }
 ?>
-<script src="/plugins/jessie-theme-builder/assets/js/media-gallery.js"></script>
+<script src="/plugins/jessie-theme-builder/assets/js/media-gallery.js">
+/* ═══════════════════════════════════════════════════════════
+   NAVIGATION MENU MANAGEMENT
+   ═══════════════════════════════════════════════════════════ */
+let navMenusLoaded = false;
+let navMenusData = { menus: [], pages: [] };
+
+async function loadNavMenus() {
+  const panel = document.getElementById('nav-panel');
+  try {
+    const data = await api('GET', 'menus');
+    if (!data.ok) throw new Error(data.error || 'Failed to load menus');
+    navMenusData = data;
+    navMenusLoaded = true;
+    renderNavPanel();
+  } catch (err) {
+    panel.innerHTML = '<div class="ts-nav-empty">❌ ' + esc(err.message) + '</div>';
+  }
+}
+
+function renderNavPanel() {
+  const panel = document.getElementById('nav-panel');
+  const menus = navMenusData.menus || [];
+  
+  if (menus.length === 0) {
+    panel.innerHTML = '<div class="ts-nav-empty">No menus found for this theme.<br>Generate a theme to auto-create menus.</div>';
+    return;
+  }
+
+  let html = '';
+  const locationLabels = {
+    'header': '🔝 Header Navigation',
+    'footer': '🔻 Footer Links',
+    'footer-services': '🔧 Footer Services'
+  };
+
+  menus.forEach(menu => {
+    const loc = menu.location || menu.slug;
+    const label = locationLabels[loc] || ('📋 ' + (menu.name || loc));
+    const items = menu.items || [];
+
+    html += '<div class="ts-nav-menu-group" data-menu-id="' + menu.id + '" data-location="' + esc(loc) + '">';
+    html += '<div class="ts-nav-menu-title"><span>' + label + '</span><span class="location-badge">' + esc(loc) + '</span></div>';
+    html += '<ul class="ts-nav-items" data-menu-id="' + menu.id + '">';
+
+    if (items.length === 0) {
+      html += '<li class="ts-nav-empty">No items yet</li>';
+    } else {
+      items.forEach(item => {
+        html += renderNavItem(item);
+      });
+    }
+
+    html += '</ul>';
+    html += '<div class="ts-nav-add-bar">';
+    html += '<button onclick="showAddItemForm(' + menu.id + ', \'' + esc(loc) + '\')" title="Add custom link">+ Link</button>';
+    html += '<button onclick="showPagePicker(' + menu.id + ', \'' + esc(loc) + '\')" title="Add page link">+ Page</button>';
+    html += '</div>';
+    html += '</div>';
+  });
+
+  panel.innerHTML = html;
+  initNavDragDrop();
+}
+
+function renderNavItem(item) {
+  const activeClass = item.is_active === '0' || item.is_active === 0 ? ' inactive' : '';
+  const icon = item.icon ? '<i class="' + esc(item.icon) + '"></i>' : '•';
+  return '<li class="ts-nav-item' + activeClass + '" data-item-id="' + item.id + '" draggable="true">' +
+    '<span class="drag-handle">☰</span>' +
+    '<span class="item-icon">' + icon + '</span>' +
+    '<span class="item-title">' + esc(item.title) + '</span>' +
+    '<span class="item-url">' + esc(item.url || '') + '</span>' +
+    '<span class="item-actions">' +
+      '<button onclick="editNavItem(' + item.id + ')" title="Edit">✏️</button>' +
+      '<button onclick="toggleNavItem(' + item.id + ')" title="Toggle visibility">👁</button>' +
+      '<button class="delete-btn" onclick="deleteNavItem(' + item.id + ')" title="Delete">✕</button>' +
+    '</span>' +
+  '</li>';
+}
+
+function showAddItemForm(menuId, location) {
+  const group = document.querySelector('.ts-nav-menu-group[data-menu-id="' + menuId + '"]');
+  if (!group) return;
+  // Remove any existing form
+  const existing = group.querySelector('.ts-nav-edit-form');
+  if (existing) { existing.remove(); return; }
+
+  const form = document.createElement('div');
+  form.className = 'ts-nav-edit-form';
+  form.innerHTML =
+    '<div class="form-row"><label>Title</label><input type="text" id="nav-new-title" placeholder="Link text"></div>' +
+    '<div class="form-row"><label>URL</label><input type="text" id="nav-new-url" placeholder="/about or https://..."></div>' +
+    '<div class="form-row"><label>Icon</label><input type="text" id="nav-new-icon" placeholder="fas fa-home (optional)"></div>' +
+    '<div class="form-actions">' +
+      '<button class="btn-sm btn-cancel" onclick="this.closest(\'.ts-nav-edit-form\').remove()">Cancel</button>' +
+      '<button class="btn-sm btn-save" onclick="addNavItem(' + menuId + ')">Add</button>' +
+    '</div>';
+  group.appendChild(form);
+  form.querySelector('#nav-new-title').focus();
+}
+
+function showPagePicker(menuId, location) {
+  const group = document.querySelector('.ts-nav-menu-group[data-menu-id="' + menuId + '"]');
+  if (!group) return;
+  const existing = group.querySelector('.ts-nav-edit-form');
+  if (existing) { existing.remove(); return; }
+
+  const pages = navMenusData.pages || [];
+  if (pages.length === 0) {
+    toast('No published pages found', 'warning');
+    return;
+  }
+
+  const form = document.createElement('div');
+  form.className = 'ts-nav-edit-form';
+  let pickerHtml = '<div class="ts-nav-page-picker">';
+  pages.forEach(p => {
+    pickerHtml += '<div class="page-option" onclick="addPageToMenu(' + menuId + ', ' + p.id + ', \'' + esc(p.title) + '\', \'' + esc('/' + p.slug) + '\')">' +
+      '<span>📄 ' + esc(p.title) + '</span>' +
+      '<span class="page-slug">/' + esc(p.slug) + '</span>' +
+    '</div>';
+  });
+  pickerHtml += '</div>';
+  form.innerHTML = pickerHtml +
+    '<div class="form-actions"><button class="btn-sm btn-cancel" onclick="this.closest(\'.ts-nav-edit-form\').remove()">Cancel</button></div>';
+  group.appendChild(form);
+}
+
+async function addNavItem(menuId) {
+  const title = document.getElementById('nav-new-title').value.trim();
+  const url = document.getElementById('nav-new-url').value.trim();
+  const icon = document.getElementById('nav-new-icon').value.trim();
+
+  if (!title) { toast('Title is required', 'error'); return; }
+
+  try {
+    const data = await api('POST', 'menus/item', { menu_id: menuId, title, url: url || '#', icon });
+    if (!data.ok) throw new Error(data.error);
+    toast('Item added', 'success');
+    await loadNavMenus();
+    refreshPreview();
+  } catch (err) {
+    toast('Failed: ' + err.message, 'error');
+  }
+}
+
+async function addPageToMenu(menuId, pageId, title, url) {
+  try {
+    const data = await api('POST', 'menus/item', { menu_id: menuId, page_id: pageId, title, url });
+    if (!data.ok) throw new Error(data.error);
+    toast('"' + title + '" added to menu', 'success');
+    await loadNavMenus();
+    refreshPreview();
+  } catch (err) {
+    toast('Failed: ' + err.message, 'error');
+  }
+}
+
+function editNavItem(itemId) {
+  // Find the item in our data
+  let foundItem = null;
+  navMenusData.menus.forEach(m => {
+    (m.items || []).forEach(i => {
+      if (parseInt(i.id) === itemId) foundItem = i;
+    });
+  });
+  if (!foundItem) return;
+
+  const li = document.querySelector('.ts-nav-item[data-item-id="' + itemId + '"]');
+  if (!li) return;
+
+  // Replace item with edit form
+  const form = document.createElement('div');
+  form.className = 'ts-nav-edit-form';
+  form.dataset.itemId = itemId;
+  form.innerHTML =
+    '<div class="form-row"><label>Title</label><input type="text" value="' + esc(foundItem.title) + '" data-field="title"></div>' +
+    '<div class="form-row"><label>URL</label><input type="text" value="' + esc(foundItem.url || '') + '" data-field="url"></div>' +
+    '<div class="form-row"><label>Icon</label><input type="text" value="' + esc(foundItem.icon || '') + '" data-field="icon" placeholder="fas fa-home"></div>' +
+    '<div class="form-row"><label>Target</label><select data-field="target">' +
+      '<option value="_self"' + (foundItem.target !== '_blank' ? ' selected' : '') + '>Same tab</option>' +
+      '<option value="_blank"' + (foundItem.target === '_blank' ? ' selected' : '') + '>New tab</option>' +
+    '</select></div>' +
+    '<div class="form-actions">' +
+      '<button class="btn-sm btn-cancel" onclick="cancelEditNavItem(this)">Cancel</button>' +
+      '<button class="btn-sm btn-save" onclick="saveNavItem(' + itemId + ', this)">Save</button>' +
+    '</div>';
+
+  li.style.display = 'none';
+  li.after(form);
+  form.querySelector('[data-field="title"]').focus();
+}
+
+function cancelEditNavItem(btn) {
+  const form = btn.closest('.ts-nav-edit-form');
+  const itemId = form.dataset.itemId;
+  if (itemId) {
+    const li = document.querySelector('.ts-nav-item[data-item-id="' + itemId + '"]');
+    if (li) li.style.display = '';
+  }
+  form.remove();
+}
+
+async function saveNavItem(itemId, btn) {
+  const form = btn.closest('.ts-nav-edit-form');
+  const title = form.querySelector('[data-field="title"]').value.trim();
+  const url = form.querySelector('[data-field="url"]').value.trim();
+  const icon = form.querySelector('[data-field="icon"]').value.trim();
+  const target = form.querySelector('[data-field="target"]').value;
+
+  if (!title) { toast('Title is required', 'error'); return; }
+
+  try {
+    const data = await api('POST', 'menus/item/update', { item_id: itemId, title, url, icon, target });
+    if (!data.ok) throw new Error(data.error);
+    toast('Item updated', 'success');
+    await loadNavMenus();
+    refreshPreview();
+  } catch (err) {
+    toast('Failed: ' + err.message, 'error');
+  }
+}
+
+async function toggleNavItem(itemId) {
+  let foundItem = null;
+  navMenusData.menus.forEach(m => {
+    (m.items || []).forEach(i => {
+      if (parseInt(i.id) === itemId) foundItem = i;
+    });
+  });
+  if (!foundItem) return;
+
+  const newActive = (foundItem.is_active === '0' || foundItem.is_active === 0) ? 1 : 0;
+
+  try {
+    const data = await api('POST', 'menus/item/update', { item_id: itemId, is_active: newActive });
+    if (!data.ok) throw new Error(data.error);
+    await loadNavMenus();
+    refreshPreview();
+  } catch (err) {
+    toast('Failed: ' + err.message, 'error');
+  }
+}
+
+async function deleteNavItem(itemId) {
+  if (!confirm('Delete this menu item?')) return;
+
+  try {
+    const data = await api('POST', 'menus/item/delete', { item_id: itemId });
+    if (!data.ok) throw new Error(data.error);
+    toast('Item deleted', 'success');
+    await loadNavMenus();
+    refreshPreview();
+  } catch (err) {
+    toast('Failed: ' + err.message, 'error');
+  }
+}
+
+function refreshPreview() {
+  const iframe = document.getElementById('ts-iframe');
+  if (iframe) iframe.src = iframe.src;
+}
+
+/* ── Drag & Drop reorder ─────────────────── */
+function initNavDragDrop() {
+  document.querySelectorAll('.ts-nav-items').forEach(list => {
+    const menuId = list.dataset.menuId;
+
+    list.querySelectorAll('.ts-nav-item').forEach(item => {
+      item.addEventListener('dragstart', e => {
+        item.classList.add('dragging');
+        e.dataTransfer.effectAllowed = 'move';
+        e.dataTransfer.setData('text/plain', item.dataset.itemId);
+      });
+
+      item.addEventListener('dragend', () => {
+        item.classList.remove('dragging');
+        list.querySelectorAll('.ts-nav-item').forEach(i => i.classList.remove('drag-over'));
+      });
+
+      item.addEventListener('dragover', e => {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'move';
+        const dragging = list.querySelector('.dragging');
+        if (dragging && dragging !== item) {
+          item.classList.add('drag-over');
+        }
+      });
+
+      item.addEventListener('dragleave', () => {
+        item.classList.remove('drag-over');
+      });
+
+      item.addEventListener('drop', async e => {
+        e.preventDefault();
+        item.classList.remove('drag-over');
+        const draggedId = e.dataTransfer.getData('text/plain');
+        const dragged = list.querySelector('[data-item-id="' + draggedId + '"]');
+        if (!dragged || dragged === item) return;
+
+        // Insert before or after based on position
+        const rect = item.getBoundingClientRect();
+        const midY = rect.top + rect.height / 2;
+        if (e.clientY < midY) {
+          list.insertBefore(dragged, item);
+        } else {
+          list.insertBefore(dragged, item.nextSibling);
+        }
+
+        // Save new order
+        const newOrder = [];
+        list.querySelectorAll('.ts-nav-item').forEach((li, idx) => {
+          newOrder.push({ id: parseInt(li.dataset.itemId), parent_id: null });
+        });
+
+        try {
+          await api('POST', 'menus/reorder', { order: newOrder });
+          refreshPreview();
+        } catch (err) {
+          toast('Reorder failed', 'error');
+        }
+      });
+    });
+  });
+}
+
+</script>
 </body>
 </html>

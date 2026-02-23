@@ -22,7 +22,7 @@ $remaining = !empty($articles) ? array_slice($articles, 1) : [];
                 <a href="/article/<?= esc($a['slug']) ?>" style="text-decoration:none">
                     <div class="post-card-image">
                         <?php if (!empty($a['featured_image'])): ?>
-                        <img src="<?= esc($a['featured_image']) ?>" alt="<?= esc($a['title']) ?>">
+                        <img loading="lazy" decoding="async" src="<?= esc($a['featured_image']) ?>" alt="<?= esc($a['title']) ?>">
                         <?php else: ?>
                         <div style="width:100%;height:100%;background:var(--blog-surface-light);display:flex;align-items:center;justify-content:center">
                             <i class="fas fa-pen-fancy" style="font-size:1.5rem;color:var(--blog-border-light)"></i>

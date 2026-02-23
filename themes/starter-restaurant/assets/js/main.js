@@ -30,7 +30,8 @@ document.addEventListener('DOMContentLoaded', function () {
         mobileToggle.addEventListener('click', function () {
             headerNav.classList.toggle('nav-open');
             mobileToggle.classList.toggle('toggle-active');
-            document.body.classList.toggle('menu-open');
+            mobileToggle.setAttribute('aria-expanded', document.body.classList.contains('nav-open'));
+            document.body.classList.toggle('nav-open');
             if (mobileOverlay) mobileOverlay.classList.toggle('overlay-active');
         });
 
@@ -38,17 +39,17 @@ document.addEventListener('DOMContentLoaded', function () {
             mobileOverlay.addEventListener('click', function () {
                 headerNav.classList.remove('nav-open');
                 mobileToggle.classList.remove('toggle-active');
-                document.body.classList.remove('menu-open');
+                document.body.classList.remove('nav-open');
                 mobileOverlay.classList.remove('overlay-active');
             });
         }
 
         // Close on nav link click
-        headerNav.querySelectorAll('.nav-link').forEach(function (link) {
+        headerNav.querySelectorAll('a').forEach(function (link) {
             link.addEventListener('click', function () {
                 headerNav.classList.remove('nav-open');
                 mobileToggle.classList.remove('toggle-active');
-                document.body.classList.remove('menu-open');
+                document.body.classList.remove('nav-open');
                 if (mobileOverlay) mobileOverlay.classList.remove('overlay-active');
             });
         });

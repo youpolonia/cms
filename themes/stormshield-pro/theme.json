@@ -1,0 +1,85 @@
+{
+    "name": "StormShield Pro",
+    "description": "Bold emergency roofing theme with warm terracotta accents and steel blue trust signals",
+    "version": "1.0.0",
+    "author": "AI Theme Builder",
+    "supports": {
+        "theme-builder": true,
+        "custom-header": true,
+        "custom-footer": true,
+        "custom-colors": true
+    },
+    "options": {
+        "show_header": true,
+        "show_footer": true,
+        "body_background": "#0e1114",
+        "preload_fonts": true
+    },
+    "colors": {
+        "primary": "#c4673d",
+        "secondary": "#4a7fa8",
+        "accent": "#e8945a",
+        "background": "#0e1114",
+        "surface": "#181c21",
+        "text": "#f2ebe5",
+        "text_muted": "#9ca3af",
+        "border": "#2a3038",
+        "success": "#4ade80",
+        "warning": "#fbbf24",
+        "error": "#ef4444"
+    },
+    "typography": {
+        "fontFamily": "PT Serif",
+        "headingFont": "Nunito Sans",
+        "baseFontSize": "17",
+        "lineHeight": "1.75",
+        "fontWeight": "400",
+        "headingWeight": "800"
+    },
+    "buttons": {
+        "borderRadius": "18",
+        "paddingX": "36",
+        "paddingY": "16",
+        "fontWeight": "700",
+        "uppercase": true,
+        "shadow": true
+    },
+    "layout": {
+        "containerWidth": "1180",
+        "sectionSpacing": "130",
+        "borderRadius": "20"
+    },
+    "homepage_sections": [
+        {
+            "id": "hero",
+            "label": "Hero",
+            "icon": "fas fa-star"
+        },
+        {
+            "id": "services",
+            "label": "Services",
+            "icon": "fas fa-concierge-bell"
+        },
+        {
+            "id": "stats",
+            "label": "Stats \/ Numbers",
+            "icon": "fas fa-chart-bar"
+        },
+        {
+            "id": "testimonials",
+            "label": "Testimonials",
+            "icon": "fas fa-quote-right"
+        },
+        {
+            "id": "faq",
+            "label": "FAQ Preview",
+            "icon": "fas fa-question-circle"
+        },
+        {
+            "id": "cta",
+            "label": "Call to Action",
+            "icon": "fas fa-bullhorn"
+        }
+    ],
+    "thumbnail": "thumbnail.svg"
+}

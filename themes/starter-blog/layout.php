@@ -67,7 +67,7 @@ $themeDir = '/themes/starter-blog';
         <div class="header-inner">
             <a href="/" class="logo" data-ts="brand.logo">
                 <?php if ($siteLogo): ?>
-                    <img src="<?= esc($siteLogo) ?>" alt="<?= esc($siteName) ?>" class="logo-img">
+                    <img loading="lazy" decoding="async" src="<?= esc($siteLogo) ?>" alt="<?= esc($siteName) ?>" class="logo-img">
                 <?php endif; ?>
                 <span class="logo-text" data-ts="brand.site_name"><?= esc($siteName) ?></span>
             </a>
@@ -88,7 +88,7 @@ $themeDir = '/themes/starter-blog';
 <?php if ($isTbPage): ?>
     <?= $content ?? '' ?>
 <?php else: ?>
-    <main class="main-content">
+    <main id="main-content" class="main-content">
         <?= $content ?? '' ?>
     </main>
 <?php endif; ?>

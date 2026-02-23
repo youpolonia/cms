@@ -1,0 +1,85 @@
+{
+    "name": "Amber Grove",
+    "description": "An elegant dining experience where modern minimalism meets warm hospitality.",
+    "version": "1.0.0",
+    "author": "AI Theme Builder",
+    "supports": {
+        "theme-builder": true,
+        "custom-header": true,
+        "custom-footer": true,
+        "custom-colors": true
+    },
+    "options": {
+        "show_header": true,
+        "show_footer": true,
+        "body_background": "#0f0c08",
+        "preload_fonts": true
+    },
+    "colors": {
+        "primary": "#d4a03a",
+        "secondary": "#5b4a8a",
+        "accent": "#c4673d",
+        "background": "#0f0c08",
+        "surface": "#1a1611",
+        "text": "#f5f1e9",
+        "text_muted": "#b8ab94",
+        "border": "#3d2e1e",
+        "success": "#5b8f6d",
+        "warning": "#d4a03a",
+        "error": "#c44d3d"
+    },
+    "typography": {
+        "fontFamily": "IBM Plex Sans",
+        "headingFont": "Inter",
+        "baseFontSize": "18",
+        "lineHeight": "1.7",
+        "fontWeight": "400",
+        "headingWeight": "700"
+    },
+    "buttons": {
+        "borderRadius": "2",
+        "paddingX": "36",
+        "paddingY": "16",
+        "fontWeight": "600",
+        "uppercase": true,
+        "shadow": true
+    },
+    "layout": {
+        "containerWidth": "1280",
+        "sectionSpacing": "140",
+        "borderRadius": "4"
+    },
+    "homepage_sections": [
+        {
+            "id": "hero",
+            "label": "Hero",
+            "icon": "fas fa-star"
+        },
+        {
+            "id": "about",
+            "label": "About \/ Intro",
+            "icon": "fas fa-info-circle"
+        },
+        {
+            "id": "testimonials",
+            "label": "Testimonials",
+            "icon": "fas fa-quote-right"
+        },
+        {
+            "id": "cta",
+            "label": "Call to Action",
+            "icon": "fas fa-bullhorn"
+        },
+        {
+            "id": "menu",
+            "label": "Menu (Food)",
+            "icon": "🍽️"
+        },
+        {
+            "id": "gallery",
+            "label": "Gallery",
+            "icon": "🖼️"
+        }
+    ],
+    "thumbnail": "thumbnail.svg"
+}

@@ -162,6 +162,17 @@ class MediaController
             Response::redirect('/admin/media/upload');
         }
 
+        // Generate thumbnails for images
+        if (strpos($mimeType, 'image/') === 0 && $mimeType !== 'image/svg+xml') {
+            require_once \CMS_ROOT . '/core/image_optimizer.php';
+            try {
+                \ImageOptimizer::generateThumbnails($filepath);
+            } catch (\Exception $e) {
+                // Log error but don't fail the upload
+                error_log('Thumbnail generation failed for ' . $filepath . ': ' . $e->getMessage());
+            }
+        }
+
         // Save to database
         $pdo = db();
         $stmt = $pdo->prepare("INSERT INTO media (filename, original_name, mime_type, size, path, created_at) VALUES (?, ?, ?, ?, ?, NOW())");

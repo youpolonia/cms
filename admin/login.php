@@ -23,7 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $_SESSION['admin_username'] = $user['username'] ?? $u;
         $_SESSION['admin_id'] = $user['id'] ?? $user['admin_id'] ?? null;
         $_SESSION['admin_user_id'] = $user['id'] ?? null;
-        $_SESSION['admin_role'] = 'admin';
+        $_SESSION['admin_role'] = $user['role'] ?? 'admin';
         $_SESSION['ip_address'] = $_SERVER['REMOTE_ADDR'] ?? '';
         $_SESSION['init_ip'] = $_SERVER['REMOTE_ADDR'] ?? '';
         $_SESSION['last_regeneration'] = time();

@@ -34,11 +34,11 @@
 
         <?php if (!empty($article['featured_image'])): ?>
         <div style="margin-bottom:40px;border-radius:12px;overflow:hidden">
-            <img src="<?= esc($article['featured_image']) ?>" alt="<?= esc($article['title']) ?>" style="width:100%">
+            <img loading="lazy" decoding="async" src="<?= esc($article['featured_image']) ?>" alt="<?= esc($article['title']) ?>" style="width:100%">
         </div>
         <?php endif; ?>
 
-        <div class="prose">
+        <div class="prose" data-article-id="<?= (int)($article['id'] ?? 0) ?>" data-page-field="content">
             <?= $article['content'] ?>
         </div>
 

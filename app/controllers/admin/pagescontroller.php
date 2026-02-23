@@ -128,6 +128,13 @@ class PagesController
         $stmt = $pdo->prepare("INSERT INTO pages (title, slug, content, excerpt, featured_image, parent_id, template, menu_order, status, meta_title, meta_description, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())");
         $stmt->execute([$title, $slug, $content, $excerpt, $featured_image, $parent_id, $template, $menu_order, $status, $meta_title, $meta_description]);
 
+        $newId = (int)$pdo->lastInsertId();
+        $eventPayload = ['id' => $newId, 'title' => $title, 'slug' => $slug, 'status' => $status];
+        if ($status === 'published') {
+            cms_event('page.published', $eventPayload);
+            cms_event('content.published', array_merge($eventPayload, ['type' => 'page']));
+        }
+
         Session::flash('success', 'Page created successfully.');
         Response::redirect('/admin/pages');
     }
@@ -191,6 +198,16 @@ class PagesController
         $stmt = $pdo->prepare("UPDATE pages SET title = ?, slug = ?, content = ?, excerpt = ?, featured_image = ?, parent_id = ?, template = ?, menu_order = ?, status = ?, meta_title = ?, meta_description = ?, updated_at = NOW() WHERE id = ?");
         $stmt->execute([$title, $slug, $content, $excerpt, $featured_image, $parent_id, $template, $menu_order, $status, $meta_title, $meta_description, $id]);
 
+        // Fire events
+        $eventPayload = ['id' => $id, 'title' => $title, 'slug' => $slug, 'status' => $status, 'old_status' => $page['status'] ?? ''];
+        if (($page['status'] ?? '') !== 'published' && $status === 'published') {
+            cms_event('page.published', $eventPayload);
+            cms_event('content.published', array_merge($eventPayload, ['type' => 'page']));
+        } else {
+            cms_event('page.updated', $eventPayload);
+            cms_event('content.updated', array_merge($eventPayload, ['type' => 'page']));
+        }
+
         Session::flash('success', 'Page updated successfully.');
         Response::redirect('/admin/pages');
     }
@@ -198,10 +215,16 @@ class PagesController
     public function destroy(Request $request): void
     {
         $id = (int)$request->param('id');
-
         $pdo = db();
+
+        $stmt = $pdo->prepare("SELECT title, slug FROM pages WHERE id = ?");
+        $stmt->execute([$id]);
+        $delPage = $stmt->fetch(\PDO::FETCH_ASSOC);
+
         $stmt = $pdo->prepare("DELETE FROM pages WHERE id = ?");
         $stmt->execute([$id]);
+
+        cms_event('content.deleted', ['id' => $id, 'type' => 'page', 'title' => $delPage['title'] ?? '', 'slug' => $delPage['slug'] ?? '']);
 
         Session::flash('success', 'Page deleted successfully.');
         Response::redirect('/admin/pages');

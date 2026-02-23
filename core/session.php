@@ -31,6 +31,7 @@ class Session
 
                 @ini_set('session.use_strict_mode', '1');
                 @ini_set('session.use_only_cookies', '1');
+                @ini_set('session.gc_maxlifetime', '28800'); // 8 hours
             }
 
             @session_start();
@@ -105,6 +106,35 @@ class Session
     public static function getAdminRole(): ?string
     {
         return $_SESSION['admin_role'] ?? null;
+    }
+
+    /**
+     * Check if current admin has required role level.
+     * Hierarchy: admin > editor > viewer
+     * Returns true if user has sufficient privileges.
+     */
+    public static function hasRole(string $requiredRole): bool
+    {
+        $hierarchy = ['admin' => 3, 'editor' => 2, 'viewer' => 1];
+        $userRole = $_SESSION['admin_role'] ?? 'viewer';
+        return ($hierarchy[$userRole] ?? 0) >= ($hierarchy[$requiredRole] ?? 0);
+    }
+
+    /**
+     * Require a minimum role. Sends 403 and exits if insufficient.
+     */
+    public static function requireRole(string $role): void
+    {
+        if (!self::hasRole($role)) {
+            http_response_code(403);
+            if (str_contains($_SERVER['HTTP_ACCEPT'] ?? '', 'application/json')) {
+                header('Content-Type: application/json');
+                echo json_encode(['error' => 'Insufficient permissions. Required role: ' . $role]);
+            } else {
+                echo '<h1>403 — Access Denied</h1><p>You need <strong>' . htmlspecialchars($role) . '</strong> role or higher.</p><p><a href="/admin/">← Back to Dashboard</a></p>';
+            }
+            exit;
+        }
     }
 
     public static function getAdminUsername(): ?string

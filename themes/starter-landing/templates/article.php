@@ -18,7 +18,7 @@
     <div class="container">
         <?php if (!empty($article['featured_image'])): ?>
         <div style="max-width:800px;margin:0 auto 40px;">
-            <img src="<?= esc($article['featured_image']) ?>" alt="<?= esc($article['title']) ?>" style="border-radius:16px;width:100%;">
+            <img loading="lazy" decoding="async" src="<?= esc($article['featured_image']) ?>" alt="<?= esc($article['title']) ?>" style="border-radius:16px;width:100%;">
         </div>
         <?php endif; ?>
         <div class="content-body">

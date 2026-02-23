@@ -21,7 +21,7 @@
         });
 
         // Close menu on link click
-        mainNav.querySelectorAll('.nav-link').forEach(function (link) {
+        mainNav.querySelectorAll('a').forEach(function (link) {
             link.addEventListener('click', function () {
                 mobileToggle.setAttribute('aria-expanded', 'false');
                 mainNav.classList.remove('nav-open');

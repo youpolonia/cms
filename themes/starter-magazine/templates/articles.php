@@ -31,7 +31,7 @@ try {
     <div class="article-list-item" data-category="<?= esc(strtolower($art['category'] ?? 'general')) ?>">
       <?php if (!empty($art['featured_image'])): ?>
       <a href="/articles/<?= esc($art['slug']) ?>" class="article-list-thumb">
-        <img src="<?= esc($art['featured_image']) ?>" alt="<?= esc($art['title']) ?>" loading="lazy">
+        <img decoding="async" loading="lazy" src="<?= esc($art['featured_image']) ?>" alt="<?= esc($art['title']) ?>" loading="lazy">
       </a>
       <?php endif; ?>
       <div class="article-list-body">

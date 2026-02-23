@@ -20,7 +20,7 @@ $articlesDesc  = theme_get('articles.description', 'Thoughts, stories, and insig
         <?php foreach (array_slice($articles, 0, 4) as $a): ?>
         <a href="/article/<?= esc($a['slug']) ?>" class="work-card" style="text-decoration:none">
             <?php if (!empty($a['featured_image'])): ?>
-            <img src="<?= esc($a['featured_image']) ?>" alt="<?= esc($a['title']) ?>" class="work-card-image">
+            <img loading="lazy" decoding="async" src="<?= esc($a['featured_image']) ?>" alt="<?= esc($a['title']) ?>" class="work-card-image">
             <?php else: ?>
             <div style="width:100%;aspect-ratio:16/10;background:var(--color-surface);display:flex;align-items:center;justify-content:center">
                 <i class="fas fa-pen-fancy" style="font-size:2rem;color:var(--color-border)"></i>

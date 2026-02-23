@@ -1,0 +1,83 @@
+{
+    "name": "AutoVault Certified",
+    "description": "Premium used car dealership with inspected, certified vehicles and comprehensive services.",
+    "version": "1.0.0",
+    "author": "AI Theme Builder",
+    "supports": {
+        "theme-builder": true,
+        "custom-header": true,
+        "custom-footer": true,
+        "custom-colors": true
+    },
+    "options": {
+        "show_header": true,
+        "show_footer": true,
+        "body_background": "#0a0a0f",
+        "preload_fonts": true
+    },
+    "colors": {
+        "primary": "#9c27b0",
+        "secondary": "#4caf50",
+        "accent": "#ff9800",
+        "background": "#0a0a0f",
+        "surface": "#1a1a24",
+        "text": "#f0f0f5",
+        "text_muted": "#a0a0b0",
+        "border": "#2a2a35",
+        "success": "#4caf50",
+        "warning": "#ff9800",
+        "error": "#f44336"
+    },
+    "typography": {
+        "fontFamily": "Noto Serif",
+        "headingFont": "Mulish",
+        "baseFontSize": "16",
+        "lineHeight": "1.7",
+        "fontWeight": "400",
+        "headingWeight": "700"
+    },
+    "buttons": {
+        "borderRadius": "4",
+        "paddingX": "32",
+        "paddingY": "14",
+        "fontWeight": "600",
+        "uppercase": true,
+        "shadow": true
+    },
+    "layout": {
+        "containerWidth": "1200",
+        "sectionSpacing": "140",
+        "borderRadius": "8"
+    },
+    "homepage_sections": [
+        {
+            "id": "hero",
+            "label": "Hero",
+            "icon": "fas fa-star"
+        },
+        {
+            "id": "services",
+            "label": "Services",
+            "icon": "fas fa-concierge-bell"
+        },
+        {
+            "id": "testimonials",
+            "label": "Testimonials",
+            "icon": "fas fa-quote-right"
+        },
+        {
+            "id": "cta",
+            "label": "Call to Action",
+            "icon": "fas fa-bullhorn"
+        },
+        {
+            "id": "inventory",
+            "label": "inventory"
+        },
+        {
+            "id": "finance",
+            "label": "finance"
+        }
+    ],
+    "thumbnail": "thumbnail.svg"
+}

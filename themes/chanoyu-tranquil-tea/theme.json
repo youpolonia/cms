@@ -1,0 +1,85 @@
+{
+    "name": "Chanoyu",
+    "description": "Serene Japanese tea house design with ceremonial elegance and natural harmony",
+    "version": "1.0.0",
+    "author": "AI Theme Builder",
+    "supports": {
+        "theme-builder": true,
+        "custom-header": true,
+        "custom-footer": true,
+        "custom-colors": true
+    },
+    "options": {
+        "show_header": true,
+        "show_footer": true,
+        "body_background": "#0a0d0f",
+        "preload_fonts": true
+    },
+    "colors": {
+        "primary": "#8b2e2e",
+        "secondary": "#2e6b6b",
+        "accent": "#c45a5a",
+        "background": "#0a0d0f",
+        "surface": "#121618",
+        "text": "#e8e5e0",
+        "text_muted": "#9a968f",
+        "border": "#2a2220",
+        "success": "#4a7c59",
+        "warning": "#b8860b",
+        "error": "#a03030"
+    },
+    "typography": {
+        "fontFamily": "Crimson Pro",
+        "headingFont": "Cormorant Garamond",
+        "baseFontSize": "16",
+        "lineHeight": "1.8",
+        "fontWeight": "400",
+        "headingWeight": "600"
+    },
+    "buttons": {
+        "borderRadius": "2",
+        "paddingX": "36",
+        "paddingY": "16",
+        "fontWeight": "500",
+        "uppercase": false,
+        "shadow": true
+    },
+    "layout": {
+        "containerWidth": "1180",
+        "sectionSpacing": "140",
+        "borderRadius": "4"
+    },
+    "homepage_sections": [
+        {
+            "id": "hero",
+            "label": "Hero",
+            "icon": "fas fa-star"
+        },
+        {
+            "id": "about",
+            "label": "About \/ Intro",
+            "icon": "fas fa-info-circle"
+        },
+        {
+            "id": "testimonials",
+            "label": "Testimonials",
+            "icon": "fas fa-quote-right"
+        },
+        {
+            "id": "cta",
+            "label": "Call to Action",
+            "icon": "fas fa-bullhorn"
+        },
+        {
+            "id": "menu",
+            "label": "Menu (Food)",
+            "icon": "🍽️"
+        },
+        {
+            "id": "gallery",
+            "label": "Gallery",
+            "icon": "🖼️"
+        }
+    ],
+    "thumbnail": "thumbnail.svg"
+}

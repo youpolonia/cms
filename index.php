@@ -140,6 +140,11 @@ if (session_status() === PHP_SESSION_NONE) {
     \Core\Session::start();
 }
 
+// Ensure CSRF token exists in session (needed for all admin routes)
+if (empty($_SESSION['csrf_token']) || !is_string($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(16));
+}
+
 
 
 // ============================================================
@@ -191,6 +196,26 @@ if (file_exists($mvcRoutesFile)) {
                                     exit;
                                 }
                                 \Core\Response::redirect('/admin/login');
+                                exit;
+                            }
+                        };
+                    }
+                    // Role-based access control
+                    if (!empty($options['role'])) {
+                        $requiredRole = $options['role'];
+                        $middlewares[] = function() use ($requiredRole) {
+                            $userRole = $_SESSION['admin_role'] ?? 'viewer';
+                            $roleHierarchy = ['admin' => 3, 'editor' => 2, 'viewer' => 1];
+                            $userLevel = $roleHierarchy[$userRole] ?? 0;
+                            $requiredLevel = $roleHierarchy[$requiredRole] ?? 0;
+                            if ($userLevel < $requiredLevel) {
+                                http_response_code(403);
+                                if (str_contains($_SERVER['HTTP_ACCEPT'] ?? '', 'application/json')) {
+                                    header('Content-Type: application/json');
+                                    echo json_encode(['error' => 'Insufficient permissions']);
+                                } else {
+                                    echo '<h1>403 — Access Denied</h1><p>You need ' . htmlspecialchars($requiredRole) . ' role or higher.</p>';
+                                }
                                 exit;
                             }
                         };
@@ -358,8 +383,7 @@ if (class_exists(router::class) && method_exists(router::class, 'dispatch')) {
     try {
         router::dispatch();
     } catch (\Throwable $e) {
-        error_log("[CMS] Dispatch error: " . $e->getMessage() . " in " . $e->getFile() . ":" . $e->getLine() . "
-" . $e->getTraceAsString());
+        error_log("[CMS] Dispatch error: " . $e->getMessage() . " in " . $e->getFile() . ":" . $e->getLine() . "\n" . $e->getTraceAsString());
         http_response_code(500);
     }
 } else {

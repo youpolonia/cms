@@ -31,7 +31,7 @@
   </div>
 </header>
 <!-- Main -->
-<main class="site-main">
+<main id="main-content" class="site-main">
   <div class="container">
     <div class="content-with-sidebar">
       <div class="content-area"><?= $content ?></div>

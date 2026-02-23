@@ -1,0 +1,85 @@
+{
+    "name": "Terracotta Circuit",
+    "description": "Warm futuristic design system for autonomous delivery platforms with organic curves and soft tech aesthetics",
+    "version": "1.0.0",
+    "author": "AI Theme Builder",
+    "supports": {
+        "theme-builder": true,
+        "custom-header": true,
+        "custom-footer": true,
+        "custom-colors": true
+    },
+    "options": {
+        "show_header": true,
+        "show_footer": true,
+        "body_background": "#0f1218",
+        "preload_fonts": true
+    },
+    "colors": {
+        "primary": "#d4845a",
+        "secondary": "#5b8fbd",
+        "accent": "#e8a878",
+        "background": "#0f1218",
+        "surface": "#1a1f28",
+        "text": "#f0ebe6",
+        "text_muted": "#9ca3af",
+        "border": "#2a3140",
+        "success": "#6ab58e",
+        "warning": "#e8c468",
+        "error": "#d66b6b"
+    },
+    "typography": {
+        "fontFamily": "Urbanist",
+        "headingFont": "Quicksand",
+        "baseFontSize": "16",
+        "lineHeight": "1.7",
+        "fontWeight": "400",
+        "headingWeight": "700"
+    },
+    "buttons": {
+        "borderRadius": "24",
+        "paddingX": "28",
+        "paddingY": "14",
+        "fontWeight": "600",
+        "uppercase": false,
+        "shadow": true
+    },
+    "layout": {
+        "containerWidth": "1180",
+        "sectionSpacing": "130",
+        "borderRadius": "20"
+    },
+    "homepage_sections": [
+        {
+            "id": "hero",
+            "label": "Hero",
+            "icon": "fas fa-star"
+        },
+        {
+            "id": "stats",
+            "label": "Stats \/ Numbers",
+            "icon": "fas fa-chart-bar"
+        },
+        {
+            "id": "testimonials",
+            "label": "Testimonials",
+            "icon": "fas fa-quote-right"
+        },
+        {
+            "id": "faq",
+            "label": "FAQ Preview",
+            "icon": "fas fa-question-circle"
+        },
+        {
+            "id": "cta",
+            "label": "Call to Action",
+            "icon": "fas fa-bullhorn"
+        },
+        {
+            "id": "features",
+            "label": "Features",
+            "icon": "✨"
+        }
+    ],
+    "thumbnail": "thumbnail.svg"
+}

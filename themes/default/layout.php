@@ -172,7 +172,7 @@ $themeCssVariables = generate_theme_css_variables($themeConfig);
     <!-- TB Page - content controls layout -->
     <?= $content ?? '' ?>
 <?php else: ?>
-    <main>
+    <main id="main-content">
         <?= $content ?? '' ?>
     </main>
 <?php endif; ?>

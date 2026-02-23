@@ -1,0 +1,85 @@
+{
+    "name": "Genome Precision",
+    "description": "A biotech startup pioneering personalized medicine through genomic analysis.",
+    "version": "1.0.0",
+    "author": "AI Theme Builder",
+    "supports": {
+        "theme-builder": true,
+        "custom-header": true,
+        "custom-footer": true,
+        "custom-colors": true
+    },
+    "options": {
+        "show_header": true,
+        "show_footer": true,
+        "body_background": "#0a0f1a",
+        "preload_fonts": true
+    },
+    "colors": {
+        "primary": "#2a6bc7",
+        "secondary": "#d4a03a",
+        "accent": "#00b4c8",
+        "background": "#0a0f1a",
+        "surface": "#141b2d",
+        "text": "#e8f1ff",
+        "text_muted": "#a0b4d1",
+        "border": "#3d2e1e",
+        "success": "#2ecc71",
+        "warning": "#f39c12",
+        "error": "#e74c3c"
+    },
+    "typography": {
+        "fontFamily": "Crimson Pro",
+        "headingFont": "Barlow Condensed",
+        "baseFontSize": "16",
+        "lineHeight": "1.7",
+        "fontWeight": "400",
+        "headingWeight": "700"
+    },
+    "buttons": {
+        "borderRadius": "4",
+        "paddingX": "32",
+        "paddingY": "14",
+        "fontWeight": "600",
+        "uppercase": true,
+        "shadow": true
+    },
+    "layout": {
+        "containerWidth": "1200",
+        "sectionSpacing": "120",
+        "borderRadius": "8"
+    },
+    "homepage_sections": [
+        {
+            "id": "hero",
+            "label": "Hero",
+            "icon": "fas fa-star"
+        },
+        {
+            "id": "about",
+            "label": "About \/ Intro",
+            "icon": "fas fa-info-circle"
+        },
+        {
+            "id": "stats",
+            "label": "Stats \/ Numbers",
+            "icon": "fas fa-chart-bar"
+        },
+        {
+            "id": "articles",
+            "label": "Recent Articles",
+            "icon": "fas fa-newspaper"
+        },
+        {
+            "id": "cta",
+            "label": "Call to Action",
+            "icon": "fas fa-bullhorn"
+        },
+        {
+            "id": "features",
+            "label": "Features",
+            "icon": "✨"
+        }
+    ],
+    "thumbnail": "thumbnail.svg"
+}

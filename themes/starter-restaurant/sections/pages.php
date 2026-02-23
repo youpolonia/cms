@@ -34,7 +34,7 @@ $menuDescriptions = [
             ?>
             <a href="/page/<?= esc($p['slug']) ?>" class="card-overlay" data-animate>
                 <?php if (!empty($p['featured_image'])): ?>
-                <img src="<?= esc($p['featured_image']) ?>" alt="<?= esc($p['title']) ?>" loading="lazy">
+                <img decoding="async" loading="lazy" src="<?= esc($p['featured_image']) ?>" alt="<?= esc($p['title']) ?>" loading="lazy">
                 <?php else: ?>
                 <div class="card-ph"><i class="<?= $icon ?>"></i></div>
                 <?php endif; ?>

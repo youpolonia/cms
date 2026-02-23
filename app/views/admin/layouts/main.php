@@ -980,7 +980,7 @@ function isActive(string $path): string {
         <aside class="admin-sidebar" id="sidebar">
             <div class="sidebar-header">
                 <a href="/admin" class="sidebar-logo">
-                    <?= function_exists("wl_sidebar_brand") ? wl_sidebar_brand() : '<span class="sidebar-logo-icon">🤖</span><span>Jessie</span>' ?>
+                    <?= function_exists("wl_sidebar_brand") ? wl_sidebar_brand() : '<img src="/assets/images/jessie-logo.svg" alt="Jessie" width="28" height="28" style="vertical-align:middle"><span>Jessie</span>' ?>
                 </a>
             </div>
             
