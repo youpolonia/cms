@@ -375,6 +375,209 @@ if (preg_match('#^/preview/website/?$#', $uri)) {
     exit;
 }
 
+// ─── Jessie Restaurant Plugin ───
+if (preg_match('#^/api/restaurant/([\w-]+)(?:/(\d+))?$#', $jtbUri)) {
+    require_once CMS_ROOT . '/plugins/jessie-restaurant/api/router.php';
+    exit;
+}
+if (preg_match('#^/admin/restaurant(?:/|$)#', $jtbUri)) {
+    require_once CMS_ROOT . '/plugins/jessie-restaurant/admin-router.php';
+    exit;
+}
+if ($jtbUri === '/order' || $jtbUri === '/order/' || $jtbUri === '/menu' || $jtbUri === '/menu/') {
+    require_once CMS_ROOT . '/plugins/jessie-restaurant/views/frontend/menu.php';
+    exit;
+}
+
+// ─── Jessie Real Estate Plugin ───
+if (preg_match('#^/api/realestate/([\w-]+)(?:/(\d+))?$#', $jtbUri)) {
+    require_once CMS_ROOT . '/plugins/jessie-realestate/api/router.php';
+    exit;
+}
+if (preg_match('#^/admin/realestate(?:/|$)#', $jtbUri)) {
+    require_once CMS_ROOT . '/plugins/jessie-realestate/admin-router.php';
+    exit;
+}
+if ($jtbUri === '/properties' || $jtbUri === '/properties/') {
+    require_once CMS_ROOT . '/plugins/jessie-realestate/views/frontend/browse.php';
+    exit;
+}
+if (preg_match('#^/properties/([\w-]+)$#', $jtbUri, $m)) {
+    $propertySlug = $m[1];
+    require_once CMS_ROOT . '/plugins/jessie-realestate/views/frontend/detail.php';
+    exit;
+}
+
+// ─── Jessie Jobs Plugin ───
+if (preg_match('#^/api/jobs/([\w-]+)(?:/(\d+))?$#', $jtbUri)) {
+    require_once CMS_ROOT . '/plugins/jessie-jobs/api/router.php';
+    exit;
+}
+if (preg_match('#^/admin/jobs(?:/|$)#', $jtbUri)) {
+    require_once CMS_ROOT . '/plugins/jessie-jobs/admin-router.php';
+    exit;
+}
+// Jobs public frontend
+if ($jtbUri === '/jobs' || $jtbUri === '/jobs/') {
+    require_once CMS_ROOT . '/plugins/jessie-jobs/views/frontend/browse.php';
+    exit;
+}
+if (preg_match('#^/jobs/([\w-]+)$#', $jtbUri, $m)) {
+    $jobSlug = $m[1];
+    require_once CMS_ROOT . '/plugins/jessie-jobs/views/frontend/detail.php';
+    exit;
+}
+// ─── Jessie Portfolio Plugin ───
+if (preg_match('#^/api/portfolio/([\w-]+)(?:/(\d+))?$#', $jtbUri)) {
+    require_once CMS_ROOT . '/plugins/jessie-portfolio/api/router.php';
+    exit;
+}
+if (preg_match('#^/admin/portfolio(?:/|$)#', $jtbUri)) {
+    require_once CMS_ROOT . '/plugins/jessie-portfolio/admin-router.php';
+    exit;
+}
+if ($jtbUri === '/portfolio' || $jtbUri === '/portfolio/') {
+    require_once CMS_ROOT . '/plugins/jessie-portfolio/views/frontend/portfolio.php';
+    exit;
+}
+if (preg_match('#^/portfolio/([\w-]+)$#', $jtbUri, $m)) {
+    $portfolioSlug = $m[1];
+    require_once CMS_ROOT . '/plugins/jessie-portfolio/views/frontend/project-detail.php';
+    exit;
+}
+
+// ─── Jessie Affiliate Plugin ───
+if (preg_match('#^/api/affiliate/([\w-]+)(?:/(\d+))?$#', $jtbUri)) {
+    require_once CMS_ROOT . '/plugins/jessie-affiliate/api/router.php';
+    exit;
+}
+if (preg_match('#^/admin/affiliate(?:/|$)#', $jtbUri)) {
+    require_once CMS_ROOT . '/plugins/jessie-affiliate/admin-router.php';
+    exit;
+}
+// Affiliate frontend
+if ($jtbUri === '/affiliate/register') {
+    require_once CMS_ROOT . '/plugins/jessie-affiliate/views/frontend/register.php';
+    exit;
+}
+if ($jtbUri === '/affiliate/dashboard') {
+    require_once CMS_ROOT . '/plugins/jessie-affiliate/views/frontend/dashboard.php';
+    exit;
+}
+// Referral tracking: ?ref=CODE redirect handler
+if (!empty($_GET['ref']) && strlen($_GET['ref']) <= 50) {
+    defined('CMS_ROOT') or define('CMS_ROOT', realpath(__DIR__));
+    require_once CMS_ROOT . '/db.php';
+    require_once CMS_ROOT . '/plugins/jessie-affiliate/includes/class-affiliate-program.php';
+    require_once CMS_ROOT . '/plugins/jessie-affiliate/includes/class-affiliate.php';
+    \Affiliate::trackClick($_GET['ref']);
+    $aff = \Affiliate::getByCode($_GET['ref']);
+    if ($aff) {
+        $cookieDays = (int)($aff['cookie_days'] ?? 30);
+        setcookie('aff_ref', $_GET['ref'], time() + ($cookieDays * 86400), '/', '', false, true);
+    }
+}
+
+// ─── Jessie Events Plugin ───
+if (preg_match('#^/api/events/([\w-]+)(?:/(\d+))?$#', $jtbUri)) {
+    require_once CMS_ROOT . '/plugins/jessie-events/api/router.php';
+    exit;
+}
+if (preg_match('#^/admin/events(?:/|$)#', $jtbUri)) {
+    require_once CMS_ROOT . '/plugins/jessie-events/admin-router.php';
+    exit;
+}
+if ($jtbUri === '/events' || $jtbUri === '/events/') {
+    require_once CMS_ROOT . '/plugins/jessie-events/views/frontend/browse.php';
+    exit;
+}
+if (preg_match('#^/events/([\w-]+)$#', $jtbUri, $m)) {
+    $eventSlug = $m[1];
+    require_once CMS_ROOT . '/plugins/jessie-events/views/frontend/detail.php';
+    exit;
+}
+
+// ─── Jessie Directory Plugin ───
+if (preg_match('#^/api/directory/([\w-]+)(?:/(\d+))?$#', $jtbUri)) {
+    require_once CMS_ROOT . '/plugins/jessie-directory/api/router.php';
+    exit;
+}
+if (preg_match('#^/admin/directory(?:/|$)#', $jtbUri)) {
+    require_once CMS_ROOT . '/plugins/jessie-directory/admin-router.php';
+    exit;
+}
+// Directory public frontend
+if ($jtbUri === '/directory' || $jtbUri === '/directory/') {
+    require_once CMS_ROOT . '/plugins/jessie-directory/views/frontend/browse.php';
+    exit;
+}
+if ($jtbUri === '/directory/submit') {
+    require_once CMS_ROOT . '/plugins/jessie-directory/views/frontend/submit.php';
+    exit;
+}
+if (preg_match('#^/directory/([\w-]+)/claim$#', $jtbUri, $m)) {
+    $directorySlug = $m[1];
+    require_once CMS_ROOT . '/plugins/jessie-directory/views/frontend/claim.php';
+    exit;
+}
+if (preg_match('#^/directory/([\w-]+)$#', $jtbUri, $m)) {
+    $directorySlug = $m[1];
+    require_once CMS_ROOT . '/plugins/jessie-directory/views/frontend/detail.php';
+    exit;
+}
+
+// ─── Jessie LMS Plugin ───
+if (preg_match('#^/api/lms/([\w-]+)(?:/(\d+))?$#', $jtbUri)) {
+    require_once CMS_ROOT . '/plugins/jessie-lms/api/router.php';
+    exit;
+}
+if (preg_match('#^/admin/lms(?:/|$)#', $jtbUri)) {
+    require_once CMS_ROOT . '/plugins/jessie-lms/admin-router.php';
+    exit;
+}
+
+// ─── Jessie Membership Plugin ───
+if (preg_match('#^/api/membership/([\w-]+)(?:/(\d+))?$#', $jtbUri)) {
+    require_once CMS_ROOT . '/plugins/jessie-membership/api/router.php';
+    exit;
+}
+if (preg_match('#^/admin/membership(?:/|$)#', $jtbUri)) {
+    require_once CMS_ROOT . '/plugins/jessie-membership/admin-router.php';
+    exit;
+}
+if (preg_match('#^/(membership/pricing|pricing)/?$#', $jtbUri)) {
+    require_once CMS_ROOT . '/plugins/jessie-membership/admin-router.php';
+    exit;
+}
+
+// ─── Jessie Newsletter+ Plugin ───
+if (preg_match('#^/api/newsletter/([\w-]+)(?:/(\w+))?(?:/(\d+))?$#', $jtbUri)) {
+    require_once CMS_ROOT . '/plugins/jessie-newsletter/api/router.php';
+    exit;
+}
+if (preg_match('#^/admin/newsletter(?:/|$)#', $jtbUri)) {
+    require_once CMS_ROOT . '/plugins/jessie-newsletter/admin-router.php';
+    exit;
+}
+if (preg_match('#^/newsletter/(unsubscribe|subscribe)#', $jtbUri)) {
+    require_once CMS_ROOT . '/plugins/jessie-newsletter/admin-router.php';
+    exit;
+}
+
+// ─── Jessie Booking Plugin ───
+if (preg_match('#^/api/booking/([\w-]+)(?:/(\d+))?$#', $jtbUri)) {
+    require_once CMS_ROOT . '/plugins/jessie-booking/api/router.php';
+    exit;
+}
+if (preg_match('#^/admin/booking(?:/|$)#', $jtbUri)) {
+    require_once CMS_ROOT . '/plugins/jessie-booking/admin-router.php';
+    exit;
+}
+if (preg_match('#^/booking/?$#', $jtbUri)) {
+    require_once CMS_ROOT . '/plugins/jessie-booking/views/frontend/booking-widget.php';
+    exit;
+}
+
 
 
 

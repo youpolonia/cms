@@ -1,0 +1,13 @@
+{
+    "name": "JessieRestaurant",
+    "slug": "jessie-restaurant",
+    "version": "1.0.0",
+    "description": "Online food ordering with menu management, delivery/pickup, and kitchen dashboard",
+    "author": "Jessie CMS",
+    "requires": "1.0.0",
+    "php_requires": "8.1",
+    "tenant_aware": false,
+    "hooks": { "action": ["init"], "filter": [] },
+    "dependencies": {},
+    "license": "GPL-3.0"
+}

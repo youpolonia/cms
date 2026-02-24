@@ -1,0 +1,16 @@
+{
+    "name": "JessieBooking",
+    "slug": "jessie-booking",
+    "version": "1.0.0",
+    "description": "Appointment booking & scheduling system with AI-powered features",
+    "author": "Jessie CMS",
+    "requires": "1.0.0",
+    "php_requires": "8.1",
+    "tenant_aware": false,
+    "hooks": {
+        "action": ["init", "admin_menu"],
+        "filter": []
+    },
+    "dependencies": {},
+    "license": "GPL-3.0"
+}

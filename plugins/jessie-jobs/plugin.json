@@ -1,0 +1,13 @@
+{
+    "name": "JessieJobs",
+    "slug": "jessie-jobs",
+    "version": "1.0.0",
+    "description": "Job board with listings, applications, companies, and AI tools",
+    "author": "Jessie CMS",
+    "requires": "1.0.0",
+    "php_requires": "8.1",
+    "tenant_aware": false,
+    "hooks": { "action": ["init"], "filter": [] },
+    "dependencies": {},
+    "license": "GPL-3.0"
+}

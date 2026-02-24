@@ -631,4 +631,276 @@ class ShopController
         echo json_encode($result);
         exit;
     }
+
+    // ─── AI SEO ANALYZE ───
+
+    public function aiSeoAnalyze(): void
+    {
+        Session::requireRole('admin');
+        header('Content-Type: application/json');
+        $input = json_decode(file_get_contents('php://input'), true) ?: $_POST;
+        $productId = (int)($input['product_id'] ?? 0);
+        $focusKeyword = trim((string)($input['focus_keyword'] ?? ''));
+        $language = trim((string)($input['language'] ?? 'en'));
+
+        require_once CMS_ROOT . '/core/shop-ai.php';
+        $result = \ShopAI::analyzeSEO($productId, $focusKeyword, $language);
+        echo json_encode($result);
+        exit;
+    }
+
+    // ─── AI KEYWORD RESEARCH ───
+
+    public function aiKeywords(): void
+    {
+        Session::requireRole('admin');
+        header('Content-Type: application/json');
+        $input = json_decode(file_get_contents('php://input'), true) ?: $_POST;
+        $productId = (int)($input['product_id'] ?? 0);
+        $language = trim((string)($input['language'] ?? 'en'));
+
+        require_once CMS_ROOT . '/core/shop-ai.php';
+        $result = \ShopAI::keywordResearch($productId, $language);
+        echo json_encode($result);
+        exit;
+    }
+
+    // ─── AI CONTENT REWRITE ───
+
+    public function aiRewrite(): void
+    {
+        Session::requireRole('admin');
+        header('Content-Type: application/json');
+        $input = json_decode(file_get_contents('php://input'), true) ?: $_POST;
+        $productId = (int)($input['product_id'] ?? 0);
+        $mode = trim((string)($input['mode'] ?? 'seo'));
+        $field = trim((string)($input['field'] ?? 'description'));
+        $options = $input['options'] ?? [];
+
+        require_once CMS_ROOT . '/core/shop-ai.php';
+        $result = \ShopAI::rewriteContent($productId, $mode, $field, is_array($options) ? $options : []);
+        echo json_encode($result);
+        exit;
+    }
+
+    // ─── AI CATEGORY DESCRIPTION ───
+
+    public function aiCategoryDescription(): void
+    {
+        Session::requireRole('admin');
+        header('Content-Type: application/json');
+        $input = json_decode(file_get_contents('php://input'), true) ?: $_POST;
+        $categoryId = (int)($input['category_id'] ?? 0);
+        $tone = trim((string)($input['tone'] ?? 'professional'));
+        $language = trim((string)($input['language'] ?? 'en'));
+
+        require_once CMS_ROOT . '/core/shop-ai.php';
+        $result = \ShopAI::generateCategoryDescription($categoryId, $tone, $language);
+        echo json_encode($result);
+        exit;
+    }
+
+    // ─── BULK SEO ───
+
+    public function aiBulkSeoScan(): void
+    {
+        Session::requireRole('admin');
+        header('Content-Type: application/json');
+
+        require_once CMS_ROOT . '/core/shop-ai.php';
+        $result = \ShopAI::bulkSEOScan();
+        echo json_encode($result);
+        exit;
+    }
+
+    public function aiBulkGenerateSeo(): void
+    {
+        Session::requireRole('admin');
+        header('Content-Type: application/json');
+        $input = json_decode(file_get_contents('php://input'), true) ?: $_POST;
+        $productIds = $input['product_ids'] ?? [];
+        $overwrite = !empty($input['overwrite']);
+
+        if (!is_array($productIds) || empty($productIds)) {
+            echo json_encode(['ok' => false, 'error' => 'No product IDs provided']);
+            exit;
+        }
+
+        require_once CMS_ROOT . '/core/shop-ai.php';
+        $result = \ShopAI::bulkGenerateSEO($productIds, $overwrite);
+        echo json_encode($result);
+        exit;
+    }
+
+    public function aiBulkRewrite(): void
+    {
+        Session::requireRole('admin');
+        header('Content-Type: application/json');
+        $input = json_decode(file_get_contents('php://input'), true) ?: $_POST;
+        $productIds = $input['product_ids'] ?? [];
+        $mode = trim((string)($input['mode'] ?? 'seo'));
+        $apply = !empty($input['apply']);
+
+        if (!is_array($productIds) || empty($productIds)) {
+            echo json_encode(['ok' => false, 'error' => 'No product IDs provided']);
+            exit;
+        }
+
+        require_once CMS_ROOT . '/core/shop-ai.php';
+        $result = \ShopAI::bulkRewrite($productIds, $mode, $apply);
+        echo json_encode($result);
+        exit;
+    }
+
+    // ─── AI IMAGE PROCESSING ───
+
+    public function aiRemoveBg(): void
+    {
+        Session::requireRole('admin');
+        header('Content-Type: application/json');
+        $input = json_decode(file_get_contents('php://input'), true) ?: $_POST;
+        $productId = (int)($input['product_id'] ?? 0);
+        $imageUrl = trim((string)($input['image_url'] ?? ''));
+
+        if (!$productId && !$imageUrl) {
+            echo json_encode(['ok' => false, 'error' => 'product_id or image_url required']);
+            exit;
+        }
+
+        require_once CMS_ROOT . '/core/shop-ai-images.php';
+
+        if ($productId) {
+            $this->loadShop();
+            $product = \Shop::getProduct($productId);
+            if (!$product || empty($product['image'])) {
+                echo json_encode(['ok' => false, 'error' => 'Product not found or has no image']);
+                exit;
+            }
+            $imageUrl = $product['image'];
+        }
+
+        $result = \ShopAIImages::removeBackground($imageUrl, $productId ?: null);
+        echo json_encode($result);
+        exit;
+    }
+
+    public function aiAltText(): void
+    {
+        Session::requireRole('admin');
+        header('Content-Type: application/json');
+        $input = json_decode(file_get_contents('php://input'), true) ?: $_POST;
+        $productId = (int)($input['product_id'] ?? 0);
+        $imageUrl = trim((string)($input['image_url'] ?? ''));
+        $productName = trim((string)($input['product_name'] ?? ''));
+
+        if (!$productId && !$imageUrl) {
+            echo json_encode(['ok' => false, 'error' => 'product_id or image_url required']);
+            exit;
+        }
+
+        require_once CMS_ROOT . '/core/shop-ai-images.php';
+
+        if ($productId) {
+            $this->loadShop();
+            $product = \Shop::getProduct($productId);
+            if (!$product || empty($product['image'])) {
+                echo json_encode(['ok' => false, 'error' => 'Product not found or has no image']);
+                exit;
+            }
+            $imageUrl = $product['image'];
+            if ($productName === '') {
+                $productName = $product['name'] ?? '';
+            }
+        }
+
+        $result = \ShopAIImages::generateAltText($imageUrl, $productName);
+        echo json_encode($result);
+        exit;
+    }
+
+    public function aiEnhanceImage(): void
+    {
+        Session::requireRole('admin');
+        header('Content-Type: application/json');
+        $input = json_decode(file_get_contents('php://input'), true) ?: $_POST;
+        $productId = (int)($input['product_id'] ?? 0);
+        $imageUrl = trim((string)($input['image_url'] ?? ''));
+        $prompt = trim((string)($input['prompt'] ?? ''));
+
+        if (!$productId && !$imageUrl) {
+            echo json_encode(['ok' => false, 'error' => 'product_id or image_url required']);
+            exit;
+        }
+
+        require_once CMS_ROOT . '/core/shop-ai-images.php';
+
+        if ($productId) {
+            $this->loadShop();
+            $product = \Shop::getProduct($productId);
+            if (!$product || empty($product['image'])) {
+                echo json_encode(['ok' => false, 'error' => 'Product not found or has no image']);
+                exit;
+            }
+            $imageUrl = $product['image'];
+        }
+
+        $result = \ShopAIImages::enhanceImage($imageUrl, $prompt, $productId ?: null);
+        echo json_encode($result);
+        exit;
+    }
+
+    public function aiGenerateImage(): void
+    {
+        Session::requireRole('admin');
+        header('Content-Type: application/json');
+        $input = json_decode(file_get_contents('php://input'), true) ?: $_POST;
+        $prompt = trim((string)($input['prompt'] ?? ''));
+        $productId = (int)($input['product_id'] ?? 0);
+
+        if ($prompt === '') {
+            echo json_encode(['ok' => false, 'error' => 'Prompt is required']);
+            exit;
+        }
+
+        require_once CMS_ROOT . '/core/shop-ai-images.php';
+        $result = \ShopAIImages::generateProductImage($prompt, $productId ?: null);
+        echo json_encode($result);
+        exit;
+    }
+
+    public function aiProcessImages(): void
+    {
+        Session::requireRole('admin');
+        header('Content-Type: application/json');
+        $input = json_decode(file_get_contents('php://input'), true) ?: $_POST;
+        $productId = (int)($input['product_id'] ?? 0);
+        $tasks = $input['tasks'] ?? ['alt_text'];
+
+        if (!$productId) {
+            echo json_encode(['ok' => false, 'error' => 'product_id required']);
+            exit;
+        }
+
+        if (!is_array($tasks)) {
+            $tasks = ['alt_text'];
+        }
+
+        require_once CMS_ROOT . '/core/shop-ai-images.php';
+        $result = \ShopAIImages::processProduct($productId, $tasks);
+        echo json_encode($result);
+        exit;
+    }
+
+    // ─── SEO DASHBOARD ───
+
+    public function seo(Request $request): void
+    {
+        Session::requireRole('admin');
+        require_once CMS_ROOT . '/core/shop-ai.php';
+        $scanResult = \ShopAI::bulkSEOScan();
+        render('admin/shop/seo-dashboard', [
+            'products' => $scanResult['products'] ?? [],
+            'summary'  => $scanResult['summary'] ?? [],
+        ]);
+    }
 }

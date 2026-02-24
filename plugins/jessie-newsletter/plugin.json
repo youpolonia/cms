@@ -1,0 +1,13 @@
+{
+    "name": "JessieNewsletter",
+    "slug": "jessie-newsletter",
+    "version": "1.0.0",
+    "description": "Email marketing, campaigns, and AI content generation",
+    "author": "Jessie CMS",
+    "requires": "1.0.0",
+    "php_requires": "8.1",
+    "tenant_aware": false,
+    "hooks": { "action": ["init", "admin_menu"], "filter": [] },
+    "dependencies": {},
+    "license": "GPL-3.0"
+}

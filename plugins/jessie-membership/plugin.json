@@ -1,0 +1,13 @@
+{
+    "name": "JessieMembership",
+    "slug": "jessie-membership",
+    "version": "1.0.0",
+    "description": "Membership plans, gated content, and subscriptions with AI",
+    "author": "Jessie CMS",
+    "requires": "1.0.0",
+    "php_requires": "8.1",
+    "tenant_aware": false,
+    "hooks": { "action": ["init"], "filter": [] },
+    "dependencies": {},
+    "license": "GPL-3.0"
+}

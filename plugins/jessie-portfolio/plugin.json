@@ -1,0 +1,13 @@
+{
+    "name": "JessiePortfolio",
+    "slug": "jessie-portfolio",
+    "version": "1.0.0",
+    "description": "Portfolio showcase with projects, categories, testimonials, and AI case studies",
+    "author": "Jessie CMS",
+    "requires": "1.0.0",
+    "php_requires": "8.1",
+    "tenant_aware": false,
+    "hooks": { "action": ["init"], "filter": [] },
+    "dependencies": {},
+    "license": "GPL-3.0"
+}

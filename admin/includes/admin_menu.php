@@ -89,7 +89,137 @@ return [
             ['label' => '🏷️ Coupons', 'url' => '/admin/shop/coupons'],
             ['label' => '🛒 Abandoned Carts', 'url' => '/admin/shop/abandoned-carts'],
             ['label' => '📈 Analytics', 'url' => '/admin/shop/analytics'],
+            ['label' => '🔍 AI SEO', 'url' => '/admin/shop/seo'],
             ['label' => '⚙️ Settings', 'url' => '/admin/shop/settings'],
+        ]
+    ],
+    'restaurant' => [
+        'label' => '🍕 Restaurant',
+        'type' => 'dropdown',
+        'items' => [
+            ['label' => '📊 Dashboard', 'url' => '/admin/restaurant'],
+            ['label' => '🍽️ Menu Items', 'url' => '/admin/restaurant/menu'],
+            ['label' => '📁 Categories', 'url' => '/admin/restaurant/categories'],
+            ['label' => '📋 Orders', 'url' => '/admin/restaurant/orders'],
+            ['label' => '👨‍🍳 Kitchen', 'url' => '/admin/restaurant/kitchen'],
+            ['label' => '⚙️ Settings', 'url' => '/admin/restaurant/settings'],
+        ]
+    ],
+    'realestate' => [
+        'label' => '🏠 Real Estate',
+        'type' => 'dropdown',
+        'items' => [
+            ['label' => '📊 Dashboard', 'url' => '/admin/realestate'],
+            ['label' => '🏘️ Properties', 'url' => '/admin/realestate/properties'],
+            ['label' => '👤 Agents', 'url' => '/admin/realestate/agents'],
+            ['label' => '📩 Inquiries', 'url' => '/admin/realestate/inquiries'],
+        ]
+    ],
+    'jobs' => [
+        'label' => '💼 Jobs',
+        'type' => 'dropdown',
+        'items' => [
+            ['label' => '📊 Dashboard', 'url' => '/admin/jobs'],
+            ['label' => '💼 Listings', 'url' => '/admin/jobs/listings'],
+            ['label' => '📋 Applications', 'url' => '/admin/jobs/applications'],
+            ['label' => '🏢 Companies', 'url' => '/admin/jobs/companies'],
+        ]
+    ],
+    'portfolio' => [
+        'label' => '🎨 Portfolio',
+        'type' => 'dropdown',
+        'items' => [
+            ['label' => '📊 Dashboard', 'url' => '/admin/portfolio'],
+            ['label' => '💼 Projects', 'url' => '/admin/portfolio/projects'],
+            ['label' => '📁 Categories', 'url' => '/admin/portfolio/categories'],
+            ['label' => '💬 Testimonials', 'url' => '/admin/portfolio/testimonials'],
+        ]
+    ],
+    'affiliate' => [
+        'label' => '🤝 Affiliate',
+        'type' => 'dropdown',
+        'items' => [
+            ['label' => '📊 Dashboard', 'url' => '/admin/affiliate'],
+            ['label' => '📋 Programs', 'url' => '/admin/affiliate/programs'],
+            ['label' => '👥 Affiliates', 'url' => '/admin/affiliate/affiliates'],
+            ['label' => '🎯 Conversions', 'url' => '/admin/affiliate/conversions'],
+            ['label' => '💰 Payouts', 'url' => '/admin/affiliate/payouts'],
+        ]
+    ],
+    'events' => [
+        'label' => '🎫 Events',
+        'type' => 'dropdown',
+        'items' => [
+            ['label' => '📊 Dashboard', 'url' => '/admin/events'],
+            ['label' => '🎪 Events', 'url' => '/admin/events/list'],
+            ['label' => '📋 Orders', 'url' => '/admin/events/orders'],
+            ['label' => '⚙️ Settings', 'url' => '/admin/events/settings'],
+        ]
+    ],
+    'directory' => [
+        'label' => '📍 Directory',
+        'type' => 'dropdown',
+        'items' => [
+            ['label' => '📊 Dashboard', 'url' => '/admin/directory'],
+            ['label' => '🏢 Listings', 'url' => '/admin/directory/listings'],
+            ['label' => '📁 Categories', 'url' => '/admin/directory/categories'],
+            ['label' => '⭐ Reviews', 'url' => '/admin/directory/reviews'],
+            ['label' => '🏢 Claims', 'url' => '/admin/directory/claims'],
+        ]
+    ],
+    'lms' => [
+        'label' => '🎓 LMS',
+        'type' => 'dropdown',
+        'items' => [
+            ['label' => '📊 Dashboard', 'url' => '/admin/lms'],
+            ['label' => '📚 Courses', 'url' => '/admin/lms/courses'],
+        ]
+    ],
+    'membership' => [
+        'label' => '🔑 Membership',
+        'type' => 'dropdown',
+        'items' => [
+            ['label' => '📊 Dashboard', 'url' => '/admin/membership'],
+            ['label' => '💎 Plans', 'url' => '/admin/membership/plans'],
+            ['label' => '👥 Members', 'url' => '/admin/membership/members'],
+            ['label' => '🔒 Content Rules', 'url' => '/admin/membership/content'],
+        ]
+    ],
+    'newsletter' => [
+        'label' => '📧 Newsletter',
+        'type' => 'dropdown',
+        'items' => [
+            ['label' => '📊 Dashboard', 'url' => '/admin/newsletter'],
+            ['label' => '✉️ Campaigns', 'url' => '/admin/newsletter/campaigns'],
+            ['label' => '👥 Subscribers', 'url' => '/admin/newsletter/subscribers'],
+            ['label' => '📋 Lists', 'url' => '/admin/newsletter/lists'],
+            ['label' => '🎨 Templates', 'url' => '/admin/newsletter/templates'],
+        ]
+    ],
+    'booking' => [
+        'label' => '📅 Booking',
+        'type' => 'dropdown',
+        'items' => [
+            ['label' => '📊 Dashboard', 'url' => '/admin/booking'],
+            ['label' => '📋 Services', 'url' => '/admin/booking/services'],
+            ['label' => '👤 Staff', 'url' => '/admin/booking/staff'],
+            ['label' => '📅 Calendar', 'url' => '/admin/booking/calendar'],
+            ['label' => '📋 Appointments', 'url' => '/admin/booking/appointments'],
+            ['label' => '⚙️ Settings', 'url' => '/admin/booking/settings'],
+        ]
+    ],
+    'dropshipping' => [
+        'label' => '🚚 Dropshipping',
+        'type' => 'dropdown',
+        'items' => [
+            ['label' => '📊 Dashboard', 'url' => '/admin/dropshipping'],
+            ['label' => '🏭 Suppliers', 'url' => '/admin/dropshipping/suppliers'],
+            ['label' => '📦 Products', 'url' => '/admin/dropshipping/products'],
+            ['label' => '📥 Import', 'url' => '/admin/dropshipping/import'],
+            ['label' => '💰 Price Rules', 'url' => '/admin/dropshipping/price-rules'],
+            ['label' => '🚚 Orders', 'url' => '/admin/dropshipping/orders'],
+            ['label' => '🔬 AI Research', 'url' => '/admin/dropshipping/research'],
+            ['label' => '⚙️ Settings', 'url' => '/admin/dropshipping/settings'],
         ]
     ],
     'crm' => [

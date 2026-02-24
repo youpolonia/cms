@@ -71,6 +71,13 @@ $v = fn($key, $default = '') => h($isEdit ? ($product[$key] ?? $default) : $defa
 .ai-price-popover .price-stat span{font-weight:600;font-size:.9rem}
 .btn-apply-price{background:#4338ca;color:#fff;border:none;padding:6px 14px;border-radius:6px;font-size:.78rem;font-weight:600;cursor:pointer;margin-top:8px}
 .btn-apply-price:hover{background:#6366f1}
+
+/* AI Tabs */
+.ai-tab{background:transparent;border:none;color:#818cf8;padding:8px 16px;font-size:.82rem;font-weight:600;cursor:pointer;border-radius:6px 6px 0 0;transition:all .2s}
+.ai-tab:hover{background:rgba(99,102,241,.1)}
+.ai-tab.active{background:rgba(99,102,241,.15);color:#c7d2fe;border-bottom:2px solid #6366f1;margin-bottom:-10px}
+.ai-tab-content{display:none}
+.ai-tab-content.active{display:block}
 </style>
 
 <div class="shop-wrap">
@@ -344,6 +351,178 @@ $v = fn($key, $default = '') => h($isEdit ? ($product[$key] ?? $default) : $defa
                 <textarea name="meta_description" rows="2" maxlength="160" id="meta-description"><?= h($isEdit ? ($product['meta_description'] ?? '') : '') ?></textarea>
             </div>
         </div>
+
+        <?php if ($isEdit): ?>
+        <!-- ═══ AI TOOLS PANEL ═══ -->
+        <div class="ai-panel" id="ai-tools-panel">
+            <div class="ai-panel-toggle" onclick="toggleAiTools()">
+                <h3>🧠 AI SEO & Content Tools <span style="font-size:.75rem;font-weight:400;opacity:.7">— analyze, rewrite, research keywords</span></h3>
+                <span class="chevron" id="ai-tools-chevron">▼</span>
+            </div>
+            <div class="ai-panel-body" id="ai-tools-body">
+                <!-- Tabs -->
+                <div style="display:flex;gap:4px;margin-bottom:16px;border-bottom:2px solid rgba(99,102,241,.2);padding-bottom:8px;flex-wrap:wrap">
+                    <button type="button" class="ai-tab active" data-tab="tab-seo-analyze" onclick="switchAiTab(this)">🔬 SEO Analyze</button>
+                    <button type="button" class="ai-tab" data-tab="tab-rewrite" onclick="switchAiTab(this)">📝 Rewrite</button>
+                    <button type="button" class="ai-tab" data-tab="tab-keywords" onclick="switchAiTab(this)">🔑 Keywords</button>
+                    <button type="button" class="ai-tab" data-tab="tab-images" onclick="switchAiTab(this)">🖼️ Images</button>
+                </div>
+
+                <!-- Tab: SEO Analyze -->
+                <div class="ai-tab-content active" id="tab-seo-analyze">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Focus Keyword</label>
+                            <input type="text" id="seo-focus-keyword" value="<?= $v('name') ?>" placeholder="e.g. wireless headphones">
+                            <div class="hint">Leave empty to use product name</div>
+                        </div>
+                        <div class="form-group">
+                            <label>Language</label>
+                            <select id="seo-analyze-lang">
+                                <option value="en">English</option>
+                                <option value="pl">Polish</option>
+                                <option value="de">German</option>
+                                <option value="es">Spanish</option>
+                                <option value="fr">French</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-ai" onclick="runSeoAnalyze()">
+                        <span class="ai-spinner" id="seo-analyze-spinner"></span>
+                        🔬 Run SEO Analysis
+                    </button>
+                    <div class="ai-error" id="seo-analyze-error"></div>
+                    <div id="seo-analyze-results" style="display:none;margin-top:16px"></div>
+                </div>
+
+                <!-- Tab: Rewrite -->
+                <div class="ai-tab-content" id="tab-rewrite">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Rewrite Mode</label>
+                            <select id="rewrite-mode">
+                                <option value="seo">🔍 SEO Optimize</option>
+                                <option value="paraphrase">🔄 Paraphrase</option>
+                                <option value="expand">📖 Expand</option>
+                                <option value="simplify">🎯 Simplify</option>
+                                <option value="formalize">👔 Formalize</option>
+                                <option value="casual">💬 Casual</option>
+                                <option value="summarize">📝 Summarize</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Target Field</label>
+                            <select id="rewrite-field">
+                                <option value="description">Description</option>
+                                <option value="short_description">Short Description</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-ai" onclick="runRewrite()">
+                        <span class="ai-spinner" id="rewrite-spinner"></span>
+                        📝 Rewrite Content
+                    </button>
+                    <div class="ai-error" id="rewrite-error"></div>
+                    <div id="rewrite-results" style="display:none;margin-top:16px">
+                        <div class="ai-result-item">
+                            <label>Rewritten Content</label>
+                            <button type="button" class="btn-apply" onclick="applyRewrite()">Apply</button>
+                            <div class="ai-preview" id="rewrite-preview" style="max-height:200px"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab: Images -->
+                <div class="ai-tab-content" id="tab-images">
+                    <p style="color:#818cf8;font-size:.82rem;margin:0 0 16px">AI-powered image processing using Hugging Face. Requires product image to be set.</p>
+
+                    <!-- Current image preview -->
+                    <?php $currentImg = $product['image'] ?? ''; ?>
+                    <?php if ($currentImg): ?>
+                    <div style="margin-bottom:16px;display:flex;align-items:flex-start;gap:16px">
+                        <img src="<?= h($currentImg) ?>" style="max-width:150px;max-height:120px;border-radius:8px;border:1px solid #4338ca" alt="Current">
+                        <div style="flex:1">
+                            <div style="font-size:.8rem;color:#c7d2fe;margin-bottom:8px"><strong>Current Image</strong></div>
+
+                            <!-- Remove Background -->
+                            <div style="margin-bottom:10px">
+                                <button type="button" class="btn-ai btn-ai-sm" onclick="aiRemoveBg()" style="margin-right:6px">
+                                    <span class="ai-spinner" id="rmbg-spinner"></span>
+                                    ✂️ Remove Background
+                                </button>
+                                <button type="button" class="btn-ai btn-ai-sm" onclick="aiAltText()">
+                                    <span class="ai-spinner" id="alt-spinner"></span>
+                                    🏷️ Generate ALT Text
+                                </button>
+                            </div>
+
+                            <!-- Enhance -->
+                            <div style="margin-bottom:10px">
+                                <button type="button" class="btn-ai btn-ai-sm" onclick="aiEnhanceImage()" style="background:linear-gradient(135deg,#059669 0%,#10b981 100%)">
+                                    <span class="ai-spinner" id="enhance-spinner"></span>
+                                    ✨ Enhance Image
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <?php else: ?>
+                    <div style="padding:20px;text-align:center;color:#818cf8;font-size:.85rem;background:rgba(99,102,241,.05);border-radius:8px;margin-bottom:16px">
+                        ⚠️ Set a product image first (in the Media section above), then save the product to enable AI image tools.
+                    </div>
+                    <?php endif; ?>
+
+                    <!-- Generate from prompt -->
+                    <div style="border-top:1px solid rgba(99,102,241,.2);padding-top:14px;margin-top:4px">
+                        <div class="form-group">
+                            <label>🎨 Generate Product Image from Text</label>
+                            <div style="display:flex;gap:8px">
+                                <input type="text" id="img-gen-prompt" placeholder="e.g. premium wireless headphones on white background, studio lighting" style="flex:1">
+                                <button type="button" class="btn-ai btn-ai-sm" onclick="aiGenerateImage()" style="white-space:nowrap">
+                                    <span class="ai-spinner" id="imggen-spinner"></span>
+                                    🎨 Generate
+                                </button>
+                            </div>
+                            <div class="hint">Describe the product image you want AI to create (Stable Diffusion XL)</div>
+                        </div>
+                    </div>
+
+                    <div class="ai-error" id="images-error"></div>
+
+                    <!-- Results area -->
+                    <div id="images-results" style="display:none;margin-top:12px">
+                        <div class="ai-result-item" style="text-align:center">
+                            <label id="images-result-label">Result</label>
+                            <div style="margin:8px 0">
+                                <img id="images-result-img" src="" style="max-width:100%;max-height:300px;border-radius:8px;border:1px solid #4338ca;display:none" alt="AI Result">
+                                <div id="images-result-text" style="display:none;font-size:.85rem;color:#e2e8f0;text-align:left"></div>
+                            </div>
+                            <div id="images-result-actions" style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab: Keywords -->
+                <div class="ai-tab-content" id="tab-keywords">
+                    <div class="form-group">
+                        <label>Language</label>
+                        <select id="keywords-lang" style="max-width:200px">
+                            <option value="en">English</option>
+                            <option value="pl">Polish</option>
+                            <option value="de">German</option>
+                            <option value="es">Spanish</option>
+                            <option value="fr">French</option>
+                        </select>
+                    </div>
+                    <button type="button" class="btn-ai" onclick="runKeywordResearch()">
+                        <span class="ai-spinner" id="keywords-spinner"></span>
+                        🔑 Research Keywords
+                    </button>
+                    <div class="ai-error" id="keywords-error"></div>
+                    <div id="keywords-results" style="display:none;margin-top:16px"></div>
+                </div>
+            </div>
+        </div>
+        <?php endif; ?>
 
         <div class="form-actions">
             <a href="/admin/shop/products" class="btn-secondary">Cancel</a>
@@ -621,6 +800,360 @@ function escH(s) {
 }
 
 document.addEventListener('DOMContentLoaded', initVariants);
+
+// ─── AI TOOLS PANEL ───
+
+function toggleAiTools() {
+    var body = document.getElementById('ai-tools-body');
+    var chev = document.getElementById('ai-tools-chevron');
+    if (!body || !chev) return;
+    var open = body.classList.toggle('open');
+    chev.classList.toggle('open', open);
+}
+
+function switchAiTab(btn) {
+    document.querySelectorAll('.ai-tab').forEach(function(t){ t.classList.remove('active'); });
+    document.querySelectorAll('.ai-tab-content').forEach(function(c){ c.classList.remove('active'); });
+    btn.classList.add('active');
+    var target = document.getElementById(btn.dataset.tab);
+    if (target) target.classList.add('active');
+}
+
+function getProductId() {
+    var el = document.getElementById('product-id-hidden');
+    return el ? parseInt(el.value) : 0;
+}
+
+// SEO Analyze
+function runSeoAnalyze() {
+    var pid = getProductId();
+    if (!pid) return;
+    var errEl = document.getElementById('seo-analyze-error');
+    var resEl = document.getElementById('seo-analyze-results');
+    errEl.classList.remove('show');
+    resEl.style.display = 'none';
+
+    var payload = {
+        product_id: pid,
+        focus_keyword: document.getElementById('seo-focus-keyword').value,
+        language: document.getElementById('seo-analyze-lang').value
+    };
+
+    aiCall('/api/shop/ai/seo-analyze', payload, 'seo-analyze-spinner', function(err, data) {
+        if (err || !data || !data.ok) {
+            errEl.textContent = (data && data.error) ? data.error : (err || 'Analysis failed');
+            errEl.classList.add('show');
+            return;
+        }
+        var d = data.data || data;
+        var html = '';
+
+        // Score
+        var score = d.health_score || 0;
+        var color = score >= 70 ? '#10b981' : score >= 40 ? '#f59e0b' : '#ef4444';
+        html += '<div style="display:flex;align-items:center;gap:16px;padding:14px;background:rgba(99,102,241,.08);border-radius:10px;margin-bottom:12px">';
+        html += '<div style="font-size:2.2rem;font-weight:800;color:' + color + '">' + score + '</div>';
+        html += '<div style="flex:1"><div style="font-weight:600;color:#c7d2fe;margin-bottom:2px">SEO Health Score</div>';
+        html += '<div style="font-size:.8rem;color:#818cf8">' + esc(d.summary || '') + '</div></div></div>';
+
+        // Meta suggestions
+        if (d.on_page_checks && d.on_page_checks.meta_suggestions) {
+            var ms = d.on_page_checks.meta_suggestions;
+            html += '<div class="ai-result-item"><label>Recommended Meta Title</label>';
+            html += '<button type="button" class="btn-apply" onclick="document.getElementById(\'meta-title\').value=this.dataset.v" data-v="' + esc(ms.recommended_title || '') + '">Apply</button>';
+            html += '<div class="ai-preview">' + esc(ms.recommended_title || '') + '</div></div>';
+            html += '<div class="ai-result-item"><label>Recommended Meta Description</label>';
+            html += '<button type="button" class="btn-apply" onclick="document.getElementById(\'meta-description\').value=this.dataset.v" data-v="' + esc(ms.recommended_meta_description || '') + '">Apply</button>';
+            html += '<div class="ai-preview">' + esc(ms.recommended_meta_description || '') + '</div></div>';
+        }
+
+        // Quick wins
+        if (d.quick_wins && d.quick_wins.length) {
+            html += '<div style="margin-top:10px"><strong style="color:#c7d2fe;font-size:.82rem">⚡ Quick Wins:</strong><ul style="margin:4px 0 0;padding-left:18px;color:#e2e8f0;font-size:.82rem">';
+            d.quick_wins.forEach(function(w) { html += '<li style="margin-bottom:3px">' + esc(w) + '</li>'; });
+            html += '</ul></div>';
+        }
+
+        // Actionable tasks
+        if (d.actionable_tasks && d.actionable_tasks.length) {
+            html += '<div style="margin-top:10px"><strong style="color:#c7d2fe;font-size:.82rem">✅ Tasks:</strong>';
+            d.actionable_tasks.slice(0, 5).forEach(function(t) {
+                var pColor = t.priority === 'critical' ? '#ef4444' : t.priority === 'high' ? '#f59e0b' : '#94a3b8';
+                html += '<div style="border-left:3px solid ' + pColor + ';padding:6px 10px;margin:4px 0;border-radius:0 6px 6px 0;background:rgba(255,255,255,.03);font-size:.8rem">';
+                html += '<strong>' + esc(t.task || '') + '</strong><br><span style="color:#818cf8">' + esc(t.details || '') + '</span></div>';
+            });
+            html += '</div>';
+        }
+
+        resEl.innerHTML = html;
+        resEl.style.display = 'block';
+    });
+}
+
+// Rewrite
+var _rewriteData = null;
+
+function runRewrite() {
+    var pid = getProductId();
+    if (!pid) return;
+    var errEl = document.getElementById('rewrite-error');
+    var resEl = document.getElementById('rewrite-results');
+    errEl.classList.remove('show');
+    resEl.style.display = 'none';
+
+    var payload = {
+        product_id: pid,
+        mode: document.getElementById('rewrite-mode').value,
+        field: document.getElementById('rewrite-field').value
+    };
+
+    aiCall('/api/shop/ai/rewrite', payload, 'rewrite-spinner', function(err, data) {
+        if (err || !data || !data.ok) {
+            errEl.textContent = (data && data.error) ? data.error : (err || 'Rewrite failed');
+            errEl.classList.add('show');
+            return;
+        }
+        _rewriteData = data;
+        document.getElementById('rewrite-preview').innerHTML = data.rewritten || '';
+        resEl.style.display = 'block';
+    });
+}
+
+function applyRewrite() {
+    if (!_rewriteData) return;
+    var field = _rewriteData.field || 'description';
+    if (field === 'short_description') {
+        var el = document.querySelector('input[name="short_description"]');
+        if (el) el.value = _rewriteData.rewritten.replace(/<[^>]*>/g, '');
+    } else {
+        var el = document.querySelector('textarea[name="description"]');
+        if (el) el.value = _rewriteData.rewritten || '';
+    }
+}
+
+// Keywords
+function runKeywordResearch() {
+    var pid = getProductId();
+    if (!pid) return;
+    var errEl = document.getElementById('keywords-error');
+    var resEl = document.getElementById('keywords-results');
+    errEl.classList.remove('show');
+    resEl.style.display = 'none';
+
+    var payload = {
+        product_id: pid,
+        language: document.getElementById('keywords-lang').value
+    };
+
+    aiCall('/api/shop/ai/keywords', payload, 'keywords-spinner', function(err, data) {
+        if (err || !data || !data.ok) {
+            errEl.textContent = (data && data.error) ? data.error : (err || 'Research failed');
+            errEl.classList.add('show');
+            return;
+        }
+        var html = '';
+
+        // Primary keywords
+        if (data.primary_keywords && data.primary_keywords.length) {
+            html += '<div style="margin-bottom:12px"><strong style="color:#c7d2fe;font-size:.82rem">🎯 Primary Keywords:</strong>';
+            html += '<div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:6px">';
+            data.primary_keywords.forEach(function(k) {
+                var bg = k.priority === 'high' ? 'rgba(16,185,129,.15)' : k.priority === 'medium' ? 'rgba(245,158,11,.15)' : 'rgba(99,102,241,.15)';
+                var clr = k.priority === 'high' ? '#34d399' : k.priority === 'medium' ? '#fbbf24' : '#a5b4fc';
+                html += '<span style="background:' + bg + ';color:' + clr + ';padding:4px 10px;border-radius:6px;font-size:.78rem" title="Intent: ' + (k.search_intent || '') + ', Difficulty: ' + (k.difficulty || '') + '">' + esc(k.keyword || '') + '</span>';
+            });
+            html += '</div></div>';
+        }
+
+        // Long tail
+        if (data.long_tail_keywords && data.long_tail_keywords.length) {
+            html += '<div style="margin-bottom:12px"><strong style="color:#c7d2fe;font-size:.82rem">📏 Long-Tail Keywords:</strong>';
+            html += '<div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:6px">';
+            data.long_tail_keywords.forEach(function(k) {
+                html += '<span style="background:rgba(99,102,241,.1);color:#a5b4fc;padding:4px 10px;border-radius:6px;font-size:.78rem" title="Intent: ' + (k.search_intent || '') + '">' + esc(k.keyword || '') + '</span>';
+            });
+            html += '</div></div>';
+        }
+
+        // LSI
+        if (data.lsi_keywords && data.lsi_keywords.length) {
+            html += '<div style="margin-bottom:12px"><strong style="color:#c7d2fe;font-size:.82rem">🧠 LSI / Semantic Keywords:</strong>';
+            html += '<div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:6px">';
+            data.lsi_keywords.forEach(function(k) {
+                html += '<span style="background:rgba(59,130,246,.12);color:#93c5fd;padding:4px 10px;border-radius:6px;font-size:.78rem">' + esc(k) + '</span>';
+            });
+            html += '</div></div>';
+        }
+
+        // Questions
+        if (data.questions && data.questions.length) {
+            html += '<div style="margin-bottom:12px"><strong style="color:#c7d2fe;font-size:.82rem">❓ People Also Ask:</strong>';
+            html += '<ul style="margin:6px 0 0;padding-left:18px;color:#e2e8f0;font-size:.82rem">';
+            data.questions.forEach(function(q) { html += '<li style="margin-bottom:3px">' + esc(q) + '</li>'; });
+            html += '</ul></div>';
+        }
+
+        // Content suggestions
+        if (data.content_suggestions && data.content_suggestions.length) {
+            html += '<div style="margin-bottom:12px"><strong style="color:#c7d2fe;font-size:.82rem">💡 Content Suggestions:</strong>';
+            data.content_suggestions.forEach(function(s) {
+                html += '<div style="background:rgba(255,255,255,.03);padding:8px 12px;margin:4px 0;border-radius:6px;font-size:.8rem">';
+                html += '<span style="background:rgba(99,102,241,.2);color:#a5b4fc;padding:2px 8px;border-radius:4px;font-size:.7rem;margin-right:6px">' + esc(s.type || '') + '</span>';
+                html += '<strong>' + esc(s.title || '') + '</strong>';
+                if (s.target_keyword) html += ' <span style="color:#818cf8;font-size:.75rem">→ ' + esc(s.target_keyword) + '</span>';
+                html += '</div>';
+            });
+            html += '</div>';
+        }
+
+        resEl.innerHTML = html;
+        resEl.style.display = 'block';
+    });
+}
+
+function esc(s) {
+    if (!s) return '';
+    var d = document.createElement('div');
+    d.textContent = s;
+    return d.innerHTML.replace(/"/g, '&quot;');
+}
+
+// ─── AI IMAGE TOOLS ───
+
+function showImageError(msg) {
+    var el = document.getElementById('images-error');
+    el.textContent = msg;
+    el.classList.add('show');
+}
+function clearImageError() {
+    var el = document.getElementById('images-error');
+    el.textContent = '';
+    el.classList.remove('show');
+}
+function showImageResult(label, imgSrc, text, actions) {
+    var resEl = document.getElementById('images-results');
+    var labelEl = document.getElementById('images-result-label');
+    var imgEl = document.getElementById('images-result-img');
+    var textEl = document.getElementById('images-result-text');
+    var actionsEl = document.getElementById('images-result-actions');
+
+    labelEl.textContent = label;
+
+    if (imgSrc) {
+        imgEl.src = imgSrc;
+        imgEl.style.display = 'block';
+    } else {
+        imgEl.style.display = 'none';
+    }
+
+    if (text) {
+        textEl.innerHTML = text;
+        textEl.style.display = 'block';
+    } else {
+        textEl.style.display = 'none';
+    }
+
+    actionsEl.innerHTML = actions || '';
+    resEl.style.display = 'block';
+}
+
+function aiRemoveBg() {
+    var pid = getProductId();
+    if (!pid) return;
+    clearImageError();
+
+    aiCall('/api/shop/ai/remove-bg', {product_id: pid}, 'rmbg-spinner', function(err, data) {
+        if (err || !data || !data.ok) {
+            showImageError((data && data.error) ? data.error : (err || 'Background removal failed'));
+            return;
+        }
+        var imgPath = data.path;
+        var sizeKB = data.size ? Math.round(data.size / 1024) : '?';
+        showImageResult(
+            '✂️ Background Removed (' + sizeKB + ' KB)',
+            imgPath,
+            null,
+            '<button type="button" class="btn-ai btn-ai-sm" onclick="applyProductImage(\'' + esc(imgPath) + '\')">✅ Use as Product Image</button>' +
+            '<a href="' + esc(imgPath) + '" download class="btn-ai btn-ai-sm" style="background:#334155;text-decoration:none">💾 Download</a>'
+        );
+    });
+}
+
+function aiAltText() {
+    var pid = getProductId();
+    if (!pid) return;
+    clearImageError();
+
+    aiCall('/api/shop/ai/alt-text', {product_id: pid}, 'alt-spinner', function(err, data) {
+        if (err || !data || !data.ok) {
+            showImageError((data && data.error) ? data.error : (err || 'ALT text generation failed'));
+            return;
+        }
+        showImageResult(
+            '🏷️ Generated ALT Text',
+            null,
+            '<div style="background:rgba(99,102,241,.1);padding:12px;border-radius:8px;margin:8px 0">' +
+                '<strong style="color:#c7d2fe;font-size:.78rem;display:block;margin-bottom:4px">SEO ALT Text:</strong>' +
+                '<span style="color:#e2e8f0">' + esc(data.alt) + '</span>' +
+            '</div>' +
+            (data.raw_caption ? '<div style="font-size:.75rem;color:#818cf8;margin-top:4px">Raw caption: ' + esc(data.raw_caption) + '</div>' : ''),
+            '<button type="button" class="btn-ai btn-ai-sm" onclick="navigator.clipboard.writeText(\'' + esc(data.alt).replace(/'/g, "\\'") + '\');this.textContent=\'✅ Copied!\'">📋 Copy ALT Text</button>'
+        );
+    });
+}
+
+function aiEnhanceImage() {
+    var pid = getProductId();
+    if (!pid) return;
+    clearImageError();
+
+    aiCall('/api/shop/ai/enhance-image', {product_id: pid}, 'enhance-spinner', function(err, data) {
+        if (err || !data || !data.ok) {
+            showImageError((data && data.error) ? data.error : (err || 'Image enhancement failed'));
+            return;
+        }
+        var imgPath = data.path;
+        var sizeKB = data.size ? Math.round(data.size / 1024) : '?';
+        showImageResult(
+            '✨ Enhanced Image (' + sizeKB + ' KB)',
+            imgPath,
+            null,
+            '<button type="button" class="btn-ai btn-ai-sm" onclick="applyProductImage(\'' + esc(imgPath) + '\')">✅ Use as Product Image</button>' +
+            '<a href="' + esc(imgPath) + '" download class="btn-ai btn-ai-sm" style="background:#334155;text-decoration:none">💾 Download</a>'
+        );
+    });
+}
+
+function aiGenerateImage() {
+    var prompt = document.getElementById('img-gen-prompt').value.trim();
+    if (!prompt) { showImageError('Enter a prompt first'); return; }
+    clearImageError();
+
+    var pid = getProductId();
+    aiCall('/api/shop/ai/generate-image', {prompt: prompt, product_id: pid}, 'imggen-spinner', function(err, data) {
+        if (err || !data || !data.ok) {
+            showImageError((data && data.error) ? data.error : (err || 'Image generation failed'));
+            return;
+        }
+        var imgPath = data.path;
+        var sizeKB = data.size ? Math.round(data.size / 1024) : '?';
+        showImageResult(
+            '🎨 AI Generated Image (' + sizeKB + ' KB)',
+            imgPath,
+            null,
+            '<button type="button" class="btn-ai btn-ai-sm" onclick="applyProductImage(\'' + esc(imgPath) + '\')">✅ Use as Product Image</button>' +
+            '<a href="' + esc(imgPath) + '" download class="btn-ai btn-ai-sm" style="background:#334155;text-decoration:none">💾 Download</a>'
+        );
+    });
+}
+
+function applyProductImage(path) {
+    var imgInput = document.getElementById('product-image');
+    if (imgInput) {
+        imgInput.value = path;
+        imgInput.dispatchEvent(new Event('input'));
+    }
+}
 
 // ─── DIGITAL PRODUCT SECTION ───
 (function(){

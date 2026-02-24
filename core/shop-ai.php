@@ -354,6 +354,632 @@ PROMPT;
         return trim($result['content'] ?? '');
     }
 
+    // ─── SEO ANALYSIS ───
+
+    /**
+     * Full SEO health analysis for a product page.
+     * Integrates with ai_seo_assistant for deep analysis.
+     *
+     * @param int $productId Product ID
+     * @param string $focusKeyword Optional focus keyword (auto-detected from product name if empty)
+     * @param string $language Language code
+     * @return array Full SEO analysis result
+     */
+    public static function analyzeSEO(int $productId, string $focusKeyword = '', string $language = 'en'): array
+    {
+        require_once CMS_ROOT . '/core/shop.php';
+        $product = \Shop::getProduct($productId);
+        if (!$product) {
+            return ['ok' => false, 'error' => 'Product not found'];
+        }
+
+        $name = $product['name'] ?? '';
+        $slug = $product['slug'] ?? '';
+        $shortDesc = $product['short_description'] ?? '';
+        $description = $product['description'] ?? '';
+        $metaTitle = $product['meta_title'] ?? '';
+        $metaDescription = $product['meta_description'] ?? '';
+        $categoryName = $product['category_name'] ?? '';
+        $price = $product['price'] ?? 0;
+
+        if ($focusKeyword === '') {
+            $focusKeyword = $name;
+        }
+
+        // Build content for analysis (simulated product page)
+        $contentHtml = "<h1>{$name}</h1>\n";
+        if ($shortDesc) {
+            $contentHtml .= "<p class=\"short-desc\">{$shortDesc}</p>\n";
+        }
+        if ($metaTitle) {
+            $contentHtml .= "<!-- meta title: {$metaTitle} -->\n";
+        }
+        if ($metaDescription) {
+            $contentHtml .= "<!-- meta description: {$metaDescription} -->\n";
+        }
+        $contentHtml .= "<div class=\"product-description\">{$description}</div>\n";
+        if ($categoryName) {
+            $contentHtml .= "<nav class=\"breadcrumb\">Shop > {$categoryName} > {$name}</nav>\n";
+        }
+
+        // Use the CMS SEO Assistant engine
+        require_once CMS_ROOT . '/core/ai_content.php';
+        require_once CMS_ROOT . '/core/ai_seo_assistant.php';
+
+        $spec = [
+            'title'              => $metaTitle ?: $name,
+            'url'                => "/shop/{$slug}",
+            'focus_keyword'      => $focusKeyword,
+            'secondary_keywords' => $categoryName,
+            'content_html'       => $contentHtml,
+            'content_type'       => 'product_page',
+            'language'           => $language,
+            'notes'              => "This is an e-commerce product page. Price: {$price}. Category: {$categoryName}. Evaluate product-specific SEO factors: schema markup readiness, product title optimization, image alt text, price visibility, CTA presence, review snippet readiness.",
+        ];
+
+        $result = ai_seo_assistant_analyze($spec);
+
+        if (!empty($result['ok']) && !empty($result['data'])) {
+            // Track score
+            ai_seo_track_score([
+                'entity_type' => 'product',
+                'entity_id'   => $productId,
+                'keyword'     => $focusKeyword,
+                'score'       => (int)($result['data']['health_score'] ?? 0),
+                'url'         => "/shop/{$slug}",
+            ]);
+        }
+
+        return $result;
+    }
+
+    /**
+     * Get SEO score history for a product.
+     *
+     * @param int $productId Product ID
+     * @param int $limit Number of records
+     * @return array Score history
+     */
+    public static function getSEOHistory(int $productId, int $limit = 20): array
+    {
+        require_once CMS_ROOT . '/core/ai_content.php';
+        require_once CMS_ROOT . '/core/ai_seo_assistant.php';
+        return ai_seo_get_score_history('product', $productId, $limit);
+    }
+
+    /**
+     * Bulk SEO scan — analyze all active products and return scores.
+     *
+     * @param string $language Language code
+     * @param int $limit Max products to scan (0 = all)
+     * @return array ['ok' => bool, 'products' => [...], 'summary' => [...]]
+     */
+    public static function bulkSEOScan(string $language = 'en', int $limit = 0): array
+    {
+        require_once CMS_ROOT . '/core/shop.php';
+        $pdo = db();
+
+        $sql = "SELECT p.id, p.name, p.slug, p.short_description, p.description,
+                       p.meta_title, p.meta_description, p.image, p.status,
+                       c.name AS category_name
+                FROM products p
+                LEFT JOIN product_categories c ON p.category_id = c.id
+                WHERE p.status = 'active'
+                ORDER BY p.name ASC";
+        if ($limit > 0) {
+            $sql .= " LIMIT {$limit}";
+        }
+
+        $products = $pdo->query($sql)->fetchAll(\PDO::FETCH_ASSOC);
+        $results = [];
+        $totalScore = 0;
+        $issues = ['critical' => 0, 'warning' => 0, 'good' => 0];
+
+        foreach ($products as $p) {
+            $score = self::quickSEOScore($p);
+            $totalScore += $score['score'];
+
+            if ($score['score'] < 40) {
+                $issues['critical']++;
+            } elseif ($score['score'] < 70) {
+                $issues['warning']++;
+            } else {
+                $issues['good']++;
+            }
+
+            $results[] = [
+                'id'               => (int)$p['id'],
+                'name'             => $p['name'],
+                'slug'             => $p['slug'],
+                'image'            => $p['image'] ?? '',
+                'category'         => $p['category_name'] ?? '',
+                'status'           => $p['status'],
+                'score'            => $score['score'],
+                'grade'            => $score['grade'],
+                'issues'           => $score['issues'],
+                'has_meta_title'   => !empty($p['meta_title']),
+                'has_meta_desc'    => !empty($p['meta_description']),
+                'has_description'  => !empty($p['description']),
+                'has_image'        => !empty($p['image']),
+            ];
+        }
+
+        $count = count($products);
+        $avgScore = $count > 0 ? round($totalScore / $count) : 0;
+
+        return [
+            'ok'       => true,
+            'products' => $results,
+            'summary'  => [
+                'total'     => $count,
+                'avg_score' => $avgScore,
+                'critical'  => $issues['critical'],
+                'warning'   => $issues['warning'],
+                'good'      => $issues['good'],
+            ],
+        ];
+    }
+
+    /**
+     * Quick SEO score (rule-based, no AI call) for bulk scanning.
+     *
+     * @param array $product Product data
+     * @return array ['score' => int, 'grade' => string, 'issues' => array]
+     */
+    public static function quickSEOScore(array $product): array
+    {
+        $score = 0;
+        $maxScore = 0;
+        $issues = [];
+
+        // Title (15 pts)
+        $maxScore += 15;
+        $name = $product['name'] ?? '';
+        if (mb_strlen($name) >= 10 && mb_strlen($name) <= 70) {
+            $score += 15;
+        } elseif (mb_strlen($name) >= 5) {
+            $score += 8;
+            $issues[] = 'Product name too short or too long for SEO';
+        } else {
+            $issues[] = 'Product name missing or very short';
+        }
+
+        // Meta title (15 pts)
+        $maxScore += 15;
+        $metaTitle = $product['meta_title'] ?? '';
+        if ($metaTitle !== '' && mb_strlen($metaTitle) >= 20 && mb_strlen($metaTitle) <= 60) {
+            $score += 15;
+        } elseif ($metaTitle !== '') {
+            $score += 8;
+            $issues[] = 'Meta title length not optimal (aim for 20-60 chars)';
+        } else {
+            $issues[] = 'Missing meta title';
+        }
+
+        // Meta description (15 pts)
+        $maxScore += 15;
+        $metaDesc = $product['meta_description'] ?? '';
+        if ($metaDesc !== '' && mb_strlen($metaDesc) >= 70 && mb_strlen($metaDesc) <= 160) {
+            $score += 15;
+        } elseif ($metaDesc !== '') {
+            $score += 8;
+            $issues[] = 'Meta description length not optimal (aim for 70-160 chars)';
+        } else {
+            $issues[] = 'Missing meta description';
+        }
+
+        // Description (20 pts)
+        $maxScore += 20;
+        $desc = strip_tags($product['description'] ?? '');
+        $wordCount = str_word_count($desc);
+        if ($wordCount >= 100) {
+            $score += 20;
+        } elseif ($wordCount >= 50) {
+            $score += 12;
+            $issues[] = 'Product description could be longer (aim for 100+ words)';
+        } elseif ($wordCount >= 20) {
+            $score += 6;
+            $issues[] = 'Product description too short for good SEO';
+        } else {
+            $issues[] = 'Product description missing or very short';
+        }
+
+        // Short description (10 pts)
+        $maxScore += 10;
+        $shortDesc = $product['short_description'] ?? '';
+        if ($shortDesc !== '' && mb_strlen($shortDesc) >= 50) {
+            $score += 10;
+        } elseif ($shortDesc !== '') {
+            $score += 5;
+            $issues[] = 'Short description could be more detailed';
+        } else {
+            $issues[] = 'Missing short description';
+        }
+
+        // Image (10 pts)
+        $maxScore += 10;
+        if (!empty($product['image'])) {
+            $score += 10;
+        } else {
+            $issues[] = 'Missing product image';
+        }
+
+        // Slug (5 pts)
+        $maxScore += 5;
+        $slug = $product['slug'] ?? '';
+        if ($slug !== '' && mb_strlen($slug) <= 60 && !preg_match('/[A-Z]/', $slug)) {
+            $score += 5;
+        } elseif ($slug !== '') {
+            $score += 3;
+            $issues[] = 'Product slug could be improved';
+        } else {
+            $issues[] = 'Missing product slug';
+        }
+
+        // Category (5 pts)
+        $maxScore += 5;
+        if (!empty($product['category_name'])) {
+            $score += 5;
+        } else {
+            $issues[] = 'Product not assigned to a category';
+        }
+
+        // Keyword in meta (5 pts)
+        $maxScore += 5;
+        $nameWords = array_filter(explode(' ', strtolower($name)));
+        $metaTitleLower = strtolower($metaTitle);
+        $keywordInMeta = false;
+        foreach ($nameWords as $w) {
+            if (mb_strlen($w) >= 4 && strpos($metaTitleLower, $w) !== false) {
+                $keywordInMeta = true;
+                break;
+            }
+        }
+        if ($keywordInMeta) {
+            $score += 5;
+        } elseif ($metaTitle !== '') {
+            $issues[] = 'Product name keyword not found in meta title';
+        }
+
+        $pct = $maxScore > 0 ? round(($score / $maxScore) * 100) : 0;
+
+        $grade = 'A';
+        if ($pct < 40) $grade = 'F';
+        elseif ($pct < 55) $grade = 'D';
+        elseif ($pct < 70) $grade = 'C';
+        elseif ($pct < 85) $grade = 'B';
+
+        return [
+            'score'  => $pct,
+            'grade'  => $grade,
+            'issues' => $issues,
+        ];
+    }
+
+    // ─── CONTENT REWRITE ───
+
+    /**
+     * Rewrite product description using AI.
+     *
+     * @param int $productId Product ID
+     * @param string $mode Rewrite mode: paraphrase|summarize|expand|simplify|formalize|casual|seo|kids
+     * @param string $targetField Which field to rewrite: description|short_description
+     * @param array $options Additional options (tone, keywords, etc.)
+     * @return array ['ok' => bool, 'original' => string, 'rewritten' => string]
+     */
+    public static function rewriteContent(int $productId, string $mode = 'seo', string $targetField = 'description', array $options = []): array
+    {
+        require_once CMS_ROOT . '/core/shop.php';
+        $product = \Shop::getProduct($productId);
+        if (!$product) {
+            return ['ok' => false, 'error' => 'Product not found'];
+        }
+
+        $content = '';
+        if ($targetField === 'short_description') {
+            $content = $product['short_description'] ?? '';
+        } else {
+            $content = $product['description'] ?? '';
+        }
+
+        if (trim($content) === '') {
+            return ['ok' => false, 'error' => "Product {$targetField} is empty — nothing to rewrite"];
+        }
+
+        require_once CMS_ROOT . '/core/ai_content.php';
+        require_once CMS_ROOT . '/core/ai_content_rewrite.php';
+
+        $rewriteOptions = array_merge([
+            'tone'     => $options['tone'] ?? 'professional',
+            'keywords' => $options['keywords'] ?? ($product['name'] ?? ''),
+        ], $options);
+
+        $result = ai_rewrite_content($content, $mode, $rewriteOptions);
+
+        if (!empty($result['ok'])) {
+            return [
+                'ok'        => true,
+                'original'  => $content,
+                'rewritten' => $result['content'] ?? '',
+                'mode'      => $mode,
+                'field'     => $targetField,
+            ];
+        }
+
+        return ['ok' => false, 'error' => $result['error'] ?? 'Rewrite failed'];
+    }
+
+    // ─── KEYWORD RESEARCH ───
+
+    /**
+     * AI-powered keyword research for a product.
+     *
+     * @param int $productId Product ID
+     * @param string $language Language code
+     * @return array ['ok' => bool, 'keywords' => [...], 'questions' => [...], 'lsi' => [...]]
+     */
+    public static function keywordResearch(int $productId, string $language = 'en'): array
+    {
+        require_once CMS_ROOT . '/core/shop.php';
+        $product = \Shop::getProduct($productId);
+        if (!$product) {
+            return ['ok' => false, 'error' => 'Product not found'];
+        }
+
+        $name = $product['name'] ?? '';
+        $category = $product['category_name'] ?? '';
+        $shortDesc = $product['short_description'] ?? '';
+        $description = strip_tags($product['description'] ?? '');
+
+        $langNames = [
+            'en' => 'English', 'pl' => 'Polish', 'de' => 'German', 'fr' => 'French',
+            'es' => 'Spanish', 'it' => 'Italian', 'pt' => 'Portuguese', 'nl' => 'Dutch',
+        ];
+        $langLabel = $langNames[$language] ?? $language;
+
+        $systemPrompt = 'You are an expert e-commerce SEO keyword researcher. Return ONLY valid JSON, no markdown.';
+
+        $userPrompt = <<<PROMPT
+Perform keyword research for this e-commerce product. Write all content in {$langLabel}.
+
+Product: {$name}
+Category: {$category}
+Short description: {$shortDesc}
+Description excerpt: {$description}
+
+Return ONLY valid JSON:
+{
+  "primary_keywords": [
+    {"keyword": "main keyword", "search_intent": "transactional|informational|navigational", "difficulty": "low|medium|high", "priority": "high|medium|low"}
+  ],
+  "long_tail_keywords": [
+    {"keyword": "long tail phrase", "search_intent": "transactional|informational", "monthly_volume_est": "high|medium|low"}
+  ],
+  "lsi_keywords": ["semantic keyword 1", "semantic keyword 2"],
+  "questions": ["question people ask 1", "question 2", "question 3"],
+  "competitor_keywords": ["keyword competitors rank for 1", "keyword 2"],
+  "content_suggestions": [
+    {"type": "blog_post|faq|buying_guide|comparison", "title": "suggested content title", "target_keyword": "keyword to target"}
+  ]
+}
+
+Requirements:
+- 5-8 primary keywords (mix of head terms and mid-tail)
+- 8-12 long tail keywords (buyer intent focus)
+- 10-15 LSI/semantic keywords
+- 5-8 People Also Ask questions
+- 5-8 competitor keywords
+- 3-5 content suggestions for supporting the product page
+PROMPT;
+
+        $result = self::callAI($systemPrompt, $userPrompt, ['max_tokens' => 2500, 'temperature' => 0.6]);
+
+        if (!$result['ok']) {
+            return ['ok' => false, 'error' => $result['error'] ?? 'Keyword research failed'];
+        }
+
+        $parsed = self::parseJsonFromResponse($result['content'] ?? '');
+        if ($parsed === null) {
+            return ['ok' => false, 'error' => 'Failed to parse keyword research response'];
+        }
+
+        return [
+            'ok'                   => true,
+            'primary_keywords'     => $parsed['primary_keywords'] ?? [],
+            'long_tail_keywords'   => $parsed['long_tail_keywords'] ?? [],
+            'lsi_keywords'         => $parsed['lsi_keywords'] ?? [],
+            'questions'            => $parsed['questions'] ?? [],
+            'competitor_keywords'  => $parsed['competitor_keywords'] ?? [],
+            'content_suggestions'  => $parsed['content_suggestions'] ?? [],
+        ];
+    }
+
+    // ─── CATEGORY AI ───
+
+    /**
+     * Generate AI description for a product category.
+     *
+     * @param int $categoryId Category ID
+     * @param string $tone Tone
+     * @param string $language Language code
+     * @return array ['ok' => bool, 'description' => string, 'meta_title' => string, 'meta_description' => string]
+     */
+    public static function generateCategoryDescription(int $categoryId, string $tone = 'professional', string $language = 'en'): array
+    {
+        $pdo = db();
+        $stmt = $pdo->prepare("SELECT * FROM product_categories WHERE id = ?");
+        $stmt->execute([$categoryId]);
+        $category = $stmt->fetch(\PDO::FETCH_ASSOC);
+        if (!$category) {
+            return ['ok' => false, 'error' => 'Category not found'];
+        }
+
+        $catName = $category['name'] ?? '';
+        $catSlug = $category['slug'] ?? '';
+
+        // Get products in this category for context
+        $stmt2 = $pdo->prepare("SELECT name, short_description FROM products WHERE category_id = ? AND status = 'active' LIMIT 10");
+        $stmt2->execute([$categoryId]);
+        $products = $stmt2->fetchAll(\PDO::FETCH_ASSOC);
+        $productList = implode(', ', array_column($products, 'name'));
+
+        $langNames = [
+            'en' => 'English', 'pl' => 'Polish', 'de' => 'German', 'fr' => 'French',
+            'es' => 'Spanish', 'it' => 'Italian', 'pt' => 'Portuguese', 'nl' => 'Dutch',
+        ];
+        $langLabel = $langNames[$language] ?? $language;
+
+        $systemPrompt = 'You are an expert e-commerce copywriter. Write compelling, SEO-optimized category descriptions. Return ONLY valid JSON.';
+
+        $userPrompt = <<<PROMPT
+Write a category page description for an e-commerce store. Use a {$tone} tone. Write ALL content in {$langLabel}.
+
+Category name: {$catName}
+Products in category: {$productList}
+
+Return ONLY valid JSON:
+{
+  "description": "Rich HTML description (2-3 paragraphs with <p> tags, include relevant keywords naturally). Should help customers understand what they'll find and why they should browse this category.",
+  "meta_title": "SEO meta title, max 60 characters, include category name",
+  "meta_description": "SEO meta description, max 160 characters, compelling with CTA"
+}
+PROMPT;
+
+        $result = self::callAI($systemPrompt, $userPrompt, ['max_tokens' => 1500, 'temperature' => 0.7]);
+
+        if (!$result['ok']) {
+            return ['ok' => false, 'error' => $result['error'] ?? 'Category description generation failed'];
+        }
+
+        $parsed = self::parseJsonFromResponse($result['content'] ?? '');
+        if ($parsed === null || empty($parsed['description'])) {
+            return ['ok' => false, 'error' => 'Failed to parse category description'];
+        }
+
+        return [
+            'ok'               => true,
+            'description'      => $parsed['description'],
+            'meta_title'       => mb_substr($parsed['meta_title'] ?? $catName, 0, 60),
+            'meta_description' => mb_substr($parsed['meta_description'] ?? '', 0, 160),
+        ];
+    }
+
+    // ─── BULK OPERATIONS ───
+
+    /**
+     * Bulk generate SEO meta fields for multiple products.
+     *
+     * @param array $productIds Array of product IDs
+     * @param bool $overwrite Overwrite existing meta fields
+     * @return array ['ok' => bool, 'results' => [...], 'generated' => int, 'skipped' => int, 'failed' => int]
+     */
+    public static function bulkGenerateSEO(array $productIds, bool $overwrite = false): array
+    {
+        require_once CMS_ROOT . '/core/shop.php';
+        $results = [];
+        $generated = 0;
+        $skipped = 0;
+        $failed = 0;
+
+        foreach ($productIds as $pid) {
+            $pid = (int)$pid;
+            $product = \Shop::getProduct($pid);
+            if (!$product) {
+                $failed++;
+                $results[] = ['id' => $pid, 'status' => 'error', 'error' => 'Not found'];
+                continue;
+            }
+
+            // Skip if already has meta and overwrite is false
+            if (!$overwrite && !empty($product['meta_title']) && !empty($product['meta_description'])) {
+                $skipped++;
+                $results[] = ['id' => $pid, 'name' => $product['name'], 'status' => 'skipped'];
+                continue;
+            }
+
+            $seoResult = self::generateSEO($pid);
+            if ($seoResult['ok']) {
+                // Save to database
+                $pdo = db();
+                $stmt = $pdo->prepare("UPDATE products SET meta_title = ?, meta_description = ? WHERE id = ?");
+                $stmt->execute([
+                    $seoResult['meta_title'],
+                    $seoResult['meta_description'],
+                    $pid,
+                ]);
+                $generated++;
+                $results[] = [
+                    'id'               => $pid,
+                    'name'             => $product['name'],
+                    'status'           => 'generated',
+                    'meta_title'       => $seoResult['meta_title'],
+                    'meta_description' => $seoResult['meta_description'],
+                ];
+            } else {
+                $failed++;
+                $results[] = ['id' => $pid, 'name' => $product['name'], 'status' => 'error', 'error' => $seoResult['error'] ?? 'Unknown error'];
+            }
+
+            // Rate limit — don't hammer the API
+            usleep(500000); // 0.5s between calls
+        }
+
+        return [
+            'ok'        => true,
+            'results'   => $results,
+            'generated' => $generated,
+            'skipped'   => $skipped,
+            'failed'    => $failed,
+        ];
+    }
+
+    /**
+     * Bulk rewrite descriptions for multiple products.
+     *
+     * @param array $productIds Array of product IDs
+     * @param string $mode Rewrite mode
+     * @param bool $apply Auto-save to database
+     * @return array
+     */
+    public static function bulkRewrite(array $productIds, string $mode = 'seo', bool $apply = false): array
+    {
+        require_once CMS_ROOT . '/core/shop.php';
+        $results = [];
+        $rewritten = 0;
+        $failed = 0;
+
+        foreach ($productIds as $pid) {
+            $pid = (int)$pid;
+            $result = self::rewriteContent($pid, $mode, 'description');
+
+            if ($result['ok']) {
+                if ($apply) {
+                    $pdo = db();
+                    $stmt = $pdo->prepare("UPDATE products SET description = ? WHERE id = ?");
+                    $stmt->execute([$result['rewritten'], $pid]);
+                }
+                $rewritten++;
+                $results[] = [
+                    'id'       => $pid,
+                    'status'   => 'ok',
+                    'preview'  => mb_substr(strip_tags($result['rewritten']), 0, 200),
+                ];
+            } else {
+                $failed++;
+                $results[] = ['id' => $pid, 'status' => 'error', 'error' => $result['error'] ?? 'Unknown'];
+            }
+
+            usleep(500000);
+        }
+
+        return [
+            'ok'        => true,
+            'results'   => $results,
+            'rewritten' => $rewritten,
+            'failed'    => $failed,
+        ];
+    }
+
     // ─── PRIVATE HELPERS ───
 
     /**

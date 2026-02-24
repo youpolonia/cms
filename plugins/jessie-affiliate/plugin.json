@@ -1,0 +1,13 @@
+{
+    "name": "JessieAffiliate",
+    "slug": "jessie-affiliate",
+    "version": "1.0.0",
+    "description": "Affiliate and referral marketing system with tracking, commissions, and payouts",
+    "author": "Jessie CMS",
+    "requires": "1.0.0",
+    "php_requires": "8.1",
+    "tenant_aware": false,
+    "hooks": { "action": ["init"], "filter": [] },
+    "dependencies": {},
+    "license": "GPL-3.0"
+}

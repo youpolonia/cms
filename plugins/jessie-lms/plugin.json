@@ -1,0 +1,13 @@
+{
+    "name": "JessieLms",
+    "slug": "jessie-lms",
+    "version": "1.0.0",
+    "description": "Learning Management System with courses, quizzes, certificates, and AI",
+    "author": "Jessie CMS",
+    "requires": "1.0.0",
+    "php_requires": "8.1",
+    "tenant_aware": false,
+    "hooks": { "action": ["init"], "filter": [] },
+    "dependencies": {},
+    "license": "GPL-3.0"
+}

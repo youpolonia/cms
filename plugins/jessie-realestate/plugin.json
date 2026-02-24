@@ -1,0 +1,13 @@
+{
+    "name": "JessieRealEstate",
+    "slug": "jessie-realestate",
+    "version": "1.0.0",
+    "description": "Real estate listings with property search, agent profiles, inquiries, and AI-powered descriptions",
+    "author": "Jessie CMS",
+    "requires": "1.0.0",
+    "php_requires": "8.1",
+    "tenant_aware": false,
+    "hooks": { "action": ["init"], "filter": [] },
+    "dependencies": {},
+    "license": "GPL-3.0"
+}

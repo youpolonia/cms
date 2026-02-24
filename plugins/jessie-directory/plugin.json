@@ -1,0 +1,13 @@
+{
+    "name": "JessieDirectory",
+    "slug": "jessie-directory",
+    "version": "1.0.0",
+    "description": "Business directory with listings, reviews, categories, and AI SEO",
+    "author": "Jessie CMS",
+    "requires": "1.0.0",
+    "php_requires": "8.1",
+    "tenant_aware": false,
+    "hooks": { "action": ["init"], "filter": [] },
+    "dependencies": {},
+    "license": "GPL-3.0"
+}

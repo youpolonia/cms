@@ -569,6 +569,68 @@ return [
     'POST /api/shop/ai/seo' => ['Admin\\ShopController', 'aiSeo', ['auth' => true]],
     'POST /api/shop/ai/price' => ['Admin\\ShopController', 'aiPrice', ['auth' => true]],
     'POST /api/shop/ai/review-summary' => ['Admin\\ShopController', 'aiReviewSummary', ['auth' => true]],
+    'POST /api/shop/ai/seo-analyze' => ['Admin\\ShopController', 'aiSeoAnalyze', ['auth' => true]],
+    'POST /api/shop/ai/keywords' => ['Admin\\ShopController', 'aiKeywords', ['auth' => true]],
+    'POST /api/shop/ai/rewrite' => ['Admin\\ShopController', 'aiRewrite', ['auth' => true]],
+    'POST /api/shop/ai/category-description' => ['Admin\\ShopController', 'aiCategoryDescription', ['auth' => true]],
+    'POST /api/shop/ai/bulk-seo-scan' => ['Admin\\ShopController', 'aiBulkSeoScan', ['auth' => true]],
+    'POST /api/shop/ai/bulk-generate-seo' => ['Admin\\ShopController', 'aiBulkGenerateSeo', ['auth' => true]],
+    'POST /api/shop/ai/bulk-rewrite' => ['Admin\\ShopController', 'aiBulkRewrite', ['auth' => true]],
+
+    // Shop AI Image Processing
+    'POST /api/shop/ai/remove-bg' => ['Admin\\ShopController', 'aiRemoveBg', ['auth' => true]],
+    'POST /api/shop/ai/alt-text' => ['Admin\\ShopController', 'aiAltText', ['auth' => true]],
+    'POST /api/shop/ai/enhance-image' => ['Admin\\ShopController', 'aiEnhanceImage', ['auth' => true]],
+    'POST /api/shop/ai/generate-image' => ['Admin\\ShopController', 'aiGenerateImage', ['auth' => true]],
+    'POST /api/shop/ai/process-images' => ['Admin\\ShopController', 'aiProcessImages', ['auth' => true]],
+
+    // Shop SEO Dashboard
+    'GET /admin/shop/seo' => ['Admin\\ShopController', 'seo', ['auth' => true, 'role' => 'admin']],
+
+    // ─── DROPSHIPPING ───
+    'GET /admin/dropshipping' => ['Admin\\DropshippingController', 'dashboard', ['auth' => true, 'role' => 'admin']],
+    'GET /admin/dropshipping/suppliers' => ['Admin\\DropshippingController', 'suppliers', ['auth' => true, 'role' => 'admin']],
+    'GET /admin/dropshipping/suppliers/create' => ['Admin\\DropshippingController', 'supplierCreate', ['auth' => true, 'role' => 'admin']],
+    'GET /admin/dropshipping/suppliers/{id}/edit' => ['Admin\\DropshippingController', 'supplierEdit', ['auth' => true, 'role' => 'admin']],
+    'POST /admin/dropshipping/suppliers/store' => ['Admin\\DropshippingController', 'supplierStore', ['auth' => true, 'csrf' => true, 'role' => 'admin']],
+    'POST /admin/dropshipping/suppliers/{id}/update' => ['Admin\\DropshippingController', 'supplierUpdate', ['auth' => true, 'csrf' => true, 'role' => 'admin']],
+    'POST /admin/dropshipping/suppliers/{id}/delete' => ['Admin\\DropshippingController', 'supplierDelete', ['auth' => true, 'csrf' => true, 'role' => 'admin']],
+    'GET /admin/dropshipping/products' => ['Admin\\DropshippingController', 'products', ['auth' => true, 'role' => 'admin']],
+    'GET /admin/dropshipping/import' => ['Admin\\DropshippingController', 'import', ['auth' => true, 'role' => 'admin']],
+    'GET /admin/dropshipping/price-rules' => ['Admin\\DropshippingController', 'priceRules', ['auth' => true, 'role' => 'admin']],
+    'POST /admin/dropshipping/price-rules/store' => ['Admin\\DropshippingController', 'priceRuleStore', ['auth' => true, 'csrf' => true, 'role' => 'admin']],
+    'POST /admin/dropshipping/price-rules/{id}/update' => ['Admin\\DropshippingController', 'priceRuleUpdate', ['auth' => true, 'csrf' => true, 'role' => 'admin']],
+    'POST /admin/dropshipping/price-rules/{id}/delete' => ['Admin\\DropshippingController', 'priceRuleDelete', ['auth' => true, 'csrf' => true, 'role' => 'admin']],
+    'GET /admin/dropshipping/orders' => ['Admin\\DropshippingController', 'orders', ['auth' => true, 'role' => 'admin']],
+
+    // Dropshipping API
+    'POST /api/dropshipping/import-url' => ['Admin\\DropshippingController', 'apiImportUrl', ['auth' => true]],
+    'POST /api/dropshipping/import-batch' => ['Admin\\DropshippingController', 'apiImportBatch', ['auth' => true]],
+    'POST /api/dropshipping/import-csv' => ['Admin\\DropshippingController', 'apiImportCsv', ['auth' => true]],
+    'POST /api/dropshipping/link-product' => ['Admin\\DropshippingController', 'apiLinkProduct', ['auth' => true]],
+    'POST /api/dropshipping/unlink-product' => ['Admin\\DropshippingController', 'apiUnlinkProduct', ['auth' => true]],
+    'POST /api/dropshipping/calculate-price' => ['Admin\\DropshippingController', 'apiCalculatePrice', ['auth' => true]],
+
+    // Dropshipping Faza 2: Orders & Sync
+    'GET /admin/dropshipping/orders/{id}' => ['Admin\\DropshippingController', 'orderDetail', ['auth' => true, 'role' => 'admin']],
+    'POST /admin/dropshipping/orders/{id}/update' => ['Admin\\DropshippingController', 'orderUpdateStatus', ['auth' => true, 'csrf' => true, 'role' => 'admin']],
+    'POST /api/dropshipping/forward-order' => ['Admin\\DropshippingController', 'apiForwardOrder', ['auth' => true]],
+    'POST /api/dropshipping/sync-all' => ['Admin\\DropshippingController', 'apiSyncAll', ['auth' => true]],
+    'POST /api/dropshipping/sync-product' => ['Admin\\DropshippingController', 'apiSyncProduct', ['auth' => true]],
+    'POST /api/dropshipping/sync-tracking' => ['Admin\\DropshippingController', 'apiSyncTracking', ['auth' => true]],
+
+    // Dropshipping Faza 3: AI Research
+    'GET /admin/dropshipping/research' => ['Admin\\DropshippingController', 'research', ['auth' => true, 'role' => 'admin']],
+    'POST /api/dropshipping/ai-scout' => ['Admin\\DropshippingController', 'apiAiScout', ['auth' => true]],
+    'POST /api/dropshipping/ai-niches' => ['Admin\\DropshippingController', 'apiAiNiches', ['auth' => true]],
+    'POST /api/dropshipping/ai-competition' => ['Admin\\DropshippingController', 'apiAiCompetition', ['auth' => true]],
+    'POST /api/dropshipping/profit-calc' => ['Admin\\DropshippingController', 'apiProfitCalc', ['auth' => true]],
+    'POST /api/dropshipping/ai-trends' => ['Admin\\DropshippingController', 'apiAiTrends', ['auth' => true]],
+    'POST /api/dropshipping/optimize-listing' => ['Admin\\DropshippingController', 'apiOptimizeListing', ['auth' => true]],
+
+    // Dropshipping Faza 4: Settings
+    'GET /admin/dropshipping/settings' => ['Admin\\DropshippingController', 'settings', ['auth' => true, 'role' => 'admin']],
+    'POST /admin/dropshipping/settings/save' => ['Admin\\DropshippingController', 'settingsSave', ['auth' => true, 'csrf' => true, 'role' => 'admin']],
 
     // CRM
     'GET /admin/crm' => ['Admin\\CrmController', 'dashboard', ['auth' => true, 'role' => 'admin']],
@@ -649,30 +711,12 @@ return [
     'POST /cart/coupon/apply' => ['Front\\ShopController', 'applyCoupon'],
     'POST /cart/coupon/remove' => ['Front\\ShopController', 'removeCoupon'],
 
-    // ─── Shop Reviews ───
-    'GET /admin/shop/reviews' => ['Admin\\ShopController', 'reviews', ['auth' => true, 'role' => 'admin']],
-    'POST /admin/shop/reviews/{id}/approve' => ['Admin\\ShopController', 'reviewApprove', ['auth' => true, 'csrf' => true, 'role' => 'admin']],
-    'POST /admin/shop/reviews/{id}/reject' => ['Admin\\ShopController', 'reviewReject', ['auth' => true, 'csrf' => true, 'role' => 'admin']],
-    'POST /admin/shop/reviews/{id}/delete' => ['Admin\\ShopController', 'reviewDelete', ['auth' => true, 'csrf' => true, 'role' => 'admin']],
-    'POST /admin/shop/reviews/{id}/reply' => ['Admin\\ShopController', 'reviewReply', ['auth' => true, 'csrf' => true, 'role' => 'admin']],
-    'POST /shop/review/submit' => ['Front\\ShopController', 'submitReview'],
-    'POST /shop/review/{id}/helpful' => ['Front\\ShopController', 'reviewHelpful'],
-
-    // ─── Shop Order Tracking ───
-    'POST /admin/shop/orders/{id}/tracking' => ['Admin\\ShopController', 'orderUpdateTracking', ['auth' => true, 'csrf' => true, 'role' => 'admin']],
-
     // ─── Shop Abandoned Carts ───
     'GET /admin/shop/abandoned-carts' => ['Admin\\ShopController', 'abandonedCarts', ['auth' => true, 'role' => 'admin']],
     'POST /admin/shop/abandoned-carts/send-reminders' => ['Admin\\ShopController', 'abandonedCartsSendReminders', ['auth' => true, 'csrf' => true, 'role' => 'admin']],
 
     // ─── Shop Analytics ───
     'GET /admin/shop/analytics' => ['Admin\\ShopController', 'analytics', ['auth' => true, 'role' => 'admin']],
-
-    // ─── Shop AI ───
-    'POST /api/shop/ai/generate' => ['Admin\\ShopController', 'aiGenerate', ['auth' => true]],
-    'POST /api/shop/ai/seo' => ['Admin\\ShopController', 'aiSeo', ['auth' => true]],
-    'POST /api/shop/ai/price' => ['Admin\\ShopController', 'aiPrice', ['auth' => true]],
-    'POST /api/shop/ai/review-summary' => ['Admin\\ShopController', 'aiReviewSummary', ['auth' => true]],
 
     // Page slug catch-all handled by PageController via router notFound handler
 ];
