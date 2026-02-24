@@ -137,7 +137,18 @@ cms/
 │   └── shift.php
 │
 ├── plugins/
-│   └── jessie-theme-builder/   # JTB plugin (see below)
+│   ├── jessie-theme-builder/   # JTB visual page builder (79 modules)
+│   ├── jessie-booking/         # Appointment scheduling
+│   ├── jessie-newsletter/      # Email campaigns + subscribers
+│   ├── jessie-membership/      # Plans + content gating
+│   ├── jessie-lms/             # Courses + quizzes
+│   ├── jessie-directory/       # Business listings + reviews
+│   ├── jessie-restaurant/      # Online food ordering + kitchen
+│   ├── jessie-realestate/      # Property listings + agents
+│   ├── jessie-jobs/            # Job board + applications
+│   ├── jessie-events/          # Event tickets + QR check-in
+│   ├── jessie-affiliate/       # Referral tracking + payouts
+│   └── jessie-portfolio/       # Project showcase + testimonials
 │
 ├── api/                    # Public API endpoints
 │   ├── ai/                 # AI API endpoints
@@ -212,6 +223,49 @@ CMS has TWO admin layout systems — both correct:
 - **DO NOT mix** CSS variable names between systems!
 - Both use **Catppuccin dark theme**: `#1e293b`, `#334155`, `#e2e8f0`
 
+
+
+## Plugin Architecture (v0.11.0)
+
+CMS = platform, modules = plugins. Each plugin follows:
+```
+plugins/jessie-xxx/
+├── plugin.php          # EnhancedPluginInterface
+├── plugin.json         # Metadata
+├── install.php         # DB tables (CREATE IF NOT EXISTS)
+├── admin-router.php    # Admin routes (requireRole admin)
+├── api/router.php      # REST API endpoints
+├── includes/           # PHP classes (static methods, db())
+└── views/
+    ├── admin/          # Admin views (ob_start + topbar.php)
+    └── frontend/       # Public pages
+```
+
+**Routing**: `index.php` preg_match → plugin router  
+**Menu**: `admin/includes/admin_menu.php` dropdown  
+**DB**: `install.php` runs on activate()  
+**Infra**: PluginLoader, PluginInterface, EnhancedPluginInterface, HookManager
+
+### Installed Plugins (11)
+| Plugin | Tables | API | Frontend |
+|--------|--------|-----|----------|
+| Booking | 4 | 14 | widget |
+| Newsletter+ | 6 | 14+ | subscribe |
+| Membership | 4 | 12 | /pricing |
+| LMS | 5 | 10 | — |
+| Directory | 4 | 14 | /directory |
+| Restaurant | 4 | 14+ | /order |
+| Real Estate | 4 | 10 | /properties |
+| Job Board | 4 | 10 | /jobs |
+| Events | 4 | 10 | /events |
+| Affiliate | 5 | 10 | /affiliate |
+| Portfolio | 4 | 8 | /portfolio |
+
+**Total: 184 plugin files, 50 DB tables, 100+ API endpoints**
+
+### Tests
+- Core: `tests/run_all_tests.php` — 102 tests
+- Plugins: `tests/plugin_tests.php` — 41 tests (tables + CRUD + classes)
 ## Jessie Theme Builder (JTB)
 
 ### Overview
