@@ -1,0 +1,9 @@
+{
+    "name": "Jessie SEO Writer",
+    "slug": "jessie-seowriter",
+    "version": "1.0.0",
+    "description": "AI-powered SEO content writer — keyword research, article generation, live scoring, site audits",
+    "author": "Jessie AI CMS",
+    "requires_cms": "0.10.0",
+    "priority": 50
+}

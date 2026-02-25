@@ -2,6 +2,7 @@
 /**
  * Admin Login - Modern Dark UI
  */
+ob_start();
 require_once __DIR__ . '/../config.php';
 if (!defined('DEV_MODE') || !DEV_MODE) { http_response_code(403); exit; }
 require_once __DIR__ . '/../core/session_boot.php';

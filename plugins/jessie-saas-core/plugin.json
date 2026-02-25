@@ -1,0 +1,9 @@
+{
+    "name": "Jessie SaaS Core",
+    "slug": "jessie-saas-core",
+    "version": "1.0.0",
+    "description": "Shared SaaS infrastructure: user accounts, credits, billing, API gateway",
+    "author": "Jessie AI CMS",
+    "requires_cms": "0.10.0",
+    "priority": 1
+}

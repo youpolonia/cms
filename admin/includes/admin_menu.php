@@ -208,6 +208,19 @@ return [
             ['label' => '⚙️ Settings', 'url' => '/admin/booking/settings'],
         ]
     ],
+    'saas' => [
+        'label' => '☁️ SaaS',
+        'type' => 'dropdown',
+        'items' => [
+            ['label' => '📊 SaaS Dashboard', 'url' => '/admin/saas'],
+            ['label' => '👥 SaaS Users', 'url' => '/admin/saas/users'],
+            ['label' => '💰 SaaS Plans', 'url' => '/admin/saas/plans'],
+            ['label' => '📈 Revenue', 'url' => '/admin/saas/revenue'],
+            ['label' => '🔍 SEO Writer', 'url' => '/admin/seowriter'],
+            ['label' => '✍️ Copywriter', 'url' => '/admin/copywriter'],
+            ['label' => '🖼️ Image Studio', 'url' => '/admin/imagestudio'],
+        ]
+    ],
     'dropshipping' => [
         'label' => '🚚 Dropshipping',
         'type' => 'dropdown',

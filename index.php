@@ -573,6 +573,46 @@ if (preg_match('#^/admin/booking(?:/|$)#', $jtbUri)) {
     require_once CMS_ROOT . '/plugins/jessie-booking/admin-router.php';
     exit;
 }
+// ── SaaS Core routes ──
+if (preg_match('#^/api/saas(?:/|$)#', $jtbUri)) {
+    require_once CMS_ROOT . '/plugins/jessie-saas-core/api/router.php';
+    exit;
+}
+if (preg_match('#^/admin/saas(?:/|$)#', $jtbUri)) {
+    require_once CMS_ROOT . '/plugins/jessie-saas-core/admin-router.php';
+    exit;
+}
+if (preg_match('#^/saas(?:/|$)#', $jtbUri)) {
+    require_once CMS_ROOT . '/plugins/jessie-saas-core/frontend-router.php';
+    exit;
+}
+// ── SEO Writer routes ──
+if (preg_match('#^/api/seowriter(?:/|$)#', $jtbUri)) {
+    require_once CMS_ROOT . '/plugins/jessie-seowriter/api/router.php';
+    exit;
+}
+if (preg_match('#^/admin/seowriter(?:/|$)#', $jtbUri)) {
+    require_once CMS_ROOT . '/plugins/jessie-seowriter/admin-router.php';
+    exit;
+}
+// ── Copywriter routes ──
+if (preg_match('#^/api/copywriter(?:/|$)#', $jtbUri)) {
+    require_once CMS_ROOT . '/plugins/jessie-copywriter/api/router.php';
+    exit;
+}
+if (preg_match('#^/admin/copywriter(?:/|$)#', $jtbUri)) {
+    require_once CMS_ROOT . '/plugins/jessie-copywriter/admin-router.php';
+    exit;
+}
+// ── Image Studio routes ──
+if (preg_match('#^/api/imagestudio(?:/|$)#', $jtbUri)) {
+    require_once CMS_ROOT . '/plugins/jessie-imagestudio/api/router.php';
+    exit;
+}
+if (preg_match('#^/admin/imagestudio(?:/|$)#', $jtbUri)) {
+    require_once CMS_ROOT . '/plugins/jessie-imagestudio/admin-router.php';
+    exit;
+}
 if (preg_match('#^/booking/?$#', $jtbUri)) {
     require_once CMS_ROOT . '/plugins/jessie-booking/views/frontend/booking-widget.php';
     exit;

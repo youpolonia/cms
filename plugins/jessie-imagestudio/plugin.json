@@ -1,0 +1,10 @@
+{
+    "name": "Jessie Image Studio",
+    "slug": "jessie-imagestudio",
+    "version": "1.0.0",
+    "description": "AI Image Studio SaaS — background removal, alt text, enhancement, generation, resize",
+    "author": "Jessie AI CMS",
+    "requires_cms": "0.10.0",
+    "requires_plugins": ["jessie-saas-core"],
+    "priority": 10
+}

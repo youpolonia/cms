@@ -1,0 +1,10 @@
+{
+    "name": "Jessie AI Copywriter",
+    "slug": "jessie-copywriter",
+    "version": "1.0.0",
+    "description": "AI-powered product copywriting for Amazon, eBay, Etsy, Shopify, Google Ads, Facebook Ads",
+    "author": "Jessie AI CMS",
+    "requires_cms": "0.10.0",
+    "priority": 50,
+    "dependencies": ["jessie-saas-core"]
+}
