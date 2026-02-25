@@ -25,7 +25,7 @@
                 Every feature in Jessie CMS is built properly from the ground up — no quick fixes, no shortcuts, no duct tape.
             </p>
             <p style="color: var(--jd-text-muted); font-size: 1.05rem; line-height: 1.8;">
-                We chose pure PHP with zero framework dependencies because we believe in simplicity and accessibility. 
+                We chose pure PHP with zero framework dependencies because we believe in simplicity and reliability. 
                 If you can FTP files to a server, you can deploy Jessie CMS. No Composer, no npm, no build steps. 
                 Just PHP files that work.
             </p>
@@ -55,13 +55,18 @@
         </div>
 
         <div class="jd-fade-up" style="text-align: center; padding: 48px 0;">
-            <h2 style="font-size: 1.8rem; margin-bottom: 16px;">Open Source & Free</h2>
+            <h2 style="font-size: 1.8rem; margin-bottom: 16px;">Ready to Get Started?</h2>
             <p style="color: var(--jd-text-muted); font-size: 1.05rem; margin-bottom: 24px;">
-                Jessie CMS is and always will be free. Check out the code, contribute, or just use it.
+                See what Jessie CMS can do for your business. Explore the admin panel or check out our plans.
             </p>
-            <a href="https://github.com/youpolonia/cms" target="_blank" class="jd-btn jd-btn-primary">
-                <i class="fab fa-github"></i> View on GitHub
-            </a>
+            <div class="jd-hero-buttons" style="justify-content: center;">
+                <a href="/admin" class="jd-btn jd-btn-primary">
+                    <i class="fas fa-rocket"></i> Try Admin Panel
+                </a>
+                <a href="/demo-pricing" class="jd-btn jd-btn-outline">
+                    <i class="fas fa-tags"></i> View Pricing
+                </a>
+            </div>
         </div>
     </div>
 </section>

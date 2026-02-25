@@ -16,8 +16,8 @@
             <a href="/admin" class="jd-btn jd-btn-primary">
                 <i class="fas fa-rocket"></i> Explore Admin Panel
             </a>
-            <a href="https://github.com/youpolonia/cms" target="_blank" class="jd-btn jd-btn-outline">
-                <i class="fab fa-github"></i> View on GitHub
+            <a href="/demo-features" class="jd-btn jd-btn-outline">
+                <i class="fas fa-list"></i> See All Features
             </a>
         </div>
         <div class="jd-hero-tech">

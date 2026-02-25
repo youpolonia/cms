@@ -1,73 +1,69 @@
 <?php
 /**
- * Pricing page — CMS is free, SaaS tools use credits
+ * Pricing page — commercial CMS product
  */
 ?>
 <section class="jd-section" style="padding-top: 120px;">
     <div class="jd-section-header jd-fade-up">
         <span class="jd-section-badge"><i class="fas fa-tags"></i> Pricing</span>
-        <h2 class="jd-section-title">Simple, Transparent Pricing</h2>
-        <p class="jd-section-desc">The CMS is free and open source. SaaS tools use a credit-based system — pay only for what you use.</p>
+        <h2 class="jd-section-title">Choose Your Plan</h2>
+        <p class="jd-section-desc">Self-hosted CMS with everything included. Pick the plan that fits your business.</p>
     </div>
 
     <div class="jd-pricing-grid">
         <div class="jd-pricing-card jd-fade-up">
-            <h3>Open Source</h3>
-            <div class="jd-pricing-price"><span class="currency">$</span>0 <span class="period">/ forever</span></div>
-            <p class="jd-pricing-desc">Full CMS with all 18 plugins. Self-hosted, no limits.</p>
+            <h3>Starter</h3>
+            <div class="jd-pricing-price"><span class="currency">$</span>49 <span class="period">/ month</span></div>
+            <p class="jd-pricing-desc">For small businesses and personal projects.</p>
             <ul class="jd-pricing-features">
-                <li>All 18 plugins included</li>
+                <li>All 18 plugins</li>
                 <li>AI Theme Builder</li>
                 <li>JTB Page Builder (79 modules)</li>
-                <li>E-Commerce & Dropshipping</li>
-                <li>Multi-tenant architecture</li>
-                <li>Unlimited themes</li>
-                <li>Full source code access</li>
-                <li>Community support</li>
+                <li>E-Commerce & Shop</li>
+                <li>1 site license</li>
+                <li>Email support</li>
+                <li>Updates for 1 year</li>
             </ul>
-            <a href="https://github.com/youpolonia/cms" class="jd-pricing-btn outline">Download Free</a>
+            <a href="/demo-about" class="jd-pricing-btn outline">Get Started</a>
         </div>
 
         <div class="jd-pricing-card featured jd-fade-up">
-            <h3>SaaS Starter</h3>
-            <div class="jd-pricing-price"><span class="currency">$</span>29 <span class="period">/ month</span></div>
-            <p class="jd-pricing-desc">For businesses using SaaS AI tools. 500 credits/month.</p>
+            <h3>Business</h3>
+            <div class="jd-pricing-price"><span class="currency">$</span>99 <span class="period">/ month</span></div>
+            <p class="jd-pricing-desc">For growing businesses. Includes SaaS tools & AI credits.</p>
             <ul class="jd-pricing-features">
-                <li>Everything in Open Source</li>
+                <li>Everything in Starter</li>
+                <li>6 SaaS AI Tools</li>
                 <li>500 AI credits / month</li>
-                <li>SEO Writer (5 cr/article)</li>
-                <li>AI Copywriter (3 cr/generate)</li>
-                <li>Image Studio (1-3 cr/action)</li>
-                <li>Social Media Manager</li>
-                <li>Email Marketing</li>
-                <li>Analytics Dashboard</li>
+                <li>Dropshipping module</li>
+                <li>3 site licenses</li>
                 <li>Priority support</li>
+                <li>Multi-tenant ready</li>
             </ul>
-            <a href="/admin" class="jd-pricing-btn primary">Get Started</a>
+            <a href="/demo-about" class="jd-pricing-btn primary">Get Started</a>
         </div>
 
         <div class="jd-pricing-card jd-fade-up">
-            <h3>SaaS Pro</h3>
-            <div class="jd-pricing-price"><span class="currency">$</span>99 <span class="period">/ month</span></div>
-            <p class="jd-pricing-desc">For agencies & power users. 2000 credits + API access.</p>
+            <h3>Agency</h3>
+            <div class="jd-pricing-price"><span class="currency">$</span>249 <span class="period">/ month</span></div>
+            <p class="jd-pricing-desc">For agencies & power users. Unlimited sites + white-label.</p>
             <ul class="jd-pricing-features">
-                <li>Everything in Starter</li>
+                <li>Everything in Business</li>
                 <li>2,000 AI credits / month</li>
-                <li>API access for all tools</li>
+                <li>Unlimited site licenses</li>
                 <li>White-label SaaS platform</li>
                 <li>Custom branding</li>
-                <li>Multi-tenant management</li>
-                <li>Advanced analytics</li>
+                <li>API access for all tools</li>
                 <li>Dedicated support</li>
                 <li>Custom AI model config</li>
             </ul>
-            <a href="/admin" class="jd-pricing-btn outline">Contact Sales</a>
+            <a href="/demo-about" class="jd-pricing-btn outline">Contact Sales</a>
         </div>
     </div>
 
     <!-- Credit costs breakdown -->
     <div style="max-width: 800px; margin: 80px auto 0;">
-        <h3 class="jd-fade-up" style="text-align: center; font-size: 1.5rem; margin-bottom: 32px;">Credit Costs per Action</h3>
+        <h3 class="jd-fade-up" style="text-align: center; font-size: 1.5rem; margin-bottom: 32px;">SaaS AI Credit Costs</h3>
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;" class="jd-fade-up">
             <?php
             $costs = [
@@ -84,7 +80,7 @@
                 <?php foreach ($c[1] as $item): ?>
                 <div style="display: flex; justify-content: space-between; padding: 6px 0; font-size: 0.85rem; border-bottom: 1px solid rgba(255,255,255,0.03);">
                     <span style="color: var(--jd-text-muted);"><?= $item[0] ?></span>
-                    <span style="font-weight: 600; color: <?= $item[1] === 'Free' ? 'var(--jd-green)' : 'var(--jd-text)' ?>;"><?= $item[1] === 'Free' ? 'Free' : $item[1] . ' cr' ?></span>
+                    <span style="font-weight: 600; color: <?= $item[1] === 'Free' ? 'var(--jd-green)' : 'var(--jd-text)' ?>;"><?= $item[1] === 'Free' ? 'Included' : $item[1] . ' cr' ?></span>
                 </div>
                 <?php endforeach; ?>
             </div>

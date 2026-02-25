@@ -63,9 +63,6 @@ $themePath = '/themes/' . basename(__DIR__);
       </ul>
     </nav>
     <div class="jd-header-actions">
-      <a href="https://github.com/youpolonia/cms" target="_blank" class="jd-header-github" aria-label="GitHub">
-        <i class="fab fa-github"></i>
-      </a>
       <a href="/admin" class="jd-header-cta">Admin Panel →</a>
       <button id="mobileToggle" class="jd-burger" aria-label="Menu">
         <span></span><span></span><span></span>
@@ -92,9 +89,6 @@ $themePath = '/themes/' . basename(__DIR__);
           <span class="jd-brand-text">Jessie<span class="jd-brand-accent">CMS</span></span>
         </a>
         <p class="jd-footer-desc">AI-powered CMS with 18 plugins, 6 SaaS tools, and drag & drop page builder. Built with love, named after a beloved dog.</p>
-        <div class="jd-footer-social">
-          <a href="https://github.com/youpolonia/cms" target="_blank" class="jd-social-link" aria-label="GitHub"><i class="fab fa-github"></i></a>
-        </div>
       </div>
       <div class="jd-footer-links-col">
         <h4>Product</h4>
@@ -118,8 +112,8 @@ $themePath = '/themes/' . basename(__DIR__);
         <h4>Resources</h4>
         <ul>
           <li><a href="/admin">Admin Panel</a></li>
-          <li><a href="https://github.com/youpolonia/cms" target="_blank">GitHub</a></li>
           <li><a href="/demo-about">About</a></li>
+          <li><a href="/demo-pricing">Pricing</a></li>
         </ul>
       </div>
     </div>
