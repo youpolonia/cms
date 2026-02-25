@@ -50,7 +50,7 @@ $themePath = '/themes/' . basename(__DIR__);
 <header id="siteHeader" class="jd-header">
   <div class="jd-header-inner">
     <a href="/" class="jd-brand">
-      <span class="jd-brand-icon">🐕</span>
+      <img src="<?= $themePath ?>/assets/img/jessie-logo.svg" alt="Jessie CMS" class="jd-brand-logo">
       <span class="jd-brand-text">Jessie<span class="jd-brand-accent">CMS</span></span>
     </a>
     <nav id="headerNav" class="jd-nav">
@@ -88,7 +88,7 @@ $themePath = '/themes/' . basename(__DIR__);
     <div class="jd-footer-grid">
       <div class="jd-footer-brand-col">
         <a href="/" class="jd-brand">
-          <span class="jd-brand-icon">🐕</span>
+          <img src="<?= $themePath ?>/assets/img/jessie-logo.svg" alt="Jessie CMS" class="jd-brand-logo">
           <span class="jd-brand-text">Jessie<span class="jd-brand-accent">CMS</span></span>
         </a>
         <p class="jd-footer-desc">AI-powered CMS with 18 plugins, 6 SaaS tools, and drag & drop page builder. Built with love, named after a beloved dog.</p>

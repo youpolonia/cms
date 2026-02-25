@@ -97,7 +97,13 @@ a:hover { color: var(--jd-cyan-light); }
     text-decoration: none;
 }
 .jd-brand:hover { color: var(--jd-text); }
-.jd-brand-icon { font-size: 1.6rem; }
+.jd-brand-logo {
+    width: 40px; height: 40px;
+    border-radius: 10px;
+    object-fit: contain;
+    transition: transform var(--jd-transition);
+}
+.jd-brand:hover .jd-brand-logo { transform: scale(1.05) rotate(-3deg); }
 .jd-brand-accent {
     background: var(--jd-gradient);
     -webkit-background-clip: text;
