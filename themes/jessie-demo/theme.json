@@ -1,0 +1,63 @@
+{
+    "name": "Jessie CMS Demo",
+    "description": "Official demo & showcase theme for Jessie CMS — AI-powered website builder",
+    "version": "1.0.0",
+    "author": "Jessie AI",
+    "supports": {
+        "theme-builder": true,
+        "custom-header": true,
+        "custom-footer": true,
+        "custom-colors": true
+    },
+    "options": {
+        "show_header": true,
+        "show_footer": true,
+        "body_background": "#050510",
+        "preload_fonts": true
+    },
+    "colors": {
+        "primary": "#8b5cf6",
+        "secondary": "#06b6d4",
+        "accent": "#f59e0b",
+        "background": "#050510",
+        "surface": "#0f172a",
+        "text": "#e2e8f0",
+        "text_muted": "#94a3b8",
+        "border": "#1e293b",
+        "success": "#10b981",
+        "warning": "#f59e0b",
+        "error": "#ef4444"
+    },
+    "typography": {
+        "fontFamily": "Inter",
+        "headingFont": "Inter",
+        "baseFontSize": "16",
+        "lineHeight": "1.7",
+        "fontWeight": "400",
+        "headingWeight": "700"
+    },
+    "buttons": {
+        "borderRadius": "12",
+        "paddingX": "32",
+        "paddingY": "14",
+        "fontWeight": "600",
+        "uppercase": false,
+        "shadow": true
+    },
+    "layout": {
+        "containerWidth": "1200",
+        "sectionSpacing": "120",
+        "borderRadius": "16"
+    },
+    "homepage_sections": [
+        {"id": "hero", "label": "Hero", "icon": "fas fa-rocket"},
+        {"id": "stats", "label": "Stats", "icon": "fas fa-chart-bar"},
+        {"id": "features", "label": "Features", "icon": "fas fa-star"},
+        {"id": "plugins", "label": "Plugins", "icon": "fas fa-puzzle-piece"},
+        {"id": "saas", "label": "SaaS Tools", "icon": "fas fa-cloud"},
+        {"id": "themes-showcase", "label": "Themes", "icon": "fas fa-palette"},
+        {"id": "faq", "label": "FAQ", "icon": "fas fa-question-circle"},
+        {"id": "cta", "label": "Call to Action", "icon": "fas fa-bullhorn"}
+    ],
+    "thumbnail": "thumbnail.svg"
+}
