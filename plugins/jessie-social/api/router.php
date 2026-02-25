@@ -45,6 +45,33 @@ try {
         echo json_encode($result); exit;
     }
 
+    // New endpoints: hashtags, bulk, recycle, best-times, analytics, optimize, queue
+    $d = $d ?? (in_array($method, ['POST','PUT']) ? (json_decode(file_get_contents('php://input'), true) ?: $_POST) : []);
+
+    if ($method === 'POST' && $path === 'hashtags') {
+        $credits = new SaasCredits();
+        if (!$credits->hasCredits($userId, 'socialmanager', 1)) { http_response_code(402); echo json_encode(['success'=>false,'error'=>'Insufficient credits']); exit; }
+        $result = $core->researchHashtags($d['topic']??'', $d['platform']??'instagram', $d['language']??'en');
+        if ($result['success']) $credits->consume($userId, 'socialmanager', 1, 'Hashtag research');
+        echo json_encode($result); exit;
+    }
+    if ($method === 'POST' && $path === 'bulk-schedule') { echo json_encode($core->bulkSchedule($d['posts']??[])); exit; }
+    if ($method === 'GET' && $path === 'top-posts') { echo json_encode(['success'=>true,'posts'=>$core->getTopPerformingPosts((int)($_GET['limit']??10))]); exit; }
+    if ($method === 'POST' && $path === 'recycle') { $id = $core->recyclePost((int)($d['post_id']??0), $d['scheduled_at']??null); echo json_encode($id ? ['success'=>true,'id'=>$id] : ['success'=>false,'error'=>'Post not found']); exit; }
+    if ($method === 'GET' && $path === 'best-times') { echo json_encode(['success'=>true,'times'=>$core->getBestTimes($_GET['platform']??'')]); exit; }
+    if ($method === 'POST' && $path === 'engagement') { $core->recordEngagement((int)($d['post_id']??0), (int)($d['likes']??0), (int)($d['comments']??0), (int)($d['shares']??0), (int)($d['clicks']??0), (int)($d['impressions']??0)); echo json_encode(['success'=>true]); exit; }
+    if ($method === 'GET' && preg_match('#^analytics/(\d+)$#', $path, $m)) { echo json_encode(['success'=>true,'analytics'=>$core->getPostAnalytics((int)$m[1])]); exit; }
+    if ($method === 'GET' && $path === 'engagement-overview') { $s=$_GET['start']??date('Y-m-01'); $e=$_GET['end']??date('Y-m-d'); echo json_encode(['success'=>true,'overview'=>$core->getEngagementOverview($s,$e)]); exit; }
+    if ($method === 'POST' && $path === 'optimize') {
+        $credits = new SaasCredits();
+        if (!$credits->hasCredits($userId, 'socialmanager', 1)) { http_response_code(402); echo json_encode(['success'=>false,'error'=>'Insufficient credits']); exit; }
+        $result = $core->optimizeForPlatform($d['content']??'', $d['from']??'twitter', $d['to']??'linkedin');
+        if ($result['success']) $credits->consume($userId, 'socialmanager', 1, 'Platform optimize');
+        echo json_encode($result); exit;
+    }
+    if ($method === 'GET' && $path === 'queue') { echo json_encode(['success'=>true,'queue'=>$core->getQueue()]); exit; }
+    if ($method === 'POST' && $path === 'queue') { echo json_encode(['success'=>$core->addToQueue((int)($d['post_id']??0))]); exit; }
+
     http_response_code(404);
     echo json_encode(['success' => false, 'error' => 'Not found: ' . $path]);
 } catch (\Throwable $e) {

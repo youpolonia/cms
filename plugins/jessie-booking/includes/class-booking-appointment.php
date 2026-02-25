@@ -143,6 +143,66 @@ class BookingAppointment
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
+    // ── Customer History ──
+    public static function getByCustomerEmail(string $email): array
+    {
+        $stmt = db()->prepare("SELECT a.*, s.name AS service_name, st.name AS staff_name FROM booking_appointments a LEFT JOIN booking_services s ON a.service_id = s.id LEFT JOIN booking_staff st ON a.staff_id = st.id WHERE a.customer_email = ? ORDER BY a.date DESC, a.start_time DESC");
+        $stmt->execute([strtolower(trim($email))]);
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
+    public static function getCustomerStats(string $email): array
+    {
+        $pdo = db();
+        $stmt = $pdo->prepare("SELECT COUNT(*) as total, SUM(status='completed') as completed, SUM(status='cancelled') as cancelled, SUM(status='no_show') as no_shows, COALESCE(SUM(price_paid),0) as total_spent, MIN(date) as first_visit, MAX(date) as last_visit FROM booking_appointments WHERE customer_email = ?");
+        $stmt->execute([strtolower(trim($email))]);
+        return $stmt->fetch(\PDO::FETCH_ASSOC);
+    }
+
+    // ── Recurring Appointments ──
+    public static function createRecurring(array $data, string $frequency, int $count): array
+    {
+        $ids = [];
+        $baseDate = $data['date'] ?? date('Y-m-d');
+        $intervals = ['daily' => '+1 day', 'weekly' => '+1 week', 'biweekly' => '+2 weeks', 'monthly' => '+1 month'];
+        $interval = $intervals[$frequency] ?? '+1 week';
+
+        for ($i = 0; $i < $count; $i++) {
+            $data['date'] = date('Y-m-d', strtotime($baseDate . ' ' . str_replace('+', '+' . $i . ' ', $interval)));
+            if ($i > 0) $data['date'] = date('Y-m-d', strtotime($baseDate . ' +' . $i . ' ' . ltrim($interval, '+')));
+            $ids[] = self::create($data);
+        }
+        return $ids;
+    }
+
+    // ── Reschedule ──
+    public static function reschedule(int $id, string $newDate, string $newStartTime, ?string $newEndTime = null): bool
+    {
+        $pdo = db();
+        $appt = self::get($id);
+        if (!$appt || in_array($appt['status'], ['completed', 'cancelled'])) return false;
+        $endTime = $newEndTime ?: date('H:i', strtotime($newStartTime) + (strtotime($appt['end_time']) - strtotime($appt['start_time'])));
+        $stmt = $pdo->prepare("UPDATE booking_appointments SET date = ?, start_time = ?, end_time = ?, status = 'confirmed' WHERE id = ?");
+        $stmt->execute([$newDate, $newStartTime, $endTime, $id]);
+        return true;
+    }
+
+    // ── Waitlist ──
+    public static function getWaitlist(string $date, int $serviceId): array
+    {
+        $stmt = db()->prepare("SELECT * FROM booking_appointments WHERE date = ? AND service_id = ? AND status = 'waitlisted' ORDER BY created_at ASC");
+        $stmt->execute([$date, $serviceId]);
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
+    // ── Export ──
+    public static function export(string $dateFrom, string $dateTo): array
+    {
+        $stmt = db()->prepare("SELECT a.*, s.name AS service_name, st.name AS staff_name FROM booking_appointments a LEFT JOIN booking_services s ON a.service_id = s.id LEFT JOIN booking_staff st ON a.staff_id = st.id WHERE a.date BETWEEN ? AND ? ORDER BY a.date, a.start_time");
+        $stmt->execute([$dateFrom, $dateTo]);
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
     public static function getStats(): array
     {
         $pdo = db();

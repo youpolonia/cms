@@ -56,6 +56,18 @@ try {
         echo json_encode($result); exit;
     }
 
+    // New endpoints: funnel, utm, geo, realtime, bounce, conversion, session, heatmap, performance, export
+    if ($method === 'POST' && $path === 'funnel') { echo json_encode(['success'=>true,'funnel'=>$core->analyzeFunnel($d['steps']??[], $d['start']??$start, $d['end']??$end)]); exit; }
+    if ($method === 'GET' && $path === 'utm') { echo json_encode(['success'=>true,'utm'=>$core->getUTMBreakdown($start,$end)]); exit; }
+    if ($method === 'GET' && $path === 'geo') { echo json_encode(['success'=>true,'geo'=>$core->getGeoBreakdown($start,$end)]); exit; }
+    if ($method === 'GET' && $path === 'realtime') { $mins=(int)($_GET['minutes']??5); echo json_encode(['success'=>true,'events'=>$core->getRealtimeEvents($mins),'active_users'=>$core->getRealtimeCount($mins)]); exit; }
+    if ($method === 'GET' && $path === 'bounce-rate') { echo json_encode(['success'=>true,'bounce_rate'=>$core->getBounceRate($start,$end)]); exit; }
+    if ($method === 'GET' && $path === 'conversion-rate') { $goal=$_GET['goal']??'conversion'; echo json_encode(['success'=>true,'conversion_rate'=>$core->getConversionRate($start,$end,$goal)]); exit; }
+    if ($method === 'GET' && preg_match('#^session/(.+)$#', $path, $m)) { echo json_encode(['success'=>true,'path'=>$core->getSessionPath($m[1])]); exit; }
+    if ($method === 'GET' && $path === 'heatmap') { echo json_encode(['success'=>true,'heatmap'=>$core->getHourlyHeatmap($start,$end)]); exit; }
+    if ($method === 'GET' && $path === 'performance') { echo json_encode(['success'=>true,'pages'=>$core->getPagePerformance($start,$end)]); exit; }
+    if ($method === 'GET' && $path === 'export') { echo json_encode(['success'=>true]+$core->exportEvents($start,$end)); exit; }
+
     http_response_code(404); echo json_encode(['success'=>false,'error'=>'Not found: '.$path]);
 } catch (\Throwable $e) {
     error_log('[Analytics API] '.$e->getMessage());

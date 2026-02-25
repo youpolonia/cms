@@ -193,6 +193,39 @@ if (preg_match('#^/api/booking/([\w-]+)(?:/(\d+))?$#', $uri, $m)) {
             $result = \BookingNotifications::sendReminders();
             echo json_encode(['ok' => true] + $result);
             exit;
+
+        // ─── Customer History ───
+        case 'customer-history':
+            $email = $_GET['email'] ?? $input['email'] ?? '';
+            if (!$email) { echo json_encode(['ok' => false, 'error' => 'email required']); exit; }
+            echo json_encode(['ok' => true, 'appointments' => \BookingAppointment::getByCustomerEmail($email), 'stats' => \BookingAppointment::getCustomerStats($email)]);
+            exit;
+
+        // ─── Recurring ───
+        case 'recurring':
+            if ($method !== 'POST' || !$isAdmin) { http_response_code(403); echo json_encode(['ok' => false]); exit; }
+            $ids = \BookingAppointment::createRecurring($input, $input['frequency'] ?? 'weekly', (int)($input['count'] ?? 4));
+            echo json_encode(['ok' => true, 'ids' => $ids, 'count' => count($ids)]);
+            exit;
+
+        // ─── Reschedule ───
+        case 'reschedule':
+            if ($method !== 'POST') break;
+            $success = \BookingAppointment::reschedule((int)($input['id'] ?? $id ?? 0), $input['date'] ?? '', $input['start_time'] ?? '', $input['end_time'] ?? null);
+            echo json_encode(['ok' => $success, 'error' => $success ? null : 'Cannot reschedule']);
+            exit;
+
+        // ─── Waitlist ───
+        case 'waitlist':
+            echo json_encode(['ok' => true, 'waitlist' => \BookingAppointment::getWaitlist($_GET['date'] ?? date('Y-m-d'), (int)($_GET['service_id'] ?? 0))]);
+            exit;
+
+        // ─── Export ───
+        case 'export':
+            if (!$isAdmin) { http_response_code(403); echo json_encode(['ok' => false]); exit; }
+            $from = $_GET['from'] ?? date('Y-m-01'); $to = $_GET['to'] ?? date('Y-m-t');
+            echo json_encode(['ok' => true, 'appointments' => \BookingAppointment::export($from, $to)]);
+            exit;
     }
 }
 

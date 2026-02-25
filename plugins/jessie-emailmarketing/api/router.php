@@ -64,6 +64,28 @@ try {
         echo json_encode($result); exit;
     }
 
+    // Segmentation
+    if ($method==='POST' && $path==='segment') { echo json_encode(['success'=>true,'subscribers'=>$core->getSegmentedSubscribers((int)($d['list_id']??0), $d['criteria']??[])]); exit; }
+
+    // Automations
+    if ($method==='GET' && $path==='automations') { echo json_encode(['success'=>true,'automations'=>$core->getAutomations()]); exit; }
+    if ($method==='POST' && $path==='automations') { echo json_encode(['success'=>true,'id'=>$core->createAutomation($d)]); exit; }
+    if ($method==='POST' && preg_match('#^automations/(\d+)$#',$path,$m)) { echo json_encode(['success'=>$core->updateAutomation((int)$m[1],$d)]); exit; }
+
+    // A/B Testing
+    if ($method==='POST' && $path==='ab-test') { echo json_encode($core->createABTest((int)($d['campaign_id']??0), $d['variant_subject']??'', $d['variant_body']??'', (int)($d['test_pct']??20))); exit; }
+
+    // Tracking
+    if ($method==='POST' && $path==='track') { $core->trackEvent((int)($d['campaign_id']??0), $d['email']??'', $d['event']??'open', $d['metadata']??''); echo json_encode(['success'=>true]); exit; }
+    if ($method==='GET' && preg_match('#^campaigns/(\d+)/events$#',$path,$m)) { echo json_encode(['success'=>true,'events'=>$core->getCampaignEvents((int)$m[1])]); exit; }
+
+    // List Hygiene
+    if ($method==='POST' && preg_match('#^lists/(\d+)/clean$#',$path,$m)) { echo json_encode(['success'=>true]+$core->cleanList((int)$m[1])); exit; }
+    if ($method==='GET' && preg_match('#^lists/(\d+)/health$#',$path,$m)) { echo json_encode(['success'=>true,'health'=>$core->getListHealth((int)$m[1])]); exit; }
+
+    // Export
+    if ($method==='GET' && preg_match('#^subscribers/(\d+)/export$#',$path,$m)) { echo json_encode(['success'=>true,'subscribers'=>$core->exportSubscribers((int)$m[1])]); exit; }
+
     http_response_code(404); echo json_encode(['success'=>false,'error'=>'Not found: '.$path]);
 } catch (\Throwable $e) {
     error_log('[EmailMarketing API] '.$e->getMessage());

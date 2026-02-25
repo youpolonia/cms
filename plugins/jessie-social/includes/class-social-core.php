@@ -125,6 +125,118 @@ class SocialCore {
         return ['success' => true, 'content' => $parsed['content'] ?? $raw, 'hashtags' => $parsed['hashtags'] ?? [], 'best_time' => $parsed['best_time'] ?? '', 'tip' => $parsed['tip'] ?? ''];
     }
 
+    // ── Hashtag Research ──
+
+    public function researchHashtags(string $topic, string $platform, string $language = 'en'): array {
+        require_once CMS_ROOT . '/core/ai_content.php';
+        $prompt = "You are a social media hashtag expert. Research trending and relevant hashtags for: {$topic}\nPlatform: {$platform}\nLanguage: {$language}\n\nReturn JSON: {\"trending\":[{\"tag\":\"#...\",\"popularity\":\"high|medium|low\"}],\"niche\":[{\"tag\":\"#...\",\"relevance\":\"high|medium\"}],\"avoid\":[\"#banned1\"],\"strategy\":\"tip for hashtag usage\"}";
+        $result = ai_content_generate(['topic' => $prompt]);
+        if (!$result['ok']) return ['success' => false, 'error' => $result['error'] ?? 'AI failed'];
+        $raw = preg_replace('/^```(?:json)?\s*/i', '', $result['content'] ?? '');
+        $raw = preg_replace('/\s*```\s*$/', '', $raw);
+        $parsed = json_decode(trim($raw), true);
+        return ['success' => true, 'hashtags' => $parsed ?? []];
+    }
+
+    // ── Bulk Schedule ──
+
+    public function bulkSchedule(array $posts): array {
+        $created = []; $errors = [];
+        foreach ($posts as $i => $post) {
+            try {
+                $id = $this->createPost($post);
+                $created[] = $id;
+            } catch (\Exception $e) {
+                $errors[] = "Post #{$i}: " . $e->getMessage();
+            }
+        }
+        return ['success' => true, 'created' => count($created), 'ids' => $created, 'errors' => $errors];
+    }
+
+    // ── Content Recycling ──
+
+    public function getTopPerformingPosts(int $limit = 10): array {
+        $stmt = $this->pdo->prepare("SELECT p.*, a.account_name FROM social_posts p LEFT JOIN social_accounts a ON p.account_id = a.id WHERE p.user_id = ? AND p.status = 'published' ORDER BY p.engagement_score DESC, p.created_at DESC LIMIT ?");
+        $stmt->execute([$this->userId, $limit]);
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
+    public function recyclePost(int $postId, ?string $scheduledAt = null): ?int {
+        $post = $this->getPost($postId);
+        if (!$post) return null;
+        return $this->createPost([
+            'account_id' => $post['account_id'], 'platform' => $post['platform'],
+            'content' => $post['content'], 'media_urls' => $post['media_urls'],
+            'hashtags' => $post['hashtags'], 'scheduled_at' => $scheduledAt,
+            'status' => $scheduledAt ? 'scheduled' : 'draft'
+        ]);
+    }
+
+    // ── Best Time to Post ──
+
+    public function getBestTimes(string $platform = ''): array {
+        $sql = "SELECT HOUR(scheduled_at) as hour, platform, COUNT(*) as posts, AVG(engagement_score) as avg_engagement FROM social_posts WHERE user_id = ? AND status = 'published' AND scheduled_at IS NOT NULL";
+        $params = [$this->userId];
+        if ($platform) { $sql .= " AND platform = ?"; $params[] = $platform; }
+        $sql .= " GROUP BY hour, platform ORDER BY avg_engagement DESC";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute($params);
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
+    // ── Post Analytics ──
+
+    public function recordEngagement(int $postId, int $likes = 0, int $comments = 0, int $shares = 0, int $clicks = 0, int $impressions = 0): bool {
+        $score = $likes + ($comments * 3) + ($shares * 5) + ($clicks * 2);
+        $stmt = $this->pdo->prepare("UPDATE social_posts SET engagement_score = ? WHERE id = ? AND user_id = ?");
+        $stmt->execute([$score, $postId, $this->userId]);
+        $this->pdo->prepare("INSERT INTO social_analytics (post_id, user_id, likes, comments, shares, clicks, impressions, recorded_at) VALUES (?,?,?,?,?,?,?,NOW())")
+            ->execute([$postId, $this->userId, $likes, $comments, $shares, $clicks, $impressions]);
+        return true;
+    }
+
+    public function getPostAnalytics(int $postId): array {
+        $stmt = $this->pdo->prepare("SELECT * FROM social_analytics WHERE post_id = ? AND user_id = ? ORDER BY recorded_at DESC");
+        $stmt->execute([$postId, $this->userId]);
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
+    public function getEngagementOverview(string $startDate, string $endDate): array {
+        $stmt = $this->pdo->prepare("SELECT platform, COUNT(DISTINCT p.id) as posts, SUM(a.likes) as total_likes, SUM(a.comments) as total_comments, SUM(a.shares) as total_shares, SUM(a.clicks) as total_clicks, SUM(a.impressions) as total_impressions FROM social_posts p LEFT JOIN social_analytics a ON p.id = a.post_id WHERE p.user_id = ? AND p.created_at BETWEEN ? AND ? GROUP BY platform");
+        $stmt->execute([$this->userId, $startDate, $endDate]);
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
+    // ── Platform-Specific Content Optimization ──
+
+    public function optimizeForPlatform(string $content, string $fromPlatform, string $toPlatform): array {
+        require_once CMS_ROOT . '/core/ai_content.php';
+        $prompt = "Adapt this {$fromPlatform} post for {$toPlatform}. Keep the core message, adjust length, tone, and format for the target platform.\n\nOriginal:\n{$content}\n\nReturn JSON: {\"content\":\"adapted post\",\"hashtags\":[],\"notes\":\"what was changed\"}";
+        $result = ai_content_generate(['topic' => $prompt]);
+        if (!$result['ok']) return ['success' => false, 'error' => $result['error'] ?? 'AI failed'];
+        $raw = preg_replace('/^```(?:json)?\s*/i', '', $result['content'] ?? '');
+        $raw = preg_replace('/\s*```\s*$/', '', $raw);
+        $parsed = json_decode(trim($raw), true);
+        return ['success' => true, 'adapted' => $parsed ?? ['content' => $raw]];
+    }
+
+    // ── Content Queue (auto-scheduler) ──
+
+    public function getQueue(): array {
+        $stmt = $this->pdo->prepare("SELECT * FROM social_posts WHERE user_id = ? AND status = 'queued' ORDER BY sort_order ASC, created_at ASC");
+        $stmt->execute([$this->userId]);
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
+    public function addToQueue(int $postId): bool {
+        $maxOrder = $this->pdo->prepare("SELECT MAX(sort_order) FROM social_posts WHERE user_id = ? AND status = 'queued'");
+        $maxOrder->execute([$this->userId]);
+        $next = (int)$maxOrder->fetchColumn() + 1;
+        $stmt = $this->pdo->prepare("UPDATE social_posts SET status = 'queued', sort_order = ? WHERE id = ? AND user_id = ?");
+        $stmt->execute([$next, $postId, $this->userId]);
+        return $stmt->rowCount() > 0;
+    }
+
     // ── Stats ──
 
     public function getStats(): array {

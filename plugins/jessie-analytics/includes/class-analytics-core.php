@@ -117,6 +117,116 @@ class AnalyticsCore {
         return ['success' => true, 'insights' => $parsed['insights'] ?? [], 'overview' => $overview];
     }
 
+    // ── Funnels ──
+    public function createFunnel(string $name, array $steps): int {
+        $stmt = $this->pdo->prepare("INSERT INTO analytics_reports (user_id, name, report_type, config_json) VALUES (?,?,?,?)");
+        $stmt->execute([$this->userId, $name, 'funnel', json_encode(['steps' => $steps])]);
+        return (int)$this->pdo->lastInsertId();
+    }
+
+    public function analyzeFunnel(array $steps, string $startDate, string $endDate): array {
+        $result = [];
+        $prevCount = null;
+        foreach ($steps as $i => $step) {
+            $stmt = $this->pdo->prepare("SELECT COUNT(DISTINCT session_id) FROM analytics_events WHERE user_id = ? AND event_type = ? AND created_at BETWEEN ? AND ? AND session_id != ''");
+            $stmt->execute([$this->userId, $step, $startDate, $endDate]);
+            $count = (int)$stmt->fetchColumn();
+            $dropoff = $prevCount !== null && $prevCount > 0 ? round((1 - $count / $prevCount) * 100, 1) : 0;
+            $result[] = ['step' => $step, 'count' => $count, 'dropoff_pct' => $dropoff, 'conversion_pct' => $prevCount !== null && $prevCount > 0 ? round($count / $prevCount * 100, 1) : 100];
+            $prevCount = $count;
+        }
+        return $result;
+    }
+
+    // ── UTM Tracking ──
+    public function getUTMBreakdown(string $startDate, string $endDate): array {
+        $stmt = $this->pdo->prepare("SELECT metadata_json FROM analytics_events WHERE user_id = ? AND created_at BETWEEN ? AND ? AND metadata_json IS NOT NULL AND metadata_json LIKE '%utm_%'");
+        $stmt->execute([$this->userId, $startDate, $endDate]);
+        $campaigns = []; $sources = []; $mediums = [];
+        foreach ($stmt->fetchAll(\PDO::FETCH_COLUMN) as $json) {
+            $meta = json_decode($json, true);
+            if (!$meta) continue;
+            if (!empty($meta['utm_campaign'])) { $c = $meta['utm_campaign']; $campaigns[$c] = ($campaigns[$c] ?? 0) + 1; }
+            if (!empty($meta['utm_source'])) { $s = $meta['utm_source']; $sources[$s] = ($sources[$s] ?? 0) + 1; }
+            if (!empty($meta['utm_medium'])) { $m = $meta['utm_medium']; $mediums[$m] = ($mediums[$m] ?? 0) + 1; }
+        }
+        arsort($campaigns); arsort($sources); arsort($mediums);
+        return ['campaigns' => $campaigns, 'sources' => $sources, 'mediums' => $mediums];
+    }
+
+    // ── Geographic Breakdown ──
+    public function getGeoBreakdown(string $startDate, string $endDate): array {
+        $stmt = $this->pdo->prepare("SELECT country, COUNT(*) as visits FROM analytics_events WHERE user_id = ? AND created_at BETWEEN ? AND ? AND country != '' GROUP BY country ORDER BY visits DESC LIMIT 30");
+        $stmt->execute([$this->userId, $startDate, $endDate]);
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
+    // ── Realtime ──
+    public function getRealtimeEvents(int $minutes = 5): array {
+        $stmt = $this->pdo->prepare("SELECT event_type, page_url, device, country, created_at FROM analytics_events WHERE user_id = ? AND created_at >= DATE_SUB(NOW(), INTERVAL ? MINUTE) ORDER BY created_at DESC LIMIT 50");
+        $stmt->execute([$this->userId, $minutes]);
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
+    public function getRealtimeCount(int $minutes = 5): int {
+        $stmt = $this->pdo->prepare("SELECT COUNT(DISTINCT session_id) FROM analytics_events WHERE user_id = ? AND created_at >= DATE_SUB(NOW(), INTERVAL ? MINUTE) AND session_id != ''");
+        $stmt->execute([$this->userId, $minutes]);
+        return (int)$stmt->fetchColumn();
+    }
+
+    // ── Bounce Rate ──
+    public function getBounceRate(string $startDate, string $endDate): float {
+        $total = $this->pdo->prepare("SELECT COUNT(DISTINCT session_id) FROM analytics_events WHERE user_id = ? AND created_at BETWEEN ? AND ? AND session_id != ''");
+        $total->execute([$this->userId, $startDate, $endDate]);
+        $totalSessions = (int)$total->fetchColumn();
+
+        $bounced = $this->pdo->prepare("SELECT COUNT(*) FROM (SELECT session_id, COUNT(*) as hits FROM analytics_events WHERE user_id = ? AND created_at BETWEEN ? AND ? AND session_id != '' GROUP BY session_id HAVING hits = 1) as single_hit");
+        $bounced->execute([$this->userId, $startDate, $endDate]);
+        $bouncedSessions = (int)$bounced->fetchColumn();
+
+        return $totalSessions > 0 ? round($bouncedSessions / $totalSessions * 100, 1) : 0;
+    }
+
+    // ── Conversion Rate ──
+    public function getConversionRate(string $startDate, string $endDate, string $goalEvent = 'conversion'): float {
+        $sessions = $this->pdo->prepare("SELECT COUNT(DISTINCT session_id) FROM analytics_events WHERE user_id = ? AND created_at BETWEEN ? AND ? AND session_id != ''");
+        $sessions->execute([$this->userId, $startDate, $endDate]);
+        $totalSessions = (int)$sessions->fetchColumn();
+
+        $conversions = $this->pdo->prepare("SELECT COUNT(DISTINCT session_id) FROM analytics_events WHERE user_id = ? AND created_at BETWEEN ? AND ? AND event_type = ? AND session_id != ''");
+        $conversions->execute([$this->userId, $startDate, $endDate, $goalEvent]);
+        $convertedSessions = (int)$conversions->fetchColumn();
+
+        return $totalSessions > 0 ? round($convertedSessions / $totalSessions * 100, 2) : 0;
+    }
+
+    // ── Session Replay (page path per session) ──
+    public function getSessionPath(string $sessionId): array {
+        $stmt = $this->pdo->prepare("SELECT event_type, page_url, created_at FROM analytics_events WHERE user_id = ? AND session_id = ? ORDER BY created_at ASC");
+        $stmt->execute([$this->userId, $sessionId]);
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
+    // ── Hourly Heatmap ──
+    public function getHourlyHeatmap(string $startDate, string $endDate): array {
+        $stmt = $this->pdo->prepare("SELECT DAYOFWEEK(created_at) as dow, HOUR(created_at) as hour, COUNT(*) as events FROM analytics_events WHERE user_id = ? AND created_at BETWEEN ? AND ? GROUP BY dow, hour ORDER BY dow, hour");
+        $stmt->execute([$this->userId, $startDate, $endDate]);
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
+    // ── Page Performance ──
+    public function getPagePerformance(string $startDate, string $endDate): array {
+        $stmt = $this->pdo->prepare("SELECT page_url, COUNT(*) as views, COUNT(DISTINCT session_id) as unique_visitors, SUM(event_type='conversion') as conversions FROM analytics_events WHERE user_id = ? AND created_at BETWEEN ? AND ? AND page_url != '' GROUP BY page_url ORDER BY views DESC LIMIT 50");
+        $stmt->execute([$this->userId, $startDate, $endDate]);
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
+    // ── Export ──
+    public function exportEvents(string $startDate, string $endDate, string $format = 'json'): array {
+        $events = $this->getEvents($startDate, $endDate, null, 10000);
+        return ['events' => $events, 'count' => count($events), 'period' => ['start' => $startDate, 'end' => $endDate]];
+    }
+
     // ── Dashboard Stats (admin) ──
     public function getGlobalStats(): array {
         $events = (int)$this->pdo->query("SELECT COUNT(*) FROM analytics_events")->fetchColumn();

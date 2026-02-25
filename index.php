@@ -535,6 +535,15 @@ if (preg_match('#^/admin/lms(?:/|$)#', $jtbUri)) {
     require_once CMS_ROOT . '/plugins/jessie-lms/admin-router.php';
     exit;
 }
+if (preg_match('#^/courses/([a-z0-9-]+)$#', $jtbUri, $routeMatch)) {
+    $routeParams = ['slug' => $routeMatch[1]];
+    require_once CMS_ROOT . '/plugins/jessie-lms/views/frontend/course.php';
+    exit;
+}
+if (preg_match('#^/courses/?$#', $jtbUri)) {
+    require_once CMS_ROOT . '/plugins/jessie-lms/views/frontend/catalog.php';
+    exit;
+}
 
 // ─── Jessie Membership Plugin ───
 if (preg_match('#^/api/membership/([\w-]+)(?:/(\d+))?$#', $jtbUri)) {
@@ -545,8 +554,16 @@ if (preg_match('#^/admin/membership(?:/|$)#', $jtbUri)) {
     require_once CMS_ROOT . '/plugins/jessie-membership/admin-router.php';
     exit;
 }
+if (preg_match('#^/membership/signup/?$#', $jtbUri)) {
+    require_once CMS_ROOT . '/plugins/jessie-membership/views/frontend/signup.php';
+    exit;
+}
+if (preg_match('#^/membership/portal/?$#', $jtbUri)) {
+    require_once CMS_ROOT . '/plugins/jessie-membership/views/frontend/portal.php';
+    exit;
+}
 if (preg_match('#^/(membership/pricing|pricing)/?$#', $jtbUri)) {
-    require_once CMS_ROOT . '/plugins/jessie-membership/admin-router.php';
+    require_once CMS_ROOT . '/plugins/jessie-membership/views/frontend/pricing.php';
     exit;
 }
 
@@ -559,8 +576,16 @@ if (preg_match('#^/admin/newsletter(?:/|$)#', $jtbUri)) {
     require_once CMS_ROOT . '/plugins/jessie-newsletter/admin-router.php';
     exit;
 }
-if (preg_match('#^/newsletter/(unsubscribe|subscribe)#', $jtbUri)) {
-    require_once CMS_ROOT . '/plugins/jessie-newsletter/admin-router.php';
+if (preg_match('#^/newsletter/preferences/?$#', $jtbUri)) {
+    require_once CMS_ROOT . '/plugins/jessie-newsletter/views/frontend/preferences.php';
+    exit;
+}
+if (preg_match('#^/newsletter/unsubscribe/?$#', $jtbUri)) {
+    require_once CMS_ROOT . '/plugins/jessie-newsletter/views/frontend/unsubscribe.php';
+    exit;
+}
+if (preg_match('#^/newsletter/(subscribe)#', $jtbUri)) {
+    require_once CMS_ROOT . '/plugins/jessie-newsletter/views/frontend/subscribe-widget.php';
     exit;
 }
 
