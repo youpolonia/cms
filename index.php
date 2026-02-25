@@ -613,6 +613,33 @@ if (preg_match('#^/admin/imagestudio(?:/|$)#', $jtbUri)) {
     require_once CMS_ROOT . '/plugins/jessie-imagestudio/admin-router.php';
     exit;
 }
+// ── Social Media routes ──
+if (preg_match('#^/api/social(?:/|$)#', $jtbUri)) {
+    require_once CMS_ROOT . '/plugins/jessie-social/api/router.php';
+    exit;
+}
+if (preg_match('#^/admin/social(?:/|$)#', $jtbUri)) {
+    require_once CMS_ROOT . '/plugins/jessie-social/admin-router.php';
+    exit;
+}
+// ── Email Marketing routes ──
+if (preg_match('#^/api/emailmarketing(?:/|$)#', $jtbUri)) {
+    require_once CMS_ROOT . '/plugins/jessie-emailmarketing/api/router.php';
+    exit;
+}
+if (preg_match('#^/admin/emailmarketing(?:/|$)#', $jtbUri)) {
+    require_once CMS_ROOT . '/plugins/jessie-emailmarketing/admin-router.php';
+    exit;
+}
+// ── Analytics routes ──
+if (preg_match('#^/api/analytics(?:/|$)#', $jtbUri)) {
+    require_once CMS_ROOT . '/plugins/jessie-analytics/api/router.php';
+    exit;
+}
+if (preg_match('#^/admin/analytics(?:/|$)#', $jtbUri)) {
+    require_once CMS_ROOT . '/plugins/jessie-analytics/admin-router.php';
+    exit;
+}
 if (preg_match('#^/booking/?$#', $jtbUri)) {
     require_once CMS_ROOT . '/plugins/jessie-booking/views/frontend/booking-widget.php';
     exit;

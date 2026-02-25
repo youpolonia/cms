@@ -1,0 +1,9 @@
+{
+    "name": "Jessie Email Marketing",
+    "slug": "jessie-emailmarketing",
+    "version": "1.0.0",
+    "description": "AI-powered email marketing — campaigns, templates, automation, analytics",
+    "author": "Jessie AI CMS",
+    "requires_cms": "0.10.0",
+    "priority": 50
+}

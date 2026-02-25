@@ -219,6 +219,9 @@ return [
             ['label' => '🔍 SEO Writer', 'url' => '/admin/seowriter'],
             ['label' => '✍️ Copywriter', 'url' => '/admin/copywriter'],
             ['label' => '🖼️ Image Studio', 'url' => '/admin/imagestudio'],
+            ['label' => '📱 Social Media', 'url' => '/admin/social'],
+            ['label' => '📧 Email Marketing', 'url' => '/admin/emailmarketing'],
+            ['label' => '📊 Analytics', 'url' => '/admin/analytics'],
         ]
     ],
     'dropshipping' => [

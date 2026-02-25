@@ -1,0 +1,9 @@
+{
+    "name": "Jessie Analytics Dashboard",
+    "slug": "jessie-analytics",
+    "version": "1.0.0",
+    "description": "Unified analytics dashboard — traffic, conversions, AI insights across all SaaS tools",
+    "author": "Jessie AI CMS",
+    "requires_cms": "0.10.0",
+    "priority": 50
+}

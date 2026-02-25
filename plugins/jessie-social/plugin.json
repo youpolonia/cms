@@ -1,0 +1,9 @@
+{
+    "name": "Jessie Social Media Scheduler",
+    "slug": "jessie-social",
+    "version": "1.0.0",
+    "description": "AI-powered social media content scheduler — multi-platform posting, calendar, analytics",
+    "author": "Jessie AI CMS",
+    "requires_cms": "0.10.0",
+    "priority": 50
+}
