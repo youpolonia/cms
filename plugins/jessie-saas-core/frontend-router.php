@@ -194,9 +194,33 @@ switch ($path) {
         <?php
         break;
     
+    // ── SaaS Tool Pages ──
+    case 'seo':
+        $activeService = 'seowriter';
+        require CMS_ROOT . '/plugins/jessie-seowriter/views/app/editor.php';
+        break;
+    case 'copy':
+        $activeService = 'copywriter';
+        require CMS_ROOT . '/plugins/jessie-copywriter/views/app/generator.php';
+        break;
+    case 'images':
+        $activeService = 'imagestudio';
+        require CMS_ROOT . '/plugins/jessie-imagestudio/views/app/studio.php';
+        break;
+    case 'social':
+        $activeService = 'socialmanager';
+        require CMS_ROOT . '/plugins/jessie-social/views/app/scheduler.php';
+        break;
+    case 'email':
+        $activeService = 'emailcreator';
+        require CMS_ROOT . '/plugins/jessie-emailmarketing/views/app/campaigns.php';
+        break;
+    case 'analytics':
+        $activeService = 'analytics';
+        require CMS_ROOT . '/plugins/jessie-analytics/views/app/overview.php';
+        break;
+
     default:
-        // Pass through to service-specific routers
-        // Each service plugin handles /saas/{service}/*
         http_response_code(404);
         ?>
         <div class="saas-header"><h1>🔍 Page Not Found</h1></div>
