@@ -1,0 +1,45 @@
+/**
+ * Jessie CMS — Shared Frontend Styles
+ * Include: <link rel="stylesheet" href="/plugins/shared/jessie-frontend.css">
+ */
+:root {
+    --j-bg: #0f172a;
+    --j-card: #1e293b;
+    --j-border: #334155;
+    --j-text: #e2e8f0;
+    --j-muted: #94a3b8;
+    --j-accent: #6366f1;
+    --j-accent2: #8b5cf6;
+    --j-green: #22c55e;
+    --j-danger: #ef4444;
+    --j-warning: #f59e0b;
+}
+
+/* Admin settings shared */
+.j-settings-wrap { max-width: 700px; margin: 0 auto; padding: 24px 20px; }
+.j-settings-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
+.j-settings-header h1 { font-size: 1.5rem; font-weight: 700; color: var(--j-text); margin: 0; }
+.j-card { background: var(--j-card); border: 1px solid var(--j-border); border-radius: 12px; padding: 24px; margin-bottom: 20px; }
+.j-card h3 { font-size: .85rem; text-transform: uppercase; letter-spacing: .05em; color: var(--j-muted); margin: 0 0 16px; padding-bottom: 8px; border-bottom: 1px solid var(--j-border); }
+.j-form-group { margin-bottom: 16px; }
+.j-form-group label { display: block; font-size: .8rem; font-weight: 600; color: var(--j-text); margin-bottom: 6px; }
+.j-form-group input, .j-form-group select, .j-form-group textarea {
+    width: 100%; background: var(--j-bg); border: 1px solid var(--j-border); color: var(--j-text);
+    padding: 10px 12px; border-radius: 8px; font-size: .85rem; box-sizing: border-box; font-family: inherit;
+}
+.j-form-group input:focus, .j-form-group select:focus, .j-form-group textarea:focus { outline: none; border-color: var(--j-accent); box-shadow: 0 0 0 3px rgba(99,102,241,.15); }
+.j-form-group .hint { font-size: .75rem; color: var(--j-muted); margin-top: 4px; }
+.j-form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+@media (max-width: 600px) { .j-form-row { grid-template-columns: 1fr; } }
+.j-toggle { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.j-toggle input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--j-accent); }
+.j-toggle label { font-size: .82rem; color: var(--j-text); cursor: pointer; }
+.j-btn { background: linear-gradient(135deg, var(--j-accent), var(--j-accent2)); color: #fff; padding: 10px 24px; border-radius: 8px; font-size: .9rem; font-weight: 600; border: none; cursor: pointer; transition: .15s; }
+.j-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(99,102,241,.3); }
+.j-btn:disabled { opacity: .5; cursor: not-allowed; transform: none; }
+.j-btn-secondary { background: var(--j-card); color: var(--j-text); padding: 10px 20px; border-radius: 8px; font-size: .85rem; font-weight: 600; border: 1px solid var(--j-border); text-decoration: none; display: inline-block; }
+.j-btn-secondary:hover { background: var(--j-bg); }
+.j-alert { padding: 12px 16px; border-radius: 8px; font-size: .85rem; margin-bottom: 16px; }
+.j-alert-success { background: rgba(34,197,94,.1); border: 1px solid var(--j-green); color: #86efac; }
+.j-alert-error { background: rgba(239,68,68,.1); border: 1px solid var(--j-danger); color: #fca5a5; }
+.j-alert-info { background: rgba(99,102,241,.1); border: 1px solid var(--j-accent); color: #a5b4fc; }

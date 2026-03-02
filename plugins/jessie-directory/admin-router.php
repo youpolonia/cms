@@ -67,3 +67,24 @@ if ($uri === '/admin/directory/claims') { require $pluginDir . '/views/admin/cla
 
 // ─── REVIEWS ───
 if ($uri === '/admin/directory/reviews') { require $pluginDir . '/views/admin/reviews.php'; exit; }
+
+// ─── SETTINGS ───
+if ($uri === '/admin/directory/settings') {
+    require $pluginDir . '/views/admin/settings.php';
+    exit;
+}
+
+if ($uri === '/admin/directory/settings/save' && $method === 'POST') {
+    csrf_validate_or_403();
+    $pdo = db();
+    $pdo->exec("CREATE TABLE IF NOT EXISTS `directory_settings` (`key` VARCHAR(100) PRIMARY KEY, `value` TEXT NOT NULL, `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
+    $fields = ['moderation','map_provider','map_api_key','items_per_page','allow_reviews','allow_photos','max_photos','claim_enabled','featured_fee'];
+    $checkboxes = ['allow_reviews','allow_photos','claim_enabled'];
+    foreach ($fields as $f) {
+        $val = in_array($f, $checkboxes) ? (isset($_POST[$f]) ? '1' : '0') : ($_POST[$f] ?? '');
+        $pdo->prepare("INSERT INTO `directory_settings` (`key`, `value`) VALUES (?, ?) ON DUPLICATE KEY UPDATE `value` = ?")->execute([$f, $val, $val]);
+    }
+    \Core\Session::flash('success', 'Settings saved!');
+    \Core\Response::redirect('/admin/directory/settings?saved=1');
+}
+

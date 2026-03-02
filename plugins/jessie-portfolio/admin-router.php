@@ -90,3 +90,24 @@ if (preg_match('#^/admin/portfolio/testimonials/(\d+)/approve$#', $uri, $m) && $
     \PortfolioTestimonial::approve((int)$m[1]);
     \Core\Session::flash('success', 'Testimonial approved.'); \Core\Response::redirect('/admin/portfolio/testimonials');
 }
+
+// ─── SETTINGS ───
+if ($uri === '/admin/portfolio/settings') {
+    require $pluginDir . '/views/admin/settings.php';
+    exit;
+}
+
+if ($uri === '/admin/portfolio/settings/save' && $method === 'POST') {
+    csrf_validate_or_403();
+    $pdo = db();
+    $pdo->exec("CREATE TABLE IF NOT EXISTS `portfolio_settings` (`key` VARCHAR(100) PRIMARY KEY, `value` TEXT NOT NULL, `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
+    $fields = ['layout','items_per_page','columns','lightbox','show_filters','show_testimonials','max_images','video_embed'];
+    $checkboxes = ['lightbox','show_filters','show_testimonials','video_embed'];
+    foreach ($fields as $f) {
+        $val = in_array($f, $checkboxes) ? (isset($_POST[$f]) ? '1' : '0') : ($_POST[$f] ?? '');
+        $pdo->prepare("INSERT INTO `portfolio_settings` (`key`, `value`) VALUES (?, ?) ON DUPLICATE KEY UPDATE `value` = ?")->execute([$f, $val, $val]);
+    }
+    \Core\Session::flash('success', 'Settings saved!');
+    \Core\Response::redirect('/admin/portfolio/settings?saved=1');
+}
+

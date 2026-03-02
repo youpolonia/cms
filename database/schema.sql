@@ -1343,3 +1343,433 @@ CREATE TABLE IF NOT EXISTS `widgets` (
   KEY `idx_widgets_active` (`is_active`)
 ) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+
+-- ═══════════════════════════════════════════════════════════
+-- SHOP EXTENSIONS
+-- ═══════════════════════════════════════════════════════════
+
+CREATE TABLE IF NOT EXISTS `coupons` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `code` varchar(50) NOT NULL,
+  `type` enum('percentage','fixed','free_shipping') NOT NULL DEFAULT 'percentage',
+  `value` decimal(10,2) NOT NULL DEFAULT 0.00,
+  `min_order` decimal(10,2) DEFAULT NULL,
+  `max_discount` decimal(10,2) DEFAULT NULL,
+  `max_uses` int(11) DEFAULT NULL,
+  `used_count` int(11) NOT NULL DEFAULT 0,
+  `per_customer_limit` int(11) DEFAULT 1,
+  `valid_from` datetime DEFAULT NULL,
+  `valid_until` datetime DEFAULT NULL,
+  `applies_to` enum('all','category','product') DEFAULT 'all',
+  `applies_to_ids` text DEFAULT NULL,
+  `status` enum('active','inactive') DEFAULT 'active',
+  `created_at` datetime DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `code` (`code`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `product_variants` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `product_id` int(11) NOT NULL,
+  `variant_name` varchar(255) NOT NULL,
+  `options` longtext DEFAULT NULL,
+  `price` decimal(10,2) DEFAULT NULL,
+  `sale_price` decimal(10,2) DEFAULT NULL,
+  `sku` varchar(100) DEFAULT NULL,
+  `stock` int(11) DEFAULT -1,
+  `image` varchar(500) DEFAULT NULL,
+  `sort_order` int(11) DEFAULT 0,
+  `status` enum('active','inactive') DEFAULT 'active',
+  `created_at` datetime DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  KEY `idx_product` (`product_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `product_reviews` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `product_id` int(11) NOT NULL,
+  `customer_name` varchar(255) NOT NULL,
+  `customer_email` varchar(255) NOT NULL,
+  `rating` tinyint(4) NOT NULL,
+  `title` varchar(255) DEFAULT NULL,
+  `review_text` text DEFAULT NULL,
+  `status` enum('pending','approved','rejected') DEFAULT 'pending',
+  `admin_reply` text DEFAULT NULL,
+  `is_verified_purchase` tinyint(1) DEFAULT 0,
+  `helpful_count` int(11) DEFAULT 0,
+  `created_at` datetime DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  KEY `idx_product` (`product_id`),
+  KEY `idx_status` (`status`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `digital_downloads` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `token` varchar(128) NOT NULL,
+  `product_id` int(11) NOT NULL,
+  `order_id` int(11) NOT NULL,
+  `customer_email` varchar(255) NOT NULL,
+  `downloads_count` int(11) DEFAULT 0,
+  `max_downloads` int(11) DEFAULT 3,
+  `expires_at` datetime NOT NULL,
+  `created_at` datetime DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `token` (`token`),
+  KEY `idx_order` (`order_id`),
+  KEY `idx_product` (`product_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `wishlists` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `session_id` varchar(128) NOT NULL,
+  `product_id` int(11) NOT NULL,
+  `created_at` datetime DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_wish` (`session_id`,`product_id`),
+  KEY `idx_session` (`session_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `shop_analytics` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `event_type` enum('view','add_to_cart','checkout','purchase','search') NOT NULL,
+  `product_id` int(11) DEFAULT NULL,
+  `order_id` int(11) DEFAULT NULL,
+  `session_id` varchar(128) DEFAULT NULL,
+  `amount` decimal(10,2) DEFAULT NULL,
+  `meta` longtext DEFAULT NULL,
+  `created_at` datetime DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  KEY `idx_event` (`event_type`),
+  KEY `idx_product` (`product_id`),
+  KEY `idx_date` (`created_at`),
+  KEY `idx_session` (`session_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `abandoned_carts` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `session_id` varchar(128) NOT NULL,
+  `customer_email` varchar(255) DEFAULT NULL,
+  `items` longtext NOT NULL,
+  `subtotal` decimal(10,2) DEFAULT 0.00,
+  `reminder_sent_at` datetime DEFAULT NULL,
+  `reminder_count` int(11) DEFAULT 0,
+  `recovered` tinyint(1) DEFAULT 0,
+  `created_at` datetime DEFAULT current_timestamp(),
+  `updated_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`id`),
+  KEY `idx_session` (`session_id`),
+  KEY `idx_email` (`customer_email`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ═══════════════════════════════════════════════════════════
+-- DROPSHIPPING
+-- ═══════════════════════════════════════════════════════════
+
+CREATE TABLE IF NOT EXISTS `ds_suppliers` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `type` enum('aliexpress','cjdropshipping','generic_api','csv','manual') DEFAULT 'manual',
+  `website` varchar(500) DEFAULT NULL,
+  `api_key` varchar(500) DEFAULT NULL,
+  `api_secret` varchar(500) DEFAULT NULL,
+  `api_base_url` varchar(500) DEFAULT NULL,
+  `contact_email` varchar(255) DEFAULT NULL,
+  `contact_name` varchar(255) DEFAULT NULL,
+  `notes` text DEFAULT NULL,
+  `settings` longtext DEFAULT NULL,
+  `status` enum('active','inactive') DEFAULT 'active',
+  `products_count` int(11) DEFAULT 0,
+  `created_at` timestamp NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `ds_product_links` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `product_id` int(11) NOT NULL,
+  `supplier_id` int(11) NOT NULL,
+  `supplier_product_id` varchar(255) DEFAULT NULL,
+  `supplier_product_url` varchar(1000) DEFAULT NULL,
+  `supplier_price` decimal(10,2) DEFAULT NULL,
+  `supplier_currency` varchar(10) DEFAULT 'USD',
+  `supplier_sku` varchar(255) DEFAULT NULL,
+  `our_price` decimal(10,2) DEFAULT NULL,
+  `profit_margin` decimal(10,2) DEFAULT NULL,
+  `variant_mapping` longtext DEFAULT NULL,
+  `last_sync_at` timestamp NULL DEFAULT NULL,
+  `sync_status` enum('synced','pending','error','never') DEFAULT 'never',
+  `auto_sync` tinyint(1) DEFAULT 1,
+  `notes` text DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_product_supplier` (`product_id`,`supplier_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `ds_imports` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `source_url` varchar(1000) DEFAULT NULL,
+  `source_type` enum('url','csv','api','manual') DEFAULT 'url',
+  `supplier_id` int(11) DEFAULT NULL,
+  `status` enum('pending','processing','completed','failed') DEFAULT 'pending',
+  `product_id` int(11) DEFAULT NULL,
+  `imported_data` longtext DEFAULT NULL,
+  `ai_processed` tinyint(1) DEFAULT 0,
+  `ai_results` longtext DEFAULT NULL,
+  `error_message` text DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `ds_order_forwards` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `order_id` int(11) NOT NULL,
+  `supplier_id` int(11) NOT NULL,
+  `supplier_order_id` varchar(255) DEFAULT NULL,
+  `status` enum('pending','sent','confirmed','shipped','delivered','failed','cancelled') DEFAULT 'pending',
+  `tracking_number` varchar(255) DEFAULT NULL,
+  `tracking_url` varchar(500) DEFAULT NULL,
+  `cost_total` decimal(10,2) DEFAULT NULL,
+  `notes` text DEFAULT NULL,
+  `response_data` longtext DEFAULT NULL,
+  `forwarded_at` timestamp NULL DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `ds_price_rules` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `type` enum('multiplier','fixed_markup','percentage_markup') DEFAULT 'multiplier',
+  `value` decimal(10,4) NOT NULL,
+  `apply_to` enum('all','category','supplier','product') DEFAULT 'all',
+  `apply_to_id` int(11) DEFAULT NULL,
+  `min_price` decimal(10,2) DEFAULT 0.00,
+  `max_price` decimal(10,2) DEFAULT 0.00,
+  `round_to` enum('none','0.99','0.95','0.00') DEFAULT '0.99',
+  `priority` int(11) DEFAULT 0,
+  `status` enum('active','inactive') DEFAULT 'active',
+  `created_at` timestamp NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ============================================================
+-- SHOP EXTENSIONS (v0.10.0+)
+-- ============================================================
+
+CREATE TABLE IF NOT EXISTS coupons (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    code VARCHAR(50) NOT NULL UNIQUE,
+    type VARCHAR(20) NOT NULL DEFAULT "percentage",
+    value DECIMAL(10,2) NOT NULL DEFAULT 0,
+    min_order DECIMAL(10,2) DEFAULT NULL,
+    max_discount DECIMAL(10,2) DEFAULT NULL,
+    max_uses INT DEFAULT NULL,
+    per_customer_limit INT DEFAULT 1,
+    used_count INT DEFAULT 0,
+    valid_from DATETIME DEFAULT NULL,
+    valid_until DATETIME DEFAULT NULL,
+    applies_to VARCHAR(20) DEFAULT "all",
+    applies_to_ids TEXT DEFAULT NULL,
+    status VARCHAR(20) DEFAULT "active",
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    INDEX idx_code (code),
+    INDEX idx_status (status)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS product_variants (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    product_id INT NOT NULL,
+    variant_name VARCHAR(255) NOT NULL DEFAULT "",
+    options JSON DEFAULT NULL,
+    price DECIMAL(10,2) DEFAULT NULL,
+    sale_price DECIMAL(10,2) DEFAULT NULL,
+    sku VARCHAR(100) DEFAULT NULL,
+    stock INT DEFAULT -1,
+    image VARCHAR(500) DEFAULT NULL,
+    sort_order INT DEFAULT 0,
+    status VARCHAR(20) DEFAULT "active",
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    INDEX idx_product (product_id),
+    INDEX idx_sku (sku)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS product_reviews (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    product_id INT NOT NULL,
+    customer_name VARCHAR(255) NOT NULL,
+    customer_email VARCHAR(255) NOT NULL,
+    rating TINYINT NOT NULL,
+    title VARCHAR(255) DEFAULT "",
+    review_text TEXT DEFAULT NULL,
+    status VARCHAR(20) DEFAULT "pending",
+    is_verified_purchase TINYINT(1) DEFAULT 0,
+    admin_reply TEXT DEFAULT NULL,
+    helpful_count INT DEFAULT 0,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    INDEX idx_product (product_id),
+    INDEX idx_status (status),
+    INDEX idx_rating (rating)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS digital_downloads (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    token VARCHAR(64) NOT NULL UNIQUE,
+    product_id INT NOT NULL,
+    order_id INT NOT NULL,
+    customer_email VARCHAR(255) NOT NULL,
+    max_downloads INT DEFAULT 3,
+    downloads_count INT DEFAULT 0,
+    expires_at DATETIME NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    INDEX idx_token (token),
+    INDEX idx_order (order_id),
+    INDEX idx_product (product_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS wishlists (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    session_id VARCHAR(128) NOT NULL,
+    product_id INT NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE KEY uq_session_product (session_id, product_id),
+    INDEX idx_session (session_id),
+    INDEX idx_product (product_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS shop_analytics (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    event_type VARCHAR(50) NOT NULL,
+    product_id INT DEFAULT NULL,
+    order_id INT DEFAULT NULL,
+    session_id VARCHAR(128) DEFAULT NULL,
+    amount DECIMAL(10,2) DEFAULT NULL,
+    meta JSON DEFAULT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    INDEX idx_event (event_type),
+    INDEX idx_product (product_id),
+    INDEX idx_session (session_id),
+    INDEX idx_created (created_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS abandoned_carts (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    session_id VARCHAR(128) NOT NULL,
+    customer_email VARCHAR(255) DEFAULT NULL,
+    items JSON NOT NULL,
+    subtotal DECIMAL(10,2) DEFAULT 0,
+    reminder_sent_at DATETIME DEFAULT NULL,
+    reminder_count INT DEFAULT 0,
+    recovered TINYINT(1) DEFAULT 0,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    INDEX idx_session (session_id),
+    INDEX idx_email (customer_email),
+    INDEX idx_reminder (reminder_sent_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- ============================================================
+-- DROPSHIPPING (v0.11.0+)
+-- ============================================================
+
+CREATE TABLE IF NOT EXISTS ds_suppliers (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    type VARCHAR(50) DEFAULT "manual",
+    website VARCHAR(500) DEFAULT "",
+    api_key VARCHAR(500) DEFAULT "",
+    api_secret VARCHAR(500) DEFAULT "",
+    api_base_url VARCHAR(500) DEFAULT "",
+    contact_email VARCHAR(255) DEFAULT "",
+    contact_name VARCHAR(255) DEFAULT "",
+    notes TEXT DEFAULT NULL,
+    settings JSON DEFAULT NULL,
+    products_count INT DEFAULT 0,
+    status VARCHAR(20) DEFAULT "active",
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    INDEX idx_status (status),
+    INDEX idx_type (type)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS ds_product_links (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    product_id INT NOT NULL,
+    supplier_id INT NOT NULL,
+    supplier_product_id VARCHAR(255) DEFAULT NULL,
+    supplier_product_url TEXT DEFAULT NULL,
+    supplier_price DECIMAL(10,2) DEFAULT NULL,
+    supplier_currency VARCHAR(10) DEFAULT "USD",
+    supplier_sku VARCHAR(100) DEFAULT NULL,
+    our_price DECIMAL(10,2) DEFAULT NULL,
+    profit_margin DECIMAL(10,2) DEFAULT NULL,
+    variant_mapping JSON DEFAULT NULL,
+    notes TEXT DEFAULT NULL,
+    sync_status VARCHAR(20) DEFAULT "pending",
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE KEY uq_product_supplier (product_id, supplier_id),
+    INDEX idx_supplier (supplier_id),
+    INDEX idx_sync (sync_status)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS ds_imports (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    source_url TEXT DEFAULT NULL,
+    source_type VARCHAR(50) DEFAULT "url",
+    supplier_id INT DEFAULT NULL,
+    product_id INT DEFAULT NULL,
+    status VARCHAR(20) DEFAULT "pending",
+    imported_data JSON DEFAULT NULL,
+    ai_processed TINYINT(1) DEFAULT 0,
+    ai_results JSON DEFAULT NULL,
+    error_message TEXT DEFAULT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    INDEX idx_status (status),
+    INDEX idx_supplier (supplier_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS ds_order_forwards (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    order_id INT NOT NULL,
+    supplier_id INT NOT NULL,
+    supplier_order_id VARCHAR(255) DEFAULT NULL,
+    status VARCHAR(20) DEFAULT "pending",
+    cost_total DECIMAL(10,2) DEFAULT 0,
+    tracking_number VARCHAR(255) DEFAULT NULL,
+    tracking_url VARCHAR(500) DEFAULT NULL,
+    notes TEXT DEFAULT NULL,
+    response_data JSON DEFAULT NULL,
+    forwarded_at DATETIME DEFAULT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT NULL,
+    INDEX idx_order (order_id),
+    INDEX idx_supplier (supplier_id),
+    INDEX idx_status (status)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS ds_price_rules (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    type VARCHAR(30) DEFAULT "multiplier",
+    value DECIMAL(10,2) DEFAULT 2.00,
+    apply_to VARCHAR(20) DEFAULT "all",
+    apply_to_id INT DEFAULT NULL,
+    min_price DECIMAL(10,2) DEFAULT 0,
+    max_price DECIMAL(10,2) DEFAULT 0,
+    round_to VARCHAR(10) DEFAULT "0.99",
+    priority INT DEFAULT 0,
+    status VARCHAR(20) DEFAULT "active",
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    INDEX idx_status (status),
+    INDEX idx_priority (priority)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- ============================================================
+-- SaaS PLATFORM (v0.12.0+)
+-- Note: Plugin tables are created by plugin install.php
+-- These are included for completeness / fresh install
+-- ============================================================
+
+-- SaaS Core tables created by jessie-saas-core/install.php
+-- SaaS tool tables created by respective plugin install.php
+-- Plugin domain tables created by respective plugin install.php

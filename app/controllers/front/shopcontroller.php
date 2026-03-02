@@ -285,6 +285,46 @@ class ShopController
             \AbandonedCarts::markRecovered(session_id());
 
             $order = \Shop::getOrder($orderId);
+            $paymentMethod = $customerData['payment_method'] ?? 'bank_transfer';
+
+            // Online payment → redirect to payment provider
+            if (in_array($paymentMethod, ['stripe', 'paypal'])) {
+                require_once CMS_ROOT . '/core/payment-gateway.php';
+
+                $payItems = [];
+                foreach ($cart['items'] as $item) {
+                    $payItems[] = [
+                        'name' => $item['name'],
+                        'price' => $item['effective_price'] ?? $item['line_total'] / max(1, $item['quantity']),
+                        'quantity' => $item['quantity'],
+                        'description' => '',
+                    ];
+                }
+
+                $siteUrl = rtrim(function_exists('get_setting') ? get_setting('site_url', '') : '', '/');
+                $result = \PaymentGateway::processPayment($paymentMethod, (float)$cart['total'], [
+                    'items'          => $payItems,
+                    'subtotal'       => (float)$cart['subtotal'],
+                    'shipping'       => (float)($cart['shipping'] ?? 0),
+                    'tax'            => (float)($cart['tax'] ?? 0),
+                    'customer_email' => $customerData['email'],
+                    'reference_id'   => (string)$orderId,
+                    'description'    => 'Order #' . ($order['order_number'] ?? $orderId),
+                    'metadata'       => ['order_id' => (string)$orderId, 'order_number' => $order['order_number'] ?? ''],
+                    'success_url'    => $siteUrl . '/checkout/success?session_id={CHECKOUT_SESSION_ID}&order=' . ($order['order_number'] ?? ''),
+                    'cancel_url'     => $siteUrl . '/order/thank-you/' . ($order['order_number'] ?? '') . '?payment=cancelled',
+                ]);
+
+                if (!empty($result['redirect'])) {
+                    // Store order info in session for verification
+                    $_SESSION['pending_payment_order'] = $orderId;
+                    $_SESSION['pending_payment_provider'] = $paymentMethod;
+                    header('Location: ' . $result['redirect']);
+                    exit;
+                }
+                // If redirect failed, fall through to thank-you with note
+            }
+
             header('Location: /order/thank-you/' . ($order['order_number'] ?? ''));
             exit;
         }

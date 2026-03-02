@@ -7,7 +7,28 @@ declare(strict_types=1);
  */
 class ShopDigital
 {
-    /**
+        /**
+     * Ensure the digital_downloads table exists
+     */
+    public static function ensureTable(): void
+    {
+        db()->exec("CREATE TABLE IF NOT EXISTS digital_downloads (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            token VARCHAR(64) NOT NULL UNIQUE,
+            product_id INT NOT NULL,
+            order_id INT NOT NULL,
+            customer_email VARCHAR(255) NOT NULL,
+            max_downloads INT DEFAULT 3,
+            downloads_count INT DEFAULT 0,
+            expires_at DATETIME NOT NULL,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            INDEX idx_token (token),
+            INDEX idx_order (order_id),
+            INDEX idx_product (product_id)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
+    }
+
+/**
      * Create a download token for a digital product purchase
      */
     public static function createDownloadToken(

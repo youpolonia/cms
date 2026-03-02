@@ -172,7 +172,18 @@ try { $stmt = db()->prepare("SELECT value FROM settings WHERE `key` = 'site_titl
                     </select>
                 </div>
 
-                <div class="dir-grid">
+                <!-- Map/Grid Toggle -->
+                <div style="display:flex;gap:8px;margin-bottom:16px">
+                    <button id="btnGrid" onclick="toggleView('grid')" style="padding:6px 14px;border-radius:6px;font-size:.8rem;font-weight:600;cursor:pointer;background:var(--accent);color:#fff;border:none">📋 Grid</button>
+                    <button id="btnMap" onclick="toggleView('map')" style="padding:6px 14px;border-radius:6px;font-size:.8rem;font-weight:600;cursor:pointer;background:var(--bg-card);color:var(--text);border:1px solid var(--border)">🗺️ Map</button>
+                </div>
+
+                <!-- Map View -->
+                <div id="mapView" style="display:none;margin-bottom:20px">
+                    <div id="dirMap" style="height:450px;border-radius:12px;border:1px solid var(--border);overflow:hidden"></div>
+                </div>
+
+                <div class="dir-grid" id="gridView">
                     <?php foreach ($result['listings'] as $l): ?>
                     <div class="listing-card">
                         <a href="/directory/<?= h($l['slug']) ?>">
@@ -230,5 +241,47 @@ try { $stmt = db()->prepare("SELECT value FROM settings WHERE `key` = 'site_titl
             </main>
         </div>
     </div>
+<!-- Leaflet + Map Component -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9/dist/leaflet.css">
+<script src="https://unpkg.com/leaflet@1.9/dist/leaflet.js"></script>
+<script src="/plugins/shared/jessie-map.js"></script>
+<script>
+var mapInitialized = false;
+var listingsData = <?= json_encode(array_map(function($l) {
+    return [
+        'lat' => (float)($l['latitude'] ?? 0),
+        'lng' => (float)($l['longitude'] ?? 0),
+        'title' => $l['title'] ?? '',
+        'address' => trim(($l['address'] ?? '') . ($l['city'] ? ', ' . $l['city'] : '')),
+        'url' => '/directory/' . ($l['slug'] ?? ''),
+        'rating' => (float)($l['avg_rating'] ?? 0),
+        'color' => ($l['is_featured'] ?? false) ? 'orange' : 'blue'
+    ];
+}, $result['listings'])) ?>;
+
+function toggleView(mode) {
+    var grid = document.getElementById('gridView');
+    var mapDiv = document.getElementById('mapView');
+    var btnGrid = document.getElementById('btnGrid');
+    var btnMap = document.getElementById('btnMap');
+    if (mode === 'map') {
+        grid.style.display = 'none';
+        mapDiv.style.display = 'block';
+        btnGrid.style.background = 'var(--bg-card)'; btnGrid.style.color = 'var(--text)'; btnGrid.style.border = '1px solid var(--border)';
+        btnMap.style.background = 'var(--accent)'; btnMap.style.color = '#fff'; btnMap.style.border = 'none';
+        if (!mapInitialized) {
+            JessieMap.init('#dirMap', { center: [51.5, -0.12], zoom: 5, style: 'dark' });
+            JessieMap.addMarkers(listingsData.filter(function(l) { return l.lat && l.lng; }));
+            JessieMap.fitMarkers();
+            JessieMap.addLocateButton();
+            mapInitialized = true;
+        }
+    } else {
+        grid.style.display = ''; mapDiv.style.display = 'none';
+        btnGrid.style.background = 'var(--accent)'; btnGrid.style.color = '#fff'; btnGrid.style.border = 'none';
+        btnMap.style.background = 'var(--bg-card)'; btnMap.style.color = 'var(--text)'; btnMap.style.border = '1px solid var(--border)';
+    }
+}
+</script>
 </body>
 </html>

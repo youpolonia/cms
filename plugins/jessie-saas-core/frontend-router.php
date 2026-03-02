@@ -67,8 +67,70 @@ switch ($path) {
         exit;
     
     case 'forgot-password':
-        // TODO: forgot password page
-        echo '<!DOCTYPE html><html><body style="background:#0f172a;color:#e2e8f0;font-family:Inter,sans-serif;display:flex;align-items:center;justify-content:center;min-height:100vh"><div style="text-align:center"><h1>Reset Password</h1><p style="color:#64748b">Coming soon. Contact support.</p><a href="/saas/login" style="color:#8b5cf6">← Back to login</a></div></body></html>';
+        $error = '';
+        $success = false;
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            if (!hash_equals($csrfToken, $_POST['csrf_token'] ?? '')) {
+                $error = 'Session expired, please try again.';
+            } else {
+                $auth = new SaasAuth();
+                $result = $auth->requestPasswordReset($_POST['email'] ?? '');
+                if ($result['success']) {
+                    $success = true;
+                    // Send reset email if token was generated (user exists)
+                    if (!empty($result['token'])) {
+                        $resetUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http')
+                            . '://' . ($_SERVER['HTTP_HOST'] ?? 'localhost')
+                            . '/saas/reset-password?token=' . $result['token'];
+                        $toEmail = strtolower(trim($_POST['email'] ?? ''));
+                        $subject = 'Password Reset — Jessie AI';
+                        $body = "Hello,\n\n"
+                            . "You requested a password reset for your Jessie AI account.\n\n"
+                            . "Click this link to set a new password:\n"
+                            . $resetUrl . "\n\n"
+                            . "This link expires in 1 hour.\n\n"
+                            . "If you didn't request this, please ignore this email.\n\n"
+                            . "— Jessie AI";
+                        $headers = "From: noreply@" . ($_SERVER['HTTP_HOST'] ?? 'localhost') . "\r\n"
+                            . "Content-Type: text/plain; charset=UTF-8";
+                        @mail($toEmail, $subject, $body, $headers);
+                    }
+                }
+            }
+        }
+        require __DIR__ . '/views/auth/forgot-password.php';
+        exit;
+
+    case 'reset-password':
+        $error = '';
+        $success = false;
+        $resetToken = $_GET['token'] ?? $_POST['token'] ?? '';
+        if (empty($resetToken)) {
+            header('Location: /saas/forgot-password', true, 303);
+            exit;
+        }
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            if (!hash_equals($csrfToken, $_POST['csrf_token'] ?? '')) {
+                $error = 'Session expired, please try again.';
+            } else {
+                $password = $_POST['password'] ?? '';
+                $confirm = $_POST['password_confirm'] ?? '';
+                if ($password !== $confirm) {
+                    $error = 'Passwords do not match.';
+                } elseif (strlen($password) < 8) {
+                    $error = 'Password must be at least 8 characters.';
+                } else {
+                    $auth = new SaasAuth();
+                    $result = $auth->resetPassword($resetToken, $password);
+                    if ($result['success']) {
+                        $success = true;
+                    } else {
+                        $error = $result['error'] ?? 'Reset failed. The link may have expired.';
+                    }
+                }
+            }
+        }
+        require __DIR__ . '/views/auth/reset-password.php';
         exit;
 }
 
@@ -98,18 +160,19 @@ switch ($path) {
             <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px">
                 <?php
                 $tools = [
-                    ['🔍','SEO Writer','AI-powered SEO content optimization','/saas/seo','seowriter'],
-                    ['✍️','AI Copywriter','Product descriptions & ad copy','/saas/copy','copywriter'],
-                    ['🖼️','Image Studio','Background removal, enhancement, generation','/saas/images','imagestudio'],
-                    ['📝','Blog Writer','Full articles with research & SEO','/saas/blog','blogwriter'],
-                    ['📧','Email Creator','AI email campaigns & automation','/saas/email','emailcreator'],
-                    ['📱','Social Manager','AI social media posts & scheduling','/saas/social','socialmanager'],
-                    ['💬','Chatbot Builder','AI chatbots for your website','/saas/chat','chatbot'],
-                    ['🎯','Landing Pages','High-converting pages in seconds','/saas/landing','landingpage'],
-                    ['🌐','Website Builder','Complete websites with AI','/saas/website','sitebuilder'],
-                    ['📊','Business Plans','AI-generated business plans','/saas/bizplan','bizplan'],
+                    ['🔍','SEO Writer','AI-powered SEO content optimization','/saas/seo','seowriter', true],
+                    ['✍️','AI Copywriter','Product descriptions & ad copy','/saas/copy','copywriter', true],
+                    ['🖼️','Image Studio','Background removal, enhancement, generation','/saas/images','imagestudio', true],
+                    ['📱','Social Manager','AI social media posts & scheduling','/saas/social','socialmanager', true],
+                    ['📧','Email Marketing','AI email campaigns & automation','/saas/email','emailcreator', true],
+                    ['📊','Analytics','Website analytics & AI insights','/saas/analytics','analytics', true],
+                    ['📝','Blog Writer','Full articles with research & SEO','/saas/blog','blogwriter', false],
+                    ['💬','Chatbot Builder','AI chatbots for your website','/saas/chat','chatbot', false],
+                    ['🎯','Landing Pages','High-converting pages in seconds','/saas/landing','landingpage', false],
+                    ['🌐','Website Builder','Complete websites with AI','/saas/website','sitebuilder', false],
                 ];
-                foreach ($tools as [$icon, $name, $desc, $url, $svc]): ?>
+                foreach ($tools as [$icon, $name, $desc, $url, $svc, $available]): ?>
+                <?php if ($available): ?>
                 <a href="<?= $url ?>" style="text-decoration:none">
                     <div class="saas-card" style="transition:.15s;cursor:pointer" onmouseover="this.style.borderColor='#8b5cf6'" onmouseout="this.style.borderColor='#334155'">
                         <div style="font-size:28px;margin-bottom:8px"><?= $icon ?></div>
@@ -117,6 +180,14 @@ switch ($path) {
                         <div style="font-size:12px;color:#94a3b8;margin-top:4px"><?= $desc ?></div>
                     </div>
                 </a>
+                <?php else: ?>
+                <div class="saas-card" style="opacity:.5;position:relative">
+                    <div style="position:absolute;top:8px;right:8px;background:#f59e0b20;color:#f59e0b;padding:2px 8px;border-radius:6px;font-size:10px;font-weight:600">COMING SOON</div>
+                    <div style="font-size:28px;margin-bottom:8px"><?= $icon ?></div>
+                    <div style="font-size:15px;font-weight:600;color:#e2e8f0"><?= $name ?></div>
+                    <div style="font-size:12px;color:#94a3b8;margin-top:4px"><?= $desc ?></div>
+                </div>
+                <?php endif; ?>
                 <?php endforeach; ?>
             </div>
         </div>

@@ -71,3 +71,24 @@ if (preg_match('#^/admin/jobs/companies/(\d+)/delete$#', $uri, $m) && $method ==
     \JobCompany::delete((int)$m[1]);
     \Core\Session::flash('success', 'Company deleted.'); \Core\Response::redirect('/admin/jobs/companies');
 }
+
+// ─── SETTINGS ───
+if ($uri === '/admin/jobs/settings') {
+    require $pluginDir . '/views/admin/settings.php';
+    exit;
+}
+
+if ($uri === '/admin/jobs/settings/save' && $method === 'POST') {
+    csrf_validate_or_403();
+    $pdo = db();
+    $pdo->exec("CREATE TABLE IF NOT EXISTS `jobs_settings` (`key` VARCHAR(100) PRIMARY KEY, `value` TEXT NOT NULL, `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
+    $fields = ['application_mode','resume_upload','moderation','items_per_page','expiry_days','salary_display','alert_email','categories'];
+    $checkboxes = ['resume_upload','salary_display'];
+    foreach ($fields as $f) {
+        $val = in_array($f, $checkboxes) ? (isset($_POST[$f]) ? '1' : '0') : ($_POST[$f] ?? '');
+        $pdo->prepare("INSERT INTO `jobs_settings` (`key`, `value`) VALUES (?, ?) ON DUPLICATE KEY UPDATE `value` = ?")->execute([$f, $val, $val]);
+    }
+    \Core\Session::flash('success', 'Settings saved!');
+    \Core\Response::redirect('/admin/jobs/settings?saved=1');
+}
+

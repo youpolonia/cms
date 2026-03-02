@@ -491,6 +491,11 @@ if ($jtbUri === '/events' || $jtbUri === '/events/') {
     require_once CMS_ROOT . '/plugins/jessie-events/views/frontend/browse.php';
     exit;
 }
+if (preg_match('#^/events/payment-(success|cancel)/?$#', $jtbUri, $evPay)) {
+    $eventPaymentAction = $evPay[1];
+    require_once CMS_ROOT . '/plugins/jessie-events/views/frontend/payment-callback.php';
+    exit;
+}
 if (preg_match('#^/events/([\w-]+)$#', $jtbUri, $m)) {
     $eventSlug = $m[1];
     require_once CMS_ROOT . '/plugins/jessie-events/views/frontend/detail.php';
@@ -554,7 +559,8 @@ if (preg_match('#^/admin/membership(?:/|$)#', $jtbUri)) {
     require_once CMS_ROOT . '/plugins/jessie-membership/admin-router.php';
     exit;
 }
-if (preg_match('#^/membership/signup/?$#', $jtbUri)) {
+if (preg_match('#^/membership/signup(?:/(success|cancel))?/?$#', $jtbUri, $msMatch)) {
+    $membershipAction = $msMatch[1] ?? '';
     require_once CMS_ROOT . '/plugins/jessie-membership/views/frontend/signup.php';
     exit;
 }
@@ -665,8 +671,103 @@ if (preg_match('#^/admin/analytics(?:/|$)#', $jtbUri)) {
     require_once CMS_ROOT . '/plugins/jessie-analytics/admin-router.php';
     exit;
 }
-if (preg_match('#^/booking/?$#', $jtbUri)) {
-    require_once CMS_ROOT . '/plugins/jessie-booking/views/frontend/booking-widget.php';
+// ─── Payment Callbacks ───
+if ($jtbUri === '/checkout/success') {
+    require_once CMS_ROOT . '/core/payment-gateway.php';
+    require_once CMS_ROOT . '/core/shop.php';
+
+    $provider = $_SESSION['pending_payment_provider'] ?? '';
+    $pendingOrderId = (int)($_SESSION['pending_payment_order'] ?? 0);
+
+    if ($provider === 'stripe' && !empty($_GET['session_id'])) {
+        $result = PaymentGateway::verifyAndComplete('stripe', ['session_id' => $_GET['session_id']]);
+        if (!empty($result['success']) && $pendingOrderId > 0) {
+            PaymentGateway::markOrderPaid($pendingOrderId, $result['transaction_id'] ?? '', 'stripe');
+            unset($_SESSION['pending_payment_order'], $_SESSION['pending_payment_provider']);
+            $order = Shop::getOrder($pendingOrderId);
+            header('Location: /order/thank-you/' . ($order['order_number'] ?? '') . '?payment=success');
+            exit;
+        }
+    }
+
+    // Fallback — redirect to order page
+    $orderNum = $_GET['order'] ?? '';
+    if ($orderNum) {
+        header('Location: /order/thank-you/' . urlencode($orderNum) . '?payment=pending');
+    } else {
+        header('Location: /shop');
+    }
+    exit;
+}
+
+if ($jtbUri === '/checkout/paypal-return') {
+    require_once CMS_ROOT . '/core/payment-gateway.php';
+    require_once CMS_ROOT . '/core/shop.php';
+
+    $ppOrderId = $_GET['token'] ?? '';
+    $pendingOrderId = (int)($_SESSION['pending_payment_order'] ?? 0);
+
+    if ($ppOrderId && $pendingOrderId > 0) {
+        $result = PaymentGateway::verifyAndComplete('paypal', ['order_id' => $ppOrderId]);
+        if (!empty($result['success'])) {
+            PaymentGateway::markOrderPaid($pendingOrderId, $result['transaction_id'] ?? '', 'paypal');
+            unset($_SESSION['pending_payment_order'], $_SESSION['pending_payment_provider']);
+            $order = Shop::getOrder($pendingOrderId);
+            header('Location: /order/thank-you/' . ($order['order_number'] ?? '') . '?payment=success');
+            exit;
+        }
+    }
+
+    header('Location: /shop');
+    exit;
+}
+
+if ($jtbUri === '/checkout/cancel') {
+    $pendingOrderId = (int)($_SESSION['pending_payment_order'] ?? 0);
+    if ($pendingOrderId > 0) {
+        require_once CMS_ROOT . '/core/shop.php';
+        $order = Shop::getOrder($pendingOrderId);
+        header('Location: /order/thank-you/' . ($order['order_number'] ?? '') . '?payment=cancelled');
+        exit;
+    }
+    header('Location: /shop');
+    exit;
+}
+
+// ─── Stripe Webhook ───
+if ($jtbUri === '/webhook/stripe') {
+    require_once CMS_ROOT . '/core/payment-gateway.php';
+    require_once CMS_ROOT . '/core/shop.php';
+    header('Content-Type: application/json');
+
+    $payload = file_get_contents('php://input');
+    $signature = $_SERVER['HTTP_STRIPE_SIGNATURE'] ?? '';
+
+    $event = PaymentGateway::stripeHandleWebhook($payload, $signature);
+    if (!empty($event['error'])) {
+        http_response_code(400);
+        echo json_encode(['error' => $event['error']]);
+        exit;
+    }
+
+    $eventData = $event['event'] ?? [];
+    $type = $eventData['type'] ?? '';
+
+    if ($type === 'checkout.session.completed') {
+        $session = $eventData['data']['object'] ?? [];
+        $orderId = (int)($session['metadata']['order_id'] ?? $session['client_reference_id'] ?? 0);
+        if ($orderId > 0 && ($session['payment_status'] ?? '') === 'paid') {
+            PaymentGateway::markOrderPaid($orderId, $session['payment_intent'] ?? '', 'stripe');
+        }
+    }
+
+    echo json_encode(['received' => true]);
+    exit;
+}
+
+if (preg_match('#^/booking(?:/(success|cancel))?/?$#', $jtbUri, $bkMatch)) {
+    $bookingAction = $bkMatch[1] ?? '';
+    require_once CMS_ROOT . '/plugins/jessie-booking/views/frontend/booking-page.php';
     exit;
 }
 

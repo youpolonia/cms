@@ -6,7 +6,23 @@
 
 class ShopWishlist
 {
-    /**
+        /**
+     * Ensure the wishlists table exists
+     */
+    public static function ensureTable(): void
+    {
+        db()->exec("CREATE TABLE IF NOT EXISTS wishlists (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            session_id VARCHAR(128) NOT NULL,
+            product_id INT NOT NULL,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            UNIQUE KEY uq_session_product (session_id, product_id),
+            INDEX idx_session (session_id),
+            INDEX idx_product (product_id)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
+    }
+
+/**
      * Add a product to the wishlist
      */
     public static function add(string $sessionId, int $productId): bool

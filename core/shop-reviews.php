@@ -7,7 +7,31 @@ declare(strict_types=1);
  */
 class ShopReviews
 {
-    /**
+        /**
+     * Ensure the product_reviews table exists
+     */
+    public static function ensureTable(): void
+    {
+        db()->exec("CREATE TABLE IF NOT EXISTS product_reviews (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            product_id INT NOT NULL,
+            customer_name VARCHAR(255) NOT NULL,
+            customer_email VARCHAR(255) NOT NULL,
+            rating TINYINT NOT NULL,
+            title VARCHAR(255) DEFAULT '',
+            review_text TEXT DEFAULT NULL,
+            status VARCHAR(20) DEFAULT 'pending',
+            is_verified_purchase TINYINT(1) DEFAULT 0,
+            admin_reply TEXT DEFAULT NULL,
+            helpful_count INT DEFAULT 0,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            INDEX idx_product (product_id),
+            INDEX idx_status (status),
+            INDEX idx_rating (rating)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
+    }
+
+/**
      * Submit a new review (status = pending)
      */
     public static function submit(array $data): int

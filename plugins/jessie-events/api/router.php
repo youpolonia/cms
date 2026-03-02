@@ -10,6 +10,37 @@ $uri = strtok($_SERVER['REQUEST_URI'] ?? '', '?');
 require_once $pluginDir . '/includes/class-event-manager.php';
 require_once $pluginDir . '/includes/class-event-ticket.php';
 require_once $pluginDir . '/includes/class-event-order.php';
+require_once CMS_ROOT . '/core/payment-gateway.php';
+require_once CMS_ROOT . '/plugins/shared/jessie-ical.php';
+
+// Handle iCal export before JSON header
+$path = trim(preg_replace('#^/api/events/?#', '', $uri), '/');
+if ($path === 'ical') {
+    // Export all upcoming events as subscribable calendar
+    $events = \EventManager::getUpcoming(50);
+    $icalEvents = array_map(function($e) {
+        return [
+            'id' => $e['id'], 'title' => $e['title'],
+            'description' => $e['description'] ?? '',
+            'location' => $e['location'] ?? '',
+            'start' => $e['start_date'] . ' ' . ($e['start_time'] ?? '00:00'),
+            'end' => ($e['end_date'] ?? $e['start_date']) . ' ' . ($e['end_time'] ?? '23:59'),
+            'url' => (function_exists('get_setting') ? get_setting('site_url', '') : '') . '/events/' . $e['slug'],
+        ];
+    }, $events);
+    JessieICal::output($icalEvents);
+}
+if (preg_match('#^ical/(\d+)$#', $path, $m)) {
+    $event = \EventManager::get((int)$m[1]);
+    if (!$event) { http_response_code(404); exit; }
+    JessieICal::download([
+        'id' => $event['id'], 'title' => $event['title'],
+        'description' => $event['description'] ?? '',
+        'location' => $event['location'] ?? '',
+        'start' => $event['start_date'] . ' ' . ($event['start_time'] ?? '00:00'),
+        'end' => ($event['end_date'] ?? $event['start_date']) . ' ' . ($event['end_time'] ?? '23:59'),
+    ]);
+}
 
 header('Content-Type: application/json');
 $isAdmin = isset($_SESSION['admin_id']) && ($_SESSION['admin_role'] ?? '') === 'admin';
@@ -62,10 +93,78 @@ if (preg_match('#^/api/events/([\w-]+)(?:/(\d+))?$#', $uri, $m)) {
                 try {
                     $orderId = \EventOrder::create($input);
                     $order = \EventOrder::get($orderId);
-                    echo json_encode(['ok' => true, 'order_id' => $orderId, 'order_number' => $order['order_number'], 'qr_code' => $order['qr_code'], 'total' => $order['total']]);
+                    $total = (float)($order['total'] ?? 0);
+                    $payMethod = $input['payment_method'] ?? '';
+
+                    // Free ticket or no online payment needed
+                    if ($total <= 0 || !$payMethod || $payMethod === 'cash_on_delivery') {
+                        if ($total <= 0) \EventOrder::updatePaymentStatus($orderId, 'paid');
+                        echo json_encode(['ok' => true, 'order_id' => $orderId, 'order_number' => $order['order_number'], 'qr_code' => $order['qr_code'], 'total' => $total]);
+                        exit;
+                    }
+
+                    // Online payment required
+                    if (in_array($payMethod, ['stripe', 'paypal'])) {
+                        $event = \EventManager::get((int)$order['event_id']);
+                        $ticket = \EventTicket::get((int)$order['ticket_id']);
+                        $siteUrl = rtrim(function_exists('get_setting') ? get_setting('site_url', '') : '', '/');
+
+                        $payResult = \PaymentGateway::processPayment($payMethod, $total, [
+                            'items' => [['name' => ($event['title'] ?? 'Event') . ' - ' . ($ticket['name'] ?? 'Ticket'), 'price' => $total, 'quantity' => 1]],
+                            'customer_email' => $input['buyer_email'] ?? '',
+                            'reference_id'   => 'event_order_' . $orderId,
+                            'description'    => 'Event Ticket: ' . ($event['title'] ?? ''),
+                            'metadata'       => ['order_id' => (string)$orderId, 'event_id' => (string)$order['event_id'], 'type' => 'event_ticket'],
+                            'success_url'    => $siteUrl . '/events/payment-success?provider=' . $payMethod . '&order=' . $orderId . ($payMethod === 'stripe' ? '&session_id={CHECKOUT_SESSION_ID}' : ''),
+                            'cancel_url'     => $siteUrl . '/events/payment-cancel?order=' . $orderId,
+                        ]);
+
+                        if (!empty($payResult['redirect'])) {
+                            echo json_encode(['ok' => true, 'redirect' => $payResult['redirect'], 'order_id' => $orderId]);
+                            exit;
+                        } elseif (!empty($payResult['error'])) {
+                            echo json_encode(['ok' => false, 'error' => 'Payment error: ' . $payResult['error']]);
+                            exit;
+                        }
+                    }
+
+                    // Bank transfer
+                    if ($payMethod === 'bank_transfer') {
+                        $instructions = \PaymentGateway::processPayment('bank_transfer', $total, [])['instructions'] ?? '';
+                        echo json_encode(['ok' => true, 'order_id' => $orderId, 'order_number' => $order['order_number'], 'qr_code' => $order['qr_code'], 'total' => $total, 'instructions' => $instructions, 'pending_payment' => true]);
+                        exit;
+                    }
+
+                    echo json_encode(['ok' => true, 'order_id' => $orderId, 'order_number' => $order['order_number'], 'qr_code' => $order['qr_code'], 'total' => $total]);
                 } catch (\RuntimeException $e) {
                     echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
                 }
+                exit;
+            }
+            break;
+
+        case 'verify-payment':
+            // Called by payment-callback.php
+            if ($method === 'POST') {
+                $provider = $input['provider'] ?? '';
+                $orderId = (int)($input['order_id'] ?? 0);
+                $verifyParams = [];
+                if ($provider === 'stripe') { $verifyParams['session_id'] = $input['session_id'] ?? ''; }
+                elseif ($provider === 'paypal') { $verifyParams['order_id'] = $input['token'] ?? ''; }
+
+                if ($orderId > 0 && $provider) {
+                    $result = \PaymentGateway::verifyAndComplete($provider, $verifyParams);
+                    if (!empty($result['success'])) {
+                        \EventOrder::updatePaymentStatus($orderId, 'paid');
+                        $order = \EventOrder::get($orderId);
+                        echo json_encode(['ok' => true, 'order' => $order, 'transaction_id' => $result['transaction_id'] ?? '']);
+                        exit;
+                    } else {
+                        echo json_encode(['ok' => false, 'error' => $result['error'] ?? 'Verification failed']);
+                        exit;
+                    }
+                }
+                echo json_encode(['ok' => false, 'error' => 'Invalid parameters']);
                 exit;
             }
             break;

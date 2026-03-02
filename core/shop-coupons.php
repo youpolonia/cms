@@ -6,7 +6,33 @@ declare(strict_types=1);
  */
 class ShopCoupons
 {
-    /**
+        /**
+     * Ensure the coupons table exists
+     */
+    public static function ensureTable(): void
+    {
+        db()->exec("CREATE TABLE IF NOT EXISTS coupons (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            code VARCHAR(50) NOT NULL UNIQUE,
+            type VARCHAR(20) NOT NULL DEFAULT 'percentage',
+            value DECIMAL(10,2) NOT NULL DEFAULT 0,
+            min_order DECIMAL(10,2) DEFAULT NULL,
+            max_discount DECIMAL(10,2) DEFAULT NULL,
+            max_uses INT DEFAULT NULL,
+            per_customer_limit INT DEFAULT 1,
+            used_count INT DEFAULT 0,
+            valid_from DATETIME DEFAULT NULL,
+            valid_until DATETIME DEFAULT NULL,
+            applies_to VARCHAR(20) DEFAULT 'all',
+            applies_to_ids TEXT DEFAULT NULL,
+            status VARCHAR(20) DEFAULT 'active',
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            INDEX idx_code (code),
+            INDEX idx_status (status)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
+    }
+
+/**
      * Validate a coupon code against cart subtotal and optional category
      */
     public static function validate(string $code, float $subtotal, ?int $categoryId = null): array

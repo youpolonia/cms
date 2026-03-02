@@ -1,131 +1,126 @@
-# TB Preset Library - Safe Installation Guide
+# Jessie CMS — Installation Guide
 
-## ⚠️ SAFETY FIRST
+## Requirements
 
-**THESE ARE NEW FILES ONLY** - No existing files are modified!
+- **PHP** 8.2+ with extensions: pdo_mysql, json, mbstring, curl, gd/imagick, fileinfo, zip
+- **MySQL** 5.7+ or MariaDB 10.3+
+- **Apache** 2.4+ with mod_rewrite enabled
+- **Disk space:** ~300 MB (includes themes, plugins)
 
-| File | Destination | Action |
-|------|-------------|--------|
-| `presets.php` | `/core/theme-builder/presets.php` | NEW FILE |
-| `install-tb-presets.php` | `/admin/install-tb-presets.php` | NEW FILE |
-| `presets-api.php` | `/admin/api/theme-builder/presets.php` | NEW FILE |
+## Quick Install
 
----
+### 1. Upload Files
 
-## 📦 What's Included
+Upload all CMS files to your web root (e.g., `/var/www/cms/` or `public_html/`).
 
-**60 Pre-built Templates:**
-- 10 Header designs (minimal, corporate, creative, ecommerce, blog, etc.)
-- 10 Footer designs (simple, multi-column, newsletter, mega, dark, etc.)
-- 10 Sidebar designs (blog, shop, newsletter, social, tags, etc.)
-- 10 404 Page designs (simple, creative, search, navigation, etc.)
-- 10 Archive designs (grid, list, masonry, cards, magazine, etc.)
-- 10 Single Post designs (classic, modern, magazine, minimal, etc.)
-
----
-
-## 🔧 Installation Steps
-
-### Step 1: Create API directory (if needed)
 ```bash
-# SSH into server
-mkdir -p /var/www/html/cms/admin/api/theme-builder
-chmod 755 /var/www/html/cms/admin/api/theme-builder
+# Set correct permissions
+chown -R www-data:www-data /var/www/cms/
+chmod -R 755 /var/www/cms/
+chmod -R 775 /var/www/cms/uploads/ /var/www/cms/cache/ /var/www/cms/logs/
 ```
 
-### Step 2: Upload files via FTP
+### 2. Create Database
 
-Upload these files:
-
-1. `presets.php` → `/var/www/html/cms/core/theme-builder/presets.php`
-2. `presets-api.php` → `/var/www/html/cms/admin/api/theme-builder/presets.php`
-3. `install-tb-presets.php` → `/var/www/html/cms/admin/install-tb-presets.php`
-
-### Step 3: Set permissions
-```bash
-sudo chown www-data:www-data /var/www/html/cms/core/theme-builder/presets.php
-sudo chown www-data:www-data /var/www/html/cms/admin/api/theme-builder/presets.php
-sudo chown www-data:www-data /var/www/html/cms/admin/install-tb-presets.php
-sudo chmod 644 /var/www/html/cms/core/theme-builder/presets.php
-sudo chmod 644 /var/www/html/cms/admin/api/theme-builder/presets.php
-sudo chmod 644 /var/www/html/cms/admin/install-tb-presets.php
+```sql
+CREATE DATABASE jessie_cms CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE USER 'jessie'@'localhost' IDENTIFIED BY 'your-password';
+GRANT ALL PRIVILEGES ON jessie_cms.* TO 'jessie'@'localhost';
+FLUSH PRIVILEGES;
 ```
 
-### Step 4: Add require_once to init.php
+### 3. Configure
 
-**ONLY CHANGE NEEDED in existing file!**
-
-Edit `/core/theme-builder/init.php` and add this line after other require_once statements:
+Copy `config.example.php` → `config.php` and fill in database credentials:
 
 ```php
-require_once __DIR__ . '/presets.php';
+define('DB_HOST', 'localhost');
+define('DB_NAME', 'jessie_cms');
+define('DB_USER', 'jessie');
+define('DB_PASS', 'your-password');
 ```
 
-### Step 5: Run installer
+### 4. Run Installer
 
-1. Ensure `DEV_MODE = true` in config.php
-2. Go to: `https://your-domain.com/admin/install-tb-presets.php`
-3. Wait for success message
-4. (Optional) Delete `install-tb-presets.php` after
+Navigate to `https://your-domain.com/install.php` in your browser.
 
----
+The installer will:
+1. Check system requirements
+2. Import database schema (81 core tables)
+3. Create admin account
+4. Set up initial configuration
 
-## ✅ Verification
+### 5. Setup Wizard
 
-After installation, verify:
+After installation, log in to `/admin` and the Setup Wizard will guide you through:
+- AI provider configuration (OpenAI, Anthropic, DeepSeek, Google, HuggingFace)
+- Starter website selection
+- Basic site settings
 
-1. **Database table exists:**
-   ```sql
-   SHOW TABLES LIKE 'tb_preset_library';
-   SELECT COUNT(*) FROM tb_preset_library; -- Should be 60
-   ```
+## Plugin Installation
 
-2. **API works:**
-   ```
-   GET /admin/api/theme-builder/presets.php
-   ```
+Plugins are auto-discovered from the `plugins/` directory. Each plugin has an `install.php` that creates required database tables.
 
-3. **Presets load:**
-   Go to Theme Builder → Templates → Edit any template
-   (Library button will be added in next phase)
+To install a plugin:
+1. Upload plugin folder to `plugins/`
+2. Visit `/admin/plugins`
+3. Click "Install" — this runs `install.php` (creates tables, seeds data)
+4. Enable the plugin
 
----
+### Included Plugins (19)
 
-## 🔄 Rollback (if needed)
+| Plugin | Description |
+|--------|-------------|
+| jessie-theme-builder | Drag & drop page builder (79 modules) |
+| jessie-booking | Appointment scheduling |
+| jessie-newsletter | Email newsletters & campaigns |
+| jessie-restaurant | Restaurant menu & orders |
+| jessie-lms | Learning management (courses, quizzes) |
+| jessie-membership | Membership plans & gated content |
+| jessie-events | Events, tickets, QR check-in |
+| jessie-directory | Business directory & listings |
+| jessie-jobs | Job board & applications |
+| jessie-realestate | Property listings |
+| jessie-affiliate | Referral programs |
+| jessie-portfolio | Project showcase |
+| jessie-saas-core | SaaS platform (auth, credits, billing) |
+| jessie-seowriter | AI SEO content tool |
+| jessie-copywriter | AI copywriting tool |
+| jessie-imagestudio | AI image processing |
+| jessie-social | Social media management |
+| jessie-emailmarketing | Email marketing automation |
+| jessie-analytics | Website analytics |
 
-If anything goes wrong:
+## AI Configuration
 
-1. Delete new files:
-   ```bash
-   rm /var/www/html/cms/core/theme-builder/presets.php
-   rm /var/www/html/cms/admin/api/theme-builder/presets.php
-   rm /var/www/html/cms/admin/install-tb-presets.php
-   ```
+Create `config/ai_settings.json` from the example:
 
-2. Remove require_once line from init.php
+```bash
+cp config/ai_settings.example.json config/ai_settings.json
+```
 
-3. Drop database table (optional):
-   ```sql
-   DROP TABLE IF EXISTS tb_preset_library;
-   ```
+Add your API keys for desired providers:
+- **OpenAI** — GPT-4, GPT-4o, o1
+- **Anthropic** — Claude 3.5 Sonnet, Claude 4
+- **DeepSeek** — deepseek-v3, deepseek-r1
+- **Google** — Gemini 2.0 Flash
+- **HuggingFace** — Free image processing
 
----
+## Docker (Alternative)
 
-## 📋 Files Summary
+```bash
+docker-compose up -d
+```
 
-| File | Lines | Size | Purpose |
-|------|-------|------|---------|
-| presets.php | 273 | 8 KB | Database functions |
-| install-tb-presets.php | 1173 | 87 KB | 60 preset definitions + installer |
-| presets-api.php | 68 | 2 KB | JSON API endpoint |
+This starts Apache + MySQL with the CMS pre-configured.
 
----
+## Troubleshooting
 
-## 🚀 Next Phase
+- **500 Error**: Check `logs/php_errors.log` and ensure `mod_rewrite` is enabled
+- **Permission denied**: Run `chown -R www-data:www-data /var/www/cms/`
+- **Missing tables**: Run `php core/ensure-tables.php` to create shop/dropshipping tables
+- **Plugin errors**: Check that plugin's `install.php` was run
 
-After this installation works, we'll add:
-1. "📚 Library" button to template-edit.php toolbar
-2. Modal UI for browsing presets
-3. One-click preset loading
+## Version
 
-These UI changes will be minimal additions to template-edit.php.
+Current: **v0.15.0** (2026-02-25)

@@ -2,7 +2,53 @@
 
 All notable changes to Jessie CMS.
 
-## [0.9.0] — 2026-02-23
+## [0.15.0] — 2026-02-25
+
+### Added
+- **Demo site** — jessie-demo theme (8 homepage sections, 3 sub-pages, pricing, about)
+- **Dynamic theme showcase** — marquee with all 40+ themes read from filesystem
+
+## [0.14.0] — 2026-02-25
+
+### Added
+- **LMS upgrade** — reviews, certificates, 30 API endpoints, 2 frontend views
+- **Social Media** — hashtag research, bulk scheduling, content recycling, engagement tracking
+- **Email Marketing** — segmentation, automations, A/B testing, bounce handling, list hygiene
+- **Analytics** — funnels, UTM tracking, geo breakdown, realtime, heatmap, session paths
+- **Booking** — customer history, recurring appointments, reschedule, waitlist, export
+- **Membership** — 2 frontend views (signup, member portal)
+- **Newsletter** — 2 frontend views (preferences, unsubscribe)
+
+## [0.13.0] — 2026-02-25
+
+### Added
+- **SaaS Tier 2** — Social Media Manager, Email Marketing, Analytics Dashboard
+- 6 SaaS frontend views (/saas/seo, /saas/copy, /saas/images, /saas/social, /saas/email, /saas/analytics)
+
+## [0.12.0] — 2026-02-25
+
+### Added
+- **SaaS Platform** — jessie-saas-core (auth, credits, billing, 40 plans)
+- **SEO Writer** — AI article generation, keyword research, live scoring
+- **AI Copywriter** — 7 platforms, brand voices, bulk batches
+- **Image Studio** — background removal, ALT text, enhance, generate, resize
+
+## [0.11.0] — 2026-02-24
+
+### Added
+- **11 domain plugins** — Booking, Newsletter, Restaurant, LMS, Membership, Events, Directory, Jobs, Real Estate, Affiliate, Portfolio
+- **Shop AI** — SEO dashboard (14 methods), HuggingFace images (6 methods)
+- **Dropshipping** — suppliers, product links, imports, order forwarding, price rules, AI descriptions
+- **143 unit tests** (102 core + 41 plugin), 0 failures
+
+## [0.10.0] — 2026-02-23
+
+### Added
+- **E-commerce v2** — Shop extensions (coupons, variants, reviews, digital downloads, wishlists, analytics, abandoned carts)
+- **CRM** — customer management, order history
+- **A/B Testing & Popups** — campaigns, exit-intent, targeting rules
+- **Chatbot** — AI-powered widget, knowledge base, training
+
 
 ### Added
 - **Contact form handler** — AJAX submissions, honeypot spam prevention, rate limiting, admin inbox

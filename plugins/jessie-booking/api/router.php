@@ -36,7 +36,37 @@ if (preg_match('#^/api/booking/([\w-]+)(?:/(\d+))?$#', $uri, $m)) {
     $id = isset($m[2]) ? (int)$m[2] : null;
 
     switch ($endpoint) {
-        // ─── PUBLIC: Available slots ───
+        // ─── PUBLIC: Available slots (alias for frontend) ───
+        case 'available-slots':
+            $date = $_GET['date'] ?? $input['date'] ?? date('Y-m-d');
+            $serviceId = (int)($_GET['service_id'] ?? $input['service_id'] ?? 0);
+            $staffId = !empty($_GET['staff_id']) ? (int)$_GET['staff_id'] : null;
+            if (!$serviceId) { echo json_encode(['success' => false, 'error' => 'service_id required']); exit; }
+            $rawSlots = \BookingCalendar::getAvailableSlots($date, $serviceId, $staffId);
+            // Normalize output
+            $formatted = [];
+            foreach ($rawSlots as $slot) {
+                if (is_array($slot)) {
+                    $formatted[] = $slot;
+                } else {
+                    $formatted[] = ['time' => $slot, 'display' => date('g:i A', strtotime($slot))];
+                }
+            }
+            echo json_encode(['success' => true, 'data' => $formatted]);
+            exit;
+
+        // ─── PUBLIC: Staff for service ───
+        case 'staff':
+            $serviceId = (int)($_GET['service_id'] ?? $input['service_id'] ?? 0);
+            if ($serviceId > 0) {
+                $staff = \BookingStaff::getForService($serviceId);
+            } else {
+                $staff = \BookingStaff::getAll('active');
+            }
+            echo json_encode(['success' => true, 'data' => $staff]);
+            exit;
+
+        // ─── PUBLIC: Available slots (original format) ───
         case 'availability':
             $date = $_GET['date'] ?? $input['date'] ?? date('Y-m-d');
             $serviceId = (int)($_GET['service_id'] ?? $input['service_id'] ?? 0);

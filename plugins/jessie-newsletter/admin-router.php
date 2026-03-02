@@ -141,3 +141,24 @@ if ($uri === '/newsletter/unsubscribe') {
     echo '</body></html>';
     exit;
 }
+
+// ─── SETTINGS ───
+if ($uri === '/admin/newsletter/settings') {
+    require $pluginDir . '/views/admin/settings.php';
+    exit;
+}
+
+if ($uri === '/admin/newsletter/settings/save' && $method === 'POST') {
+    csrf_validate_or_403();
+    $pdo = db();
+    $pdo->exec("CREATE TABLE IF NOT EXISTS `newsletter_settings` (`key` VARCHAR(100) PRIMARY KEY, `value` TEXT NOT NULL, `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
+    $fields = ['from_name','from_email','reply_to','smtp_host','smtp_port','smtp_user','smtp_pass','smtp_encryption','footer_text','double_optin','unsubscribe_page'];
+    $checkboxes = ['double_optin'];
+    foreach ($fields as $f) {
+        $val = in_array($f, $checkboxes) ? (isset($_POST[$f]) ? '1' : '0') : ($_POST[$f] ?? '');
+        $pdo->prepare("INSERT INTO `newsletter_settings` (`key`, `value`) VALUES (?, ?) ON DUPLICATE KEY UPDATE `value` = ?")->execute([$f, $val, $val]);
+    }
+    \Core\Session::flash('success', 'Settings saved!');
+    \Core\Response::redirect('/admin/newsletter/settings?saved=1');
+}
+

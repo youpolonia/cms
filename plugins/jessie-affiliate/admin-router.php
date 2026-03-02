@@ -112,3 +112,24 @@ if (preg_match('#^/admin/affiliate/payouts/(\d+)/fail$#', $uri, $m) && $method =
     \Affiliate::failPayout((int)$m[1]);
     \Core\Session::flash('success', 'Payout marked as failed.'); \Core\Response::redirect('/admin/affiliate/payouts');
 }
+
+// ─── SETTINGS ───
+if ($uri === '/admin/affiliate/settings') {
+    require $pluginDir . '/views/admin/settings.php';
+    exit;
+}
+
+if ($uri === '/admin/affiliate/settings/save' && $method === 'POST') {
+    csrf_validate_or_403();
+    $pdo = db();
+    $pdo->exec("CREATE TABLE IF NOT EXISTS `affiliate_settings` (`key` VARCHAR(100) PRIMARY KEY, `value` TEXT NOT NULL, `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
+    $fields = ['default_commission','cookie_days','min_payout','payout_schedule','auto_approve','self_referral','notification_email','terms_url'];
+    $checkboxes = ['auto_approve','self_referral'];
+    foreach ($fields as $f) {
+        $val = in_array($f, $checkboxes) ? (isset($_POST[$f]) ? '1' : '0') : ($_POST[$f] ?? '');
+        $pdo->prepare("INSERT INTO `affiliate_settings` (`key`, `value`) VALUES (?, ?) ON DUPLICATE KEY UPDATE `value` = ?")->execute([$f, $val, $val]);
+    }
+    \Core\Session::flash('success', 'Settings saved!');
+    \Core\Response::redirect('/admin/affiliate/settings?saved=1');
+}
+

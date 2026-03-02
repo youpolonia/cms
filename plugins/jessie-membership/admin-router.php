@@ -82,3 +82,24 @@ if (preg_match('#^/admin/membership/content/(\d+)/delete$#', $uri, $m) && $metho
 
 // Frontend
 if ($uri === '/membership/pricing' || $uri === '/pricing') { require $pluginDir . '/views/frontend/pricing.php'; exit; }
+
+// ─── SETTINGS ───
+if ($uri === '/admin/membership/settings') {
+    require $pluginDir . '/views/admin/settings.php';
+    exit;
+}
+
+if ($uri === '/admin/membership/settings/save' && $method === 'POST') {
+    csrf_validate_or_403();
+    $pdo = db();
+    $pdo->exec("CREATE TABLE IF NOT EXISTS `membership_settings` (`key` VARCHAR(100) PRIMARY KEY, `value` TEXT NOT NULL, `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
+    $fields = ['trial_days','grace_period_days','auto_renew','signup_redirect','expiry_reminder_days','welcome_email','content_restriction_msg'];
+    $checkboxes = ['auto_renew','welcome_email'];
+    foreach ($fields as $f) {
+        $val = in_array($f, $checkboxes) ? (isset($_POST[$f]) ? '1' : '0') : ($_POST[$f] ?? '');
+        $pdo->prepare("INSERT INTO `membership_settings` (`key`, `value`) VALUES (?, ?) ON DUPLICATE KEY UPDATE `value` = ?")->execute([$f, $val, $val]);
+    }
+    \Core\Session::flash('success', 'Settings saved!');
+    \Core\Response::redirect('/admin/membership/settings?saved=1');
+}
+

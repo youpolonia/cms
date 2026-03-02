@@ -7,6 +7,7 @@ defined('CMS_ROOT') or define('CMS_ROOT', realpath(__DIR__ . '/../../../..'));
 require_once CMS_ROOT . '/db.php';
 require_once CMS_ROOT . '/plugins/jessie-events/includes/class-event-manager.php';
 require_once CMS_ROOT . '/plugins/jessie-events/includes/class-event-ticket.php';
+require_once CMS_ROOT . '/core/payment-gateway.php';
 
 if (!function_exists('h')) { function h(string $s): string { return htmlspecialchars($s, ENT_QUOTES, 'UTF-8'); } }
 
@@ -18,6 +19,9 @@ $tickets = \EventTicket::getAvailable((int)$event['id']);
 $settings = \EventManager::getAllSettings();
 $sym = $settings['currency_symbol'] ?? '£';
 $requirePhone = ($settings['require_phone'] ?? '0') === '1';
+$paymentMethods = \PaymentGateway::getAvailableMethods();
+$hasPaidTickets = false;
+foreach ($tickets as $t) { if ((float)$t['price'] > 0) { $hasPaidTickets = true; break; } }
 
 $siteTitle = '';
 try { $stmt = db()->prepare("SELECT value FROM settings WHERE `key` = 'site_title'"); $stmt->execute(); $siteTitle = $stmt->fetchColumn() ?: ''; } catch (\Exception $e) {}
@@ -184,6 +188,19 @@ try { $stmt = db()->prepare("SELECT value FROM settings WHERE `key` = 'site_titl
                     <div class="fg"><label>Full Name *</label><input type="text" id="buyer-name" required></div>
                     <div class="fg"><label>Email *</label><input type="email" id="buyer-email" required></div>
                     <div class="fg"><label>Phone<?= $requirePhone ? ' *' : '' ?></label><input type="tel" id="buyer-phone" <?= $requirePhone ? 'required' : '' ?>></div>
+                    <?php if ($hasPaidTickets && !empty($paymentMethods)): ?>
+                    <div class="fg pay-section" id="paySection" style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border)">
+                        <label style="margin-bottom:10px;display:block;font-weight:600">💳 Payment Method</label>
+                        <?php foreach ($paymentMethods as $idx => $pm): ?>
+                        <label class="pay-opt <?= $idx === 0 ? 'selected' : '' ?>" data-method="<?= h($pm['id']) ?>" onclick="selectPayMethod(this)" style="display:flex;align-items:center;gap:10px;background:var(--bg);border:2px solid var(--border);border-radius:8px;padding:10px 14px;margin-bottom:6px;cursor:pointer;transition:.15s">
+                            <input type="radio" name="pay_method" value="<?= h($pm['id']) ?>" <?= $idx === 0 ? 'checked' : '' ?> style="display:none">
+                            <span style="font-size:1.2rem"><?= $pm['icon'] ?></span>
+                            <span style="font-weight:600;font-size:.85rem"><?= h($pm['name']) ?></span>
+                        </label>
+                        <?php endforeach; ?>
+                    </div>
+                    <?php endif; ?>
+                    <input type="hidden" id="pay-method" value="<?= !empty($paymentMethods) ? h($paymentMethods[0]['id']) : '' ?>">
                     <button type="submit" class="btn-buy" id="buy-btn">🎫 Get Tickets</button>
                 </form>
                 <div id="purchase-result"></div>
@@ -213,12 +230,22 @@ try { $stmt = db()->prepare("SELECT value FROM settings WHERE `key` = 'site_titl
         var qty=parseInt(document.getElementById('qty-select').value);
         var total=selectedPrice*qty;
         document.getElementById('total-amount').textContent=total>0?sym+total.toFixed(2):'FREE';
+        // Show/hide payment section based on price
+        var ps=document.getElementById('paySection');
+        if(ps)ps.style.display=total>0?'block':'none';
+    }
+    function selectPayMethod(el){
+        document.querySelectorAll('.pay-opt').forEach(function(e){e.classList.remove('selected');e.style.borderColor='var(--border)'});
+        el.classList.add('selected');el.style.borderColor='var(--accent)';
+        el.querySelector('input').checked=true;
+        document.getElementById('pay-method').value=el.dataset.method;
     }
     function doPurchase(e){
         e.preventDefault();
         var btn=document.getElementById('buy-btn');
         btn.disabled=true;btn.textContent='⏳ Processing...';
         var res=document.getElementById('purchase-result');
+        var payMethod=document.getElementById('pay-method')?.value||'';
         var data={
             event_id:eventId,
             ticket_id:selectedTicketId,
@@ -226,16 +253,25 @@ try { $stmt = db()->prepare("SELECT value FROM settings WHERE `key` = 'site_titl
             buyer_name:document.getElementById('buyer-name').value,
             buyer_email:document.getElementById('buyer-email').value,
             buyer_phone:document.getElementById('buyer-phone').value,
+            payment_method:selectedPrice>0?payMethod:''
         };
         fetch('/api/events/purchase',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data),credentials:'same-origin'})
         .then(function(r){return r.json()}).then(function(d){
-            res.style.display='block';
             if(d.ok){
-                res.style.background='rgba(16,185,129,.15)';res.style.color='#34d399';
-                res.innerHTML='<strong>✅ Order Confirmed!</strong><br>Order: '+d.order_number+'<br>QR Code: <code>'+d.qr_code+'</code><br>Total: '+sym+(parseFloat(d.total).toFixed(2));
+                // Redirect to payment gateway if needed
+                if(d.redirect){
+                    window.location.href=d.redirect;
+                    return;
+                }
+                res.style.display='block';res.style.background='rgba(16,185,129,.15)';res.style.color='#34d399';
+                if(d.pending_payment&&d.instructions){
+                    res.innerHTML='<strong>📋 Order Created — Pending Payment</strong><br>Order: '+d.order_number+'<br><br><strong>Payment Instructions:</strong><br>'+d.instructions.replace(/\n/g,'<br>')+'<br><br><strong>Reference:</strong> '+d.order_number;
+                }else{
+                    res.innerHTML='<strong>✅ Order Confirmed!</strong><br>Order: '+d.order_number+'<br>QR Code: <code>'+d.qr_code+'</code><br>Total: '+sym+(parseFloat(d.total).toFixed(2));
+                }
                 btn.textContent='✅ Done';
             }else{
-                res.style.background='rgba(239,68,68,.15)';res.style.color='#fca5a5';
+                res.style.display='block';res.style.background='rgba(239,68,68,.15)';res.style.color='#fca5a5';
                 res.textContent='❌ '+d.error;
                 btn.disabled=false;btn.textContent='🎫 Get Tickets';
             }

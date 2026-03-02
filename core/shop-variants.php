@@ -7,7 +7,30 @@ declare(strict_types=1);
  */
 class ShopVariants
 {
-    /**
+        /**
+     * Ensure the product_variants table exists
+     */
+    public static function ensureTable(): void
+    {
+        db()->exec("CREATE TABLE IF NOT EXISTS product_variants (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            product_id INT NOT NULL,
+            variant_name VARCHAR(255) NOT NULL DEFAULT '',
+            options JSON DEFAULT NULL,
+            price DECIMAL(10,2) DEFAULT NULL,
+            sale_price DECIMAL(10,2) DEFAULT NULL,
+            sku VARCHAR(100) DEFAULT NULL,
+            stock INT DEFAULT -1,
+            image VARCHAR(500) DEFAULT NULL,
+            sort_order INT DEFAULT 0,
+            status VARCHAR(20) DEFAULT 'active',
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            INDEX idx_product (product_id),
+            INDEX idx_sku (sku)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
+    }
+
+/**
      * Get all variants for a product, ordered by sort_order
      */
     public static function getForProduct(int $productId): array

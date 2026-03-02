@@ -11,6 +11,106 @@ class Dropshipping
     //  SUPPLIERS
     // ═══════════════════════════════════════════
 
+    /**
+     * Ensure all dropshipping tables exist
+     */
+    public static function ensureTables(): void
+    {
+        $pdo = db();
+
+        $pdo->exec("CREATE TABLE IF NOT EXISTS ds_suppliers (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            name VARCHAR(255) NOT NULL,
+            type VARCHAR(50) DEFAULT 'manual',
+            website VARCHAR(500) DEFAULT '',
+            api_key VARCHAR(500) DEFAULT '',
+            api_secret VARCHAR(500) DEFAULT '',
+            api_base_url VARCHAR(500) DEFAULT '',
+            contact_email VARCHAR(255) DEFAULT '',
+            contact_name VARCHAR(255) DEFAULT '',
+            notes TEXT DEFAULT NULL,
+            settings JSON DEFAULT NULL,
+            products_count INT DEFAULT 0,
+            status VARCHAR(20) DEFAULT 'active',
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            INDEX idx_status (status),
+            INDEX idx_type (type)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
+
+        $pdo->exec("CREATE TABLE IF NOT EXISTS ds_product_links (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            product_id INT NOT NULL,
+            supplier_id INT NOT NULL,
+            supplier_product_id VARCHAR(255) DEFAULT NULL,
+            supplier_product_url TEXT DEFAULT NULL,
+            supplier_price DECIMAL(10,2) DEFAULT NULL,
+            supplier_currency VARCHAR(10) DEFAULT 'USD',
+            supplier_sku VARCHAR(100) DEFAULT NULL,
+            our_price DECIMAL(10,2) DEFAULT NULL,
+            profit_margin DECIMAL(10,2) DEFAULT NULL,
+            variant_mapping JSON DEFAULT NULL,
+            notes TEXT DEFAULT NULL,
+            sync_status VARCHAR(20) DEFAULT 'pending',
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            UNIQUE KEY uq_product_supplier (product_id, supplier_id),
+            INDEX idx_supplier (supplier_id),
+            INDEX idx_sync (sync_status)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
+
+        $pdo->exec("CREATE TABLE IF NOT EXISTS ds_imports (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            source_url TEXT DEFAULT NULL,
+            source_type VARCHAR(50) DEFAULT 'url',
+            supplier_id INT DEFAULT NULL,
+            product_id INT DEFAULT NULL,
+            status VARCHAR(20) DEFAULT 'pending',
+            imported_data JSON DEFAULT NULL,
+            ai_processed TINYINT(1) DEFAULT 0,
+            ai_results JSON DEFAULT NULL,
+            error_message TEXT DEFAULT NULL,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            INDEX idx_status (status),
+            INDEX idx_supplier (supplier_id)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
+
+        $pdo->exec("CREATE TABLE IF NOT EXISTS ds_order_forwards (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            order_id INT NOT NULL,
+            supplier_id INT NOT NULL,
+            supplier_order_id VARCHAR(255) DEFAULT NULL,
+            status VARCHAR(20) DEFAULT 'pending',
+            cost_total DECIMAL(10,2) DEFAULT 0,
+            tracking_number VARCHAR(255) DEFAULT NULL,
+            tracking_url VARCHAR(500) DEFAULT NULL,
+            notes TEXT DEFAULT NULL,
+            response_data JSON DEFAULT NULL,
+            forwarded_at DATETIME DEFAULT NULL,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            updated_at DATETIME DEFAULT NULL,
+            INDEX idx_order (order_id),
+            INDEX idx_supplier (supplier_id),
+            INDEX idx_status (status)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
+
+        $pdo->exec("CREATE TABLE IF NOT EXISTS ds_price_rules (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            name VARCHAR(255) NOT NULL,
+            type VARCHAR(30) DEFAULT 'multiplier',
+            value DECIMAL(10,2) DEFAULT 2.00,
+            apply_to VARCHAR(20) DEFAULT 'all',
+            apply_to_id INT DEFAULT NULL,
+            min_price DECIMAL(10,2) DEFAULT 0,
+            max_price DECIMAL(10,2) DEFAULT 0,
+            round_to VARCHAR(10) DEFAULT '0.99',
+            priority INT DEFAULT 0,
+            status VARCHAR(20) DEFAULT 'active',
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            INDEX idx_status (status),
+            INDEX idx_priority (priority)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
+    }
+
+
     public static function getSuppliers(array $filters = [], int $page = 1, int $perPage = 20): array
     {
         $pdo = db();

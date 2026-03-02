@@ -69,9 +69,10 @@ if (is_dir($pluginsDir)) {
 // Dispatch system init event
 $eventBus->dispatch('system.init');
 
-// Error reporting
+// Error reporting — display_errors only in dev mode
 error_reporting(E_ALL);
-ini_set('display_errors', '1');
+$isDev = (defined('CMS_DEBUG') && CMS_DEBUG === true) || (defined('CMS_ENV') && CMS_ENV === 'dev');
+ini_set('display_errors', $isDev ? '1' : '0');
 ini_set('log_errors', '1');
 ini_set('error_log', __DIR__ . '/../logs/php_errors.log');
 

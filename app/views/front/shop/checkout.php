@@ -1,7 +1,15 @@
+<?php
+// Load payment gateway
+require_once CMS_ROOT . '/core/payment-gateway.php';
+$paymentMethods = PaymentGateway::getAvailableMethods();
+$stripeKey = PaymentGateway::getStripePublicKey();
+$paypalClientId = PaymentGateway::getPayPalClientId();
+$paypalMode = PaymentGateway::getPayPalMode();
+?>
 <div class="checkout-page">
     <h1 class="checkout-title">✅ Checkout</h1>
 
-    <form method="post" action="/checkout" class="checkout-layout">
+    <form method="post" action="/checkout" class="checkout-layout" id="checkoutForm">
         <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrf_token(), ENT_QUOTES, 'UTF-8') ?>">
 
         <div class="checkout-form">
@@ -56,16 +64,30 @@
             </div>
 
             <div class="checkout-section">
-                <h2 class="checkout-section-title">Payment & Notes</h2>
-                <div class="checkout-field">
-                    <label>Payment Method</label>
-                    <select name="payment_method">
-                        <option value="bank_transfer">Bank Transfer</option>
-                        <option value="cash_on_delivery">Cash on Delivery</option>
-                    </select>
+                <h2 class="checkout-section-title">Payment Method</h2>
+                <div class="checkout-payment-methods">
+                    <?php foreach ($paymentMethods as $i => $pm): ?>
+                    <label class="checkout-payment-option<?= $i === 0 ? ' active' : '' ?>">
+                        <input type="radio" name="payment_method" value="<?= htmlspecialchars($pm['id']) ?>" <?= $i === 0 ? 'checked' : '' ?>>
+                        <span class="checkout-payment-icon"><?= $pm['icon'] ?></span>
+                        <span class="checkout-payment-info">
+                            <strong><?= htmlspecialchars($pm['name']) ?></strong>
+                            <small><?= htmlspecialchars($pm['description']) ?></small>
+                        </span>
+                    </label>
+                    <?php endforeach; ?>
                 </div>
+
+                <div id="bankInstructions" class="checkout-payment-details" style="display:none">
+                    <div class="checkout-info-box">
+                        <?= nl2br(htmlspecialchars(get_setting('payment_bank_instructions', 'Transfer details will be provided after placing the order.'))) ?>
+                    </div>
+                </div>
+            </div>
+
+            <div class="checkout-section">
+                <h2 class="checkout-section-title">Order Notes</h2>
                 <div class="checkout-field">
-                    <label>Order Notes</label>
                     <textarea name="notes" rows="3" placeholder="Special instructions..."></textarea>
                 </div>
             </div>
@@ -90,7 +112,10 @@
                     <div class="checkout-totals-row"><span>Shipping</span><span><?= $cart['shipping'] > 0 ? \Shop::formatPrice($cart['shipping']) : 'Free' ?></span></div>
                 </div>
                 <div class="checkout-total-row"><span>Total</span><span><?= \Shop::formatPrice($cart['total']) ?></span></div>
-                <button type="submit" class="checkout-btn">Place Order</button>
+                <button type="submit" class="checkout-btn" id="checkoutBtn">
+                    <span id="btnText">Place Order</span>
+                    <span id="btnSpinner" style="display:none">Processing...</span>
+                </button>
                 <a href="/cart" class="checkout-back-link">← Back to Cart</a>
             </div>
         </div>
@@ -98,7 +123,6 @@
 </div>
 
 <style>
-/* Checkout fallback styles */
 .checkout-page { max-width: 900px; margin: 0 auto; padding: 40px 20px; }
 .checkout-title { font-size: 2rem; margin-bottom: 30px; }
 .checkout-layout { display: grid; grid-template-columns: 1fr 340px; gap: 30px; align-items: start; }
@@ -119,10 +143,67 @@
 .checkout-totals-row span:first-child { color: #666; }
 .checkout-total-row { display: flex; justify-content: space-between; font-size: 1.1rem; font-weight: 700; border-top: 2px solid #e2e8f0; padding-top: 12px; }
 .checkout-total-row span:last-child { color: var(--primary-color, #6366f1); }
-.checkout-btn { display: block; width: 100%; padding: 14px; background: var(--primary-color, #6366f1); color: #fff; border: none; border-radius: 8px; font-weight: 600; font-size: 1rem; cursor: pointer; margin-top: 20px; }
+.checkout-btn { display: block; width: 100%; padding: 14px; background: var(--primary-color, #6366f1); color: #fff; border: none; border-radius: 8px; font-weight: 600; font-size: 1rem; cursor: pointer; margin-top: 20px; transition: .15s; }
+.checkout-btn:hover { opacity: .9; }
+.checkout-btn:disabled { opacity: .6; cursor: not-allowed; }
 .checkout-back-link { display: block; text-align: center; color: var(--primary-color, #6366f1); text-decoration: none; font-size: .85rem; margin-top: 12px; }
+
+/* Payment methods */
+.checkout-payment-methods { display: flex; flex-direction: column; gap: 10px; }
+.checkout-payment-option { display: flex; align-items: center; gap: 14px; padding: 14px 16px; border: 2px solid #e2e8f0; border-radius: 10px; cursor: pointer; transition: .15s; }
+.checkout-payment-option:hover { border-color: #cbd5e1; }
+.checkout-payment-option.active { border-color: var(--primary-color, #6366f1); background: rgba(99,102,241,.04); }
+.checkout-payment-option input[type="radio"] { display: none; }
+.checkout-payment-icon { font-size: 1.5rem; width: 36px; text-align: center; }
+.checkout-payment-info { display: flex; flex-direction: column; }
+.checkout-payment-info strong { font-size: .9rem; }
+.checkout-payment-info small { color: #64748b; font-size: .75rem; margin-top: 2px; }
+.checkout-info-box { background: #fef3c7; border: 1px solid #fde68a; border-radius: 8px; padding: 14px; font-size: .85rem; color: #92400e; margin-top: 14px; }
+.checkout-payment-details { margin-top: 10px; }
+
 @media (max-width: 768px) {
     .checkout-layout { grid-template-columns: 1fr; }
     .checkout-field-row { grid-template-columns: 1fr; }
 }
 </style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const options = document.querySelectorAll('.checkout-payment-option');
+    const bankBox = document.getElementById('bankInstructions');
+    const btn = document.getElementById('checkoutBtn');
+    const btnText = document.getElementById('btnText');
+    const btnSpinner = document.getElementById('btnSpinner');
+
+    options.forEach(opt => {
+        opt.addEventListener('click', function() {
+            options.forEach(o => o.classList.remove('active'));
+            this.classList.add('active');
+            const radio = this.querySelector('input[type="radio"]');
+            radio.checked = true;
+
+            // Show/hide bank instructions
+            if (bankBox) {
+                bankBox.style.display = radio.value === 'bank_transfer' ? 'block' : 'none';
+            }
+
+            // Update button text for online vs offline
+            const isOnline = (radio.value === 'stripe' || radio.value === 'paypal');
+            btnText.textContent = isOnline ? 'Pay Now' : 'Place Order';
+        });
+    });
+
+    // Form submit — show spinner
+    document.getElementById('checkoutForm').addEventListener('submit', function() {
+        btn.disabled = true;
+        btnText.style.display = 'none';
+        btnSpinner.style.display = 'inline';
+    });
+
+    // Initialize
+    const checked = document.querySelector('.checkout-payment-option input:checked');
+    if (checked && checked.value === 'bank_transfer' && bankBox) {
+        bankBox.style.display = 'block';
+    }
+});
+</script>

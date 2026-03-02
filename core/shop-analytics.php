@@ -7,6 +7,27 @@ declare(strict_types=1);
  */
 class ShopAnalytics
 {
+
+    /**
+     * Ensure the shop_analytics table exists
+     */
+    public static function ensureTable(): void
+    {
+        db()->exec("CREATE TABLE IF NOT EXISTS shop_analytics (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            event_type VARCHAR(50) NOT NULL,
+            product_id INT DEFAULT NULL,
+            order_id INT DEFAULT NULL,
+            session_id VARCHAR(128) DEFAULT NULL,
+            amount DECIMAL(10,2) DEFAULT NULL,
+            meta JSON DEFAULT NULL,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            INDEX idx_event (event_type),
+            INDEX idx_product (product_id),
+            INDEX idx_session (session_id),
+            INDEX idx_created (created_at)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
+    }
     // ─── TRACKING ───
 
     public static function track(string $eventType, ?int $productId = null, ?int $orderId = null, ?float $amount = null, array $meta = []): void

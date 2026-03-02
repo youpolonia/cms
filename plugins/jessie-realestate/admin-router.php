@@ -76,3 +76,24 @@ if (preg_match('#^/admin/realestate/inquiries/(\d+)/delete$#', $uri, $m) && $met
     db()->prepare("DELETE FROM re_inquiries WHERE id = ?")->execute([(int)$m[1]]);
     \Core\Session::flash('success', 'Inquiry deleted.'); \Core\Response::redirect('/admin/realestate/inquiries');
 }
+
+// ─── SETTINGS ───
+if ($uri === '/admin/realestate/settings') {
+    require $pluginDir . '/views/admin/settings.php';
+    exit;
+}
+
+if ($uri === '/admin/realestate/settings/save' && $method === 'POST') {
+    csrf_validate_or_403();
+    $pdo = db();
+    $pdo->exec("CREATE TABLE IF NOT EXISTS `realestate_settings` (`key` VARCHAR(100) PRIMARY KEY, `value` TEXT NOT NULL, `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
+    $fields = ['currency','area_unit','map_provider','map_api_key','items_per_page','contact_form','mortgage_calc','default_interest','featured_badge'];
+    $checkboxes = ['contact_form','mortgage_calc','featured_badge'];
+    foreach ($fields as $f) {
+        $val = in_array($f, $checkboxes) ? (isset($_POST[$f]) ? '1' : '0') : ($_POST[$f] ?? '');
+        $pdo->prepare("INSERT INTO `realestate_settings` (`key`, `value`) VALUES (?, ?) ON DUPLICATE KEY UPDATE `value` = ?")->execute([$f, $val, $val]);
+    }
+    \Core\Session::flash('success', 'Settings saved!');
+    \Core\Response::redirect('/admin/realestate/settings?saved=1');
+}
+
