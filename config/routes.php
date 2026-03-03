@@ -496,6 +496,16 @@ return [
     // Contact form submission (AJAX)
     'POST /api/contact' => ['Front\\ContactController', 'submit'],
 
+    // Frontend user auth
+    'GET /register' => ['Front\\UserController', 'showRegister'],
+    'POST /register' => ['Front\\UserController', 'register', ['csrf' => true]],
+    'GET /login' => ['Front\\UserController', 'showLogin'],
+    'POST /login' => ['Front\\UserController', 'login', ['csrf' => true]],
+    'GET /logout' => ['Front\\UserController', 'logout'],
+    'GET /account' => ['Front\\UserController', 'account'],
+    'POST /account/update' => ['Front\\UserController', 'updateProfile', ['csrf' => true]],
+    'POST /account/password' => ['Front\\UserController', 'changePassword', ['csrf' => true]],
+
     // Frontend search
     'GET /search' => ['Front\\SearchController', 'index'],
 

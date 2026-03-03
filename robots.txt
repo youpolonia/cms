@@ -1,0 +1,33 @@
+# Jessie CMS — robots.txt
+User-agent: *
+Allow: /
+
+# Admin area
+Disallow: /admin/
+Disallow: /admin
+
+# API endpoints
+Disallow: /api/
+
+# System files
+Disallow: /config/
+Disallow: /core/
+Disallow: /includes/
+Disallow: /tests/
+Disallow: /database/
+Disallow: /logs/
+Disallow: /cache/
+Disallow: /plugins/
+Disallow: /models/
+Disallow: /data_models/
+
+# Install
+Disallow: /install.php
+
+# Assets OK
+Allow: /assets/
+Allow: /public/
+Allow: /themes/*/assets/
+
+# Sitemap
+Sitemap: /sitemap.xml

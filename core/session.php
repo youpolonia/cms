@@ -155,4 +155,66 @@ class Session
     {
         self::destroy();
     }
+
+    // ─── Frontend User Session ───
+
+    public static function setUser(int $id, string $username, string $email, string $role = 'user'): void
+    {
+        self::regenerate();
+        $_SESSION['user_id'] = $id;
+        $_SESSION['user_name'] = $username;
+        $_SESSION['user_email'] = $email;
+        $_SESSION['user_role'] = $role;
+        $_SESSION['user_login_time'] = time();
+    }
+
+    public static function isUserLoggedIn(): bool
+    {
+        return !empty($_SESSION['user_id']);
+    }
+
+    public static function getUserId(): ?int
+    {
+        return isset($_SESSION['user_id']) ? (int)$_SESSION['user_id'] : null;
+    }
+
+    public static function getUserName(): ?string
+    {
+        return $_SESSION['user_name'] ?? null;
+    }
+
+    public static function getUserEmail(): ?string
+    {
+        return $_SESSION['user_email'] ?? null;
+    }
+
+    public static function getUserRole(): ?string
+    {
+        return $_SESSION['user_role'] ?? null;
+    }
+
+    public static function userLogout(): void
+    {
+        unset(
+            $_SESSION['user_id'],
+            $_SESSION['user_name'],
+            $_SESSION['user_email'],
+            $_SESSION['user_role'],
+            $_SESSION['user_login_time']
+        );
+    }
+
+    public static function requireUser(): void
+    {
+        if (!self::isUserLoggedIn()) {
+            if (str_contains($_SERVER['HTTP_ACCEPT'] ?? '', 'application/json')) {
+                http_response_code(401);
+                header('Content-Type: application/json');
+                echo json_encode(['error' => 'Authentication required']);
+            } else {
+                header('Location: /login');
+            }
+            exit;
+        }
+    }
 }

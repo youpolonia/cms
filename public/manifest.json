@@ -1,0 +1,16 @@
+{
+    "name": "Jessie CMS",
+    "short_name": "Jessie",
+    "description": "AI-powered content management system",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#0f172a",
+    "theme_color": "#6366f1",
+    "icons": [
+        {
+            "src": "/public/favicon.ico",
+            "sizes": "48x48",
+            "type": "image/x-icon"
+        }
+    ]
+}
