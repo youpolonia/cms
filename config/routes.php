@@ -122,8 +122,8 @@ return [
     'GET /admin/galleries/{id}/images' => ['Admin\\GalleriesController', 'images', ['auth' => true]],
     'POST /admin/galleries/{id}/images/{imageId}/delete' => ['Admin\\GalleriesController', 'deleteImage', ['auth' => true, 'csrf' => true]],
     'POST /admin/galleries/{id}/upload' => ['Admin\\GalleriesController', 'upload', ['auth' => true, 'csrf' => true]],
-    'POST /admin/galleries/{id}/reorder' => ['Admin\\GalleriesController', 'reorder', ['auth' => true]],
-    'POST /admin/galleries/{id}/images/{imageId}/title' => ['Admin\\GalleriesController', 'updateImageTitle', ['auth' => true]],
+    'POST /admin/galleries/{id}/reorder' => ['Admin\\GalleriesController', 'reorder', ['auth' => true, 'csrf' => true]],
+    'POST /admin/galleries/{id}/images/{imageId}/title' => ['Admin\\GalleriesController', 'updateImageTitle', ['auth' => true, 'csrf' => true]],
 
     // Logs viewer
     'GET /admin/logs' => ['Admin\\LogsController', 'index', ['auth' => true]],
@@ -276,9 +276,9 @@ return [
     // n8n Integration Settings (MVC)
     'GET /admin/n8n-settings' => ['Admin\\N8nSettingsController', 'index', ['auth' => true]],
     'POST /admin/n8n-settings' => ['Admin\\N8nSettingsController', 'save', ['auth' => true, 'csrf' => true]],
-    'POST /admin/n8n-settings/health' => ['Admin\\N8nSettingsController', 'healthCheck', ['auth' => true]],
+    'POST /admin/n8n-settings/health' => ['Admin\\N8nSettingsController', 'healthCheck', ['auth' => true, 'csrf' => true]],
     'GET /admin/n8n-settings/workflows' => ['Admin\\N8nSettingsController', 'listWorkflows', ['auth' => true]],
-    'POST /admin/n8n-settings/webhook' => ['Admin\\N8nSettingsController', 'testWebhook', ['auth' => true]],
+    'POST /admin/n8n-settings/webhook' => ['Admin\\N8nSettingsController', 'testWebhook', ['auth' => true, 'csrf' => true]],
     'POST /admin/n8n-settings/clear-log' => ['Admin\\N8nSettingsController', 'clearLog', ['auth' => true, 'csrf' => true]],
 
     // n8n Event Bindings (MVC)
@@ -494,7 +494,7 @@ return [
     'GET /features' => ['Front\\PageController', 'show'],
 
     // Contact form submission (AJAX)
-    'POST /api/contact' => ['Front\\ContactController', 'submit'],
+    'POST /api/contact' => ['Front\\ContactController', 'submit', ['csrf' => true]],
 
     // Frontend user auth
     'GET /register' => ['Front\\UserController', 'showRegister'],
@@ -537,20 +537,20 @@ return [
     // Shop frontend
     'GET /shop' => ['Front\\ShopController', 'index'],
     'GET /shop/category/{slug}' => ['Front\\ShopController', 'category'],
-    'POST /shop/review/submit' => ['Front\\ShopController', 'submitReview'],
-    'POST /shop/review/{id}/helpful' => ['Front\\ShopController', 'reviewHelpful'],
+    'POST /shop/review/submit' => ['Front\\ShopController', 'submitReview', ['csrf' => true]],
+    'POST /shop/review/{id}/helpful' => ['Front\\ShopController', 'reviewHelpful', ['csrf' => true]],
     // Digital downloads
     'GET /shop/download/{token}' => ['Front\\ShopController', 'download'],
     // Wishlist
     'GET /shop/wishlist' => ['Front\\ShopController', 'wishlist'],
-    'POST /shop/wishlist/toggle' => ['Front\\ShopController', 'wishlistToggle'],
-    'POST /shop/wishlist/remove' => ['Front\\ShopController', 'wishlistRemove'],
+    'POST /shop/wishlist/toggle' => ['Front\\ShopController', 'wishlistToggle', ['csrf' => true]],
+    'POST /shop/wishlist/remove' => ['Front\\ShopController', 'wishlistRemove', ['csrf' => true]],
 
     'GET /shop/{slug}' => ['Front\\ShopController', 'product'],
     'GET /cart' => ['Front\\ShopController', 'cart'],
-    'POST /cart/add' => ['Front\\ShopController', 'addToCart'],
-    'POST /cart/update' => ['Front\\ShopController', 'updateCart'],
-    'POST /cart/remove' => ['Front\\ShopController', 'removeFromCart'],
+    'POST /cart/add' => ['Front\\ShopController', 'addToCart', ['csrf' => true]],
+    'POST /cart/update' => ['Front\\ShopController', 'updateCart', ['csrf' => true]],
+    'POST /cart/remove' => ['Front\\ShopController', 'removeFromCart', ['csrf' => true]],
     'GET /checkout' => ['Front\\ShopController', 'checkout'],
     'POST /checkout' => ['Front\\ShopController', 'processCheckout', ['csrf' => true]],
     'GET /order/thank-you/{number}' => ['Front\\ShopController', 'thankYou'],
@@ -693,7 +693,7 @@ return [
     'POST /admin/updates/check' => ['Admin\\UpdateController', 'check', ['auth' => true, 'csrf' => true, 'role' => 'admin']],
 
     // Form Builder
-    'POST /form/{slug}' => ['Front\\FormController', 'submit'],
+    'POST /form/{slug}' => ['Front\\FormController', 'submit', ['csrf' => true]],
     'GET /admin/form-builder' => ['Admin\\FormBuilderController', 'index', ['auth' => true, 'role' => 'admin']],
     'GET /admin/form-builder/create' => ['Admin\\FormBuilderController', 'create', ['auth' => true, 'role' => 'admin']],
     'GET /admin/form-builder/edit/{id}' => ['Admin\\FormBuilderController', 'edit', ['auth' => true, 'role' => 'admin']],
@@ -727,8 +727,8 @@ return [
     'POST /admin/shop/coupons/{id}/update' => ['Admin\\ShopController', 'couponUpdate', ['auth' => true, 'csrf' => true, 'role' => 'admin']],
     'POST /admin/shop/coupons/{id}/delete' => ['Admin\\ShopController', 'couponDelete', ['auth' => true, 'csrf' => true, 'role' => 'admin']],
     'POST /admin/shop/coupons/{id}/toggle' => ['Admin\\ShopController', 'couponToggle', ['auth' => true, 'csrf' => true, 'role' => 'admin']],
-    'POST /cart/coupon/apply' => ['Front\\ShopController', 'applyCoupon'],
-    'POST /cart/coupon/remove' => ['Front\\ShopController', 'removeCoupon'],
+    'POST /cart/coupon/apply' => ['Front\\ShopController', 'applyCoupon', ['csrf' => true]],
+    'POST /cart/coupon/remove' => ['Front\\ShopController', 'removeCoupon', ['csrf' => true]],
 
     // ─── Shop Abandoned Carts ───
     'GET /admin/shop/abandoned-carts' => ['Admin\\ShopController', 'abandonedCarts', ['auth' => true, 'role' => 'admin']],
