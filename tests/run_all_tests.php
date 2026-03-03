@@ -82,7 +82,53 @@ printf("║   Total Tests:  %-18d║\n", $totalPassed + $totalFailed);
 echo "╚════════════════════════════════════╝\n";
 
 if ($totalFailed === 0) {
-    echo "\n✅ ALL TESTS PASSED!\n";
+    echo "\n✅ ALL CORE TESTS PASSED!\n";
+} else {
+    echo "\n❌ SOME TESTS FAILED\n";
+}
+
+// ─── Plugin Tests ───
+echo "\n";
+echo "╔════════════════════════════════════╗\n";
+echo "║   PLUGIN TESTS                     ║\n";
+echo "╚════════════════════════════════════╝\n\n";
+
+$pluginPassed = 0;
+$pluginFailed = 0;
+
+ob_start();
+try {
+    include $testDir . '/plugin_tests.php';
+} catch (\Throwable $e) {
+    echo "💥 CRASH: " . $e->getMessage() . "\n";
+}
+$pluginOutput = ob_get_clean();
+echo $pluginOutput;
+
+if (preg_match('/Passed:\s*(\d+)/', $pluginOutput, $m)) {
+    $pluginPassed = (int) $m[1];
+}
+if (preg_match('/Failed:\s*(\d+)/', $pluginOutput, $m)) {
+    $pluginFailed = (int) $m[1];
+}
+
+$totalPassed += $pluginPassed;
+$totalFailed += $pluginFailed;
+
+// ─── Grand Total ───
+echo "\n";
+echo "╔════════════════════════════════════════════╗\n";
+echo "║   GRAND TOTAL (Core + Plugins)              ║\n";
+echo "╠════════════════════════════════════════════╣\n";
+printf("║   Core Passed:   %-24d║\n", $totalPassed - $pluginPassed);
+printf("║   Plugin Passed: %-24d║\n", $pluginPassed);
+printf("║   Total Passed:  %-24d║\n", $totalPassed);
+printf("║   Total Failed:  %-24d║\n", $totalFailed);
+printf("║   Total Tests:   %-24d║\n", $totalPassed + $totalFailed);
+echo "╚════════════════════════════════════════════╝\n";
+
+if ($totalFailed === 0) {
+    echo "\n✅ ALL TESTS PASSED! (Core: " . ($totalPassed - $pluginPassed) . " + Plugins: " . $pluginPassed . " = " . $totalPassed . ")\n";
 } else {
     echo "\n❌ SOME TESTS FAILED\n";
 }

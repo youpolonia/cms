@@ -132,7 +132,7 @@ GET /api/v1/site              # Site info
 
 ```bash
 sudo -u www-data php tests/run_all_tests.php
-# 102 tests, 0 failures
+# 143 tests (102 core + 41 plugin), 0 failures
 ```
 
 ## License

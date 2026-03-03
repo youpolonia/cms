@@ -11,6 +11,10 @@ return [
     'GET /admin/login' => ['Admin\\AuthController', 'showLogin'],
     'POST /admin/login' => ['Admin\\AuthController', 'login', ['csrf' => true]],
     'GET /admin/logout' => ['Admin\\AuthController', 'logout'],
+    'GET /admin/forgot-password' => ['Admin\\AuthController', 'showForgotPassword'],
+    'POST /admin/forgot-password' => ['Admin\\AuthController', 'forgotPassword', ['csrf' => true]],
+    'GET /admin/reset-password' => ['Admin\\AuthController', 'showResetPassword'],
+    'POST /admin/reset-password' => ['Admin\\AuthController', 'resetPassword', ['csrf' => true]],
 
     // Admin routes (auth required)
     'GET /admin' => ['Admin\\DashboardController', 'index', ['auth' => true]],

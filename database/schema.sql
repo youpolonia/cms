@@ -1,7 +1,7 @@
--- Jessie AI CMS v0.9.0 — Database Schema
--- Generated: 2026-02-23 16:26:13
--- Tables: 81
-SET NAMES utf8mb4;
+-- Jessie CMS Database Schema\n-- Auto-generated on 2026-03-03 17:00:55
+-- Tables: 166
+
+SET FOREIGN_KEY_CHECKS = 0;
 
 CREATE TABLE IF NOT EXISTS `ab_tests` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -26,6 +26,23 @@ CREATE TABLE IF NOT EXISTS `ab_tests` (
   KEY `idx_status` (`status`),
   KEY `idx_page` (`page_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE IF NOT EXISTS `abandoned_carts` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `session_id` varchar(128) NOT NULL,
+  `customer_email` varchar(255) DEFAULT NULL,
+  `items` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL CHECK (json_valid(`items`)),
+  `subtotal` decimal(10,2) DEFAULT 0.00,
+  `reminder_sent_at` datetime DEFAULT NULL,
+  `reminder_count` int(11) DEFAULT 0,
+  `recovered` tinyint(1) DEFAULT 0,
+  `created_at` datetime DEFAULT current_timestamp(),
+  `updated_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`id`),
+  KEY `idx_session` (`session_id`),
+  KEY `idx_email` (`customer_email`),
+  KEY `idx_reminder` (`reminder_sent_at`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `activity_logs` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -57,6 +74,86 @@ CREATE TABLE IF NOT EXISTS `admins` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `affiliate_conversions` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `affiliate_id` int(10) unsigned NOT NULL,
+  `program_id` int(10) unsigned NOT NULL,
+  `order_id` varchar(100) DEFAULT '',
+  `order_total` decimal(12,2) DEFAULT 0.00,
+  `commission` decimal(12,2) DEFAULT 0.00,
+  `status` enum('pending','approved','rejected','paid') DEFAULT 'pending',
+  `ip_address` varchar(45) DEFAULT '',
+  `user_agent` varchar(500) DEFAULT '',
+  `referred_url` varchar(500) DEFAULT '',
+  `created_at` datetime DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  KEY `idx_affiliate` (`affiliate_id`),
+  KEY `idx_program` (`program_id`),
+  KEY `idx_status` (`status`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE IF NOT EXISTS `affiliate_payouts` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `affiliate_id` int(10) unsigned NOT NULL,
+  `amount` decimal(12,2) NOT NULL,
+  `payment_method` varchar(50) DEFAULT '',
+  `payment_reference` varchar(255) DEFAULT '',
+  `status` enum('pending','completed','failed') DEFAULT 'pending',
+  `created_at` datetime DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  KEY `idx_affiliate` (`affiliate_id`),
+  KEY `idx_status` (`status`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE IF NOT EXISTS `affiliate_programs` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(200) NOT NULL,
+  `slug` varchar(200) NOT NULL,
+  `description` text DEFAULT NULL,
+  `commission_type` enum('percentage','fixed') DEFAULT 'percentage',
+  `commission_value` decimal(10,2) DEFAULT 0.00,
+  `cookie_days` int(10) unsigned DEFAULT 30,
+  `min_payout` decimal(10,2) DEFAULT 50.00,
+  `status` enum('active','inactive') DEFAULT 'active',
+  `created_at` datetime DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `slug` (`slug`),
+  KEY `idx_status` (`status`),
+  KEY `idx_slug` (`slug`)
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE IF NOT EXISTS `affiliate_settings` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `setting_key` varchar(100) NOT NULL,
+  `setting_value` text DEFAULT NULL,
+  `updated_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `setting_key` (`setting_key`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE IF NOT EXISTS `affiliates` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `program_id` int(10) unsigned NOT NULL,
+  `name` varchar(100) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `referral_code` varchar(50) NOT NULL,
+  `website` varchar(255) DEFAULT '',
+  `payment_method` varchar(50) DEFAULT '',
+  `payment_details` text DEFAULT NULL,
+  `total_clicks` int(10) unsigned DEFAULT 0,
+  `total_conversions` int(10) unsigned DEFAULT 0,
+  `total_earnings` decimal(12,2) DEFAULT 0.00,
+  `pending_payout` decimal(12,2) DEFAULT 0.00,
+  `status` enum('active','pending','suspended') DEFAULT 'pending',
+  `created_at` datetime DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `referral_code` (`referral_code`),
+  KEY `idx_program` (`program_id`),
+  KEY `idx_status` (`status`),
+  KEY `idx_email` (`email`),
+  KEY `idx_referral` (`referral_code`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE IF NOT EXISTS `analytics_content_stats` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -116,6 +213,36 @@ CREATE TABLE IF NOT EXISTS `analytics_events` (
   KEY `idx_events_tenant` (`tenant_id`),
   KEY `idx_events_session` (`session_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `analytics_goals` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `event_type` varchar(50) NOT NULL,
+  `target_value` int(11) DEFAULT 0,
+  `current_value` int(11) DEFAULT 0,
+  `period` enum('daily','weekly','monthly','all_time') DEFAULT 'monthly',
+  `status` enum('active','achieved','expired') DEFAULT 'active',
+  `created_at` datetime DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  KEY `idx_user` (`user_id`),
+  CONSTRAINT `analytics_goals_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `saas_users` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE IF NOT EXISTS `analytics_reports` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `report_type` varchar(50) NOT NULL DEFAULT 'custom',
+  `config_json` text DEFAULT NULL,
+  `data_json` longtext DEFAULT NULL,
+  `generated_at` datetime DEFAULT NULL,
+  `status` enum('pending','generating','ready','failed') DEFAULT 'pending',
+  `created_at` datetime DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  KEY `idx_user` (`user_id`),
+  CONSTRAINT `analytics_reports_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `saas_users` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE IF NOT EXISTS `api_keys` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -182,7 +309,7 @@ CREATE TABLE IF NOT EXISTS `articles` (
   KEY `idx_category` (`category_id`),
   KEY `idx_published` (`published_at`),
   KEY `idx_articles_theme` (`theme_slug`)
-) ENGINE=InnoDB AUTO_INCREMENT=1438 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=1738 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `backups` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -212,6 +339,76 @@ CREATE TABLE IF NOT EXISTS `blocked_ips` (
   KEY `idx_is_permanent` (`is_permanent`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+CREATE TABLE IF NOT EXISTS `booking_appointments` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `service_id` int(11) NOT NULL,
+  `staff_id` int(11) DEFAULT NULL,
+  `customer_name` varchar(255) NOT NULL,
+  `customer_email` varchar(255) DEFAULT NULL,
+  `customer_phone` varchar(50) DEFAULT NULL,
+  `date` date NOT NULL,
+  `start_time` time NOT NULL,
+  `end_time` time NOT NULL,
+  `status` enum('pending','confirmed','cancelled','completed','no_show') DEFAULT 'pending',
+  `notes` text DEFAULT NULL,
+  `price_paid` decimal(10,2) DEFAULT 0.00,
+  `payment_status` enum('none','pending','paid','refunded') DEFAULT 'none',
+  `reminder_sent` tinyint(1) DEFAULT 0,
+  `source` enum('admin','widget','api') DEFAULT 'widget',
+  `created_at` timestamp NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`id`),
+  KEY `idx_date` (`date`),
+  KEY `idx_service` (`service_id`),
+  KEY `idx_staff` (`staff_id`),
+  KEY `idx_status` (`status`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE IF NOT EXISTS `booking_services` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `slug` varchar(255) NOT NULL,
+  `description` text DEFAULT NULL,
+  `duration_minutes` int(11) DEFAULT 60,
+  `buffer_minutes` int(11) DEFAULT 15,
+  `price` decimal(10,2) DEFAULT 0.00,
+  `currency` varchar(10) DEFAULT 'USD',
+  `max_bookings_per_slot` int(11) DEFAULT 1,
+  `category` varchar(100) DEFAULT NULL,
+  `image` varchar(500) DEFAULT NULL,
+  `color` varchar(20) DEFAULT '#6366f1',
+  `status` enum('active','inactive') DEFAULT 'active',
+  `sort_order` int(11) DEFAULT 0,
+  `settings` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`settings`)),
+  `created_at` timestamp NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_slug` (`slug`)
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE IF NOT EXISTS `booking_settings` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `key` varchar(100) NOT NULL,
+  `value` text DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `key` (`key`)
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE IF NOT EXISTS `booking_staff` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `email` varchar(255) DEFAULT NULL,
+  `phone` varchar(50) DEFAULT NULL,
+  `avatar` varchar(500) DEFAULT NULL,
+  `bio` text DEFAULT NULL,
+  `services` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`services`)),
+  `schedule` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`schedule`)),
+  `status` enum('active','inactive') DEFAULT 'active',
+  `created_at` timestamp NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
 CREATE TABLE IF NOT EXISTS `categories` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `slug` varchar(191) NOT NULL,
@@ -238,7 +435,7 @@ CREATE TABLE IF NOT EXISTS `chat_sessions` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `uk_session` (`session_id`),
   KEY `idx_created` (`created_at`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE IF NOT EXISTS `comments` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -363,6 +560,91 @@ CREATE TABLE IF NOT EXISTS `content_versions` (
   KEY `idx_created_at` (`created_at`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+CREATE TABLE IF NOT EXISTS `copywriter_batches` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `brand_id` int(11) DEFAULT NULL,
+  `platform` varchar(50) NOT NULL DEFAULT 'general',
+  `tone` varchar(50) DEFAULT 'professional',
+  `total_items` int(11) DEFAULT 0,
+  `completed_items` int(11) DEFAULT 0,
+  `failed_items` int(11) DEFAULT 0,
+  `status` enum('pending','processing','completed','failed') DEFAULT 'pending',
+  `csv_filename` varchar(255) DEFAULT NULL,
+  `created_at` datetime DEFAULT current_timestamp(),
+  `updated_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`id`),
+  KEY `idx_user` (`user_id`),
+  KEY `idx_status` (`status`),
+  CONSTRAINT `copywriter_batches_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `saas_users` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE IF NOT EXISTS `copywriter_brands` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `tone` varchar(100) DEFAULT 'professional',
+  `vocabulary_json` text DEFAULT NULL,
+  `guidelines_json` text DEFAULT NULL,
+  `examples` text DEFAULT NULL,
+  `status` enum('active','archived') DEFAULT 'active',
+  `created_at` datetime DEFAULT current_timestamp(),
+  `updated_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`id`),
+  KEY `idx_user` (`user_id`),
+  KEY `idx_status` (`status`),
+  CONSTRAINT `copywriter_brands_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `saas_users` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE IF NOT EXISTS `copywriter_content` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `batch_id` int(11) DEFAULT NULL,
+  `brand_id` int(11) DEFAULT NULL,
+  `product_name` varchar(500) NOT NULL,
+  `product_features` text DEFAULT NULL,
+  `product_category` varchar(255) DEFAULT '',
+  `platform` varchar(50) NOT NULL DEFAULT 'general',
+  `tone` varchar(50) DEFAULT 'professional',
+  `title` text DEFAULT NULL,
+  `description` text DEFAULT NULL,
+  `bullet_points` text DEFAULT NULL,
+  `meta_title` varchar(255) DEFAULT NULL,
+  `meta_description` varchar(500) DEFAULT NULL,
+  `tags` text DEFAULT NULL,
+  `raw_ai_response` text DEFAULT NULL,
+  `credits_used` int(11) DEFAULT 1,
+  `status` enum('pending','completed','failed') DEFAULT 'pending',
+  `created_at` datetime DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  KEY `idx_user` (`user_id`),
+  KEY `idx_batch` (`batch_id`),
+  KEY `idx_platform` (`platform`),
+  KEY `idx_status` (`status`),
+  KEY `idx_created` (`created_at`),
+  CONSTRAINT `copywriter_content_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `saas_users` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE IF NOT EXISTS `coupons` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `code` varchar(50) NOT NULL,
+  `type` enum('percentage','fixed','free_shipping') NOT NULL DEFAULT 'percentage',
+  `value` decimal(10,2) NOT NULL DEFAULT 0.00,
+  `min_order` decimal(10,2) DEFAULT NULL,
+  `max_discount` decimal(10,2) DEFAULT NULL,
+  `max_uses` int(11) DEFAULT NULL,
+  `used_count` int(11) NOT NULL DEFAULT 0,
+  `per_customer_limit` int(11) DEFAULT 1,
+  `valid_from` datetime DEFAULT NULL,
+  `valid_until` datetime DEFAULT NULL,
+  `applies_to` enum('all','category','product') DEFAULT 'all',
+  `applies_to_ids` text DEFAULT NULL,
+  `status` enum('active','inactive') DEFAULT 'active',
+  `created_at` datetime DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `code` (`code`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 CREATE TABLE IF NOT EXISTS `crm_activities` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `contact_id` int(11) NOT NULL,
@@ -424,6 +706,311 @@ CREATE TABLE IF NOT EXISTS `crm_deals` (
   CONSTRAINT `crm_deals_ibfk_1` FOREIGN KEY (`contact_id`) REFERENCES `crm_contacts` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+CREATE TABLE IF NOT EXISTS `digital_downloads` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `token` varchar(128) NOT NULL,
+  `product_id` int(11) NOT NULL,
+  `order_id` int(11) NOT NULL,
+  `customer_email` varchar(255) NOT NULL,
+  `downloads_count` int(11) DEFAULT 0,
+  `max_downloads` int(11) DEFAULT 3,
+  `expires_at` datetime NOT NULL,
+  `created_at` datetime DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `token` (`token`),
+  KEY `idx_token` (`token`),
+  KEY `idx_order` (`order_id`),
+  KEY `product_id` (`product_id`),
+  CONSTRAINT `digital_downloads_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `digital_downloads_ibfk_2` FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `directory_categories` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) NOT NULL,
+  `slug` varchar(100) NOT NULL,
+  `parent_id` int(10) unsigned DEFAULT NULL,
+  `description` text DEFAULT NULL,
+  `icon` varchar(50) DEFAULT '',
+  `color` varchar(7) DEFAULT '#6366f1',
+  `sort_order` int(11) DEFAULT 0,
+  `listing_count` int(10) unsigned DEFAULT 0,
+  `status` enum('active','hidden') DEFAULT 'active',
+  `created_at` datetime DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `slug` (`slug`),
+  KEY `idx_parent` (`parent_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE IF NOT EXISTS `directory_claims` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `listing_id` int(10) unsigned NOT NULL,
+  `user_id` int(10) unsigned DEFAULT NULL,
+  `email` varchar(255) NOT NULL,
+  `name` varchar(100) NOT NULL,
+  `proof` text DEFAULT NULL,
+  `status` enum('pending','approved','rejected') DEFAULT 'pending',
+  `created_at` datetime DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  KEY `idx_listing` (`listing_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE IF NOT EXISTS `directory_listings` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `title` varchar(200) NOT NULL,
+  `slug` varchar(200) NOT NULL,
+  `category_id` int(10) unsigned DEFAULT NULL,
+  `description` text DEFAULT NULL,
+  `short_description` varchar(500) DEFAULT '',
+  `owner_email` varchar(255) DEFAULT '',
+  `owner_name` varchar(100) DEFAULT '',
+  `phone` varchar(30) DEFAULT '',
+  `website` varchar(255) DEFAULT '',
+  `address` varchar(255) DEFAULT '',
+  `city` varchar(100) DEFAULT '',
+  `state` varchar(100) DEFAULT '',
+  `zip` varchar(20) DEFAULT '',
+  `country` varchar(50) DEFAULT '',
+  `latitude` decimal(10,8) DEFAULT NULL,
+  `longitude` decimal(11,8) DEFAULT NULL,
+  `logo` varchar(255) DEFAULT NULL,
+  `images` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`images`)),
+  `hours` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`hours`)),
+  `social_links` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`social_links`)),
+  `tags` varchar(500) DEFAULT '',
+  `price_range` enum('$','$$','$$$','$$$$','') DEFAULT '',
+  `is_featured` tinyint(1) DEFAULT 0,
+  `is_verified` tinyint(1) DEFAULT 0,
+  `is_claimed` tinyint(1) DEFAULT 0,
+  `claimed_by` int(10) unsigned DEFAULT NULL,
+  `avg_rating` decimal(3,2) DEFAULT 0.00,
+  `review_count` int(10) unsigned DEFAULT 0,
+  `view_count` int(10) unsigned DEFAULT 0,
+  `status` enum('active','pending','rejected','expired') DEFAULT 'pending',
+  `expires_at` datetime DEFAULT NULL,
+  `created_at` datetime DEFAULT current_timestamp(),
+  `updated_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `slug` (`slug`),
+  KEY `idx_category` (`category_id`),
+  KEY `idx_status` (`status`),
+  KEY `idx_city` (`city`),
+  KEY `idx_featured` (`is_featured`),
+  FULLTEXT KEY `idx_search` (`title`,`description`,`tags`,`city`)
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE IF NOT EXISTS `directory_reviews` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `listing_id` int(10) unsigned NOT NULL,
+  `reviewer_name` varchar(100) NOT NULL,
+  `reviewer_email` varchar(255) DEFAULT '',
+  `rating` tinyint(3) unsigned NOT NULL CHECK (`rating` between 1 and 5),
+  `title` varchar(200) DEFAULT '',
+  `content` text DEFAULT NULL,
+  `is_verified` tinyint(1) DEFAULT 0,
+  `status` enum('approved','pending','rejected') DEFAULT 'pending',
+  `helpful_count` int(10) unsigned DEFAULT 0,
+  `owner_reply` text DEFAULT NULL,
+  `owner_reply_at` datetime DEFAULT NULL,
+  `created_at` datetime DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  KEY `idx_listing` (`listing_id`),
+  KEY `idx_status` (`status`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE IF NOT EXISTS `ds_imports` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `source_url` varchar(1000) DEFAULT NULL,
+  `source_type` enum('url','csv','api','manual') DEFAULT 'url',
+  `supplier_id` int(11) DEFAULT NULL,
+  `status` enum('pending','processing','completed','failed') DEFAULT 'pending',
+  `product_id` int(11) DEFAULT NULL,
+  `imported_data` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`imported_data`)),
+  `ai_processed` tinyint(1) DEFAULT 0,
+  `ai_results` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`ai_results`)),
+  `error_message` text DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE IF NOT EXISTS `ds_order_forwards` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `order_id` int(11) NOT NULL,
+  `supplier_id` int(11) NOT NULL,
+  `supplier_order_id` varchar(255) DEFAULT NULL,
+  `status` enum('pending','sent','confirmed','shipped','delivered','failed','cancelled') DEFAULT 'pending',
+  `tracking_number` varchar(255) DEFAULT NULL,
+  `tracking_url` varchar(500) DEFAULT NULL,
+  `cost_total` decimal(10,2) DEFAULT NULL,
+  `notes` text DEFAULT NULL,
+  `response_data` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`response_data`)),
+  `forwarded_at` timestamp NULL DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE IF NOT EXISTS `ds_price_rules` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `type` enum('multiplier','fixed_markup','percentage_markup') DEFAULT 'multiplier',
+  `value` decimal(10,4) NOT NULL,
+  `apply_to` enum('all','category','supplier','product') DEFAULT 'all',
+  `apply_to_id` int(11) DEFAULT NULL,
+  `min_price` decimal(10,2) DEFAULT 0.00,
+  `max_price` decimal(10,2) DEFAULT 0.00,
+  `round_to` enum('none','0.99','0.95','0.00') DEFAULT '0.99',
+  `priority` int(11) DEFAULT 0,
+  `status` enum('active','inactive') DEFAULT 'active',
+  `created_at` timestamp NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE IF NOT EXISTS `ds_product_links` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `product_id` int(11) NOT NULL,
+  `supplier_id` int(11) NOT NULL,
+  `supplier_product_id` varchar(255) DEFAULT NULL,
+  `supplier_product_url` varchar(1000) DEFAULT NULL,
+  `supplier_price` decimal(10,2) DEFAULT NULL,
+  `supplier_currency` varchar(10) DEFAULT 'USD',
+  `supplier_sku` varchar(255) DEFAULT NULL,
+  `our_price` decimal(10,2) DEFAULT NULL,
+  `profit_margin` decimal(10,2) DEFAULT NULL,
+  `variant_mapping` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`variant_mapping`)),
+  `last_sync_at` timestamp NULL DEFAULT NULL,
+  `sync_status` enum('synced','pending','error','never') DEFAULT 'never',
+  `auto_sync` tinyint(1) DEFAULT 1,
+  `notes` text DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_product_supplier` (`product_id`,`supplier_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE IF NOT EXISTS `ds_suppliers` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `type` enum('aliexpress','cjdropshipping','generic_api','csv','manual') DEFAULT 'manual',
+  `website` varchar(500) DEFAULT NULL,
+  `api_key` varchar(500) DEFAULT NULL,
+  `api_secret` varchar(500) DEFAULT NULL,
+  `api_base_url` varchar(500) DEFAULT NULL,
+  `contact_email` varchar(255) DEFAULT NULL,
+  `contact_name` varchar(255) DEFAULT NULL,
+  `notes` text DEFAULT NULL,
+  `settings` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`settings`)),
+  `status` enum('active','inactive') DEFAULT 'active',
+  `products_count` int(11) DEFAULT 0,
+  `created_at` timestamp NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE IF NOT EXISTS `em_automations` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `trigger_type` enum('subscribe','tag_added','date','inactivity') NOT NULL,
+  `trigger_config` text DEFAULT NULL,
+  `action_type` enum('send_email','add_tag','wait','condition') NOT NULL,
+  `action_config` text DEFAULT NULL,
+  `sequence_order` int(11) DEFAULT 0,
+  `status` enum('active','paused','draft') DEFAULT 'draft',
+  `created_at` datetime DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  KEY `idx_user` (`user_id`),
+  CONSTRAINT `em_automations_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `saas_users` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE IF NOT EXISTS `em_campaigns` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `list_id` int(11) DEFAULT NULL,
+  `name` varchar(255) NOT NULL,
+  `subject` varchar(500) NOT NULL DEFAULT '',
+  `preview_text` varchar(255) DEFAULT '',
+  `from_name` varchar(255) DEFAULT '',
+  `from_email` varchar(255) DEFAULT '',
+  `html_body` longtext DEFAULT NULL,
+  `text_body` longtext DEFAULT NULL,
+  `template_id` int(11) DEFAULT NULL,
+  `scheduled_at` datetime DEFAULT NULL,
+  `sent_at` datetime DEFAULT NULL,
+  `total_sent` int(11) DEFAULT 0,
+  `total_opened` int(11) DEFAULT 0,
+  `total_clicked` int(11) DEFAULT 0,
+  `total_bounced` int(11) DEFAULT 0,
+  `total_unsubscribed` int(11) DEFAULT 0,
+  `status` enum('draft','scheduled','sending','sent','failed') DEFAULT 'draft',
+  `credits_used` int(11) DEFAULT 0,
+  `created_at` datetime DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  KEY `idx_user` (`user_id`),
+  KEY `idx_status` (`status`),
+  CONSTRAINT `em_campaigns_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `saas_users` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE IF NOT EXISTS `em_events` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `campaign_id` int(11) NOT NULL,
+  `subscriber_id` int(11) DEFAULT NULL,
+  `event_type` enum('sent','opened','clicked','bounced','unsubscribed') NOT NULL,
+  `metadata` varchar(500) DEFAULT '',
+  `created_at` datetime DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  KEY `idx_campaign` (`campaign_id`),
+  KEY `idx_type` (`event_type`),
+  CONSTRAINT `em_events_ibfk_1` FOREIGN KEY (`campaign_id`) REFERENCES `em_campaigns` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE IF NOT EXISTS `em_lists` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `description` text DEFAULT NULL,
+  `subscriber_count` int(11) DEFAULT 0,
+  `status` enum('active','archived') DEFAULT 'active',
+  `created_at` datetime DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  KEY `idx_user` (`user_id`),
+  CONSTRAINT `em_lists_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `saas_users` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE IF NOT EXISTS `em_subscribers` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `list_id` int(11) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `name` varchar(255) DEFAULT '',
+  `tags` text DEFAULT NULL,
+  `custom_fields_json` text DEFAULT NULL,
+  `status` enum('active','unsubscribed','bounced') DEFAULT 'active',
+  `subscribed_at` datetime DEFAULT current_timestamp(),
+  `unsubscribed_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `idx_user` (`user_id`),
+  KEY `idx_list` (`list_id`),
+  KEY `idx_email` (`email`),
+  KEY `idx_status` (`status`),
+  CONSTRAINT `em_subscribers_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `saas_users` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `em_subscribers_ibfk_2` FOREIGN KEY (`list_id`) REFERENCES `em_lists` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE IF NOT EXISTS `em_templates` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `category` varchar(100) DEFAULT 'general',
+  `html_body` longtext NOT NULL,
+  `thumbnail_url` varchar(500) DEFAULT '',
+  `is_global` tinyint(4) DEFAULT 0,
+  `created_at` datetime DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  KEY `idx_user` (`user_id`),
+  CONSTRAINT `em_templates_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `saas_users` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
 CREATE TABLE IF NOT EXISTS `email_queue` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `to_email` varchar(255) NOT NULL,
@@ -449,6 +1036,90 @@ CREATE TABLE IF NOT EXISTS `email_queue` (
   KEY `idx_scheduled` (`scheduled_at`),
   KEY `idx_created` (`created_at`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `event_orders` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `event_id` int(10) unsigned NOT NULL,
+  `ticket_id` int(10) unsigned NOT NULL,
+  `order_number` varchar(20) NOT NULL,
+  `buyer_name` varchar(100) NOT NULL,
+  `buyer_email` varchar(255) DEFAULT '',
+  `buyer_phone` varchar(30) DEFAULT '',
+  `quantity` int(10) unsigned NOT NULL DEFAULT 1,
+  `unit_price` decimal(10,2) NOT NULL DEFAULT 0.00,
+  `total` decimal(10,2) NOT NULL DEFAULT 0.00,
+  `payment_status` enum('pending','paid','refunded') DEFAULT 'pending',
+  `qr_code` varchar(100) DEFAULT '',
+  `checked_in` tinyint(1) DEFAULT 0,
+  `checked_in_at` datetime DEFAULT NULL,
+  `created_at` datetime DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `order_number` (`order_number`),
+  KEY `idx_event` (`event_id`),
+  KEY `idx_ticket` (`ticket_id`),
+  KEY `idx_order_number` (`order_number`),
+  KEY `idx_payment` (`payment_status`),
+  KEY `idx_qr` (`qr_code`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE IF NOT EXISTS `event_settings` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `setting_key` varchar(100) NOT NULL,
+  `setting_value` text DEFAULT NULL,
+  `updated_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `setting_key` (`setting_key`)
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE IF NOT EXISTS `event_tickets` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `event_id` int(10) unsigned NOT NULL,
+  `name` varchar(200) NOT NULL,
+  `description` varchar(500) DEFAULT '',
+  `price` decimal(10,2) NOT NULL DEFAULT 0.00,
+  `currency` varchar(10) DEFAULT 'GBP',
+  `quantity_total` int(10) unsigned NOT NULL DEFAULT 100,
+  `quantity_sold` int(10) unsigned DEFAULT 0,
+  `max_per_order` int(10) unsigned DEFAULT 10,
+  `sale_start` datetime DEFAULT NULL,
+  `sale_end` datetime DEFAULT NULL,
+  `status` enum('active','soldout','hidden') DEFAULT 'active',
+  `created_at` datetime DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  KEY `idx_event` (`event_id`),
+  KEY `idx_status` (`status`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE IF NOT EXISTS `events` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `title` varchar(255) NOT NULL,
+  `slug` varchar(255) NOT NULL,
+  `description` text DEFAULT NULL,
+  `short_description` varchar(500) DEFAULT '',
+  `venue_name` varchar(200) DEFAULT '',
+  `venue_address` varchar(500) DEFAULT '',
+  `city` varchar(100) DEFAULT '',
+  `country` varchar(100) DEFAULT '',
+  `start_date` datetime NOT NULL,
+  `end_date` datetime DEFAULT NULL,
+  `image` varchar(255) DEFAULT '',
+  `category` varchar(100) DEFAULT '',
+  `organizer_name` varchar(200) DEFAULT '',
+  `organizer_email` varchar(255) DEFAULT '',
+  `max_capacity` int(10) unsigned DEFAULT NULL,
+  `is_featured` tinyint(1) DEFAULT 0,
+  `is_free` tinyint(1) DEFAULT 0,
+  `view_count` int(10) unsigned DEFAULT 0,
+  `status` enum('upcoming','ongoing','completed','cancelled') DEFAULT 'upcoming',
+  `created_at` datetime DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `slug` (`slug`),
+  KEY `idx_status` (`status`),
+  KEY `idx_start_date` (`start_date`),
+  KEY `idx_city` (`city`),
+  KEY `idx_category` (`category`),
+  FULLTEXT KEY `idx_search` (`title`,`description`,`venue_name`,`city`)
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE IF NOT EXISTS `extensions` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -546,6 +1217,135 @@ CREATE TABLE IF NOT EXISTS `gallery_items` (
   KEY `idx_gallery` (`gallery_id`),
   CONSTRAINT `gallery_items_ibfk_1` FOREIGN KEY (`gallery_id`) REFERENCES `galleries` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `imagestudio_images` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `filename` varchar(255) NOT NULL,
+  `original_filename` varchar(255) DEFAULT '',
+  `file_path` varchar(500) NOT NULL,
+  `file_url` varchar(500) NOT NULL,
+  `file_size` int(11) DEFAULT 0,
+  `mime_type` varchar(50) DEFAULT '',
+  `width` int(11) DEFAULT 0,
+  `height` int(11) DEFAULT 0,
+  `type` enum('upload','remove_bg','enhanced','generated','resized','alt_text') DEFAULT 'upload',
+  `source_image_id` int(11) DEFAULT NULL,
+  `prompt` text DEFAULT NULL,
+  `alt_text` text DEFAULT NULL,
+  `metadata_json` text DEFAULT NULL,
+  `status` enum('pending','processing','completed','failed') DEFAULT 'completed',
+  `credits_used` int(11) DEFAULT 0,
+  `created_at` datetime DEFAULT current_timestamp(),
+  `updated_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`id`),
+  KEY `idx_user` (`user_id`),
+  KEY `idx_type` (`type`),
+  KEY `idx_status` (`status`),
+  KEY `idx_created` (`created_at`),
+  CONSTRAINT `imagestudio_images_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `saas_users` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE IF NOT EXISTS `imagestudio_jobs` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `batch_id` varchar(64) DEFAULT NULL,
+  `job_type` enum('remove_bg','alt_text','enhance','generate','resize') NOT NULL,
+  `input_image_id` int(11) DEFAULT NULL,
+  `input_data` text DEFAULT NULL,
+  `output_image_id` int(11) DEFAULT NULL,
+  `output_data` text DEFAULT NULL,
+  `progress` tinyint(4) DEFAULT 0,
+  `status` enum('queued','processing','completed','failed','cancelled') DEFAULT 'queued',
+  `error_message` text DEFAULT NULL,
+  `started_at` datetime DEFAULT NULL,
+  `completed_at` datetime DEFAULT NULL,
+  `created_at` datetime DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  KEY `idx_user` (`user_id`),
+  KEY `idx_batch` (`batch_id`),
+  KEY `idx_status` (`status`),
+  KEY `idx_type` (`job_type`),
+  CONSTRAINT `imagestudio_jobs_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `saas_users` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE IF NOT EXISTS `job_applications` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `job_id` int(10) unsigned NOT NULL,
+  `applicant_name` varchar(150) NOT NULL,
+  `applicant_email` varchar(255) NOT NULL,
+  `applicant_phone` varchar(30) DEFAULT '',
+  `cover_letter` text DEFAULT NULL,
+  `resume_path` varchar(500) DEFAULT '',
+  `status` enum('new','reviewed','shortlisted','rejected') DEFAULT 'new',
+  `created_at` datetime DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  KEY `idx_job` (`job_id`),
+  KEY `idx_status` (`status`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE IF NOT EXISTS `job_companies` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(200) NOT NULL,
+  `slug` varchar(200) NOT NULL,
+  `logo` varchar(255) DEFAULT NULL,
+  `description` text DEFAULT NULL,
+  `website` varchar(255) DEFAULT '',
+  `industry` varchar(100) DEFAULT '',
+  `size` varchar(50) DEFAULT '',
+  `location` varchar(255) DEFAULT '',
+  `status` enum('active','hidden') DEFAULT 'active',
+  `created_at` datetime DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `slug` (`slug`),
+  KEY `idx_status` (`status`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE IF NOT EXISTS `job_listings` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `title` varchar(200) NOT NULL,
+  `slug` varchar(200) NOT NULL,
+  `company_name` varchar(200) DEFAULT '',
+  `company_logo` varchar(255) DEFAULT NULL,
+  `location` varchar(255) DEFAULT '',
+  `remote_type` enum('onsite','remote','hybrid') DEFAULT 'onsite',
+  `job_type` enum('full-time','part-time','contract','freelance') DEFAULT 'full-time',
+  `salary_min` decimal(12,2) DEFAULT NULL,
+  `salary_max` decimal(12,2) DEFAULT NULL,
+  `salary_currency` varchar(3) DEFAULT 'USD',
+  `description` text DEFAULT NULL,
+  `requirements` text DEFAULT NULL,
+  `benefits` text DEFAULT NULL,
+  `category` varchar(100) DEFAULT '',
+  `experience_level` enum('entry','mid','senior','lead') DEFAULT 'mid',
+  `skills` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`skills`)),
+  `application_url` varchar(500) DEFAULT '',
+  `application_email` varchar(255) DEFAULT '',
+  `is_featured` tinyint(1) DEFAULT 0,
+  `view_count` int(10) unsigned DEFAULT 0,
+  `status` enum('active','expired','draft') DEFAULT 'draft',
+  `expires_at` datetime DEFAULT NULL,
+  `created_at` datetime DEFAULT current_timestamp(),
+  `updated_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `slug` (`slug`),
+  KEY `idx_status` (`status`),
+  KEY `idx_category` (`category`),
+  KEY `idx_job_type` (`job_type`),
+  KEY `idx_remote_type` (`remote_type`),
+  KEY `idx_featured` (`is_featured`),
+  KEY `idx_expires` (`expires_at`),
+  FULLTEXT KEY `idx_search` (`title`,`description`,`requirements`,`company_name`,`location`,`category`)
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE IF NOT EXISTS `job_settings` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `setting_key` varchar(100) NOT NULL,
+  `setting_value` text DEFAULT NULL,
+  `updated_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `setting_key` (`setting_key`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE IF NOT EXISTS `jtb_global_modules` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -668,6 +1468,126 @@ CREATE TABLE IF NOT EXISTS `languages` (
   UNIQUE KEY `code` (`code`)
 ) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+CREATE TABLE IF NOT EXISTS `lms_certificates` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `enrollment_id` int(10) unsigned NOT NULL,
+  `course_id` int(10) unsigned NOT NULL,
+  `student_name` varchar(200) NOT NULL,
+  `student_email` varchar(255) NOT NULL,
+  `certificate_code` varchar(50) NOT NULL,
+  `issued_at` datetime DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `certificate_code` (`certificate_code`),
+  KEY `idx_enrollment` (`enrollment_id`),
+  KEY `idx_code` (`certificate_code`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE IF NOT EXISTS `lms_courses` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `title` varchar(200) NOT NULL,
+  `slug` varchar(200) NOT NULL,
+  `description` text DEFAULT NULL,
+  `short_description` varchar(500) DEFAULT '',
+  `instructor_name` varchar(100) DEFAULT '',
+  `instructor_bio` text DEFAULT NULL,
+  `thumbnail` varchar(255) DEFAULT NULL,
+  `category` varchar(100) DEFAULT '',
+  `difficulty` enum('beginner','intermediate','advanced','all') DEFAULT 'all',
+  `price` decimal(10,2) DEFAULT 0.00,
+  `is_free` tinyint(1) DEFAULT 0,
+  `duration_hours` decimal(5,1) DEFAULT 0.0,
+  `status` enum('draft','published','archived') DEFAULT 'draft',
+  `featured` tinyint(1) DEFAULT 0,
+  `enrollment_count` int(10) unsigned DEFAULT 0,
+  `completion_count` int(10) unsigned DEFAULT 0,
+  `avg_rating` decimal(3,2) DEFAULT 0.00,
+  `review_count` int(10) unsigned DEFAULT 0,
+  `created_at` datetime DEFAULT current_timestamp(),
+  `updated_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `slug` (`slug`),
+  KEY `idx_status` (`status`),
+  KEY `idx_category` (`category`)
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE IF NOT EXISTS `lms_enrollments` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `course_id` int(10) unsigned NOT NULL,
+  `user_id` int(10) unsigned DEFAULT NULL,
+  `email` varchar(255) NOT NULL,
+  `name` varchar(100) DEFAULT '',
+  `status` enum('active','completed','dropped') DEFAULT 'active',
+  `progress_pct` decimal(5,2) DEFAULT 0.00,
+  `completed_lessons` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`completed_lessons`)),
+  `started_at` datetime DEFAULT current_timestamp(),
+  `completed_at` datetime DEFAULT NULL,
+  `last_activity` datetime DEFAULT current_timestamp(),
+  `certificate_id` varchar(50) DEFAULT NULL,
+  `created_at` datetime DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `idx_course_user` (`course_id`,`email`),
+  KEY `idx_user` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE IF NOT EXISTS `lms_lessons` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `course_id` int(10) unsigned NOT NULL,
+  `title` varchar(200) NOT NULL,
+  `slug` varchar(200) DEFAULT '',
+  `content_type` enum('text','video','quiz','download','assignment') DEFAULT 'text',
+  `content_html` longtext DEFAULT NULL,
+  `video_url` varchar(500) DEFAULT NULL,
+  `duration_minutes` int(10) unsigned DEFAULT 0,
+  `sort_order` int(10) unsigned DEFAULT 0,
+  `section` varchar(100) DEFAULT '',
+  `is_preview` tinyint(1) DEFAULT 0,
+  `status` enum('draft','published') DEFAULT 'published',
+  `created_at` datetime DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  KEY `idx_course` (`course_id`),
+  KEY `idx_order` (`course_id`,`sort_order`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE IF NOT EXISTS `lms_quiz_attempts` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `quiz_id` int(10) unsigned NOT NULL,
+  `enrollment_id` int(10) unsigned NOT NULL,
+  `answers` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`answers`)),
+  `score` int(10) unsigned DEFAULT 0,
+  `passed` tinyint(1) DEFAULT 0,
+  `started_at` datetime DEFAULT current_timestamp(),
+  `completed_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `idx_quiz` (`quiz_id`),
+  KEY `idx_enrollment` (`enrollment_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE IF NOT EXISTS `lms_quizzes` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `lesson_id` int(10) unsigned NOT NULL,
+  `questions` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL CHECK (json_valid(`questions`)),
+  `passing_score` int(10) unsigned DEFAULT 70,
+  `time_limit_minutes` int(10) unsigned DEFAULT 0,
+  `max_attempts` int(10) unsigned DEFAULT 3,
+  `created_at` datetime DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  KEY `idx_lesson` (`lesson_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE IF NOT EXISTS `lms_reviews` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `course_id` int(10) unsigned NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `name` varchar(100) DEFAULT '',
+  `rating` tinyint(3) unsigned NOT NULL DEFAULT 5,
+  `review` text DEFAULT NULL,
+  `status` enum('pending','approved','rejected') DEFAULT 'pending',
+  `created_at` datetime DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `idx_course_email` (`course_id`,`email`),
+  KEY `idx_course` (`course_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
 CREATE TABLE IF NOT EXISTS `login_attempts` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `username` varchar(190) DEFAULT NULL,
@@ -682,7 +1602,7 @@ CREATE TABLE IF NOT EXISTS `login_attempts` (
   KEY `idx_attempted_at` (`attempted_at`),
   KEY `idx_success` (`success`),
   KEY `idx_ip_time` (`ip_address`,`attempted_at`)
-) ENGINE=InnoDB AUTO_INCREMENT=1051 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=1306 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `maintenance_settings` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -717,7 +1637,77 @@ CREATE TABLE IF NOT EXISTS `media` (
   PRIMARY KEY (`id`),
   KEY `idx_mime_type` (`mime_type`),
   KEY `idx_created_at` (`created_at`)
-) ENGINE=InnoDB AUTO_INCREMENT=145 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=170 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `membership_content_rules` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `content_type` enum('page','article','category','custom') DEFAULT 'page',
+  `content_id` int(10) unsigned DEFAULT NULL,
+  `content_pattern` varchar(255) DEFAULT NULL,
+  `plan_ids` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`plan_ids`)),
+  `rule_type` enum('require_any','require_all','exclude') DEFAULT 'require_any',
+  `message` text DEFAULT NULL,
+  `created_at` datetime DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE IF NOT EXISTS `membership_members` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` int(10) unsigned DEFAULT NULL,
+  `email` varchar(255) NOT NULL,
+  `name` varchar(100) DEFAULT '',
+  `plan_id` int(10) unsigned NOT NULL,
+  `status` enum('active','trial','expired','cancelled','paused') DEFAULT 'trial',
+  `started_at` datetime DEFAULT current_timestamp(),
+  `expires_at` datetime DEFAULT NULL,
+  `trial_ends_at` datetime DEFAULT NULL,
+  `cancelled_at` datetime DEFAULT NULL,
+  `payment_method` varchar(50) DEFAULT NULL,
+  `payment_ref` varchar(255) DEFAULT NULL,
+  `notes` text DEFAULT NULL,
+  `created_at` datetime DEFAULT current_timestamp(),
+  `updated_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`id`),
+  KEY `idx_plan` (`plan_id`),
+  KEY `idx_user` (`user_id`),
+  KEY `idx_status` (`status`),
+  KEY `idx_email` (`email`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE IF NOT EXISTS `membership_plans` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) NOT NULL,
+  `slug` varchar(100) NOT NULL,
+  `description` text DEFAULT NULL,
+  `price` decimal(10,2) DEFAULT 0.00,
+  `billing_period` enum('monthly','quarterly','yearly','lifetime','free') DEFAULT 'monthly',
+  `trial_days` int(10) unsigned DEFAULT 0,
+  `features` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`features`)),
+  `content_access` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`content_access`)),
+  `max_members` int(10) unsigned DEFAULT 0,
+  `color` varchar(7) DEFAULT '#6366f1',
+  `sort_order` int(11) DEFAULT 0,
+  `status` enum('active','inactive') DEFAULT 'active',
+  `created_at` datetime DEFAULT current_timestamp(),
+  `updated_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `slug` (`slug`)
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE IF NOT EXISTS `membership_transactions` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `member_id` int(10) unsigned NOT NULL,
+  `plan_id` int(10) unsigned NOT NULL,
+  `amount` decimal(10,2) NOT NULL,
+  `currency` varchar(3) DEFAULT 'USD',
+  `type` enum('payment','refund','trial','upgrade','downgrade') DEFAULT 'payment',
+  `payment_method` varchar(50) DEFAULT NULL,
+  `payment_ref` varchar(255) DEFAULT NULL,
+  `status` enum('completed','pending','failed','refunded') DEFAULT 'completed',
+  `created_at` datetime DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  KEY `idx_member` (`member_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE IF NOT EXISTS `menu_items` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -742,7 +1732,7 @@ CREATE TABLE IF NOT EXISTS `menu_items` (
   KEY `idx_sort` (`sort_order`),
   CONSTRAINT `menu_items_ibfk_1` FOREIGN KEY (`menu_id`) REFERENCES `menus` (`id`) ON DELETE CASCADE,
   CONSTRAINT `menu_items_ibfk_2` FOREIGN KEY (`parent_id`) REFERENCES `menu_items` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=641 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=653 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `menus` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -769,6 +1759,107 @@ CREATE TABLE IF NOT EXISTS `migrations` (
   UNIQUE KEY `migration` (`migration`),
   KEY `idx_batch` (`batch`)
 ) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `newsletter_automations` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) NOT NULL,
+  `trigger_type` enum('subscribe','tag_added','date_field','manual') DEFAULT 'subscribe',
+  `trigger_config` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`trigger_config`)),
+  `steps` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`steps`)),
+  `status` enum('active','paused','draft') DEFAULT 'draft',
+  `list_id` int(10) unsigned DEFAULT NULL,
+  `stats_entered` int(10) unsigned DEFAULT 0,
+  `stats_completed` int(10) unsigned DEFAULT 0,
+  `created_at` datetime DEFAULT current_timestamp(),
+  `updated_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE IF NOT EXISTS `newsletter_campaigns` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(200) NOT NULL,
+  `subject` varchar(255) NOT NULL DEFAULT '',
+  `preview_text` varchar(200) DEFAULT '',
+  `from_name` varchar(100) DEFAULT '',
+  `from_email` varchar(255) DEFAULT '',
+  `reply_to` varchar(255) DEFAULT '',
+  `content_html` longtext DEFAULT NULL,
+  `content_text` text DEFAULT NULL,
+  `template_id` int(10) unsigned DEFAULT NULL,
+  `status` enum('draft','scheduled','sending','sent','paused') DEFAULT 'draft',
+  `list_id` int(10) unsigned DEFAULT NULL,
+  `segment_conditions` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`segment_conditions`)),
+  `scheduled_at` datetime DEFAULT NULL,
+  `started_at` datetime DEFAULT NULL,
+  `completed_at` datetime DEFAULT NULL,
+  `stats_sent` int(10) unsigned DEFAULT 0,
+  `stats_opened` int(10) unsigned DEFAULT 0,
+  `stats_clicked` int(10) unsigned DEFAULT 0,
+  `stats_bounced` int(10) unsigned DEFAULT 0,
+  `stats_unsubscribed` int(10) unsigned DEFAULT 0,
+  `created_at` datetime DEFAULT current_timestamp(),
+  `updated_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`id`),
+  KEY `idx_status` (`status`),
+  KEY `idx_list` (`list_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE IF NOT EXISTS `newsletter_events` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `campaign_id` int(10) unsigned NOT NULL,
+  `subscriber_id` int(10) unsigned DEFAULT NULL,
+  `event_type` enum('sent','opened','clicked','bounced','unsubscribed','complained') NOT NULL,
+  `metadata` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`metadata`)),
+  `created_at` datetime DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  KEY `idx_campaign` (`campaign_id`),
+  KEY `idx_subscriber` (`subscriber_id`),
+  KEY `idx_type_date` (`event_type`,`created_at`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE IF NOT EXISTS `newsletter_lists` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) NOT NULL,
+  `slug` varchar(100) NOT NULL,
+  `description` text DEFAULT NULL,
+  `color` varchar(7) DEFAULT '#6366f1',
+  `subscriber_count` int(10) unsigned DEFAULT 0,
+  `status` enum('active','archived') DEFAULT 'active',
+  `created_at` datetime DEFAULT current_timestamp(),
+  `updated_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `slug` (`slug`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE IF NOT EXISTS `newsletter_subscribers` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `email` varchar(255) NOT NULL,
+  `name` varchar(100) DEFAULT '',
+  `status` enum('active','unsubscribed','bounced','pending') DEFAULT 'pending',
+  `lists` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`lists`)),
+  `custom_fields` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`custom_fields`)),
+  `source` varchar(50) DEFAULT 'manual',
+  `ip_address` varchar(45) DEFAULT NULL,
+  `confirmed_at` datetime DEFAULT NULL,
+  `unsubscribed_at` datetime DEFAULT NULL,
+  `created_at` datetime DEFAULT current_timestamp(),
+  `updated_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `idx_email` (`email`),
+  KEY `idx_status` (`status`)
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE IF NOT EXISTS `newsletter_templates` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) NOT NULL,
+  `category` varchar(50) DEFAULT 'custom',
+  `content_html` longtext DEFAULT NULL,
+  `thumbnail` varchar(255) DEFAULT NULL,
+  `is_default` tinyint(1) DEFAULT 0,
+  `created_at` datetime DEFAULT current_timestamp(),
+  `updated_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE IF NOT EXISTS `notifications` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -801,6 +1892,7 @@ CREATE TABLE IF NOT EXISTS `orders` (
   `status` enum('pending','processing','shipped','delivered','cancelled','refunded') DEFAULT 'pending',
   `payment_method` varchar(50) DEFAULT NULL,
   `payment_status` enum('unpaid','paid','refunded') DEFAULT 'unpaid',
+  `tracking_number` varchar(255) DEFAULT NULL,
   `notes` text DEFAULT NULL,
   `created_at` datetime DEFAULT current_timestamp(),
   `updated_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp(),
@@ -855,7 +1947,7 @@ CREATE TABLE IF NOT EXISTS `pages` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `slug` (`slug`),
   KEY `idx_pages_theme` (`theme_slug`)
-) ENGINE=InnoDB AUTO_INCREMENT=536 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=614 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `permissions` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -908,6 +2000,73 @@ CREATE TABLE IF NOT EXISTS `popups` (
   KEY `idx_active` (`active`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+CREATE TABLE IF NOT EXISTS `portfolio_categories` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) NOT NULL,
+  `slug` varchar(100) NOT NULL,
+  `description` text DEFAULT NULL,
+  `icon` varchar(50) DEFAULT '',
+  `sort_order` int(11) DEFAULT 0,
+  `status` enum('active','hidden') DEFAULT 'active',
+  `created_at` datetime DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `slug` (`slug`),
+  KEY `idx_status` (`status`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE IF NOT EXISTS `portfolio_projects` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `title` varchar(200) NOT NULL,
+  `slug` varchar(200) NOT NULL,
+  `category_id` int(10) unsigned DEFAULT NULL,
+  `client_name` varchar(150) DEFAULT '',
+  `description` text DEFAULT NULL,
+  `short_description` varchar(500) DEFAULT '',
+  `cover_image` varchar(255) DEFAULT NULL,
+  `images` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`images`)),
+  `technologies` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`technologies`)),
+  `project_url` varchar(255) DEFAULT '',
+  `completion_date` date DEFAULT NULL,
+  `is_featured` tinyint(1) DEFAULT 0,
+  `sort_order` int(11) DEFAULT 0,
+  `view_count` int(10) unsigned DEFAULT 0,
+  `status` enum('published','draft') DEFAULT 'draft',
+  `created_at` datetime DEFAULT current_timestamp(),
+  `updated_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `slug` (`slug`),
+  KEY `idx_category` (`category_id`),
+  KEY `idx_status` (`status`),
+  KEY `idx_featured` (`is_featured`),
+  FULLTEXT KEY `idx_search` (`title`,`description`,`short_description`,`client_name`)
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE IF NOT EXISTS `portfolio_settings` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `setting_key` varchar(100) NOT NULL,
+  `setting_value` text DEFAULT NULL,
+  `updated_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `setting_key` (`setting_key`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE IF NOT EXISTS `portfolio_testimonials` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `project_id` int(10) unsigned DEFAULT NULL,
+  `client_name` varchar(150) NOT NULL,
+  `client_title` varchar(150) DEFAULT '',
+  `client_company` varchar(150) DEFAULT '',
+  `client_photo` varchar(255) DEFAULT NULL,
+  `content` text DEFAULT NULL,
+  `rating` tinyint(3) unsigned NOT NULL DEFAULT 5 CHECK (`rating` between 1 and 5),
+  `is_featured` tinyint(1) DEFAULT 0,
+  `status` enum('published','pending') DEFAULT 'pending',
+  `created_at` datetime DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  KEY `idx_project` (`project_id`),
+  KEY `idx_status` (`status`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
 CREATE TABLE IF NOT EXISTS `product_categories` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
@@ -918,6 +2077,43 @@ CREATE TABLE IF NOT EXISTS `product_categories` (
   `sort_order` int(11) DEFAULT 0,
   PRIMARY KEY (`id`),
   UNIQUE KEY `uk_slug` (`slug`)
+) ENGINE=InnoDB AUTO_INCREMENT=1000 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `product_reviews` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `product_id` int(11) NOT NULL,
+  `customer_name` varchar(255) NOT NULL,
+  `customer_email` varchar(255) NOT NULL,
+  `rating` tinyint(4) NOT NULL CHECK (`rating` between 1 and 5),
+  `title` varchar(255) DEFAULT NULL,
+  `review_text` text DEFAULT NULL,
+  `status` enum('pending','approved','rejected') DEFAULT 'pending',
+  `admin_reply` text DEFAULT NULL,
+  `is_verified_purchase` tinyint(1) DEFAULT 0,
+  `helpful_count` int(11) DEFAULT 0,
+  `created_at` datetime DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  KEY `idx_product` (`product_id`),
+  KEY `idx_status` (`status`),
+  CONSTRAINT `product_reviews_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `product_variants` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `product_id` int(11) NOT NULL,
+  `variant_name` varchar(255) NOT NULL,
+  `options` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT 'e.g. [{"name":"Size","value":"M"},{"name":"Color","value":"Red"}]' CHECK (json_valid(`options`)),
+  `price` decimal(10,2) DEFAULT NULL COMMENT 'Override product price, NULL = use product price',
+  `sale_price` decimal(10,2) DEFAULT NULL,
+  `sku` varchar(100) DEFAULT NULL,
+  `stock` int(11) DEFAULT -1 COMMENT '-1 = unlimited',
+  `image` varchar(500) DEFAULT NULL,
+  `sort_order` int(11) DEFAULT 0,
+  `status` enum('active','inactive') DEFAULT 'active',
+  `created_at` datetime DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  KEY `idx_product` (`product_id`),
+  CONSTRAINT `product_variants_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `products` (
@@ -948,7 +2144,93 @@ CREATE TABLE IF NOT EXISTS `products` (
   KEY `idx_status` (`status`),
   KEY `idx_category` (`category_id`),
   KEY `idx_featured` (`featured`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `re_agents` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(150) NOT NULL,
+  `slug` varchar(150) NOT NULL,
+  `email` varchar(255) DEFAULT '',
+  `phone` varchar(30) DEFAULT '',
+  `photo` varchar(255) DEFAULT '',
+  `bio` text DEFAULT NULL,
+  `license_number` varchar(100) DEFAULT '',
+  `specialties` varchar(500) DEFAULT '',
+  `status` enum('active','inactive') DEFAULT 'active',
+  `created_at` datetime DEFAULT current_timestamp(),
+  `updated_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `slug` (`slug`),
+  KEY `idx_status` (`status`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE IF NOT EXISTS `re_inquiries` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `property_id` int(10) unsigned NOT NULL,
+  `name` varchar(100) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `phone` varchar(30) DEFAULT '',
+  `message` text DEFAULT NULL,
+  `status` enum('new','read','replied','archived') DEFAULT 'new',
+  `created_at` datetime DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  KEY `idx_property` (`property_id`),
+  KEY `idx_status` (`status`),
+  KEY `idx_date` (`created_at`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE IF NOT EXISTS `re_properties` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `title` varchar(250) NOT NULL,
+  `slug` varchar(250) NOT NULL,
+  `description` text DEFAULT NULL,
+  `short_description` varchar(500) DEFAULT '',
+  `property_type` enum('house','apartment','condo','townhouse','land','commercial','other') DEFAULT 'house',
+  `listing_type` enum('sale','rent','lease') DEFAULT 'sale',
+  `price` decimal(14,2) NOT NULL DEFAULT 0.00,
+  `price_period` enum('total','monthly','weekly','yearly') DEFAULT 'total',
+  `currency` varchar(5) DEFAULT 'GBP',
+  `bedrooms` tinyint(3) unsigned DEFAULT NULL,
+  `bathrooms` tinyint(3) unsigned DEFAULT NULL,
+  `area_sqft` int(10) unsigned DEFAULT NULL,
+  `lot_size` int(10) unsigned DEFAULT NULL,
+  `year_built` smallint(5) unsigned DEFAULT NULL,
+  `address` varchar(255) DEFAULT '',
+  `city` varchar(100) DEFAULT '',
+  `state` varchar(100) DEFAULT '',
+  `zip` varchar(20) DEFAULT '',
+  `country` varchar(50) DEFAULT '',
+  `latitude` decimal(10,8) DEFAULT NULL,
+  `longitude` decimal(11,8) DEFAULT NULL,
+  `images` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`images`)),
+  `floor_plan` varchar(255) DEFAULT '',
+  `virtual_tour` varchar(255) DEFAULT '',
+  `features` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`features`)),
+  `agent_id` int(10) unsigned DEFAULT NULL,
+  `is_featured` tinyint(1) DEFAULT 0,
+  `view_count` int(10) unsigned DEFAULT 0,
+  `status` enum('active','pending','sold','rented','draft') DEFAULT 'active',
+  `created_at` datetime DEFAULT current_timestamp(),
+  `updated_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `slug` (`slug`),
+  KEY `idx_agent` (`agent_id`),
+  KEY `idx_status` (`status`),
+  KEY `idx_city` (`city`),
+  KEY `idx_type` (`property_type`,`listing_type`),
+  KEY `idx_featured` (`is_featured`),
+  KEY `idx_price` (`price`),
+  FULLTEXT KEY `idx_search` (`title`,`description`,`address`,`city`)
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE IF NOT EXISTS `re_settings` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `setting_key` varchar(100) NOT NULL,
+  `setting_value` text DEFAULT NULL,
+  `updated_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `setting_key` (`setting_key`)
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE IF NOT EXISTS `redirects` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -963,6 +2245,89 @@ CREATE TABLE IF NOT EXISTS `redirects` (
   KEY `idx_source` (`source_url`(191)),
   KEY `idx_active` (`is_active`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `restaurant_categories` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) NOT NULL,
+  `slug` varchar(100) NOT NULL,
+  `description` varchar(255) DEFAULT '',
+  `icon` varchar(50) DEFAULT '',
+  `sort_order` int(11) DEFAULT 0,
+  `status` enum('active','hidden') DEFAULT 'active',
+  `created_at` datetime DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `slug` (`slug`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE IF NOT EXISTS `restaurant_items` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `category_id` int(10) unsigned DEFAULT NULL,
+  `name` varchar(200) NOT NULL,
+  `slug` varchar(200) NOT NULL,
+  `description` text DEFAULT NULL,
+  `short_description` varchar(500) DEFAULT '',
+  `price` decimal(10,2) NOT NULL DEFAULT 0.00,
+  `sale_price` decimal(10,2) DEFAULT NULL,
+  `image` varchar(255) DEFAULT '',
+  `gallery` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`gallery`)),
+  `options` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`options`)),
+  `extras` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`extras`)),
+  `allergens` varchar(500) DEFAULT '',
+  `calories` int(11) DEFAULT NULL,
+  `prep_time_min` int(11) DEFAULT NULL,
+  `is_vegetarian` tinyint(1) DEFAULT 0,
+  `is_vegan` tinyint(1) DEFAULT 0,
+  `is_gluten_free` tinyint(1) DEFAULT 0,
+  `is_spicy` tinyint(1) DEFAULT 0,
+  `is_featured` tinyint(1) DEFAULT 0,
+  `is_available` tinyint(1) DEFAULT 1,
+  `sort_order` int(11) DEFAULT 0,
+  `status` enum('active','hidden','soldout') DEFAULT 'active',
+  `created_at` datetime DEFAULT current_timestamp(),
+  `updated_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `slug` (`slug`),
+  KEY `idx_category` (`category_id`),
+  KEY `idx_status` (`status`),
+  FULLTEXT KEY `idx_search` (`name`,`description`,`allergens`)
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE IF NOT EXISTS `restaurant_orders` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `order_number` varchar(20) NOT NULL,
+  `customer_name` varchar(100) NOT NULL,
+  `customer_email` varchar(255) DEFAULT '',
+  `customer_phone` varchar(30) NOT NULL,
+  `order_type` enum('delivery','pickup','dine-in') DEFAULT 'delivery',
+  `delivery_address` text DEFAULT NULL,
+  `delivery_notes` text DEFAULT NULL,
+  `items_json` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL CHECK (json_valid(`items_json`)),
+  `subtotal` decimal(10,2) NOT NULL DEFAULT 0.00,
+  `delivery_fee` decimal(10,2) DEFAULT 0.00,
+  `tax` decimal(10,2) DEFAULT 0.00,
+  `tip` decimal(10,2) DEFAULT 0.00,
+  `total` decimal(10,2) NOT NULL DEFAULT 0.00,
+  `payment_method` enum('cash','card','online') DEFAULT 'cash',
+  `payment_status` enum('pending','paid','refunded') DEFAULT 'pending',
+  `status` enum('new','confirmed','preparing','ready','delivering','completed','cancelled') DEFAULT 'new',
+  `estimated_time` int(11) DEFAULT NULL,
+  `notes` text DEFAULT NULL,
+  `created_at` datetime DEFAULT current_timestamp(),
+  `updated_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `order_number` (`order_number`),
+  KEY `idx_status` (`status`),
+  KEY `idx_date` (`created_at`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE IF NOT EXISTS `restaurant_settings` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `setting_key` varchar(100) NOT NULL,
+  `setting_value` text DEFAULT NULL,
+  `updated_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `setting_key` (`setting_key`)
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE IF NOT EXISTS `restoration_log` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -991,6 +2356,144 @@ CREATE TABLE IF NOT EXISTS `roles` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `saas_api_usage` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `api_key` varchar(64) DEFAULT NULL,
+  `service` varchar(50) NOT NULL,
+  `endpoint` varchar(255) NOT NULL,
+  `method` varchar(10) DEFAULT 'POST',
+  `credits_used` int(11) DEFAULT 1,
+  `tokens_in` int(11) DEFAULT 0,
+  `tokens_out` int(11) DEFAULT 0,
+  `latency_ms` int(11) DEFAULT 0,
+  `status_code` int(11) DEFAULT 200,
+  `ip_address` varchar(45) DEFAULT NULL,
+  `user_agent` varchar(500) DEFAULT NULL,
+  `created_at` datetime DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  KEY `idx_user` (`user_id`),
+  KEY `idx_service` (`service`),
+  KEY `idx_created` (`created_at`),
+  KEY `idx_api_key` (`api_key`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE IF NOT EXISTS `saas_plans` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `slug` varchar(50) NOT NULL,
+  `name` varchar(100) NOT NULL,
+  `service` varchar(50) NOT NULL,
+  `price_monthly` decimal(10,2) DEFAULT 0.00,
+  `price_yearly` decimal(10,2) DEFAULT 0.00,
+  `credits_monthly` int(11) DEFAULT 0,
+  `features_json` text DEFAULT NULL,
+  `limits_json` text DEFAULT NULL,
+  `stripe_price_monthly` varchar(255) DEFAULT NULL,
+  `stripe_price_yearly` varchar(255) DEFAULT NULL,
+  `is_popular` tinyint(1) DEFAULT 0,
+  `sort_order` int(11) DEFAULT 0,
+  `status` enum('active','hidden','deprecated') DEFAULT 'active',
+  `created_at` datetime DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `slug` (`slug`),
+  KEY `idx_service` (`service`),
+  KEY `idx_status` (`status`)
+) ENGINE=InnoDB AUTO_INCREMENT=44 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE IF NOT EXISTS `saas_sessions` (
+  `id` varchar(128) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `ip_address` varchar(45) DEFAULT NULL,
+  `user_agent` varchar(500) DEFAULT NULL,
+  `payload` text DEFAULT NULL,
+  `last_activity` int(11) NOT NULL,
+  `created_at` datetime DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  KEY `idx_user` (`user_id`),
+  KEY `idx_activity` (`last_activity`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE IF NOT EXISTS `saas_subscriptions` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `plan_id` int(11) NOT NULL,
+  `service` varchar(50) NOT NULL,
+  `billing_cycle` enum('monthly','yearly','lifetime','free') DEFAULT 'monthly',
+  `stripe_subscription_id` varchar(255) DEFAULT NULL,
+  `current_period_start` datetime DEFAULT NULL,
+  `current_period_end` datetime DEFAULT NULL,
+  `credits_used` int(11) DEFAULT 0,
+  `credits_limit` int(11) DEFAULT 0,
+  `status` enum('active','past_due','cancelled','expired','trial') DEFAULT 'active',
+  `trial_ends_at` datetime DEFAULT NULL,
+  `cancelled_at` datetime DEFAULT NULL,
+  `created_at` datetime DEFAULT current_timestamp(),
+  `updated_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`id`),
+  KEY `idx_user` (`user_id`),
+  KEY `idx_service` (`service`),
+  KEY `idx_status` (`status`),
+  KEY `plan_id` (`plan_id`),
+  CONSTRAINT `saas_subscriptions_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `saas_users` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `saas_subscriptions_ibfk_2` FOREIGN KEY (`plan_id`) REFERENCES `saas_plans` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE IF NOT EXISTS `saas_transactions` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `subscription_id` int(11) DEFAULT NULL,
+  `type` enum('charge','refund','credit_purchase','credit_usage') NOT NULL,
+  `amount` decimal(10,2) DEFAULT 0.00,
+  `currency` varchar(3) DEFAULT 'USD',
+  `credits` int(11) DEFAULT 0,
+  `description` varchar(500) DEFAULT '',
+  `stripe_payment_id` varchar(255) DEFAULT NULL,
+  `stripe_invoice_id` varchar(255) DEFAULT NULL,
+  `metadata_json` text DEFAULT NULL,
+  `status` enum('completed','pending','failed','refunded') DEFAULT 'completed',
+  `created_at` datetime DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  KEY `idx_user` (`user_id`),
+  KEY `idx_type` (`type`),
+  KEY `idx_status` (`status`),
+  KEY `idx_created` (`created_at`),
+  CONSTRAINT `saas_transactions_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `saas_users` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE IF NOT EXISTS `saas_users` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `email` varchar(255) NOT NULL,
+  `password_hash` varchar(255) NOT NULL,
+  `name` varchar(255) DEFAULT '',
+  `company` varchar(255) DEFAULT '',
+  `avatar` varchar(500) DEFAULT '',
+  `plan` varchar(50) DEFAULT 'free',
+  `credits_remaining` int(11) DEFAULT 0,
+  `credits_monthly` int(11) DEFAULT 0,
+  `api_key` varchar(64) DEFAULT NULL,
+  `api_secret` varchar(128) DEFAULT NULL,
+  `stripe_customer_id` varchar(255) DEFAULT NULL,
+  `stripe_subscription_id` varchar(255) DEFAULT NULL,
+  `email_verified_at` datetime DEFAULT NULL,
+  `verification_token` varchar(64) DEFAULT NULL,
+  `reset_token` varchar(64) DEFAULT NULL,
+  `reset_expires` datetime DEFAULT NULL,
+  `timezone` varchar(50) DEFAULT 'UTC',
+  `language` varchar(10) DEFAULT 'en',
+  `settings_json` text DEFAULT NULL,
+  `status` enum('active','suspended','deleted') DEFAULT 'active',
+  `last_login` datetime DEFAULT NULL,
+  `created_at` datetime DEFAULT current_timestamp(),
+  `updated_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `email` (`email`),
+  UNIQUE KEY `api_key` (`api_key`),
+  KEY `idx_email` (`email`),
+  KEY `idx_api_key` (`api_key`),
+  KEY `idx_status` (`status`),
+  KEY `idx_plan` (`plan`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE IF NOT EXISTS `scheduler_jobs` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -1170,6 +2673,55 @@ CREATE TABLE IF NOT EXISTS `seo_score_history` (
   KEY `idx_keyword` (`focus_keyword`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+CREATE TABLE IF NOT EXISTS `seowriter_audits` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `project_id` int(11) DEFAULT NULL,
+  `url` varchar(2000) NOT NULL,
+  `score` int(11) DEFAULT 0,
+  `issues_json` longtext DEFAULT NULL,
+  `meta_json` text DEFAULT NULL,
+  `created_at` datetime DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  KEY `idx_user` (`user_id`),
+  KEY `idx_project` (`project_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE IF NOT EXISTS `seowriter_content` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `project_id` int(11) DEFAULT NULL,
+  `title` varchar(500) DEFAULT '',
+  `meta_description` varchar(500) DEFAULT '',
+  `target_keyword` varchar(255) DEFAULT '',
+  `body` longtext DEFAULT NULL,
+  `outline_json` text DEFAULT NULL,
+  `seo_score` int(11) DEFAULT 0,
+  `word_count` int(11) DEFAULT 0,
+  `status` enum('draft','generating','complete','published') DEFAULT 'draft',
+  `created_at` datetime DEFAULT current_timestamp(),
+  `updated_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`id`),
+  KEY `idx_user` (`user_id`),
+  KEY `idx_project` (`project_id`),
+  KEY `idx_status` (`status`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE IF NOT EXISTS `seowriter_projects` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `description` text DEFAULT NULL,
+  `target_keyword` varchar(255) DEFAULT '',
+  `language` varchar(10) DEFAULT 'en',
+  `status` enum('active','archived') DEFAULT 'active',
+  `created_at` datetime DEFAULT current_timestamp(),
+  `updated_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`id`),
+  KEY `idx_user` (`user_id`),
+  KEY `idx_status` (`status`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
 CREATE TABLE IF NOT EXISTS `settings` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `key` varchar(100) NOT NULL,
@@ -1178,7 +2730,23 @@ CREATE TABLE IF NOT EXISTS `settings` (
   `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `key` (`key`)
-) ENGINE=InnoDB AUTO_INCREMENT=63 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=80 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `shop_analytics` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `event_type` enum('view','add_to_cart','checkout','purchase','search') NOT NULL,
+  `product_id` int(11) DEFAULT NULL,
+  `order_id` int(11) DEFAULT NULL,
+  `session_id` varchar(128) DEFAULT NULL,
+  `amount` decimal(10,2) DEFAULT NULL,
+  `meta` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT 'extra data: search query, referrer, etc.' CHECK (json_valid(`meta`)),
+  `created_at` datetime DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  KEY `idx_event` (`event_type`),
+  KEY `idx_product` (`product_id`),
+  KEY `idx_date` (`created_at`),
+  KEY `idx_session` (`session_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `sites` (
   `id` int(11) NOT NULL,
@@ -1201,6 +2769,21 @@ CREATE TABLE IF NOT EXISTS `social_accounts` (
   UNIQUE KEY `uk_platform` (`platform`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+CREATE TABLE IF NOT EXISTS `social_analytics` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `post_id` int(11) NOT NULL,
+  `impressions` int(11) DEFAULT 0,
+  `clicks` int(11) DEFAULT 0,
+  `likes` int(11) DEFAULT 0,
+  `shares` int(11) DEFAULT 0,
+  `comments` int(11) DEFAULT 0,
+  `reach` int(11) DEFAULT 0,
+  `fetched_at` datetime DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  KEY `idx_post` (`post_id`),
+  CONSTRAINT `social_analytics_ibfk_1` FOREIGN KEY (`post_id`) REFERENCES `social_posts` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
 CREATE TABLE IF NOT EXISTS `social_posts` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `article_id` int(11) DEFAULT NULL,
@@ -1212,6 +2795,8 @@ CREATE TABLE IF NOT EXISTS `social_posts` (
   `scheduled_at` datetime DEFAULT NULL,
   `published_at` datetime DEFAULT NULL,
   `status` enum('draft','scheduled','published','failed') DEFAULT 'draft',
+  `engagement_score` int(11) DEFAULT 0,
+  `sort_order` int(11) DEFAULT 0,
   `external_id` varchar(255) DEFAULT NULL,
   `error_message` text DEFAULT NULL,
   `engagement` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`engagement`)),
@@ -1343,82 +2928,6 @@ CREATE TABLE IF NOT EXISTS `widgets` (
   KEY `idx_widgets_active` (`is_active`)
 ) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-
--- ═══════════════════════════════════════════════════════════
--- SHOP EXTENSIONS
--- ═══════════════════════════════════════════════════════════
-
-CREATE TABLE IF NOT EXISTS `coupons` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `code` varchar(50) NOT NULL,
-  `type` enum('percentage','fixed','free_shipping') NOT NULL DEFAULT 'percentage',
-  `value` decimal(10,2) NOT NULL DEFAULT 0.00,
-  `min_order` decimal(10,2) DEFAULT NULL,
-  `max_discount` decimal(10,2) DEFAULT NULL,
-  `max_uses` int(11) DEFAULT NULL,
-  `used_count` int(11) NOT NULL DEFAULT 0,
-  `per_customer_limit` int(11) DEFAULT 1,
-  `valid_from` datetime DEFAULT NULL,
-  `valid_until` datetime DEFAULT NULL,
-  `applies_to` enum('all','category','product') DEFAULT 'all',
-  `applies_to_ids` text DEFAULT NULL,
-  `status` enum('active','inactive') DEFAULT 'active',
-  `created_at` datetime DEFAULT current_timestamp(),
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `code` (`code`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-CREATE TABLE IF NOT EXISTS `product_variants` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `product_id` int(11) NOT NULL,
-  `variant_name` varchar(255) NOT NULL,
-  `options` longtext DEFAULT NULL,
-  `price` decimal(10,2) DEFAULT NULL,
-  `sale_price` decimal(10,2) DEFAULT NULL,
-  `sku` varchar(100) DEFAULT NULL,
-  `stock` int(11) DEFAULT -1,
-  `image` varchar(500) DEFAULT NULL,
-  `sort_order` int(11) DEFAULT 0,
-  `status` enum('active','inactive') DEFAULT 'active',
-  `created_at` datetime DEFAULT current_timestamp(),
-  PRIMARY KEY (`id`),
-  KEY `idx_product` (`product_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-CREATE TABLE IF NOT EXISTS `product_reviews` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `product_id` int(11) NOT NULL,
-  `customer_name` varchar(255) NOT NULL,
-  `customer_email` varchar(255) NOT NULL,
-  `rating` tinyint(4) NOT NULL,
-  `title` varchar(255) DEFAULT NULL,
-  `review_text` text DEFAULT NULL,
-  `status` enum('pending','approved','rejected') DEFAULT 'pending',
-  `admin_reply` text DEFAULT NULL,
-  `is_verified_purchase` tinyint(1) DEFAULT 0,
-  `helpful_count` int(11) DEFAULT 0,
-  `created_at` datetime DEFAULT current_timestamp(),
-  PRIMARY KEY (`id`),
-  KEY `idx_product` (`product_id`),
-  KEY `idx_status` (`status`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-CREATE TABLE IF NOT EXISTS `digital_downloads` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `token` varchar(128) NOT NULL,
-  `product_id` int(11) NOT NULL,
-  `order_id` int(11) NOT NULL,
-  `customer_email` varchar(255) NOT NULL,
-  `downloads_count` int(11) DEFAULT 0,
-  `max_downloads` int(11) DEFAULT 3,
-  `expires_at` datetime NOT NULL,
-  `created_at` datetime DEFAULT current_timestamp(),
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `token` (`token`),
-  KEY `idx_order` (`order_id`),
-  KEY `idx_product` (`product_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
 CREATE TABLE IF NOT EXISTS `wishlists` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `session_id` varchar(128) NOT NULL,
@@ -1426,350 +2935,9 @@ CREATE TABLE IF NOT EXISTS `wishlists` (
   `created_at` datetime DEFAULT current_timestamp(),
   PRIMARY KEY (`id`),
   UNIQUE KEY `unique_wish` (`session_id`,`product_id`),
-  KEY `idx_session` (`session_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-CREATE TABLE IF NOT EXISTS `shop_analytics` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `event_type` enum('view','add_to_cart','checkout','purchase','search') NOT NULL,
-  `product_id` int(11) DEFAULT NULL,
-  `order_id` int(11) DEFAULT NULL,
-  `session_id` varchar(128) DEFAULT NULL,
-  `amount` decimal(10,2) DEFAULT NULL,
-  `meta` longtext DEFAULT NULL,
-  `created_at` datetime DEFAULT current_timestamp(),
-  PRIMARY KEY (`id`),
-  KEY `idx_event` (`event_type`),
-  KEY `idx_product` (`product_id`),
-  KEY `idx_date` (`created_at`),
-  KEY `idx_session` (`session_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-CREATE TABLE IF NOT EXISTS `abandoned_carts` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `session_id` varchar(128) NOT NULL,
-  `customer_email` varchar(255) DEFAULT NULL,
-  `items` longtext NOT NULL,
-  `subtotal` decimal(10,2) DEFAULT 0.00,
-  `reminder_sent_at` datetime DEFAULT NULL,
-  `reminder_count` int(11) DEFAULT 0,
-  `recovered` tinyint(1) DEFAULT 0,
-  `created_at` datetime DEFAULT current_timestamp(),
-  `updated_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  PRIMARY KEY (`id`),
   KEY `idx_session` (`session_id`),
-  KEY `idx_email` (`customer_email`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  KEY `product_id` (`product_id`),
+  CONSTRAINT `wishlists_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- ═══════════════════════════════════════════════════════════
--- DROPSHIPPING
--- ═══════════════════════════════════════════════════════════
-
-CREATE TABLE IF NOT EXISTS `ds_suppliers` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL,
-  `type` enum('aliexpress','cjdropshipping','generic_api','csv','manual') DEFAULT 'manual',
-  `website` varchar(500) DEFAULT NULL,
-  `api_key` varchar(500) DEFAULT NULL,
-  `api_secret` varchar(500) DEFAULT NULL,
-  `api_base_url` varchar(500) DEFAULT NULL,
-  `contact_email` varchar(255) DEFAULT NULL,
-  `contact_name` varchar(255) DEFAULT NULL,
-  `notes` text DEFAULT NULL,
-  `settings` longtext DEFAULT NULL,
-  `status` enum('active','inactive') DEFAULT 'active',
-  `products_count` int(11) DEFAULT 0,
-  `created_at` timestamp NULL DEFAULT current_timestamp(),
-  `updated_at` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-CREATE TABLE IF NOT EXISTS `ds_product_links` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `product_id` int(11) NOT NULL,
-  `supplier_id` int(11) NOT NULL,
-  `supplier_product_id` varchar(255) DEFAULT NULL,
-  `supplier_product_url` varchar(1000) DEFAULT NULL,
-  `supplier_price` decimal(10,2) DEFAULT NULL,
-  `supplier_currency` varchar(10) DEFAULT 'USD',
-  `supplier_sku` varchar(255) DEFAULT NULL,
-  `our_price` decimal(10,2) DEFAULT NULL,
-  `profit_margin` decimal(10,2) DEFAULT NULL,
-  `variant_mapping` longtext DEFAULT NULL,
-  `last_sync_at` timestamp NULL DEFAULT NULL,
-  `sync_status` enum('synced','pending','error','never') DEFAULT 'never',
-  `auto_sync` tinyint(1) DEFAULT 1,
-  `notes` text DEFAULT NULL,
-  `created_at` timestamp NULL DEFAULT current_timestamp(),
-  `updated_at` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `unique_product_supplier` (`product_id`,`supplier_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-CREATE TABLE IF NOT EXISTS `ds_imports` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `source_url` varchar(1000) DEFAULT NULL,
-  `source_type` enum('url','csv','api','manual') DEFAULT 'url',
-  `supplier_id` int(11) DEFAULT NULL,
-  `status` enum('pending','processing','completed','failed') DEFAULT 'pending',
-  `product_id` int(11) DEFAULT NULL,
-  `imported_data` longtext DEFAULT NULL,
-  `ai_processed` tinyint(1) DEFAULT 0,
-  `ai_results` longtext DEFAULT NULL,
-  `error_message` text DEFAULT NULL,
-  `created_at` timestamp NULL DEFAULT current_timestamp(),
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-CREATE TABLE IF NOT EXISTS `ds_order_forwards` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `order_id` int(11) NOT NULL,
-  `supplier_id` int(11) NOT NULL,
-  `supplier_order_id` varchar(255) DEFAULT NULL,
-  `status` enum('pending','sent','confirmed','shipped','delivered','failed','cancelled') DEFAULT 'pending',
-  `tracking_number` varchar(255) DEFAULT NULL,
-  `tracking_url` varchar(500) DEFAULT NULL,
-  `cost_total` decimal(10,2) DEFAULT NULL,
-  `notes` text DEFAULT NULL,
-  `response_data` longtext DEFAULT NULL,
-  `forwarded_at` timestamp NULL DEFAULT NULL,
-  `created_at` timestamp NULL DEFAULT current_timestamp(),
-  `updated_at` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-CREATE TABLE IF NOT EXISTS `ds_price_rules` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL,
-  `type` enum('multiplier','fixed_markup','percentage_markup') DEFAULT 'multiplier',
-  `value` decimal(10,4) NOT NULL,
-  `apply_to` enum('all','category','supplier','product') DEFAULT 'all',
-  `apply_to_id` int(11) DEFAULT NULL,
-  `min_price` decimal(10,2) DEFAULT 0.00,
-  `max_price` decimal(10,2) DEFAULT 0.00,
-  `round_to` enum('none','0.99','0.95','0.00') DEFAULT '0.99',
-  `priority` int(11) DEFAULT 0,
-  `status` enum('active','inactive') DEFAULT 'active',
-  `created_at` timestamp NULL DEFAULT current_timestamp(),
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- ============================================================
--- SHOP EXTENSIONS (v0.10.0+)
--- ============================================================
-
-CREATE TABLE IF NOT EXISTS coupons (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    code VARCHAR(50) NOT NULL UNIQUE,
-    type VARCHAR(20) NOT NULL DEFAULT "percentage",
-    value DECIMAL(10,2) NOT NULL DEFAULT 0,
-    min_order DECIMAL(10,2) DEFAULT NULL,
-    max_discount DECIMAL(10,2) DEFAULT NULL,
-    max_uses INT DEFAULT NULL,
-    per_customer_limit INT DEFAULT 1,
-    used_count INT DEFAULT 0,
-    valid_from DATETIME DEFAULT NULL,
-    valid_until DATETIME DEFAULT NULL,
-    applies_to VARCHAR(20) DEFAULT "all",
-    applies_to_ids TEXT DEFAULT NULL,
-    status VARCHAR(20) DEFAULT "active",
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    INDEX idx_code (code),
-    INDEX idx_status (status)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
-CREATE TABLE IF NOT EXISTS product_variants (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    product_id INT NOT NULL,
-    variant_name VARCHAR(255) NOT NULL DEFAULT "",
-    options JSON DEFAULT NULL,
-    price DECIMAL(10,2) DEFAULT NULL,
-    sale_price DECIMAL(10,2) DEFAULT NULL,
-    sku VARCHAR(100) DEFAULT NULL,
-    stock INT DEFAULT -1,
-    image VARCHAR(500) DEFAULT NULL,
-    sort_order INT DEFAULT 0,
-    status VARCHAR(20) DEFAULT "active",
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    INDEX idx_product (product_id),
-    INDEX idx_sku (sku)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
-CREATE TABLE IF NOT EXISTS product_reviews (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    product_id INT NOT NULL,
-    customer_name VARCHAR(255) NOT NULL,
-    customer_email VARCHAR(255) NOT NULL,
-    rating TINYINT NOT NULL,
-    title VARCHAR(255) DEFAULT "",
-    review_text TEXT DEFAULT NULL,
-    status VARCHAR(20) DEFAULT "pending",
-    is_verified_purchase TINYINT(1) DEFAULT 0,
-    admin_reply TEXT DEFAULT NULL,
-    helpful_count INT DEFAULT 0,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    INDEX idx_product (product_id),
-    INDEX idx_status (status),
-    INDEX idx_rating (rating)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
-CREATE TABLE IF NOT EXISTS digital_downloads (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    token VARCHAR(64) NOT NULL UNIQUE,
-    product_id INT NOT NULL,
-    order_id INT NOT NULL,
-    customer_email VARCHAR(255) NOT NULL,
-    max_downloads INT DEFAULT 3,
-    downloads_count INT DEFAULT 0,
-    expires_at DATETIME NOT NULL,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    INDEX idx_token (token),
-    INDEX idx_order (order_id),
-    INDEX idx_product (product_id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
-CREATE TABLE IF NOT EXISTS wishlists (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    session_id VARCHAR(128) NOT NULL,
-    product_id INT NOT NULL,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    UNIQUE KEY uq_session_product (session_id, product_id),
-    INDEX idx_session (session_id),
-    INDEX idx_product (product_id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
-CREATE TABLE IF NOT EXISTS shop_analytics (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    event_type VARCHAR(50) NOT NULL,
-    product_id INT DEFAULT NULL,
-    order_id INT DEFAULT NULL,
-    session_id VARCHAR(128) DEFAULT NULL,
-    amount DECIMAL(10,2) DEFAULT NULL,
-    meta JSON DEFAULT NULL,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    INDEX idx_event (event_type),
-    INDEX idx_product (product_id),
-    INDEX idx_session (session_id),
-    INDEX idx_created (created_at)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
-CREATE TABLE IF NOT EXISTS abandoned_carts (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    session_id VARCHAR(128) NOT NULL,
-    customer_email VARCHAR(255) DEFAULT NULL,
-    items JSON NOT NULL,
-    subtotal DECIMAL(10,2) DEFAULT 0,
-    reminder_sent_at DATETIME DEFAULT NULL,
-    reminder_count INT DEFAULT 0,
-    recovered TINYINT(1) DEFAULT 0,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    INDEX idx_session (session_id),
-    INDEX idx_email (customer_email),
-    INDEX idx_reminder (reminder_sent_at)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
--- ============================================================
--- DROPSHIPPING (v0.11.0+)
--- ============================================================
-
-CREATE TABLE IF NOT EXISTS ds_suppliers (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
-    type VARCHAR(50) DEFAULT "manual",
-    website VARCHAR(500) DEFAULT "",
-    api_key VARCHAR(500) DEFAULT "",
-    api_secret VARCHAR(500) DEFAULT "",
-    api_base_url VARCHAR(500) DEFAULT "",
-    contact_email VARCHAR(255) DEFAULT "",
-    contact_name VARCHAR(255) DEFAULT "",
-    notes TEXT DEFAULT NULL,
-    settings JSON DEFAULT NULL,
-    products_count INT DEFAULT 0,
-    status VARCHAR(20) DEFAULT "active",
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    INDEX idx_status (status),
-    INDEX idx_type (type)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
-CREATE TABLE IF NOT EXISTS ds_product_links (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    product_id INT NOT NULL,
-    supplier_id INT NOT NULL,
-    supplier_product_id VARCHAR(255) DEFAULT NULL,
-    supplier_product_url TEXT DEFAULT NULL,
-    supplier_price DECIMAL(10,2) DEFAULT NULL,
-    supplier_currency VARCHAR(10) DEFAULT "USD",
-    supplier_sku VARCHAR(100) DEFAULT NULL,
-    our_price DECIMAL(10,2) DEFAULT NULL,
-    profit_margin DECIMAL(10,2) DEFAULT NULL,
-    variant_mapping JSON DEFAULT NULL,
-    notes TEXT DEFAULT NULL,
-    sync_status VARCHAR(20) DEFAULT "pending",
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    UNIQUE KEY uq_product_supplier (product_id, supplier_id),
-    INDEX idx_supplier (supplier_id),
-    INDEX idx_sync (sync_status)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
-CREATE TABLE IF NOT EXISTS ds_imports (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    source_url TEXT DEFAULT NULL,
-    source_type VARCHAR(50) DEFAULT "url",
-    supplier_id INT DEFAULT NULL,
-    product_id INT DEFAULT NULL,
-    status VARCHAR(20) DEFAULT "pending",
-    imported_data JSON DEFAULT NULL,
-    ai_processed TINYINT(1) DEFAULT 0,
-    ai_results JSON DEFAULT NULL,
-    error_message TEXT DEFAULT NULL,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    INDEX idx_status (status),
-    INDEX idx_supplier (supplier_id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
-CREATE TABLE IF NOT EXISTS ds_order_forwards (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    order_id INT NOT NULL,
-    supplier_id INT NOT NULL,
-    supplier_order_id VARCHAR(255) DEFAULT NULL,
-    status VARCHAR(20) DEFAULT "pending",
-    cost_total DECIMAL(10,2) DEFAULT 0,
-    tracking_number VARCHAR(255) DEFAULT NULL,
-    tracking_url VARCHAR(500) DEFAULT NULL,
-    notes TEXT DEFAULT NULL,
-    response_data JSON DEFAULT NULL,
-    forwarded_at DATETIME DEFAULT NULL,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    updated_at DATETIME DEFAULT NULL,
-    INDEX idx_order (order_id),
-    INDEX idx_supplier (supplier_id),
-    INDEX idx_status (status)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
-CREATE TABLE IF NOT EXISTS ds_price_rules (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
-    type VARCHAR(30) DEFAULT "multiplier",
-    value DECIMAL(10,2) DEFAULT 2.00,
-    apply_to VARCHAR(20) DEFAULT "all",
-    apply_to_id INT DEFAULT NULL,
-    min_price DECIMAL(10,2) DEFAULT 0,
-    max_price DECIMAL(10,2) DEFAULT 0,
-    round_to VARCHAR(10) DEFAULT "0.99",
-    priority INT DEFAULT 0,
-    status VARCHAR(20) DEFAULT "active",
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    INDEX idx_status (status),
-    INDEX idx_priority (priority)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
--- ============================================================
--- SaaS PLATFORM (v0.12.0+)
--- Note: Plugin tables are created by plugin install.php
--- These are included for completeness / fresh install
--- ============================================================
-
--- SaaS Core tables created by jessie-saas-core/install.php
--- SaaS tool tables created by respective plugin install.php
--- Plugin domain tables created by respective plugin install.php
+SET FOREIGN_KEY_CHECKS = 1;

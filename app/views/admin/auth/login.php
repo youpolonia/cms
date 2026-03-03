@@ -125,6 +125,10 @@
 
             <button type="submit" class="btn-login">Sign In</button>
         </form>
+
+        <p style="text-align:center;margin-top:1.5rem;">
+            <a href="/admin/forgot-password" style="color:#6366f1;font-size:0.875rem;text-decoration:none;">Forgot your password?</a>
+        </p>
     </div>
 </body>
 </html>

@@ -11,13 +11,21 @@ This is **Jessie AI-CMS** — a custom PHP 8.2+ CMS built **without Laravel or a
 - **Database**: MySQL 5.7+ or MariaDB 10.3+
 - **Web Server**: Apache with mod_rewrite (WSL or Linux)
 
-**Current Status** (2026-02-09):
-- ✅ 567 PHP files, 55 database tables, 1,145 total files
-- ✅ 60 unit tests (custom TestRunner, no PHPUnit)
+**Current Status** (2026-03-03, v0.17.0 "Production Ready"):
+- ✅ 1,524 PHP files, 166 database tables, 2,634 total files
+- ✅ 143 unit tests (102 core + 41 plugin, custom TestRunner, no PHPUnit)
+- ✅ 515 MVC routes, 57 admin + 12 front controllers
+- ✅ 19 plugins (11 industry + JTB + 4 SaaS + saas-core + shared)
+- ✅ 46 themes (8 starter + 38 AI-generated industry themes)
 - ✅ Zero framework dependencies
 - ✅ Complete CSRF protection coverage
+- ✅ Password reset (email token, rate-limited, secure)
 - ✅ JTB (Jessie Theme Builder) — visual page builder with 79 modules + AI integration
-- ✅ MVC architecture for admin (39 controllers) + legacy admin pages (43 total)
+- ✅ AI Theme Builder — full theme generation with sections, header patterns, content seeding
+- ✅ MVC architecture for admin (57 controllers) + legacy admin pages (45 total)
+- ✅ Payment gateway (Stripe/PayPal/Bank/COD) integrated with Booking, Membership, Events
+- ✅ AI Tutor + Floating Assistant Widget on every admin page
+- ✅ Admin mega-menu (24→8 top-level items with dynamic plugin detection)
 
 ### Critical Constraints
 - **NO FRAMEWORKS**: Do not use Laravel, Symfony, CodeIgniter, or any framework
@@ -190,15 +198,15 @@ Router::post('/admin/articles/store', 'Admin\ArticlesController@store');
 ```
 
 ### Controllers
-**Admin** (39 in `app/controllers/admin/`):
+**Admin** (57 in `app/controllers/admin/`):
 Analytics, Articles, Auth, AutomationRules, Automations, Backup, Categories, Comments,
 Content, Dashboard, EmailCampaigns, EmailQueue, EmailSettings, Extensions, Galleries,
 Gdpr, JtbApi, Jtb, Logs, Maintenance, Media, Menus, Migrations, Modules, N8nBindings,
 N8nSettings, Notifications, Pages, Plugins, Profile, Scheduler, Search, SecurityDashboard,
 ThemeEditor, Themes, Urls, Users, VersionControl, Widgets
 
-**Front** (5 in `app/controllers/front/`):
-Article, Articles, Features, Home, Page
+**Front** (12 in `app/controllers/front/`):
+Article, Articles, Chat, Contact, Feed, Form, Gallery, Home, Page, Search, Seo, Shop
 
 ### Autoloader
 SPL autoloader in `index.php`: `Admin\SomeController` → `app/controllers/admin/somecontroller.php`
@@ -246,22 +254,37 @@ plugins/jessie-xxx/
 **DB**: `install.php` runs on activate()  
 **Infra**: PluginLoader, PluginInterface, EnhancedPluginInterface, HookManager
 
-### Installed Plugins (11)
+### Installed Plugins (19)
+
+**Industry Plugins (11):**
 | Plugin | Tables | API | Frontend |
 |--------|--------|-----|----------|
-| Booking | 4 | 14 | widget |
-| Newsletter+ | 6 | 14+ | subscribe |
-| Membership | 4 | 12 | /pricing |
-| LMS | 5 | 10 | — |
-| Directory | 4 | 14 | /directory |
-| Restaurant | 4 | 14+ | /order |
-| Real Estate | 4 | 10 | /properties |
-| Job Board | 4 | 10 | /jobs |
-| Events | 4 | 10 | /events |
-| Affiliate | 5 | 10 | /affiliate |
-| Portfolio | 4 | 8 | /portfolio |
+| Booking | 4 | 20 | /booking (4-step wizard + payment) |
+| Newsletter+ | 6 | 14+ | /newsletter (preferences, unsubscribe) |
+| Membership | 4 | 12 | /membership (signup + payment, portal) |
+| LMS | 7 | 30 | /courses (browse, detail, reviews, certs) |
+| Directory | 4 | 14 | /directory (map/grid toggle) |
+| Restaurant | 4 | 14+ | /order (cart + checkout) |
+| Real Estate | 4 | 10 | /properties (map/grid toggle) |
+| Job Board | 4 | 10 | /jobs (browse, detail) |
+| Events | 4 | 10 | /events (tickets + payment + iCal) |
+| Affiliate | 5 | 10 | /affiliate (dashboard, payouts) |
+| Portfolio | 4 | 8 | /portfolio (gallery, testimonials) |
 
-**Total: 184 plugin files, 50 DB tables, 100+ API endpoints**
+**SaaS Plugins (7):**
+| Plugin | Purpose |
+|--------|---------|
+| saas-core | Shared SaaS infra (plans, subscriptions, billing) |
+| seowriter | SEO audit, keyword tracking, AI content |
+| copywriter | AI copywriting, brand voices, bulk batches |
+| imagestudio | AI image gen, remove BG, enhance, alt text |
+| social | Social media scheduler, calendar, analytics |
+| emailmarketing | Campaigns, automations, A/B testing, lists |
+| analytics | Events, goals, funnels, realtime, AI insights |
+
+**Shared Libraries:** `plugins/shared/` — jessie-frontend.js/css, jessie-map.js, jessie-ical.php, jessie-notify.php
+
+**Total: ~300 plugin files, 80+ DB tables, 200+ API endpoints**
 
 ### Tests
 - Core: `tests/run_all_tests.php` — 102 tests
@@ -350,7 +373,7 @@ plugins/jessie-theme-builder/
 - Admin auth via `AuthController::requireLogin()`
 - JWT-based worker authentication
 
-## Database Schema (55 tables)
+## Database Schema (166 tables)
 
 ### Content
 `articles`, `article_categories`, `categories`, `comments`, `content`, `content_blocks`, `content_versions`, `pages`
@@ -388,7 +411,9 @@ No PHPUnit — uses `tests/TestRunner.php`:
 sudo -u www-data php /var/www/cms/tests/run_all_tests.php
 ```
 
-### Test Files (13 files, 60 tests)
+### Test Files (20 files, 143 tests)
+
+**Core Tests (18 files, 102 tests):**
 - **DatabaseTest** (6): connection, query, prepared statements
 - **RouterTest** (5): route matching, parameters
 - **CsrfTest** (5): token generation, validation
@@ -402,6 +427,14 @@ sudo -u www-data php /var/www/cms/tests/run_all_tests.php
 - **AiConfigTest** (3): provider config
 - **EventBusTest** (3): event dispatch/listen
 - **MvcControllersTest** (4): controller loading
+- **ContentRendererTest** (8): rendering, toText, legacy
+- **RateLimitTest** (4): login attempts, rate limiting
+- **ImageOptimizerTest** (6): GD, resize, WebP, srcset
+- **ModelTest** (13): BaseModel CRUD, Article, Page, Media models
+- **ApiTest** (11): pagination, sanitization, controller instantiation, CORS
+
+**Plugin Tests (1 file, 41 tests):**
+- All 11 industry plugins: tables exist, class instantiation, CRUD operations
 
 ## Code Standards
 
