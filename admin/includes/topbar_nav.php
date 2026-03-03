@@ -1,14 +1,14 @@
 <?php
 /**
- * Unified Topbar Navigation - Two Row Layout (Professional Design)
- * Single source of truth - uses admin_menu.php for menu configuration
- * Works for both legacy and MVC modules
+ * Unified Topbar Navigation v2.0 — Mega-Menu Support
+ * Supports type=link, type=dropdown, type=mega (multi-column sections)
+ * Single source of truth — reads admin_menu.php
  */
 if (!defined('CMS_ROOT')) {
     define('CMS_ROOT', dirname(dirname(__DIR__)));
 }
 
-require_once CMS_ROOT . '/admin/includes/admin_menu.php';
+require_once CMS_ROOT . '/core/session.php';
 
 $adminUsername = $_SESSION['admin_username'] ?? $_SESSION['cms_admin_username'] ?? 'Admin';
 $currentPath = strtok($_SERVER['REQUEST_URI'] ?? '/', '?') ?: '/';
@@ -26,21 +26,30 @@ function unified_dropdown_active(array $items): string {
     global $currentPath;
     $path = $currentPath ?? '/';
     foreach ($items as $item) {
-        if (strpos($path, $item['url']) === 0) {
-            return 'active';
+        if (!empty($item['url']) && strpos($path, $item['url']) === 0) return 'active';
+    }
+    return '';
+}
+
+function unified_mega_active(array $sections): string {
+    global $currentPath;
+    $path = $currentPath ?? '/';
+    foreach ($sections as $section) {
+        foreach ($section['items'] ?? [] as $item) {
+            if (!empty($item['url']) && strpos($path, $item['url']) === 0) return 'active';
         }
     }
     return '';
 }
 
-// Get menu from centralized config
 $menu = require CMS_ROOT . '/admin/includes/admin_menu.php';
 ?>
 <style>
-/* CRITICAL: Prevent horizontal overflow at root level */
+/* ════════════════════════════════════════════
+   TOPBAR v2.0 — Mega-Menu Navigation
+   ════════════════════════════════════════════ */
 html,body{max-width:100vw!important;overflow-x:hidden!important}
 
-/* Two-row topbar layout */
 .legacy-topbar{background:linear-gradient(180deg,#1a1a2e 0%,#16162a 100%);border-bottom:1px solid rgba(255,255,255,0.06);position:sticky;top:0;z-index:9999;font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;width:100%;max-width:100vw;box-sizing:border-box;backdrop-filter:blur(20px)}
 
 /* Row 1: Logo + User */
@@ -50,7 +59,7 @@ html,body{max-width:100vw!important;overflow-x:hidden!important}
 .legacy-topbar .logo-icon img{width:28px;height:28px}
 .legacy-topbar .logo span:last-child{background:linear-gradient(135deg,#e0e7ff 0%,#c7d2fe 50%,#a5b4fc 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 
-/* Row 1 Right side */
+/* Row 1 Right */
 .legacy-topbar .topbar-right{display:flex;align-items:center;gap:10px;flex-shrink:0}
 .legacy-topbar .icon-btn{width:36px;height:36px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06);border-radius:10px;cursor:pointer;font-size:15px;transition:all .2s cubic-bezier(0.4,0,0.2,1);text-decoration:none;color:#94a3b8}
 .legacy-topbar .icon-btn:hover{border-color:rgba(139,92,246,0.4);background:rgba(139,92,246,0.1);color:#e2e8f0;transform:translateY(-1px)}
@@ -60,7 +69,7 @@ html,body{max-width:100vw!important;overflow-x:hidden!important}
 .legacy-topbar .user-name{font-size:13px;font-weight:500;color:#e2e8f0}
 
 /* Row 2: Navigation */
-.legacy-topbar-row2{width:100%;max-width:100%;padding:0 20px;height:44px;display:flex;align-items:center;gap:4px;overflow:visible;box-sizing:border-box;flex-wrap:wrap}
+.legacy-topbar-row2{width:100%;max-width:100%;padding:0 20px;height:44px;display:flex;align-items:center;gap:4px;overflow:visible;box-sizing:border-box;flex-wrap:nowrap}
 
 /* Nav items */
 .legacy-topbar .nav-link{display:inline-flex;align-items:center;gap:5px;padding:0 12px;font-size:13px;font-weight:500;color:#94a3b8;border-radius:8px;transition:all .2s cubic-bezier(0.4,0,0.2,1);cursor:pointer;background:none;border:none;text-decoration:none;height:34px;white-space:nowrap;flex-shrink:0;letter-spacing:-0.1px}
@@ -70,9 +79,10 @@ html,body{max-width:100vw!important;overflow-x:hidden!important}
 .legacy-topbar .nav-link .arrow{font-size:10px;opacity:0.6;margin-left:2px;transition:transform .2s}
 .legacy-topbar .nav-dropdown:hover .nav-link .arrow{transform:rotate(180deg)}
 
-/* Dropdowns - Professional glassmorphism design */
+/* ─── Dropdown container ─── */
 .legacy-topbar .nav-dropdown{position:relative;display:inline-flex;align-items:center;flex-shrink:0}
 
+/* ─── Regular dropdown ─── */
 .legacy-topbar .nav-dropdown-menu{
     position:absolute;
     top:calc(100% + 8px);
@@ -82,11 +92,7 @@ html,body{max-width:100vw!important;overflow-x:hidden!important}
     backdrop-filter:blur(20px);
     border:1px solid rgba(255,255,255,0.08);
     border-radius:16px;
-    box-shadow:
-        0 4px 6px -1px rgba(0,0,0,0.2),
-        0 10px 20px -5px rgba(0,0,0,0.3),
-        0 25px 50px -12px rgba(0,0,0,0.4),
-        inset 0 1px 0 rgba(255,255,255,0.05);
+    box-shadow:0 4px 6px -1px rgba(0,0,0,0.2),0 10px 20px -5px rgba(0,0,0,0.3),0 25px 50px -12px rgba(0,0,0,0.4),inset 0 1px 0 rgba(255,255,255,0.05);
     min-width:220px;
     max-width:280px;
     max-height:75vh;
@@ -98,146 +104,136 @@ html,body{max-width:100vw!important;overflow-x:hidden!important}
     transition:all .25s cubic-bezier(0.4,0,0.2,1);
     z-index:10000
 }
-
 .legacy-topbar .nav-dropdown-menu::-webkit-scrollbar{width:6px}
 .legacy-topbar .nav-dropdown-menu::-webkit-scrollbar-track{background:transparent}
 .legacy-topbar .nav-dropdown-menu::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.1);border-radius:3px}
-.legacy-topbar .nav-dropdown-menu::-webkit-scrollbar-thumb:hover{background:rgba(255,255,255,0.2)}
 
-.legacy-topbar .nav-dropdown:hover .nav-dropdown-menu{
-    opacity:1;
-    visibility:visible;
-    transform:translateX(-50%) translateY(0)
+.legacy-topbar .nav-dropdown:hover>.nav-dropdown-menu{
+    opacity:1;visibility:visible;transform:translateX(-50%) translateY(0)
 }
 
-/* Dropdown header/title */
+/* Arrow triangle */
 .legacy-topbar .nav-dropdown-menu::before{
-    content:'';
-    position:absolute;
-    top:-6px;
-    left:50%;
-    transform:translateX(-50%);
-    width:12px;
-    height:12px;
+    content:'';position:absolute;top:-6px;left:50%;width:12px;height:12px;
     background:linear-gradient(135deg,rgba(30,30,46,0.98),rgba(30,30,46,0.98));
-    border-left:1px solid rgba(255,255,255,0.08);
-    border-top:1px solid rgba(255,255,255,0.08);
-    transform:translateX(-50%) rotate(45deg);
-    border-radius:3px 0 0 0
+    border-left:1px solid rgba(255,255,255,0.08);border-top:1px solid rgba(255,255,255,0.08);
+    transform:translateX(-50%) rotate(45deg);border-radius:3px 0 0 0
 }
 
-/* Menu items */
+/* Menu item links */
 .legacy-topbar .nav-dropdown-menu a{
-    display:flex;
-    align-items:center;
-    gap:12px;
-    padding:10px 14px;
-    font-size:13px;
-    font-weight:500;
-    color:#a1a1aa;
-    border-radius:10px;
-    text-decoration:none;
-    transition:all .15s cubic-bezier(0.4,0,0.2,1);
-    white-space:nowrap;
-    position:relative;
-    overflow:hidden
+    display:flex;align-items:center;gap:10px;padding:9px 14px;font-size:13px;font-weight:500;
+    color:#a1a1aa;border-radius:10px;text-decoration:none;transition:all .15s cubic-bezier(0.4,0,0.2,1);
+    white-space:nowrap;position:relative;overflow:hidden
 }
-
 .legacy-topbar .nav-dropdown-menu a .menu-icon{
-    width:32px;
-    height:32px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    background:rgba(255,255,255,0.04);
-    border-radius:8px;
-    font-size:15px;
-    flex-shrink:0;
-    transition:all .15s
+    width:28px;height:28px;display:flex;align-items:center;justify-content:center;
+    background:rgba(255,255,255,0.04);border-radius:7px;font-size:14px;flex-shrink:0;transition:all .15s
 }
-
-.legacy-topbar .nav-dropdown-menu a .menu-text{
-    flex:1;
-    display:flex;
-    flex-direction:column;
-    gap:2px
-}
-
-.legacy-topbar .nav-dropdown-menu a .menu-label{
-    font-weight:500;
-    color:#e2e8f0;
-    font-size:13px
-}
-
-.legacy-topbar .nav-dropdown-menu a .menu-desc{
-    font-size:11px;
-    color:#64748b;
-    font-weight:400
-}
+.legacy-topbar .nav-dropdown-menu a .menu-label{font-weight:500;color:#e2e8f0;font-size:13px}
 
 .legacy-topbar .nav-dropdown-menu a:hover{
-    background:linear-gradient(135deg,rgba(139,92,246,0.12),rgba(99,102,241,0.08));
-    color:#e2e8f0
+    background:linear-gradient(135deg,rgba(139,92,246,0.12),rgba(99,102,241,0.08));color:#e2e8f0
 }
-
 .legacy-topbar .nav-dropdown-menu a:hover .menu-icon{
-    background:linear-gradient(135deg,rgba(139,92,246,0.2),rgba(99,102,241,0.15));
-    transform:scale(1.05)
+    background:linear-gradient(135deg,rgba(139,92,246,0.2),rgba(99,102,241,0.15));transform:scale(1.05)
+}
+.legacy-topbar .nav-dropdown-menu a:hover .menu-label{color:#fff}
+
+/* Divider & Section label */
+.legacy-topbar .nav-dropdown-menu .menu-divider{height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.06),transparent);margin:6px 8px}
+.legacy-topbar .nav-dropdown-menu .menu-section{padding:8px 14px 4px;font-size:10px;font-weight:600;color:#64748b;text-transform:uppercase;letter-spacing:1px}
+
+/* ════════════════════════════════════════════
+   MEGA-MENU — Multi-column sections
+   ════════════════════════════════════════════ */
+.legacy-topbar .mega-dropdown-menu{
+    position:absolute;
+    top:calc(100% + 8px);
+    left:50%;
+    transform:translateX(-50%) translateY(10px);
+    background:linear-gradient(180deg,rgba(26,26,46,0.99) 0%,rgba(22,22,40,0.99) 100%);
+    backdrop-filter:blur(24px);
+    border:1px solid rgba(255,255,255,0.08);
+    border-radius:16px;
+    box-shadow:0 8px 16px rgba(0,0,0,0.25),0 20px 40px rgba(0,0,0,0.35),inset 0 1px 0 rgba(255,255,255,0.06);
+    padding:16px;
+    opacity:0;
+    visibility:hidden;
+    transition:all .25s cubic-bezier(0.4,0,0.2,1);
+    z-index:10000;
+    max-height:80vh;
+    overflow-y:auto
+}
+.legacy-topbar .mega-dropdown-menu::-webkit-scrollbar{width:6px}
+.legacy-topbar .mega-dropdown-menu::-webkit-scrollbar-track{background:transparent}
+.legacy-topbar .mega-dropdown-menu::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.1);border-radius:3px}
+
+.legacy-topbar .nav-dropdown:hover>.mega-dropdown-menu{
+    opacity:1;visibility:visible;transform:translateX(-50%) translateY(0)
+}
+.legacy-topbar .mega-dropdown-menu::before{
+    content:'';position:absolute;top:-6px;left:50%;width:12px;height:12px;
+    background:rgba(26,26,46,0.99);
+    border-left:1px solid rgba(255,255,255,0.08);border-top:1px solid rgba(255,255,255,0.08);
+    transform:translateX(-50%) rotate(45deg);border-radius:3px 0 0 0
 }
 
-.legacy-topbar .nav-dropdown-menu a:hover .menu-label{
-    color:#fff
-}
+/* Column layout */
+.mega-columns{display:grid;gap:12px}
+.mega-columns.cols-1{grid-template-columns:1fr;min-width:240px}
+.mega-columns.cols-2{grid-template-columns:repeat(2,1fr);min-width:440px}
+.mega-columns.cols-3{grid-template-columns:repeat(3,1fr);min-width:640px}
+.mega-columns.cols-4{grid-template-columns:repeat(4,1fr);min-width:780px}
 
-/* Divider */
-.legacy-topbar .nav-dropdown-menu .menu-divider{
-    height:1px;
-    background:linear-gradient(90deg,transparent,rgba(255,255,255,0.06),transparent);
-    margin:6px 8px
+/* Section within mega-menu */
+.mega-section{min-width:0}
+.mega-section-title{
+    display:flex;align-items:center;gap:8px;
+    padding:6px 10px;margin-bottom:4px;
+    font-size:12px;font-weight:700;
+    color:#c4b5fd;text-transform:uppercase;letter-spacing:0.8px;
+    border-bottom:1px solid rgba(139,92,246,0.15);
+    white-space:nowrap
 }
+.mega-section-title-emoji{font-size:14px}
 
-/* Section label */
-.legacy-topbar .nav-dropdown-menu .menu-section{
-    padding:8px 14px 4px;
-    font-size:10px;
-    font-weight:600;
-    color:#64748b;
-    text-transform:uppercase;
-    letter-spacing:1px
+/* Mega-menu links */
+.mega-section a{
+    display:flex;align-items:center;gap:8px;
+    padding:7px 10px;font-size:13px;font-weight:500;
+    color:#a1a1aa;border-radius:8px;text-decoration:none;
+    transition:all .15s;white-space:nowrap
 }
+.mega-section a:hover{background:rgba(139,92,246,0.1);color:#e2e8f0}
+.mega-section a.active-link{background:rgba(139,92,246,0.12);color:#c4b5fd}
 
-/* Special items styling */
-.legacy-topbar .nav-dropdown-menu a.menu-highlight{
-    background:linear-gradient(135deg,rgba(139,92,246,0.1),rgba(99,102,241,0.05));
-    border:1px solid rgba(139,92,246,0.15)
-}
+/* ─── Overflow protection ─── */
+.mega-dropdown-menu.mega-left{left:0;transform:translateX(0) translateY(10px)}
+.legacy-topbar .nav-dropdown:hover>.mega-dropdown-menu.mega-left{transform:translateX(0) translateY(0)}
+.mega-dropdown-menu.mega-left::before{left:30px;transform:rotate(45deg)}
 
-.legacy-topbar .nav-dropdown-menu a.menu-highlight .menu-icon{
-    background:linear-gradient(135deg,#8b5cf6,#6366f1);
-    color:#fff
-}
+.mega-dropdown-menu.mega-right{left:auto;right:0;transform:translateX(0) translateY(10px)}
+.legacy-topbar .nav-dropdown:hover>.mega-dropdown-menu.mega-right{transform:translateX(0) translateY(0)}
+.mega-dropdown-menu.mega-right::before{left:auto;right:30px;transform:rotate(45deg)}
 
-/* User dropdown specific */
-.legacy-topbar .nav-dropdown-menu[style*="right:0"] {
-    left:auto;
-    right:0;
-    transform:translateY(10px)
-}
-.legacy-topbar .nav-dropdown:hover .nav-dropdown-menu[style*="right:0"] {
-    transform:translateY(0)
-}
-.legacy-topbar .nav-dropdown-menu[style*="right:0"]::before{
-    left:auto;
-    right:20px;
-    transform:rotate(45deg)
-}
+/* User dropdown */
+.legacy-topbar .nav-dropdown-menu.user-dd{left:auto;right:0;transform:translateY(10px)}
+.legacy-topbar .nav-dropdown:hover>.nav-dropdown-menu.user-dd{transform:translateY(0)}
+.legacy-topbar .nav-dropdown-menu.user-dd::before{left:auto;right:20px;transform:rotate(45deg)}
 
-/* Responsive */
+/* ─── Responsive ─── */
+@media(max-width:1200px){
+    .mega-columns.cols-4{grid-template-columns:repeat(3,1fr);min-width:600px}
+}
+@media(max-width:960px){
+    .mega-columns.cols-3,.mega-columns.cols-4{grid-template-columns:repeat(2,1fr);min-width:420px}
+}
 @media(max-width:768px){
     .legacy-topbar-row1,.legacy-topbar-row2{padding:0 12px}
     .legacy-topbar .nav-link{padding:0 8px;font-size:12px}
     .legacy-topbar .user-name{display:none}
-    .legacy-topbar .nav-dropdown-menu{min-width:200px}
+    .mega-columns{grid-template-columns:1fr!important;min-width:240px!important}
 }
 </style>
 
@@ -251,6 +247,7 @@ html,body{max-width:100vw!important;overflow-x:hidden!important}
 
         <div class="topbar-right">
             <a href="/admin/clear-cache" class="icon-btn" title="Clear Cache">🧹</a>
+            <a href="/" target="_blank" class="icon-btn" title="View Site">🌐</a>
             <button class="icon-btn" id="theme-toggle-legacy" title="Toggle Theme">🌙</button>
 
             <div class="nav-dropdown">
@@ -258,30 +255,18 @@ html,body{max-width:100vw!important;overflow-x:hidden!important}
                     <span class="user-avatar"><?= strtoupper(substr($adminUsername, 0, 1)) ?></span>
                     <span class="user-name"><?= htmlspecialchars($adminUsername) ?></span>
                 </div>
-                <div class="nav-dropdown-menu" style="right:0;left:auto">
+                <div class="nav-dropdown-menu user-dd">
                     <?php if (!empty($menu['user']['items'])): ?>
-                        <?php foreach ($menu['user']['items'] as $userItem): ?>
-                            <a href="<?= htmlspecialchars($userItem['url']) ?>">
-                                <span class="menu-icon"><?= preg_match('/^(\p{So}|\p{Cs})/u', $userItem['label'], $m) ? $m[0] : '•' ?></span>
-                                <span class="menu-text">
-                                    <span class="menu-label"><?= trim(preg_replace('/^(\p{So}|\p{Cs})\s*/u', '', $userItem['label'])) ?></span>
-                                </span>
+                        <?php foreach ($menu['user']['items'] as $ui): ?>
+                            <?php
+                                $emoji = '•'; $label = $ui['label'];
+                                if (preg_match('/^(\p{So}|\p{Cs}+)\s*/u', $label, $m)) { $emoji = $m[1]; $label = trim(substr($ui['label'], strlen($m[0]))); }
+                            ?>
+                            <a href="<?= htmlspecialchars($ui['url']) ?>">
+                                <span class="menu-icon"><?= $emoji ?></span>
+                                <span class="menu-label"><?= htmlspecialchars($label) ?></span>
                             </a>
                         <?php endforeach; ?>
-                    <?php else: ?>
-                        <a href="/admin/profile">
-                            <span class="menu-icon">👤</span>
-                            <span class="menu-text"><span class="menu-label">Profile</span></span>
-                        </a>
-                        <a href="/admin/settings">
-                            <span class="menu-icon">⚙️</span>
-                            <span class="menu-text"><span class="menu-label">Settings</span></span>
-                        </a>
-                        <div class="menu-divider"></div>
-                        <a href="/admin/logout">
-                            <span class="menu-icon">🚪</span>
-                            <span class="menu-text"><span class="menu-label">Logout</span></span>
-                        </a>
                     <?php endif; ?>
                 </div>
             </div>
@@ -290,51 +275,87 @@ html,body{max-width:100vw!important;overflow-x:hidden!important}
 
     <!-- Row 2: Navigation -->
     <div class="legacy-topbar-row2">
-        <?php foreach ($menu as $key => $item): ?>
-            <?php if ($key === 'user') continue; ?>
+        <?php
+        $navIndex = 0;
+        $navTotal = count(array_filter($menu, fn($k) => $k !== 'user', ARRAY_FILTER_USE_KEY));
+        foreach ($menu as $key => $item):
+            if ($key === 'user') continue;
+            $navIndex++;
+            $type = $item['type'] ?? 'link';
+        ?>
 
-            <?php if (($item['type'] ?? 'link') === 'link'): ?>
-                <a href="<?= htmlspecialchars($item['url']) ?>" class="nav-link <?= unified_is_active($item['url']) ?>"><?= $item['label'] ?></a>
-            <?php else: ?>
-                <div class="nav-dropdown">
-                    <span class="nav-link <?= unified_dropdown_active($item['items'] ?? []) ?>">
-                        <?= $item['label'] ?>
-                        <span class="arrow">▾</span>
-                        <?php if (!empty($item['badge'])): ?><span class="nav-badge"><?= $item['badge'] ?></span><?php endif; ?>
-                    </span>
-                    <div class="nav-dropdown-menu">
-                        <?php
-                        $items = $item['items'] ?? [];
-                        $count = count($items);
-                        foreach ($items as $idx => $subItem):
-                            // Extract emoji from label
-                            $emoji = '•';
-                            $label = $subItem['label'];
-                            if (preg_match('/^(\p{So}|\p{Cs}+)\s*/u', $label, $matches)) {
-                                $emoji = $matches[1];
-                                $label = trim(substr($subItem['label'], strlen($matches[0])));
-                            }
+        <?php if ($type === 'link'): ?>
+            <a href="<?= htmlspecialchars($item['url']) ?>" class="nav-link <?= unified_is_active($item['url']) ?>"><?= $item['label'] ?></a>
 
-                            // Check if this is a "special" item (AI, v5, new, etc)
-                            $isHighlight = stripos($label, 'v5') !== false || stripos($label, 'new') !== false;
-                        ?>
-                            <a href="<?= htmlspecialchars($subItem['url']) ?>"<?= $isHighlight ? ' class="menu-highlight"' : '' ?>>
-                                <span class="menu-icon"><?= $emoji ?></span>
-                                <span class="menu-text">
-                                    <span class="menu-label"><?= htmlspecialchars($label) ?></span>
-                                </span>
-                            </a>
+        <?php elseif ($type === 'dropdown'): ?>
+            <div class="nav-dropdown">
+                <span class="nav-link <?= unified_dropdown_active($item['items'] ?? []) ?>">
+                    <?= $item['label'] ?>
+                    <span class="arrow">▾</span>
+                    <?php if (!empty($item['badge'])): ?><span class="nav-badge"><?= $item['badge'] ?></span><?php endif; ?>
+                </span>
+                <div class="nav-dropdown-menu">
+                    <?php foreach ($item['items'] ?? [] as $sub):
+                        $emoji = '•'; $label = $sub['label'];
+                        if (preg_match('/^(\p{So}|\p{Cs}+)\s*/u', $label, $m)) { $emoji = $m[1]; $label = trim(substr($sub['label'], strlen($m[0]))); }
+                    ?>
+                    <a href="<?= htmlspecialchars($sub['url']) ?>">
+                        <span class="menu-icon"><?= $emoji ?></span>
+                        <span class="menu-label"><?= htmlspecialchars($label) ?></span>
+                    </a>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+
+        <?php elseif ($type === 'mega'): ?>
+            <?php
+                $cols = min($item['columns'] ?? 2, 4);
+                $sections = $item['sections'] ?? [];
+                if (empty($sections)) continue;
+                // Decide alignment to prevent overflow
+                $megaAlign = '';
+                if ($navIndex <= 2) $megaAlign = 'mega-left';
+                elseif ($navIndex >= $navTotal - 1) $megaAlign = 'mega-right';
+            ?>
+            <div class="nav-dropdown">
+                <span class="nav-link <?= unified_mega_active($sections) ?>">
+                    <?= $item['label'] ?>
+                    <span class="arrow">▾</span>
+                    <?php if (!empty($item['badge'])): ?><span class="nav-badge"><?= $item['badge'] ?></span><?php endif; ?>
+                </span>
+                <div class="mega-dropdown-menu <?= $megaAlign ?>">
+                    <div class="mega-columns cols-<?= $cols ?>">
+                        <?php foreach ($sections as $section): ?>
+                        <div class="mega-section">
+                            <?php
+                                $sTitle = $section['title'] ?? '';
+                                $sEmoji = '';
+                                if (preg_match('/^(\p{So}|\p{Cs}+)\s*/u', $sTitle, $m)) {
+                                    $sEmoji = $m[1]; $sTitle = trim(substr($section['title'], strlen($m[0])));
+                                }
+                            ?>
+                            <div class="mega-section-title">
+                                <?php if ($sEmoji): ?><span class="mega-section-title-emoji"><?= $sEmoji ?></span><?php endif; ?>
+                                <?= htmlspecialchars($sTitle) ?>
+                            </div>
+                            <?php foreach ($section['items'] ?? [] as $si):
+                                $isActive = unified_is_active($si['url']) ? ' active-link' : '';
+                            ?>
+                            <a href="<?= htmlspecialchars($si['url']) ?>" class="<?= $isActive ?>"><?= htmlspecialchars($si['label']) ?></a>
+                            <?php endforeach; ?>
+                        </div>
                         <?php endforeach; ?>
                     </div>
                 </div>
-            <?php endif; ?>
+            </div>
+        <?php endif; ?>
+
         <?php endforeach; ?>
     </div>
 </nav>
 
 <script>
 (function(){
-    // Theme toggle
     var btn = document.getElementById('theme-toggle-legacy');
     if (btn) {
         btn.addEventListener('click', function() {
@@ -347,5 +368,19 @@ html,body{max-width:100vw!important;overflow-x:hidden!important}
         var saved = localStorage.getItem('cms-theme') || 'dark';
         btn.textContent = saved === 'dark' ? '🌙' : '☀️';
     }
+
+    // Prevent mega-menus from going off-screen
+    document.querySelectorAll('.mega-dropdown-menu').forEach(function(el) {
+        el.closest('.nav-dropdown').addEventListener('mouseenter', function() {
+            var rect = el.getBoundingClientRect();
+            if (rect.right > window.innerWidth - 10) {
+                el.classList.remove('mega-left');
+                el.classList.add('mega-right');
+            } else if (rect.left < 10) {
+                el.classList.remove('mega-right');
+                el.classList.add('mega-left');
+            }
+        });
+    });
 })();
 </script>

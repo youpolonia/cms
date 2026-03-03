@@ -410,6 +410,11 @@ return [
     'GET /admin/ai-chat' => ['Admin\\AiChatController', 'index', ['auth' => true]],
     'POST /api/ai-chat/send' => ['Admin\\AiChatController', 'send', ['auth' => true]],
     'POST /api/ai-chat/clear' => ['Admin\\AiChatController', 'clear', ['auth' => true]],
+    
+    // AI Tutor
+    'GET /admin/ai-tutor' => ['Admin\\AiTutorController', 'index', ['auth' => true]],
+    'POST /api/ai-tutor/ask' => ['Admin\\AiTutorController', 'ask', ['auth' => true]],
+    'POST /api/ai-tutor/clear' => ['Admin\\AiTutorController', 'clear', ['auth' => true]],
 
     // White Label
     'GET /admin/white-label' => ['Admin\\WhiteLabelController', 'index', ['auth' => true]],

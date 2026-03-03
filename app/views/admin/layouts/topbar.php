@@ -362,5 +362,10 @@ if (!function_exists('esc')) {
     <main class="main-content">
         <?= $content ?? '' ?>
     </main>
+
+    <?php
+    // Floating AI Assistant widget — contextual help on every admin page
+    require_once CMS_ROOT . '/admin/includes/ai-assistant-widget.php';
+    ?>
 </body>
 </html>
