@@ -317,6 +317,11 @@ RewriteRule ^(.*)$ index.php [QSA,L]
     Require all denied
 </FilesMatch>
 
+# Block direct access to sensitive root PHP files
+<FilesMatch "^(config|db|cron)\.php$">
+    Require all denied
+</FilesMatch>
+
 # Block dotfiles
 <FilesMatch "^\.">
     Require all denied

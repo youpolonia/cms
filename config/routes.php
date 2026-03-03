@@ -35,7 +35,7 @@ return [
     'GET /admin/articles/{id}/edit' => ['Admin\\ArticlesController', 'edit', ['auth' => true]],
     'POST /admin/articles/{id}' => ['Admin\\ArticlesController', 'update', ['auth' => true, 'csrf' => true]],
     'POST /admin/articles/{id}/delete' => ['Admin\\ArticlesController', 'destroy', ['auth' => true, 'csrf' => true]],
-    'POST /admin/articles/preview' => ['Admin\\ArticlesController', 'preview', ['auth' => true]],
+    'POST /admin/articles/preview' => ['Admin\ArticlesController', 'preview', ['auth' => true, 'csrf' => true]],
 
     // Contact Submissions
     'GET /admin/contact-submissions' => ['Admin\\ContactSubmissionsController', 'index', ['auth' => true]],
