@@ -321,3 +321,8 @@ RewriteRule ^(.*)$ index.php [QSA,L]
 <FilesMatch "^\.">
     Require all denied
 </FilesMatch>
+
+# Error documents
+ErrorDocument 403 /index.php?_error=403
+ErrorDocument 404 /index.php?_error=404
+ErrorDocument 500 /app/views/front/500.php

@@ -780,8 +780,19 @@ if (class_exists(router::class) && method_exists(router::class, 'dispatch')) {
         router::dispatch();
     } catch (\Throwable $e) {
         error_log("[CMS] Dispatch error: " . $e->getMessage() . " in " . $e->getFile() . ":" . $e->getLine() . "\n" . $e->getTraceAsString());
-        http_response_code(500);
+        $error = (defined('CMS_DEBUG') && CMS_DEBUG) ? $e->getMessage() : '';
+        require CMS_APP . '/views/front/500.php';
+        exit;
     }
 } else {
+    // Check for ErrorDocument _error param
+    $errorCode = (int)($_GET['_error'] ?? 0);
+    if ($errorCode === 403) {
+        require CMS_APP . '/views/front/403.php';
+        exit;
+    }
     http_response_code(404);
+    $page = ['title' => 'Page Not Found', 'slug' => '404', 'meta_description' => ''];
+    require CMS_APP . '/views/front/404.php';
+    exit;
 }

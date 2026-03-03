@@ -357,6 +357,17 @@ if (!function_exists('cms_inject_admin_toolbar')) {
      * Also injects Theme Studio preview script when in preview mode.
      */
     function cms_inject_admin_toolbar(string $html, array $context = []): string {
+        // Inject cookie consent banner (GDPR) before </body> — always for frontend
+        $cookieConsentFile = (defined('CMS_ROOT') ? CMS_ROOT : '') . '/includes/cookie-consent.php';
+        if (file_exists($cookieConsentFile) && !defined('ADMIN_LAYOUT')) {
+            ob_start();
+            require_once $cookieConsentFile;
+            $ccBanner = ob_get_clean();
+            if ($ccBanner) {
+                $html = str_replace('</body>', $ccBanner . "\n</body>", $html);
+            }
+        }
+
         // Theme Studio preview mode: inject live-update script before </body>
         if (defined('THEME_STUDIO_PREVIEW') && THEME_STUDIO_PREVIEW) {
             if (function_exists('theme_studio_preview_script')) {
@@ -404,7 +415,7 @@ if (!function_exists('cms_inject_admin_toolbar')) {
                 $html = str_replace('</body>', $veAssets . "\n</body>", $html);
             }
         }
-        
+
         return $html;
     }
 }
