@@ -128,7 +128,3 @@ $articlesBtnLink = theme_get('articles.btn_link', '/articles');
         </div>
     </div>
 </section>
-<?php endif; ?>
-<?php endif; ?>
-<?php endif; ?>
-<?php endforeach; ?>

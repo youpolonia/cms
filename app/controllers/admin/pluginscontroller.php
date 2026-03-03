@@ -153,8 +153,58 @@ class PluginsController
         render('admin/plugins/settings', [
             'plugin' => $manifest,
             'slug' => $slug,
-            'settingsFile' => $settingsFile
+            'settingsFile' => $settingsFile,
+            'success' => Session::getFlash('success'),
+            'error' => Session::getFlash('error')
         ]);
+    }
+
+    /**
+     * Save plugin settings (POST)
+     */
+    public function saveSettings(Request $request, string $slug): void
+    {
+        csrf_validate_or_403();
+
+        $pluginPath = $this->pluginsDir . '/' . $slug;
+
+        // Let plugin handle its own saving if it has a save handler
+        $saveHandler = $pluginPath . '/save-settings.php';
+        if (file_exists($saveHandler)) {
+            $_POST_DATA = $request->all();
+            require_once $saveHandler;
+            Session::setFlash('success', 'Settings saved');
+            Response::redirect("/admin/plugins/{$slug}/settings");
+            return;
+        }
+
+        // Generic: save all POST data (except _token) to plugin_settings in DB
+        $pdo = Database::connection();
+        $data = $request->all();
+        unset($data['_token']);
+
+        $pdo->exec("CREATE TABLE IF NOT EXISTS plugin_settings (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            plugin_slug VARCHAR(100) NOT NULL,
+            setting_key VARCHAR(191) NOT NULL,
+            setting_value TEXT,
+            UNIQUE KEY uk_plugin_key (plugin_slug, setting_key)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
+
+        $stmt = $pdo->prepare("INSERT INTO plugin_settings (plugin_slug, setting_key, setting_value) 
+            VALUES (:slug, :key, :val) 
+            ON DUPLICATE KEY UPDATE setting_value = VALUES(setting_value)");
+
+        foreach ($data as $key => $value) {
+            $stmt->execute([
+                'slug' => $slug,
+                'key' => $key,
+                'val' => is_array($value) ? json_encode($value) : (string)$value
+            ]);
+        }
+
+        Session::setFlash('success', 'Settings saved');
+        Response::redirect("/admin/plugins/{$slug}/settings");
     }
 
     // ─── Private helpers ───

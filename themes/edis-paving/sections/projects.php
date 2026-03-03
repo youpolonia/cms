@@ -107,6 +107,3 @@ $projectsDesc = theme_get('projects.description', 'See the quality of our work t
         </div>
     </div>
 </section>
-<?php endif; ?>
-<?php endif; ?>
-<?php endforeach; ?>
