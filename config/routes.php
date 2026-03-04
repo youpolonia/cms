@@ -513,6 +513,7 @@ return [
     'GET /account/export' => ['Front\\UserController', 'exportData'],
     'POST /comment' => ['Front\\CommentController', 'store', ['csrf' => true]],
     'GET /api/comments' => ['Front\\CommentController', 'list'],
+    'POST /newsletter/subscribe' => ['Front\\NewsletterController', 'subscribe', ['csrf' => true]],
     'GET /account' => ['Front\\UserController', 'account'],
     'POST /account/update' => ['Front\\UserController', 'updateProfile', ['csrf' => true]],
     'POST /account/password' => ['Front\\UserController', 'changePassword', ['csrf' => true]],
