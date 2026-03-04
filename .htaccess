@@ -90,6 +90,7 @@ RewriteRule ^uploads/(.*)$ public/uploads/$1 [L]
 # favicon.ico and robots.txt handled by PHP router (dynamic)
 # RewriteRule ^favicon\.ico$ public/favicon.ico [L]
 # RewriteRule ^robots\.txt$ public/robots.txt [L]
+RewriteRule ^manifest\.json$ public/manifest.json [L]
 RewriteRule ^sitemap\.xml$ sitemap.php [L]
 
 # ============================================================

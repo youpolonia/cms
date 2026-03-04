@@ -11,10 +11,10 @@ This is **Jessie AI-CMS** — a custom PHP 8.2+ CMS built **without Laravel or a
 - **Database**: MySQL 5.7+ or MariaDB 10.3+
 - **Web Server**: Apache with mod_rewrite (WSL or Linux)
 
-**Current Status** (2026-03-03, v0.17.0 "Production Ready"):
-- ✅ 1,524 PHP files, 166 database tables, 2,634 total files
+**Current Status** (2026-03-04, v0.18.0 "User Complete"):
+- ✅ 1,538 PHP files, 166 database tables, 2,650+ total files
 - ✅ 143 unit tests (102 core + 41 plugin, custom TestRunner, no PHPUnit)
-- ✅ 515 MVC routes, 57 admin + 12 front controllers
+- ✅ 531 MVC routes, 57 admin + 13 front controllers
 - ✅ 19 plugins (11 industry + JTB + 4 SaaS + saas-core + shared)
 - ✅ 46 themes (8 starter + 38 AI-generated industry themes)
 - ✅ Zero framework dependencies
@@ -93,7 +93,7 @@ cms/
 ├── app/                    # MVC Application
 │   ├── controllers/
 │   │   ├── admin/          # 39 admin controllers
-│   │   └── front/          # 5 front controllers
+│   │   └── front/          # 13 front controllers
 │   ├── views/
 │   │   ├── admin/          # Admin views (37 dirs + layouts/)
 │   │   └── front/          # Front views (home, articles, page, etc.)
@@ -205,7 +205,7 @@ Gdpr, JtbApi, Jtb, Logs, Maintenance, Media, Menus, Migrations, Modules, N8nBind
 N8nSettings, Notifications, Pages, Plugins, Profile, Scheduler, Search, SecurityDashboard,
 ThemeEditor, Themes, Urls, Users, VersionControl, Widgets
 
-**Front** (12 in `app/controllers/front/`):
+**Front** (13 in `app/controllers/front/`):
 Article, Articles, Chat, Contact, Feed, Form, Gallery, Home, Page, Search, Seo, Shop
 
 ### Autoloader
