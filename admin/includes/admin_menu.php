@@ -372,10 +372,20 @@ return [
             ['label' => '📜 Version Control', 'url' => '/admin/version-control'],
             ['label' => '🔥 Maintenance', 'url' => '/admin/maintenance'],
             ['label' => '🗑️ Clear Cache', 'url' => '/admin/clear-cache'],
-            ['label' => '🔗 n8n Workflows', 'url' => '/admin/n8n-workflows'],
-            ['label' => '🛠️ Workflow Builder', 'url' => '/admin/n8n-workflow-builder'],
+        ]
+    ],
+
+    // ─── 9. Automations ───
+    'automations' => [
+        'label' => '⚡ Automations',
+        'type'  => 'dropdown',
+        'items' => [
             ['label' => '🤖 Automations', 'url' => '/admin/automations'],
             ['label' => '📋 Automation Rules', 'url' => '/admin/automation-rules'],
+            ['label' => '🔗 n8n Workflows', 'url' => '/admin/n8n-workflows'],
+            ['label' => '🛠️ Workflow Builder', 'url' => '/admin/n8n-workflow-builder'],
+            ['label' => '⚙️ n8n Settings', 'url' => '/admin/n8n-settings'],
+            ['label' => '🔌 n8n Bindings', 'url' => '/admin/n8n-bindings'],
         ]
     ],
 
