@@ -95,6 +95,22 @@ $stats = $stats ?? [];
         </form>
     </div>
 
+    <!-- Data & Privacy (GDPR) -->
+    <div style="background:var(--surface,#fff);border:1px solid var(--border,#e2e8f0);border-radius:12px;padding:24px;margin-top:24px;">
+        <h2 style="font-size:1.2rem;margin:0 0 16px;">Data & Privacy</h2>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;">
+            <a href="/account/export" style="padding:10px 20px;background:#6366f1;color:#fff;border-radius:6px;text-decoration:none;font-size:0.9rem;font-weight:500;">
+                📥 Export My Data
+            </a>
+            <a href="/account/delete" style="padding:10px 20px;background:#fee2e2;color:#dc2626;border:1px solid #fecaca;border-radius:6px;text-decoration:none;font-size:0.9rem;font-weight:500;">
+                🗑️ Delete Account
+            </a>
+        </div>
+        <p style="margin-top:12px;font-size:0.8rem;color:var(--text-secondary,#64748b);">
+            Under GDPR, you have the right to export your data or request account deletion.
+        </p>
+    </div>
+
     <!-- Logout -->
     <div style="text-align:center;padding:20px 0;">
         <a href="/logout" style="color:#ef4444;text-decoration:none;font-size:0.9rem;">Sign Out →</a>

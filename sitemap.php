@@ -61,6 +61,41 @@ try {
             'priority'   => '0.6',
         ];
     }
+
+    // Published products (shop)
+    try {
+        $stmt = $pdo->query("SELECT slug, updated_at FROM products WHERE status = 'published' ORDER BY updated_at DESC LIMIT 1000");
+        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+            $slug = trim($row['slug'] ?? '');
+            if ($slug === '') continue;
+            $urls[] = [
+                'loc'        => $base . '/shop/' . $slug,
+                'lastmod'    => substr($row['updated_at'] ?? date('Y-m-d'), 0, 10),
+                'changefreq' => 'daily',
+                'priority'   => '0.7',
+            ];
+        }
+    } catch (\Exception $e) {}
+
+    // Blog categories
+    try {
+        $stmt = $pdo->query("SELECT slug FROM article_categories ORDER BY name LIMIT 200");
+        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+            $slug = trim($row['slug'] ?? '');
+            if ($slug === '') continue;
+            $urls[] = [
+                'loc'        => $base . '/blog/category/' . $slug,
+                'changefreq' => 'weekly',
+                'priority'   => '0.5',
+            ];
+        }
+    } catch (\Exception $e) {}
+
+    // Static frontend pages
+    $staticPages = ['/blog', '/shop', '/search'];
+    foreach ($staticPages as $sp) {
+        $urls[] = ['loc' => $base . $sp, 'changefreq' => 'weekly', 'priority' => '0.6'];
+    }
 } catch (\Exception $e) {
     // Serve whatever we have (at least homepage)
 }

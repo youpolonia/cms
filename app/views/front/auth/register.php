@@ -43,6 +43,11 @@ if ($layoutFile && file_exists($layoutFile)) {
                     <input type="password" name="password_confirm" required minlength="8"
                            style="width:100%;padding:10px 12px;border:1px solid var(--border,#d1d5db);border-radius:6px;font-size:1rem;">
                 </div>
+                <!-- Honeypot — hidden from humans, bots fill it -->
+                <div style="position:absolute;left:-9999px;opacity:0;height:0;overflow:hidden;" aria-hidden="true">
+                    <label for="website_url">Website</label>
+                    <input type="text" name="website_url" id="website_url" tabindex="-1" autocomplete="off">
+                </div>
                 <button type="submit" style="width:100%;padding:12px;background:var(--accent,#6366f1);color:#fff;border:none;border-radius:6px;font-size:1rem;font-weight:600;cursor:pointer;">
                     Create Account
                 </button>

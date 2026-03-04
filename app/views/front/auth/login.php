@@ -16,7 +16,16 @@ if ($layoutFile && file_exists($layoutFile)) {
             <p style="text-align:center;color:var(--text-secondary,#64748b);margin:0 0 24px;font-size:0.9rem;">Welcome back!</p>
 
             <?php if (!empty($error)): ?>
-                <div style="background:#fee2e2;border:1px solid #fecaca;color:#991b1b;padding:10px 14px;border-radius:6px;margin-bottom:16px;font-size:0.9rem;"><?= h($error) ?></div>
+                <div style="background:#fee2e2;border:1px solid #fecaca;color:#991b1b;padding:10px 14px;border-radius:6px;margin-bottom:16px;font-size:0.9rem;">
+                    <?= h($error) ?>
+                    <?php $pendingEmail = \Core\Session::getFlash('pending_email'); if ($pendingEmail): ?>
+                        <form method="post" action="/resend-verification" style="margin-top:8px;">
+                            <?= csrf_field() ?>
+                            <input type="hidden" name="email" value="<?= h($pendingEmail) ?>">
+                            <button type="submit" style="background:none;border:none;color:#6366f1;cursor:pointer;text-decoration:underline;font-size:inherit;padding:0;">Resend verification email</button>
+                        </form>
+                    <?php endif; ?>
+                </div>
             <?php endif; ?>
             <?php if (!empty($success)): ?>
                 <div style="background:#dcfce7;border:1px solid #bbf7d0;color:#166534;padding:10px 14px;border-radius:6px;margin-bottom:16px;font-size:0.9rem;"><?= h($success) ?></div>
@@ -38,6 +47,7 @@ if ($layoutFile && file_exists($layoutFile)) {
                     Sign In
                 </button>
             </form>
+            <p style="text-align:center;margin-top:12px;font-size:0.875rem;"><a href="/forgot-password" style="color:var(--accent,#6366f1);text-decoration:none;">Forgot your password?</a></p>
             <p style="text-align:center;margin-top:20px;font-size:0.9rem;color:var(--text-secondary,#64748b);">
                 Don't have an account? <a href="/register" style="color:var(--accent,#6366f1);text-decoration:none;">Create one</a>
             </p>
