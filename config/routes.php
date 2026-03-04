@@ -306,6 +306,8 @@ return [
     // Security Dashboard (MVC)
     'GET /admin/security' => ['Admin\\SecurityDashboardController', 'index', ['auth' => true]],
     'GET /admin/security-dashboard' => ['Admin\\SecurityDashboardController', 'index', ['auth' => true]],
+    'GET /admin/activity-log' => ['Admin\\ActivityLogController', 'index', ['auth' => true]],
+    'POST /admin/activity-log/clear' => ['Admin\\ActivityLogController', 'clear', ['auth' => true, 'csrf' => true]],
     'POST /admin/security/scan' => ['Admin\\SecurityDashboardController', 'scan', ['auth' => true, 'csrf' => true]],
 
     // GDPR Tools (MVC)

@@ -88,6 +88,9 @@ if (file_exists(__DIR__ . '/includes/helpers/menu.php')) {
     require_once __DIR__ . '/includes/helpers/menu.php';
 }
 
+// Activity log for admin audit trail
+require_once CMS_ROOT . '/core/activity-log.php';
+
 // Autoloader for Admin MVC controllers
 spl_autoload_register(function($class) {
     // Skip if class is null or not a string
