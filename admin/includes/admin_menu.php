@@ -348,10 +348,6 @@ return [
             ['label' => '🎯 Theme Studio', 'url' => '/admin/theme-studio'],
             ['label' => '🤖 AI Theme Builder', 'url' => '/admin/ai-theme-builder'],
             ['label' => '🧩 AI Components', 'url' => '/admin/ai-components'],
-            ['label' => '🔗 n8n Workflows', 'url' => '/admin/n8n-workflows'],
-            ['label' => '🛠️ Workflow Builder', 'url' => '/admin/n8n-workflow-builder'],
-            ['label' => '🤖 Automations', 'url' => '/admin/automations'],
-            ['label' => '📋 Automation Rules', 'url' => '/admin/automation-rules'],
         ]
     ],
 
@@ -376,6 +372,10 @@ return [
             ['label' => '📜 Version Control', 'url' => '/admin/version-control'],
             ['label' => '🔥 Maintenance', 'url' => '/admin/maintenance'],
             ['label' => '🗑️ Clear Cache', 'url' => '/admin/clear-cache'],
+            ['label' => '🔗 n8n Workflows', 'url' => '/admin/n8n-workflows'],
+            ['label' => '🛠️ Workflow Builder', 'url' => '/admin/n8n-workflow-builder'],
+            ['label' => '🤖 Automations', 'url' => '/admin/automations'],
+            ['label' => '📋 Automation Rules', 'url' => '/admin/automation-rules'],
         ]
     ],
 
