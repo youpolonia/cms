@@ -5,6 +5,7 @@
  * The heavy CmsChatbot class is in core/chatbot.php
  */
 
+if (!function_exists('ai_theme_chat_widget')) {
 function ai_theme_chat_widget(): string
 {
     return <<<'CHATWIDGET'
@@ -123,3 +124,4 @@ function ai_theme_chat_widget(): string
 </script>
 CHATWIDGET;
 }
+} // end function_exists guard
