@@ -447,7 +447,6 @@ input.input:focus{outline:none;border-color:var(--ctp-blue)}
 <div class="topbar">
     <div style="display:flex;align-items:center;gap:16px">
         <a href="/admin"><i class="fas fa-arrow-left"></i> Admin</a>
-        <a href="/admin/ai-theme-builder"><i class="fas fa-magic"></i> Classic Mode</a>
         <div class="topbar-title"><img src="/assets/images/jessie-logo.svg" alt="Jessie" width="28" height="28" style="vertical-align:middle;margin-right:8px">AI Theme Builder <span class="badge">Wizard</span></div>
     </div>
     <div style="font-size:12px;color:var(--ctp-subtext0)"><?= esc($username) ?></div>
