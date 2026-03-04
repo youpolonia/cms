@@ -222,18 +222,80 @@ html,body{max-width:100vw!important;overflow-x:hidden!important}
 .legacy-topbar .nav-dropdown:hover>.nav-dropdown-menu.user-dd{transform:translateY(0)}
 .legacy-topbar .nav-dropdown-menu.user-dd::before{left:auto;right:20px;transform:rotate(45deg)}
 
+/* ─── Hamburger button ─── */
+.topbar-hamburger{
+    display:none;width:36px;height:36px;align-items:center;justify-content:center;
+    background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06);
+    border-radius:10px;cursor:pointer;font-size:18px;color:#94a3b8;
+    transition:all .2s;flex-shrink:0
+}
+.topbar-hamburger:hover{background:rgba(139,92,246,0.1);color:#e2e8f0;border-color:rgba(139,92,246,0.3)}
+
+/* ─── Mobile overlay backdrop ─── */
+.topbar-overlay{
+    display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:9998;
+    opacity:0;transition:opacity .25s
+}
+.topbar-overlay.open{display:block;opacity:1}
+
 /* ─── Responsive ─── */
 @media(max-width:1200px){
     .mega-columns.cols-4{grid-template-columns:repeat(3,1fr);min-width:600px}
+    .legacy-topbar .nav-link{padding:0 10px;font-size:12px}
 }
-@media(max-width:960px){
-    .mega-columns.cols-3,.mega-columns.cols-4{grid-template-columns:repeat(2,1fr);min-width:420px}
-}
-@media(max-width:768px){
-    .legacy-topbar-row1,.legacy-topbar-row2{padding:0 12px}
-    .legacy-topbar .nav-link{padding:0 8px;font-size:12px}
+@media(max-width:1024px){
+    .topbar-hamburger{display:flex}
+
+    .legacy-topbar-row2{
+        display:none;position:fixed;top:0;right:0;width:300px;height:100vh;
+        flex-direction:column;align-items:stretch;gap:0;padding:16px;
+        background:linear-gradient(180deg,#1a1a2e 0%,#16162a 100%);
+        border-left:1px solid rgba(255,255,255,0.08);
+        box-shadow:-8px 0 30px rgba(0,0,0,0.4);
+        z-index:9999;overflow-y:auto;overflow-x:hidden;
+        transform:translateX(100%);transition:transform .3s cubic-bezier(0.4,0,0.2,1)
+    }
+    .legacy-topbar-row2.mobile-open{display:flex;transform:translateX(0)}
+
+    .mobile-close{
+        display:flex;align-self:flex-end;width:36px;height:36px;align-items:center;justify-content:center;
+        background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.08);
+        border-radius:10px;cursor:pointer;font-size:18px;color:#94a3b8;margin-bottom:12px;flex-shrink:0
+    }
+    .mobile-close:hover{color:#e2e8f0;background:rgba(243,139,168,0.15)}
+
+    .legacy-topbar .nav-link{
+        width:100%;justify-content:space-between;height:40px;padding:0 12px;font-size:13px;border-radius:8px
+    }
+    .legacy-topbar .nav-dropdown{width:100%;flex-direction:column;align-items:stretch}
+
+    .legacy-topbar .nav-dropdown-menu,
+    .legacy-topbar .mega-dropdown-menu{
+        position:static!important;transform:none!important;
+        left:auto!important;right:auto!important;
+        width:100%!important;min-width:0!important;max-width:100%!important;
+        border-radius:8px;margin:4px 0 8px;padding:4px 0 4px 8px;
+        box-shadow:none;border:1px solid rgba(255,255,255,0.06);
+        display:none;opacity:1;visibility:visible;max-height:50vh;overflow-y:auto
+    }
+    .legacy-topbar .nav-dropdown-menu::before,
+    .legacy-topbar .mega-dropdown-menu::before{display:none}
+
+    .legacy-topbar .nav-dropdown.mobile-expanded>.nav-dropdown-menu,
+    .legacy-topbar .nav-dropdown.mobile-expanded>.mega-dropdown-menu{display:block}
+
+    .legacy-topbar .nav-dropdown:hover>.nav-dropdown-menu,
+    .legacy-topbar .nav-dropdown:hover>.mega-dropdown-menu{opacity:0;visibility:hidden;display:none}
+    .legacy-topbar .nav-dropdown.mobile-expanded:hover>.nav-dropdown-menu,
+    .legacy-topbar .nav-dropdown.mobile-expanded:hover>.mega-dropdown-menu{opacity:1;visibility:visible;display:block}
+
+    .mega-columns{grid-template-columns:1fr!important;min-width:0!important;gap:8px}
+    .mega-section a{padding:6px 10px;font-size:12px}
     .legacy-topbar .user-name{display:none}
-    .mega-columns{grid-template-columns:1fr!important;min-width:240px!important}
+}
+@media(max-width:480px){
+    .legacy-topbar-row2{width:100%}
+    .legacy-topbar-row1{padding:0 12px}
 }
 </style>
 
@@ -249,6 +311,7 @@ html,body{max-width:100vw!important;overflow-x:hidden!important}
             <a href="/admin/clear-cache" class="icon-btn" title="Clear Cache">🧹</a>
             <a href="/" target="_blank" class="icon-btn" title="View Site">🌐</a>
             <button class="icon-btn" id="theme-toggle-legacy" title="Toggle Theme">🌙</button>
+            <button class="topbar-hamburger" id="topbar-hamburger" title="Menu">☰</button>
 
             <div class="nav-dropdown">
                 <div class="user-menu">
@@ -273,8 +336,10 @@ html,body{max-width:100vw!important;overflow-x:hidden!important}
         </div>
     </div>
 
+    <div class="topbar-overlay" id="topbar-overlay"></div>
     <!-- Row 2: Navigation -->
-    <div class="legacy-topbar-row2">
+    <div class="legacy-topbar-row2" id="topbar-nav">
+        <button class="mobile-close" id="topbar-close" style="display:none">✕</button>
         <?php
         $navIndex = 0;
         $navTotal = count(array_filter($menu, fn($k) => $k !== 'user', ARRAY_FILTER_USE_KEY));
@@ -369,9 +434,10 @@ html,body{max-width:100vw!important;overflow-x:hidden!important}
         btn.textContent = saved === 'dark' ? '🌙' : '☀️';
     }
 
-    // Prevent mega-menus from going off-screen
+    // Prevent mega-menus from going off-screen (desktop)
     document.querySelectorAll('.mega-dropdown-menu').forEach(function(el) {
         el.closest('.nav-dropdown').addEventListener('mouseenter', function() {
+            if (window.innerWidth <= 1024) return;
             var rect = el.getBoundingClientRect();
             if (rect.right > window.innerWidth - 10) {
                 el.classList.remove('mega-left');
@@ -381,6 +447,68 @@ html,body{max-width:100vw!important;overflow-x:hidden!important}
                 el.classList.add('mega-left');
             }
         });
+    });
+
+    // ─── Mobile menu ───
+    var hamburger = document.getElementById('topbar-hamburger');
+    var nav = document.getElementById('topbar-nav');
+    var overlay = document.getElementById('topbar-overlay');
+    var closeBtn = document.getElementById('topbar-close');
+
+    function openMobileMenu() {
+        nav.classList.add('mobile-open');
+        overlay.classList.add('open');
+        closeBtn.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+    }
+    function closeMobileMenu() {
+        nav.classList.remove('mobile-open');
+        overlay.classList.remove('open');
+        closeBtn.style.display = 'none';
+        document.body.style.overflow = '';
+        // Close all expanded dropdowns
+        document.querySelectorAll('.nav-dropdown.mobile-expanded').forEach(function(d) {
+            d.classList.remove('mobile-expanded');
+        });
+    }
+
+    if (hamburger) hamburger.addEventListener('click', openMobileMenu);
+    if (closeBtn) closeBtn.addEventListener('click', closeMobileMenu);
+    if (overlay) overlay.addEventListener('click', closeMobileMenu);
+
+    // Mobile: click nav-link to toggle dropdown instead of hover
+    document.querySelectorAll('.legacy-topbar .nav-dropdown > .nav-link').forEach(function(link) {
+        link.addEventListener('click', function(e) {
+            if (window.innerWidth > 1024) return;
+            e.preventDefault();
+            e.stopPropagation();
+            var parent = this.closest('.nav-dropdown');
+            var wasExpanded = parent.classList.contains('mobile-expanded');
+            // Close other dropdowns
+            document.querySelectorAll('.nav-dropdown.mobile-expanded').forEach(function(d) {
+                d.classList.remove('mobile-expanded');
+            });
+            if (!wasExpanded) parent.classList.add('mobile-expanded');
+        });
+    });
+
+    // Close mobile menu on link click (actual navigation)
+    document.querySelectorAll('.legacy-topbar .nav-dropdown-menu a, .legacy-topbar .mega-dropdown-menu a').forEach(function(a) {
+        a.addEventListener('click', function() {
+            if (window.innerWidth <= 1024) closeMobileMenu();
+        });
+    });
+
+    // Close on Escape
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') closeMobileMenu();
+    });
+
+    // Show/hide close button based on viewport
+    window.addEventListener('resize', function() {
+        if (window.innerWidth > 1024) {
+            closeMobileMenu();
+        }
     });
 })();
 </script>
