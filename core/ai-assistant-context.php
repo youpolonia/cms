@@ -54,12 +54,25 @@ function getAssistantContext(string $path): array {
 function _getAdminTutorials(): array {
     static $cache = null;
     if ($cache === null) {
-        $file = (defined('CMS_ROOT') ? CMS_ROOT : dirname(__DIR__)) . '/core/ai-tutorials.php';
-        if (file_exists($file)) {
-            require_once $file;
-            $cache = function_exists('getAdminTutorials') ? getAdminTutorials() : [];
-        } else {
-            $cache = [];
+        $root = defined('CMS_ROOT') ? CMS_ROOT : dirname(__DIR__);
+        $cache = [];
+        
+        // Load main tutorials
+        $file1 = $root . '/core/ai-tutorials.php';
+        if (file_exists($file1)) {
+            require_once $file1;
+            if (function_exists('getAdminTutorials')) {
+                $cache = getAdminTutorials();
+            }
+        }
+        
+        // Load part 2 tutorials (merge)
+        $file2 = $root . '/core/ai-tutorials-part2.php';
+        if (file_exists($file2)) {
+            require_once $file2;
+            if (function_exists('getAdminTutorialsPart2')) {
+                $cache = array_merge($cache, getAdminTutorialsPart2());
+            }
         }
     }
     return $cache;
