@@ -1066,5 +1066,10 @@ $username = \Core\Session::getAdminUsername() ?? 'Admin';
     });
 })();
 </script>
+<?php
+if (file_exists(CMS_ROOT . '/admin/includes/ai-assistant-widget.php')) {
+    require_once CMS_ROOT . '/admin/includes/ai-assistant-widget.php';
+}
+?>
 </body>
 </html>

@@ -254,5 +254,10 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var
     function esc(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
 })();
 </script>
+<?php
+if (file_exists(CMS_ROOT . '/admin/includes/ai-assistant-widget.php')) {
+    require_once CMS_ROOT . '/admin/includes/ai-assistant-widget.php';
+}
+?>
 </body>
 </html>
