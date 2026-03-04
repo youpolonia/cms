@@ -26,5 +26,11 @@
         }
     });
     </script>
+<?php
+// Floating AI Assistant Widget — available on all admin pages
+if (file_exists(CMS_ROOT . '/admin/includes/ai-assistant-widget.php')) {
+    require_once CMS_ROOT . '/admin/includes/ai-assistant-widget.php';
+}
+?>
 </body>
 </html>

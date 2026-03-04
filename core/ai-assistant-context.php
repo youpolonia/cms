@@ -12,25 +12,57 @@ function getAssistantContext(string $path): array {
     $map = getContextMap();
 
     // 1. Exact match
-    if (isset($map[$path])) return $map[$path];
+    if (isset($map[$path])) {
+        $ctx = $map[$path];
+    } else {
+        // 2. Longest prefix match
+        $ctx = null;
+        $bestLen = 0;
+        foreach ($map as $prefix => $ctxEntry) {
+            $pLen = strlen($prefix);
+            if ($pLen > $bestLen && (
+                $path === $prefix ||
+                str_starts_with($path, $prefix . '/') ||
+                str_starts_with($path, $prefix)
+            )) {
+                $ctx = $ctxEntry;
+                $bestLen = $pLen;
+            }
+        }
+        if (!$ctx) $ctx = getDefaultContext();
+    }
 
-    // 2. Longest prefix match — find the most specific entry that is a prefix of $path
-    $bestMatch = null;
-    $bestLen = 0;
-    foreach ($map as $prefix => $ctx) {
-        $pLen = strlen($prefix);
-        if ($pLen > $bestLen && (
-            $path === $prefix ||
-            str_starts_with($path, $prefix . '/') ||
-            str_starts_with($path, $prefix)
-        )) {
-            $bestMatch = $ctx;
-            $bestLen = $pLen;
+    // 3. Inject tutorial from ai-tutorials.php if not already set
+    if (empty($ctx['tutorial'])) {
+        $tutorials = _getAdminTutorials();
+        // Try exact match, then prefix match
+        if (isset($tutorials[$path])) {
+            $ctx['tutorial'] = $tutorials[$path];
+        } else {
+            foreach ($tutorials as $prefix => $tutorial) {
+                if (str_starts_with($path, $prefix)) {
+                    $ctx['tutorial'] = $tutorial;
+                    break;
+                }
+            }
         }
     }
-    if ($bestMatch) return $bestMatch;
 
-    return getDefaultContext();
+    return $ctx;
+}
+
+function _getAdminTutorials(): array {
+    static $cache = null;
+    if ($cache === null) {
+        $file = (defined('CMS_ROOT') ? CMS_ROOT : dirname(__DIR__)) . '/core/ai-tutorials.php';
+        if (file_exists($file)) {
+            require_once $file;
+            $cache = function_exists('getAdminTutorials') ? getAdminTutorials() : [];
+        } else {
+            $cache = [];
+        }
+    }
+    return $cache;
 }
 
 function getDefaultContext(): array {
