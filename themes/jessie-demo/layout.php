@@ -57,9 +57,11 @@ $themePath = '/themes/' . basename(__DIR__);
       <ul class="jd-nav-list">
         <li><a href="/#features" class="jd-nav-link">Features</a></li>
         <li><a href="/#plugins" class="jd-nav-link">Plugins</a></li>
-        <li><a href="/#saas" class="jd-nav-link">SaaS Tools</a></li>
-        <li><a href="/demo-features" class="jd-nav-link">Full Features</a></li>
+        <li><a href="/demo-features" class="jd-nav-link">All Features</a></li>
         <li><a href="/demo-pricing" class="jd-nav-link">Pricing</a></li>
+        <li><a href="/blog" class="jd-nav-link">Blog</a></li>
+        <li><a href="/shop" class="jd-nav-link">Shop</a></li>
+        <li><a href="/contact" class="jd-nav-link">Contact</a></li>
       </ul>
     </nav>
     <div class="jd-header-actions">
@@ -88,7 +90,7 @@ $themePath = '/themes/' . basename(__DIR__);
           <img src="<?= $themePath ?>/assets/img/jessie-logo.svg" alt="Jessie CMS" class="jd-brand-logo">
           <span class="jd-brand-text">Jessie<span class="jd-brand-accent">CMS</span></span>
         </a>
-        <p class="jd-footer-desc">AI-powered CMS with 18 plugins, 6 SaaS tools, and drag & drop page builder. Built with love, named after a beloved dog.</p>
+        <p class="jd-footer-desc">AI-powered CMS with 19 plugins, 7 SaaS tools, and drag & drop page builder. Built with love, named after a beloved dog.</p>
       </div>
       <div class="jd-footer-links-col">
         <h4>Product</h4>
@@ -111,9 +113,11 @@ $themePath = '/themes/' . basename(__DIR__);
       <div class="jd-footer-links-col">
         <h4>Resources</h4>
         <ul>
-          <li><a href="/admin">Admin Panel</a></li>
+          <li><a href="/blog">Blog</a></li>
+          <li><a href="/shop">Shop</a></li>
+          <li><a href="/contact">Contact</a></li>
           <li><a href="/demo-about">About</a></li>
-          <li><a href="/demo-pricing">Pricing</a></li>
+          <li><a href="/admin">Admin Panel</a></li>
         </ul>
       </div>
     </div>

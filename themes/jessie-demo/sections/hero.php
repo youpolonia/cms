@@ -4,12 +4,12 @@
     <div class="jd-hero-content jd-fade-up">
         <div class="jd-hero-badge">
             <i class="fas fa-bolt"></i>
-            v0.14.0 — 18 Plugins · 6 SaaS Tools · AI-Powered
+            v0.18.0 — 19 Plugins · 7 SaaS Tools · AI-Powered
         </div>
         <h1>Build Websites<br><span class="gradient-text">Powered by AI</span></h1>
         <p class="jd-hero-sub">
             Jessie CMS is a complete, self-hosted website platform with AI theme generation, 
-            drag & drop page builder, e-commerce, booking, LMS, CRM, and 18 ready-to-use plugins. 
+            drag & drop page builder, e-commerce, booking, LMS, CRM, and 19 ready-to-use plugins. 
             No frameworks. No dependencies. Just pure PHP power.
         </p>
         <div class="jd-hero-buttons">

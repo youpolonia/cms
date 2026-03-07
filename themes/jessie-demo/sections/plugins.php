@@ -25,7 +25,7 @@
             ['icon' => 'fa-truck-fast', 'name' => 'Dropshipping', 'desc' => 'Suppliers, product links, auto-pricing, order forwarding, margin tracking', 'tag' => 'E-Commerce'],
             ['icon' => 'fa-robot', 'name' => 'Shop AI SEO', 'desc' => 'AI product descriptions, meta tags, bulk scan, SEO scoring, keyword optimization', 'tag' => 'AI'],
             ['icon' => 'fa-wand-sparkles', 'name' => 'Shop AI Images', 'desc' => 'Background removal, ALT text gen, image enhance, AI generate via HuggingFace', 'tag' => 'AI'],
-            ['icon' => 'fa-palette', 'name' => 'Theme Builder', 'desc' => '79 drag & drop modules, AI website generator, multi-agent pipeline, templates', 'tag' => 'Builder'],
+            ['icon' => 'fa-palette', 'name' => 'Theme Builder', 'desc' => '79 drag & drop modules, visual editor, template library, live preview', 'tag' => 'Builder'],
         ];
         foreach ($plugins as $i => $p): ?>
         <div class="jd-plugin-card jd-fade-up" style="transition-delay: <?= $i * 30 ?>ms">

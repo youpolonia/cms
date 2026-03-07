@@ -30,7 +30,7 @@
         <div class="jd-feature-card jd-fade-up">
             <div class="jd-feature-icon green"><i class="fas fa-th-large"></i></div>
             <h3>JTB Page Builder</h3>
-            <p>79 drag & drop modules in 8 categories: structure, content, interactive, media, forms, blog, fullwidth, theme. AI-powered multi-agent website generator.</p>
+            <p>79 drag & drop modules in 8 categories: structure, content, interactive, media, forms, blog, fullwidth, theme. Visual editor with live preview and template library.</p>
         </div>
         <div class="jd-feature-card jd-fade-up">
             <div class="jd-feature-icon pink"><i class="fas fa-shield-alt"></i></div>
