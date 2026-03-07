@@ -459,6 +459,10 @@ if (preg_match('#^/admin/affiliate(?:/|$)#', $jtbUri)) {
     exit;
 }
 // Affiliate frontend
+if ($jtbUri === '/affiliate') {
+    header('Location: /affiliate/register', true, 301);
+    exit;
+}
 if ($jtbUri === '/affiliate/register') {
     require_once CMS_ROOT . '/plugins/jessie-affiliate/views/frontend/register.php';
     exit;
@@ -560,6 +564,10 @@ if (preg_match('#^/api/membership/([\w-]+)(?:/(\d+))?$#', $jtbUri)) {
 }
 if (preg_match('#^/admin/membership(?:/|$)#', $jtbUri)) {
     require_once CMS_ROOT . '/plugins/jessie-membership/admin-router.php';
+    exit;
+}
+if ($jtbUri === '/membership') {
+    header('Location: /membership/pricing', true, 301);
     exit;
 }
 if (preg_match('#^/membership/signup(?:/(success|cancel))?/?$#', $jtbUri, $msMatch)) {
