@@ -27,8 +27,6 @@ $templateName = $template['name'] ?? 'New ' . ucfirst($templateType) . ' Templat
     <link rel="stylesheet" href="<?= htmlspecialchars($pluginUrl) ?>/assets/css/template-manager.css?v=<?= time() ?>">
     <link rel="stylesheet" href="<?= htmlspecialchars($pluginUrl) ?>/assets/css/animations.css?v=<?= time() ?>">
     <link rel="stylesheet" href="<?= htmlspecialchars($pluginUrl) ?>/assets/css/media-gallery.css?v=<?= time() ?>">
-    <!-- Full AI Panel Styles (same as Page Builder) -->
-    <link rel="stylesheet" href="<?= htmlspecialchars($pluginUrl) ?>/assets/css/ai-panel.css?v=<?= time() ?>">
     <!-- Unified Theme System - Base Module Styles -->
     <link rel="stylesheet" href="<?= htmlspecialchars($pluginUrl) ?>/assets/css/jtb-base-modules.css?v=<?= time() ?>">
 </head>
@@ -221,11 +219,7 @@ $templateName = $template['name'] ?? 'New ' . ucfirst($templateType) . ' Templat
     <!-- Notifications -->
     <div class="jtb-notifications" id="notifications"></div>
 
-    <!-- Full AI Panel (same as Page Builder) -->
     <?php
-    // Use TEMPLATE-SPECIFIC AI Panel (NOT Page Builder AI Panel!)
-    // This panel has header/footer/body specific options
-    require_once dirname(__DIR__) . '/views/ai-panel-template.php';
     ?>
 
     <!-- Media Gallery Modal -->
@@ -256,8 +250,6 @@ $templateName = $template['name'] ?? 'New ' . ucfirst($templateType) . ' Templat
         // CSRF token for API calls
         window.JTB_CSRF_TOKEN = '<?= htmlspecialchars($csrfToken ?? '') ?>';
 
-        // AI Panel context for templates (tells AI panel we're in template mode)
-        window.JTB_AI_CONTEXT = {
             mode: 'template',
             templateType: <?= json_encode($templateType) ?>,
             templateId: <?= $templateId ? (int) $templateId : 'null' ?>
@@ -268,22 +260,11 @@ $templateName = $template['name'] ?? 'New ' . ucfirst($templateType) . ' Templat
     <script src="<?= htmlspecialchars($pluginUrl) ?>/assets/js/fields.js"></script>
     <script src="<?= htmlspecialchars($pluginUrl) ?>/assets/js/media-gallery.js?v=<?= time() ?>"></script>
     <script src="<?= htmlspecialchars($pluginUrl) ?>/assets/js/conditions-builder.js"></script>
-    <!-- Full AI Panel JS (same as Page Builder) -->
-    <script src="<?= htmlspecialchars($pluginUrl) ?>/assets/js/ai-panel.js?v=<?= time() ?>"></script>
     <script src="<?= htmlspecialchars($pluginUrl) ?>/assets/js/template-editor.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             JTBTemplateEditor.init(window.JTB_TEMPLATE_DATA);
 
-            // Initialize AI Panel with template context
-            if (typeof JTB_AI !== 'undefined' && typeof JTB_AI.init === 'function') {
-                JTB_AI.init({
-                    mode: 'template',
-                    templateType: window.JTB_AI_CONTEXT.templateType,
-                    templateId: window.JTB_AI_CONTEXT.templateId,
-                    csrfToken: window.JTB_CSRF_TOKEN
-                });
-            }
         });
     </script>
 </body>

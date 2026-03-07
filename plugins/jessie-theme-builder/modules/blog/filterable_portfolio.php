@@ -252,33 +252,17 @@ class JTB_Module_FilterablePortfolio extends JTB_Element
         $columns = $attrs['columns'] ?? '4';
 
         // Sample categories
-        $categories = ['Web Design', 'Branding', 'Development', 'Photography', 'UI/UX'];
-
-        // Sample portfolio items
-        $sampleItems = [
-            ['title' => 'E-Commerce Platform', 'categories' => ['Web Design', 'Development'], 'image' => ''],
-            ['title' => 'Brand Identity', 'categories' => ['Branding'], 'image' => ''],
-            ['title' => 'Mobile App UI', 'categories' => ['UI/UX', 'Development'], 'image' => ''],
-            ['title' => 'Product Photography', 'categories' => ['Photography'], 'image' => ''],
-            ['title' => 'Corporate Website', 'categories' => ['Web Design'], 'image' => ''],
-            ['title' => 'Logo Design', 'categories' => ['Branding'], 'image' => ''],
-            ['title' => 'Dashboard Design', 'categories' => ['UI/UX'], 'image' => ''],
-            ['title' => 'Event Photography', 'categories' => ['Photography'], 'image' => ''],
-            ['title' => 'SaaS Application', 'categories' => ['Web Design', 'UI/UX'], 'image' => ''],
-            ['title' => 'Restaurant Branding', 'categories' => ['Branding', 'Photography'], 'image' => ''],
-            ['title' => 'Portfolio Website', 'categories' => ['Web Design', 'Development'], 'image' => ''],
-            ['title' => 'Fashion Photography', 'categories' => ['Photography'], 'image' => ''],
-        ];
+        // Fetch real data from DB
+        [$sampleItems, $categories] = $this->fetchProjectsWithCategories($attrs);
 
         $innerHtml = '<div class="jtb-filterable-portfolio">';
 
         // Filter bar
-        if ($showFilter) {
+        if ($showFilter && !empty($categories)) {
             $innerHtml .= '<div class="jtb-portfolio-filter">';
-            $innerHtml .= '<button class="jtb-filter-btn active" data-filter="*">' . $filterAllText . '</button>';
-            foreach ($categories as $cat) {
-                $catSlug = strtolower(str_replace([' ', '/'], '-', $cat));
-                $innerHtml .= '<button class="jtb-filter-btn" data-filter=".' . $catSlug . '">' . $this->esc($cat) . '</button>';
+            $innerHtml .= '<button class="jtb-filter-btn active" data-filter="*">' . $this->esc($filterAllText) . '</button>';
+            foreach ($categories as $catSlug => $catName) {
+                $innerHtml .= '<button class="jtb-filter-btn" data-filter=".cat-' . $this->esc($catSlug) . '">' . $this->esc($catName) . '</button>';
             }
             $innerHtml .= '</div>';
         }
@@ -286,23 +270,26 @@ class JTB_Module_FilterablePortfolio extends JTB_Element
         // Portfolio grid
         $innerHtml .= '<div class="jtb-portfolio-grid jtb-portfolio-cols-' . $columns . '">';
 
-        foreach ($sampleItems as $item) {
-            $catClasses = array_map(function ($c) {
-                return strtolower(str_replace([' ', '/'], '-', $c));
-            }, $item['categories']);
+        if (empty($sampleItems)) {
+            $innerHtml .= '<p class="jtb-portfolio-empty">No projects found.</p>';
+        }
 
-            $innerHtml .= '<div class="jtb-portfolio-item ' . implode(' ', $catClasses) . '">';
+        foreach ($sampleItems as $item) {
+            $catSlug  = 'cat-' . $this->esc($item['category_slug'] ?? 'uncategorized');
+            $catName  = $this->esc($item['category_name'] ?? '');
+            $itemUrl  = '/portfolio/' . $this->esc($item['slug'] ?? '');
+            $extUrl   = !empty($item['project_url']) ? $this->esc($item['project_url']) : $itemUrl;
+
+            $innerHtml .= '<div class="jtb-portfolio-item ' . $catSlug . '">';
             $innerHtml .= '<div class="jtb-portfolio-inner">';
 
-            // Image
             $innerHtml .= '<div class="jtb-portfolio-image">';
-            if (!empty($item['image'])) {
-                $innerHtml .= '<img src="' . $this->esc($item['image']) . '" alt="' . $this->esc($item['title']) . '">';
+            if (!empty($item['cover_image'])) {
+                $innerHtml .= '<img src="' . $this->esc($item['cover_image']) . '" alt="' . $this->esc($item['title']) . '" loading="lazy">';
             } else {
                 $innerHtml .= '<div class="jtb-portfolio-placeholder"></div>';
             }
 
-            // Overlay
             $innerHtml .= '<div class="jtb-portfolio-overlay">';
             $innerHtml .= '<div class="jtb-portfolio-content">';
 
@@ -310,18 +297,19 @@ class JTB_Module_FilterablePortfolio extends JTB_Element
                 $innerHtml .= '<h3 class="jtb-portfolio-title">' . $this->esc($item['title']) . '</h3>';
             }
 
-            if ($showCategories && !empty($item['categories'])) {
-                $innerHtml .= '<div class="jtb-portfolio-cats">' . implode(' / ', array_map([$this, 'esc'], $item['categories'])) . '</div>';
+            if ($showCategories && $catName) {
+                $innerHtml .= '<div class="jtb-portfolio-cats">' . $catName . '</div>';
             }
 
-            // Actions
             $innerHtml .= '<div class="jtb-portfolio-actions">';
-            $innerHtml .= '<a href="#" class="jtb-portfolio-link" title="View Project">';
+            $innerHtml .= '<a href="' . $itemUrl . '" class="jtb-portfolio-link" title="View Project">';
             $innerHtml .= '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line><line x1="11" y1="8" x2="11" y2="14"></line><line x1="8" y1="11" x2="14" y2="11"></line></svg>';
             $innerHtml .= '</a>';
-            $innerHtml .= '<a href="#" class="jtb-portfolio-external" title="External Link">';
-            $innerHtml .= '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>';
-            $innerHtml .= '</a>';
+            if (!empty($item['project_url'])) {
+                $innerHtml .= '<a href="' . $extUrl . '" class="jtb-portfolio-external" title="Visit Project" target="_blank" rel="noopener">';
+                $innerHtml .= '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>';
+                $innerHtml .= '</a>';
+            }
             $innerHtml .= '</div>';
 
             $innerHtml .= '</div>'; // content
@@ -409,6 +397,55 @@ class JTB_Module_FilterablePortfolio extends JTB_Element
         $css .= parent::generateCss($attrs, $selector);
 
         return $css;
+    }
+
+    /**
+     * Returns [items[], categories[slug => name]]
+     */
+    private function fetchProjectsWithCategories(array $attrs): array
+    {
+        try {
+            $pdo    = db();
+            $limit  = max(1, (int)($attrs['posts_number'] ?? 12));
+            $where  = ["p.status = 'published'"];
+            $params = [];
+
+            if (!empty($attrs['category_id'])) {
+                $where[]  = 'p.category_id = ?';
+                $params[] = (int)$attrs['category_id'];
+            }
+
+            $whereClause = implode(' AND ', $where);
+            $params[]    = $limit;
+
+            $sql = "
+                SELECT p.id, p.slug, p.title, p.short_description,
+                       p.cover_image, p.project_url, p.is_featured,
+                       c.name AS category_name, c.slug AS category_slug
+                FROM portfolio_projects p
+                LEFT JOIN portfolio_categories c ON p.category_id = c.id
+                WHERE $whereClause
+                ORDER BY p.sort_order ASC, p.created_at DESC
+                LIMIT ?
+            ";
+
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute($params);
+            $items = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+            // Build unique categories map [slug => name]
+            $categories = [];
+            foreach ($items as $item) {
+                if (!empty($item['category_slug']) && !empty($item['category_name'])) {
+                    $categories[$item['category_slug']] = $item['category_name'];
+                }
+            }
+
+            return [$items, $categories];
+
+        } catch (\Throwable $e) {
+            return [[], []];
+        }
     }
 }
 

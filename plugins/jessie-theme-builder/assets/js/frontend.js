@@ -39,6 +39,9 @@
             this.initAccordions();
             this.initSliders();
             this.initLightbox();
+            this.initCountdowns();
+            this.initParallax();
+            this.initForms();
             this.initSmoothScroll();
             this.initLazyLoad();
             this.bindEvents();
@@ -91,6 +94,7 @@
                         self.initTabs();
                         self.initAccordions();
                         self.initCounters();
+                        self.initCountdowns();
                     }, 100);
                 }
             });
@@ -126,6 +130,7 @@
             this.state.scrollY = window.scrollY;
             this.updateStickyHeader();
             this.triggerScrollAnimations();
+            this.updateParallax();
             this.state.lastScrollY = this.state.scrollY;
         },
 
@@ -572,8 +577,264 @@
                 }
             }
 
+            // Dots navigation
+            const dotsContainer = container.querySelector('.jtb-slider-dots');
+            if (dotsContainer) {
+                dotsContainer.querySelectorAll('.jtb-slider-dot').forEach((dot, i) => {
+                    dot.addEventListener('click', () => showSlide(i));
+                });
+            } else if (slides.length > 1) {
+                // Auto-create dots if not present
+                const dots = document.createElement('div');
+                dots.className = 'jtb-slider-dots';
+                slides.forEach((_, i) => {
+                    const dot = document.createElement('button');
+                    dot.className = 'jtb-slider-dot' + (i === 0 ? ' active' : '');
+                    dot.setAttribute('aria-label', `Slide ${i + 1}`);
+                    dot.addEventListener('click', () => showSlide(i));
+                    dots.appendChild(dot);
+                });
+                container.appendChild(dots);
+            }
+
+            // Update dots on slide change
+            const origShowSlide = showSlide;
+            const showSlideWithDots = (index) => {
+                origShowSlide(index);
+                const allDots = container.querySelectorAll('.jtb-slider-dot');
+                allDots.forEach((d, i) => d.classList.toggle('active', i === index));
+            };
+
+            // Rebind nav buttons to use dots-aware version
+            if (prevBtn) {
+                prevBtn.replaceWith(prevBtn.cloneNode(true));
+                container.querySelector('.jtb-slider-prev')?.addEventListener('click', () =>
+                    showSlideWithDots((currentIndex - 1 + slides.length) % slides.length));
+            }
+            if (nextBtn) {
+                nextBtn.replaceWith(nextBtn.cloneNode(true));
+                container.querySelector('.jtb-slider-next')?.addEventListener('click', () =>
+                    showSlideWithDots((currentIndex + 1) % slides.length));
+            }
+
+            // Touch/Swipe support
+            let touchStartX = 0;
+            let touchStartY = 0;
+            let touchEndX = 0;
+            let isSwiping = false;
+
+            container.addEventListener('touchstart', (e) => {
+                touchStartX = e.changedTouches[0].screenX;
+                touchStartY = e.changedTouches[0].screenY;
+                isSwiping = true;
+            }, { passive: true });
+
+            container.addEventListener('touchend', (e) => {
+                if (!isSwiping) return;
+                isSwiping = false;
+
+                touchEndX = e.changedTouches[0].screenX;
+                const diffX = touchStartX - touchEndX;
+                const diffY = Math.abs(touchStartY - e.changedTouches[0].screenY);
+
+                // Only swipe if horizontal movement > 50px and more horizontal than vertical
+                if (Math.abs(diffX) > 50 && Math.abs(diffX) > diffY) {
+                    if (diffX > 0) {
+                        showSlideWithDots((currentIndex + 1) % slides.length); // swipe left = next
+                    } else {
+                        showSlideWithDots((currentIndex - 1 + slides.length) % slides.length); // swipe right = prev
+                    }
+                }
+            }, { passive: true });
+
             // Show first slide
             showSlide(0);
+        },
+
+        // ========================================
+        // AJAX Forms (contact, comment, signup)
+        // ========================================
+
+        initForms() {
+            // Contact form — POST to action URL, show success message
+            document.querySelectorAll('.jtb-contact-form, .jtb-comment-submit-form, .jtb-signup-form').forEach(form => {
+                if (form.dataset.jtbFormInit) return;
+                form.dataset.jtbFormInit = 'true';
+                this.initAjaxForm(form);
+            });
+        },
+
+        initAjaxForm(form) {
+            const successMsg = form.closest('[class*="jtb-"]')?.querySelector(
+                '.jtb-contact-form-success, .jtb-comment-pending, .jtb-signup-success'
+            );
+            const submitBtn = form.querySelector('[type="submit"]');
+
+            // Add aria-live region for feedback
+            if (successMsg) {
+                successMsg.setAttribute('role', 'status');
+                successMsg.setAttribute('aria-live', 'polite');
+            }
+
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                if (submitBtn) {
+                    submitBtn.disabled = true;
+                    submitBtn.dataset.origText = submitBtn.textContent;
+                    submitBtn.textContent = 'Sending…';
+                }
+
+                try {
+                    const formData = new FormData(form);
+                    const resp = await fetch(form.action || window.location.href, {
+                        method: 'POST',
+                        credentials: 'include',
+                        body: formData
+                    });
+
+                    const isJson = resp.headers.get('content-type')?.includes('application/json');
+                    const data   = isJson ? await resp.json() : { success: resp.ok };
+
+                    if (data.success || resp.ok) {
+                        // Show success message
+                        form.style.display = 'none';
+                        if (successMsg) successMsg.style.display = '';
+                        else {
+                            const msg = form.dataset.successMessage || 'Thank you!';
+                            const el = document.createElement('p');
+                            el.className = 'jtb-form-success';
+                            el.setAttribute('role', 'status');
+                            el.textContent = msg;
+                            form.parentNode.insertBefore(el, form.nextSibling);
+                        }
+                    } else {
+                        // Show error inline
+                        const errMsg = data.message || data.error || 'An error occurred. Please try again.';
+                        let errEl = form.querySelector('.jtb-form-error');
+                        if (!errEl) {
+                            errEl = document.createElement('p');
+                            errEl.className = 'jtb-form-error';
+                            errEl.setAttribute('role', 'alert');
+                            errEl.setAttribute('aria-live', 'assertive');
+                            form.prepend(errEl);
+                        }
+                        errEl.textContent = errMsg;
+                        if (submitBtn) {
+                            submitBtn.disabled = false;
+                            submitBtn.textContent = submitBtn.dataset.origText || 'Submit';
+                        }
+                    }
+                } catch (err) {
+                    console.error('Form submit error:', err);
+                    if (submitBtn) {
+                        submitBtn.disabled = false;
+                        submitBtn.textContent = submitBtn.dataset.origText || 'Submit';
+                    }
+                }
+            });
+        },
+
+        // ========================================
+        // Countdown Timer
+        // ========================================
+
+        initCountdowns() {
+            document.querySelectorAll('.jtb-countdown-container[data-date]').forEach(container => {
+                if (container.dataset.jtbCountdownInit) return;
+                container.dataset.jtbCountdownInit = 'true';
+                this.initCountdown(container);
+            });
+        },
+
+        initCountdown(container) {
+            const targetDate = new Date(container.dataset.date).getTime();
+            if (isNaN(targetDate)) return;
+
+            const daysEl = container.querySelector('[data-unit="days"]');
+            const hoursEl = container.querySelector('[data-unit="hours"]');
+            const minutesEl = container.querySelector('[data-unit="minutes"]');
+            const secondsEl = container.querySelector('[data-unit="seconds"]');
+
+            const update = () => {
+                const now = Date.now();
+                const diff = targetDate - now;
+
+                if (diff <= 0) {
+                    // Countdown finished
+                    if (daysEl) daysEl.textContent = '00';
+                    if (hoursEl) hoursEl.textContent = '00';
+                    if (minutesEl) minutesEl.textContent = '00';
+                    if (secondsEl) secondsEl.textContent = '00';
+                    container.classList.add('jtb-countdown-finished');
+
+                    // Show expired message if configured
+                    const expiredMsg = container.dataset.expiredMessage;
+                    if (expiredMsg) {
+                        const timer = container.querySelector('.jtb-countdown-timer');
+                        if (timer) timer.innerHTML = `<div class="jtb-countdown-expired">${expiredMsg}</div>`;
+                    }
+                    return false; // Stop interval
+                }
+
+                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+                if (daysEl) daysEl.textContent = String(days).padStart(2, '0');
+                if (hoursEl) hoursEl.textContent = String(hours).padStart(2, '0');
+                if (minutesEl) minutesEl.textContent = String(minutes).padStart(2, '0');
+                if (secondsEl) secondsEl.textContent = String(seconds).padStart(2, '0');
+
+                return true; // Continue interval
+            };
+
+            // Initial update
+            if (update()) {
+                // Continue updating every second
+                const intervalId = setInterval(() => {
+                    if (!update()) clearInterval(intervalId);
+                }, 1000);
+
+                // Cleanup
+                container._jtbCountdownInterval = intervalId;
+            }
+        },
+
+        // ========================================
+        // Parallax
+        // ========================================
+
+        initParallax() {
+            this.parallaxElements = document.querySelectorAll('[data-jtb-parallax], .jtb-section[data-parallax="true"]');
+            if (this.parallaxElements.length === 0) return;
+
+            // Check for reduced motion preference
+            if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+            this.updateParallax();
+        },
+
+        updateParallax() {
+            if (!this.parallaxElements || this.parallaxElements.length === 0) return;
+
+            this.parallaxElements.forEach(el => {
+                const rect = el.getBoundingClientRect();
+                const speed = parseFloat(el.dataset.jtbParallax || el.dataset.parallaxSpeed || '0.3');
+                const viewHeight = window.innerHeight;
+
+                // Only process if element is in viewport
+                if (rect.bottom < 0 || rect.top > viewHeight) return;
+
+                const yPos = -(rect.top * speed);
+                const bgImage = el.querySelector('.jtb-section-bg, .jtb-parallax-bg');
+
+                if (bgImage) {
+                    bgImage.style.transform = `translate3d(0, ${yPos}px, 0)`;
+                } else {
+                    el.style.backgroundPosition = `center ${yPos}px`;
+                }
+            });
         },
 
         // ========================================

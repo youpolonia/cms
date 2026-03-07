@@ -192,7 +192,9 @@ class JTB_Module_Signup extends JTB_Element
         }
 
         // Form
-        $innerHtml .= '<form class="jtb-signup-form" id="' . $formId . '" data-success-message="' . $successMessage . '">';
+        $csrfToken = function_exists('csrf_token') ? csrf_token() : '';
+        $innerHtml .= '<form class="jtb-signup-form" id="' . $formId . '" method="post" action="/register" data-success-message="' . $successMessage . '">';
+        $innerHtml .= '<input type="hidden" name="csrf_token" value="' . $this->esc($csrfToken) . '">';
         $innerHtml .= '<div class="jtb-signup-fields">';
 
         // Name fields

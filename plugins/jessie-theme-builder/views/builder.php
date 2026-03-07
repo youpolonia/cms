@@ -72,7 +72,6 @@ try {
     <link rel="stylesheet" href="<?php echo $esc($pluginUrl); ?>/assets/css/jtb-base-modules.css?v=<?php echo time(); ?>">
 
     <!-- AI Panel CSS -->
-    <link rel="stylesheet" href="<?php echo $esc($pluginUrl); ?>/assets/css/ai-panel.css?v=<?php echo time(); ?>">
 
     <style>
         /* Preview button styles */
@@ -220,8 +219,6 @@ try {
     jtb_render_media_gallery_modal($csrfToken, $pexelsApiKey);
     ?>
 
-    <!-- AI Panel -->
-    <?php require_once dirname(__DIR__) . '/views/ai-panel.php'; ?>
 
     <!-- JavaScript -->
     <script src="<?php echo $esc($pluginUrl); ?>/assets/js/feather-icons.js?v=<?php echo time(); ?>"></script>
@@ -229,8 +226,6 @@ try {
     <script src="<?php echo $esc($pluginUrl); ?>/assets/js/settings-panel.js?v=<?php echo time(); ?>"></script>
     <script src="<?php echo $esc($pluginUrl); ?>/assets/js/fields.js?v=<?php echo time(); ?>"></script>
     <script src="<?php echo $esc($pluginUrl); ?>/assets/js/media-gallery.js?v=<?php echo time(); ?>"></script>
-    <script src="<?php echo $esc($pluginUrl); ?>/assets/js/ai-panel-render.js?v=<?php echo time(); ?>"></script>
-    <script src="<?php echo $esc($pluginUrl); ?>/assets/js/ai-panel.js?v=<?php echo time(); ?>"></script>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -282,14 +277,6 @@ try {
                 content: importedContent || undefined // Only pass if truthy, otherwise load from API
             });
 
-            // Initialize AI Panel
-            if (typeof JTB_AI !== 'undefined') {
-                JTB_AI.init({
-                    csrfToken: '<?php echo $esc($csrfToken); ?>',
-                    apiUrl: '/api/jtb/ai',
-                    pageId: <?php echo (int) $postId; ?>
-                });
-            }
         });
     </script>
 

@@ -151,7 +151,10 @@ class JTB_Module_Login extends JTB_Element
             $innerHtml .= '<h3 class="jtb-login-title">' . $title . '</h3>';
         }
 
-        $innerHtml .= '<form class="jtb-login-form" id="' . $formId . '" method="post">';
+        $csrfToken = function_exists('csrf_token') ? csrf_token() : '';
+        $innerHtml .= '<form class="jtb-login-form" id="' . $formId . '" method="post" action="/login">';
+        $innerHtml .= '<input type="hidden" name="csrf_token" value="' . $this->esc($csrfToken) . '">';
+        $innerHtml .= '<input type="hidden" name="redirect" value="' . $this->esc($_SERVER['REQUEST_URI'] ?? '/') . '">';
 
         // Username
         $innerHtml .= '<div class="jtb-form-field">';
@@ -177,7 +180,7 @@ class JTB_Module_Login extends JTB_Element
 
         // Links
         $innerHtml .= '<div class="jtb-login-links">';
-        $innerHtml .= '<a href="#" class="jtb-forgot-password">Forgot Password?</a>';
+        $innerHtml .= '<a href="/forgot-password" class="jtb-forgot-password">Forgot Password?</a>';
         $innerHtml .= '</div>';
 
         $innerHtml .= '</form>';

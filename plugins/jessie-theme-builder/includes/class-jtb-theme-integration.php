@@ -135,8 +135,8 @@ class JTB_Theme_Integration
             $content = json_decode($content, true);
         }
 
-        // Render using JTB_Renderer
-        return JTB_Renderer::render($content);
+        // Render using JTB_Renderer (frontend context = CSS goes to <head> via CSS_Output, not inline)
+        return JTB_Renderer::render($content, ['context' => 'frontend']);
     }
 
     /**

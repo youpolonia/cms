@@ -161,39 +161,50 @@ class JTB_Module_PostSlider extends JTB_Element
         $innerHtml = '<div class="jtb-post-slider-container jtb-post-slider-' . $imagePlacement . '" data-auto="' . ($auto ? 'true' : 'false') . '" data-speed="' . $autoSpeed . '">';
         $innerHtml .= '<div class="jtb-post-slider-track">';
 
-        // Sample posts
-        $samplePosts = [
-            ['title' => 'Featured Post One', 'excerpt' => 'This is a sample excerpt for the first featured post.', 'date' => date('F j, Y'), 'author' => 'Admin', 'image' => ''],
-            ['title' => 'Featured Post Two', 'excerpt' => 'Another sample excerpt showing in the post slider.', 'date' => date('F j, Y', strtotime('-1 day')), 'author' => 'Editor', 'image' => ''],
-            ['title' => 'Featured Post Three', 'excerpt' => 'Third sample post with featured content.', 'date' => date('F j, Y', strtotime('-2 days')), 'author' => 'Admin', 'image' => ''],
-        ];
+        // Fetch real posts from DB
+        $posts = $this->fetchSliderPosts($attrs);
 
-        foreach ($samplePosts as $post) {
+        if (empty($posts)) {
+            $innerHtml .= '<div class="jtb-post-slide"><div class="jtb-post-slide-content"><p>No posts found.</p></div></div>';
+        }
+
+        foreach ($posts as $post) {
+            $postUrl = '/article/' . $this->esc($post['slug'] ?? '');
+            $date    = !empty($post['published_at']) ? date('F j, Y', strtotime($post['published_at'])) : '';
+            $author  = $this->esc($post['author_name'] ?? 'Admin');
+            $excerpt = $post['excerpt'] ?? '';
+            if (empty($excerpt) && !empty($post['content'])) {
+                $excerpt = mb_substr(strip_tags($post['content']), 0, 180) . '…';
+            }
+            $bgStyle = !empty($post['featured_image'])
+                ? ' style="background-image:url(\'' . $this->esc($post['featured_image']) . '\')"'
+                : '';
+
             $innerHtml .= '<div class="jtb-post-slide">';
 
             if ($imagePlacement === 'background') {
-                $innerHtml .= '<div class="jtb-post-slide-bg"></div>';
+                $innerHtml .= '<div class="jtb-post-slide-bg"' . $bgStyle . '></div>';
                 $innerHtml .= '<div class="jtb-post-slide-overlay"></div>';
             } else {
-                $innerHtml .= '<div class="jtb-post-slide-image"><div class="jtb-post-slide-bg"></div></div>';
+                $innerHtml .= '<div class="jtb-post-slide-image"><div class="jtb-post-slide-bg"' . $bgStyle . '></div></div>';
             }
 
             $innerHtml .= '<div class="jtb-post-slide-content">';
-            $innerHtml .= '<h2 class="jtb-post-slide-title"><a href="#">' . $this->esc($post['title']) . '</a></h2>';
+            $innerHtml .= '<h2 class="jtb-post-slide-title"><a href="' . $postUrl . '">' . $this->esc($post['title']) . '</a></h2>';
 
             if ($showMeta) {
                 $innerHtml .= '<div class="jtb-post-slide-meta">';
-                $innerHtml .= '<span class="jtb-post-date">' . $post['date'] . '</span>';
-                $innerHtml .= ' | <span class="jtb-post-author">by ' . $this->esc($post['author']) . '</span>';
+                if ($date) $innerHtml .= '<span class="jtb-post-date">' . $date . '</span>';
+                $innerHtml .= ' <span class="jtb-post-author">by ' . $author . '</span>';
                 $innerHtml .= '</div>';
             }
 
-            if ($showExcerpt) {
-                $innerHtml .= '<div class="jtb-post-slide-excerpt">' . $this->esc($post['excerpt']) . '</div>';
+            if ($showExcerpt && $excerpt) {
+                $innerHtml .= '<div class="jtb-post-slide-excerpt">' . $this->esc($excerpt) . '</div>';
             }
 
             if ($showReadMore) {
-                $innerHtml .= '<a href="#" class="jtb-post-slide-more jtb-button">Read More</a>';
+                $innerHtml .= '<a href="' . $postUrl . '" class="jtb-post-slide-more jtb-button">Read More</a>';
             }
 
             $innerHtml .= '</div>';
@@ -288,6 +299,33 @@ class JTB_Module_PostSlider extends JTB_Element
         $css .= parent::generateCss($attrs, $selector);
 
         return $css;
+    }
+
+    private function fetchSliderPosts(array $attrs): array
+    {
+        try {
+            $pdo    = db();
+            $limit  = max(1, (int)($attrs['posts_number'] ?? 5));
+            $params = [$limit];
+
+            $sql = "
+                SELECT a.id, a.slug, a.title, a.excerpt, a.content,
+                       a.featured_image, a.published_at,
+                       u.display_name AS author_name
+                FROM articles a
+                LEFT JOIN users u ON a.author_id = u.id
+                WHERE a.status = 'published' AND a.featured_image IS NOT NULL AND a.featured_image != ''
+                ORDER BY a.published_at DESC
+                LIMIT ?
+            ";
+
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute($params);
+            return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+        } catch (\Throwable $e) {
+            return [];
+        }
     }
 }
 

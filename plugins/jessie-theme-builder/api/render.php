@@ -299,14 +299,9 @@ if (!isset($contentArray['version'])) {
 
 // Normalize AI-generated format: content→children, flat attrs→attrs object
 if (isset($contentArray['content']) && is_array($contentArray['content'])) {
-    if (class_exists(__NAMESPACE__ . '\\JTB_AI_Normalizer')) {
-        $contentArray['content'] = JTB_AI_Normalizer::convertAISections($contentArray['content']);
-    } else {
-        // Fallback: use local normalizeAIFormat function
-        $contentArray['content'] = array_map(function($el) {
-            return normalizeAIFormat($el);
-        }, $contentArray['content']);
-    }
+    $contentArray['content'] = array_map(function($el) {
+        return normalizeAIFormat($el);
+    }, $contentArray['content']);
 }
 
 // Normalize structure - fix AI-generated content issues

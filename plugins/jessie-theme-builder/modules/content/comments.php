@@ -148,32 +148,9 @@ class JTB_Module_Comments extends JTB_Element
         $showReply = $attrs['show_reply'] ?? true;
         $dateFormat = $attrs['date_format'] ?? 'relative';
 
-        // Sample comments
-        $comments = [
-            [
-                'author' => 'John Doe',
-                'date' => '2 days ago',
-                'fullDate' => 'January 13, 2025',
-                'content' => 'Great article! This really helped me understand the concept better. Keep up the good work!',
-                'replies' => [
-                    [
-                        'author' => 'Jane Smith',
-                        'date' => '1 day ago',
-                        'fullDate' => 'January 14, 2025',
-                        'content' => 'I agree, this was very informative!'
-                    ]
-                ]
-            ],
-            [
-                'author' => 'Mike Johnson',
-                'date' => '3 days ago',
-                'fullDate' => 'January 12, 2025',
-                'content' => 'Would love to see more content like this. Very well explained.',
-                'replies' => []
-            ]
-        ];
-
-        $totalComments = count($comments) + 1; // Including replies
+        // Fetch real comments from DB
+        $postId = JTB_Dynamic_Context::get('post_id') ?? 0;
+        [$comments, $totalComments] = $this->fetchComments((int)$postId);
 
         $innerHtml = '<div class="jtb-comments-container">';
 
@@ -203,16 +180,20 @@ class JTB_Module_Comments extends JTB_Element
         $innerHtml .= '</div>';
 
         // Comment form
+        $csrfToken = function_exists('csrf_token') ? csrf_token() : '';
         $innerHtml .= '<div class="jtb-comment-form">';
         $innerHtml .= '<h4>Leave a Comment</h4>';
-        $innerHtml .= '<form>';
+        $innerHtml .= '<form method="post" action="/comment" class="jtb-comment-submit-form">';
+        $innerHtml .= '<input type="hidden" name="csrf_token" value="' . $this->esc($csrfToken) . '">';
+        $innerHtml .= '<input type="hidden" name="article_id" value="' . (int)$postId . '">';
         $innerHtml .= '<div class="jtb-form-row">';
-        $innerHtml .= '<input type="text" placeholder="Name *" required>';
-        $innerHtml .= '<input type="email" placeholder="Email *" required>';
+        $innerHtml .= '<input type="text" name="author_name" placeholder="Name *" required>';
+        $innerHtml .= '<input type="email" name="author_email" placeholder="Email *" required>';
         $innerHtml .= '</div>';
-        $innerHtml .= '<textarea placeholder="Your comment..." rows="5" required></textarea>';
+        $innerHtml .= '<textarea name="content" placeholder="Your comment..." rows="5" required></textarea>';
         $innerHtml .= '<button type="submit" class="jtb-button">Submit Comment</button>';
         $innerHtml .= '</form>';
+        $innerHtml .= '<div class="jtb-comment-pending" style="display:none">Your comment is awaiting moderation. Thank you!</div>';
         $innerHtml .= '</div>';
 
         $innerHtml .= '</div>';
@@ -222,32 +203,90 @@ class JTB_Module_Comments extends JTB_Element
 
     private function renderComment(array $comment, bool $showAvatar, bool $showReply, string $dateFormat, bool $isReply = false): string
     {
-        $date = $dateFormat === 'relative' ? $comment['date'] : ($comment['fullDate'] ?? $comment['date']);
-        $replyClass = $isReply ? ' jtb-comment-reply' : '';
+        // Support both DB fields and legacy array keys
+        $author  = $comment['author_name'] ?? $comment['author'] ?? 'Anonymous';
+        $created = $comment['created_at'] ?? null;
 
-        $html = '<div class="jtb-comment' . $replyClass . '">';
+        if ($dateFormat === 'relative' && $created) {
+            $diff = time() - strtotime($created);
+            if ($diff < 60)            $date = 'just now';
+            elseif ($diff < 3600)      $date = floor($diff / 60) . ' min ago';
+            elseif ($diff < 86400)     $date = floor($diff / 3600) . ' hours ago';
+            elseif ($diff < 2592000)   $date = floor($diff / 86400) . ' days ago';
+            else                       $date = date('F j, Y', strtotime($created));
+        } else {
+            $date = $created ? date('F j, Y', strtotime($created)) : '';
+        }
+
+        $replyClass = $isReply ? ' jtb-comment-reply' : '';
+        $html = '<div class="jtb-comment' . $replyClass . '" id="comment-' . (int)($comment['id'] ?? 0) . '">';
 
         if ($showAvatar) {
+            $initial = strtoupper(mb_substr($author, 0, 1));
             $html .= '<div class="jtb-comment-avatar">';
-            $html .= '<div class="jtb-avatar-placeholder">' . strtoupper(substr($comment['author'], 0, 1)) . '</div>';
+            $html .= '<div class="jtb-avatar-placeholder">' . $this->esc($initial) . '</div>';
             $html .= '</div>';
         }
 
         $html .= '<div class="jtb-comment-body">';
         $html .= '<div class="jtb-comment-meta">';
-        $html .= '<span class="jtb-comment-author">' . $this->esc($comment['author']) . '</span>';
+        $html .= '<span class="jtb-comment-author">' . $this->esc($author) . '</span>';
         $html .= '<span class="jtb-comment-date">' . $this->esc($date) . '</span>';
         $html .= '</div>';
-        $html .= '<div class="jtb-comment-content">' . $this->esc($comment['content']) . '</div>';
+        $html .= '<div class="jtb-comment-content">' . nl2br($this->esc($comment['content'] ?? '')) . '</div>';
 
         if ($showReply && !$isReply) {
-            $html .= '<a href="#" class="jtb-comment-reply-link">Reply</a>';
+            $commentId = (int)($comment['id'] ?? 0);
+            $html .= '<a href="#jtb-comment-form" class="jtb-comment-reply-link" data-reply-to="' . $commentId . '" data-reply-author="' . $this->esc($author) . '">Reply</a>';
         }
 
         $html .= '</div>';
         $html .= '</div>';
 
         return $html;
+    }
+
+    /**
+     * Fetch approved comments from DB, grouped by parent
+     * Returns [comments_with_replies[], total_count]
+     */
+    private function fetchComments(int $postId): array
+    {
+        if ($postId <= 0) return [[], 0];
+
+        try {
+            $pdo  = db();
+            $stmt = $pdo->prepare("
+                SELECT id, parent_id, author_name, content, created_at
+                FROM comments
+                WHERE article_id = ? AND status = 'approved'
+                ORDER BY created_at ASC
+            ");
+            $stmt->execute([$postId]);
+            $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+            // Group: top-level + replies
+            $top     = [];
+            $replies = [];
+            foreach ($rows as $row) {
+                if ($row['parent_id']) {
+                    $replies[(int)$row['parent_id']][] = $row;
+                } else {
+                    $top[] = $row;
+                }
+            }
+
+            // Attach replies
+            foreach ($top as &$comment) {
+                $comment['replies'] = $replies[(int)$comment['id']] ?? [];
+            }
+
+            $total = count($rows);
+            return [$top, $total];
+
+        } catch (\Throwable $e) {
+            return [[], 0];
+        }
     }
 
     /**

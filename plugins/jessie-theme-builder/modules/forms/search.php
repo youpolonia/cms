@@ -162,7 +162,7 @@ class JTB_Module_Search extends JTB_Element
         $formId = 'jtb-search-form-' . $this->generateId();
 
         $innerHtml = '<div class="jtb-search-container">';
-        $innerHtml .= '<form class="jtb-search-form" id="' . $formId . '" method="get" action="/">';
+        $innerHtml .= '<form class="jtb-search-form" id="' . $formId . '" method="get" action="/search" role="search">';
 
         $innerHtml .= '<div class="jtb-search-field">';
         $innerHtml .= '<input type="text" name="s" placeholder="' . $placeholder . '" class="jtb-search-input">';

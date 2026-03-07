@@ -18,7 +18,6 @@
 namespace JessieThemeBuilder;
 
 // VERY EARLY LOG - before anything else
-file_put_contents('/tmp/jtb_router_debug.log', "[" . date('Y-m-d H:i:s') . "] ROUTER STARTED - " . ($_SERVER['REQUEST_URI'] ?? 'no uri') . "\n", FILE_APPEND);
 
 defined('CMS_ROOT') or die('Direct access not allowed');
 
@@ -44,11 +43,9 @@ $currentAction = $aiPrefix . ($actionMatch[2] ?? '');
 $noAuthEndpoints = ['library-preview', 'ai/test-compose', 'ai/test-pipeline', 'test-validate', 'test-render'];
 
 // Check authentication (same as /admin/api/tb4.php)
-file_put_contents('/tmp/jtb_router_debug.log', "[" . date('Y-m-d H:i:s') . "] Auth check: action=$currentAction, admin_id=" . ($_SESSION['admin_id'] ?? 'null') . ", user_id=" . ($_SESSION['user_id'] ?? 'null') . "\n", FILE_APPEND);
 
 if (!in_array($currentAction, $noAuthEndpoints)) {
     if (empty($_SESSION['admin_id']) && empty($_SESSION['user_id'])) {
-        file_put_contents('/tmp/jtb_router_debug.log', "[" . date('Y-m-d H:i:s') . "] AUTH FAILED - 401 returned\n", FILE_APPEND);
         http_response_code(401);
         header('Content-Type: application/json');
         echo json_encode(['success' => false, 'error' => 'Authentication required']);
@@ -120,7 +117,6 @@ $action = $aiPrefix . ($matches[2] ?? '');
 $id = $matches[3] ?? null;
 
 // Debug router log
-file_put_contents('/tmp/jtb_router_debug.log', "[" . date('Y-m-d H:i:s') . "] Action: $action, URI: $requestUri\n", FILE_APPEND);
 
 // Set ID in GET for endpoints that need it
 if ($id) {
@@ -152,7 +148,6 @@ require_once $pluginPath . '/includes/class-jtb-css-generator.php';
 require_once $pluginPath . '/includes/class-jtb-style-system.php'; // Unified style system (2026-02-03)
 require_once $pluginPath . '/includes/class-jtb-dynamic-context.php'; // Dynamic data for theme modules
 require_once $pluginPath . '/includes/class-jtb-seo.php'; // SEO Engine (2026-02-04)
-require_once $pluginPath . '/includes/ai/class-jtb-css-extractor.php'; // CSS Extractor (2026-02-08)
 require_once $pluginPath . '/includes/class-jtb-html-parser.php'; // HTML Parser (2026-02-07)
 
 // Template Library
@@ -205,20 +200,6 @@ $validEndpoints = [
     'layout-library',
     // Theme Builder Layouts (header, footer, body)
     'library-theme-builder',
-    // AI Integration
-    'ai/generate-layout', 'ai/generate-section', 'ai/generate-content',
-    'ai/generate-image', 'ai/suggest-modules', 'ai/get-schema', 'ai/analyze-content',
-    // AI Compositional System
-    'ai/compose-layout', 'ai/get-patterns', 'ai/generate-pattern', 'ai/test-compose',
-    // AI UNIFIED Generation (2026-02-04)
-    // Single endpoint for Page Builder AND Template Builder
-    'ai/generate',
-    // AI Website Builder - generates complete website (header + footer + pages)
-    'ai/generate-website',
-    // AI Multi-Agent System - mockup → build flow (NEW)
-    'ai/multi-agent',
-    'ai/save-website',
-    'ai/test-pipeline',
     // Testing
     'test-validate',
     'test-render'
@@ -234,62 +215,7 @@ if (!in_array($action, $validEndpoints)) {
 // Route to API file
 $apiFile = $pluginPath . '/api/' . $action . '.php';
 
-// Load AI classes if this is an AI endpoint
-if (str_starts_with($action, 'ai/')) {
-    // Core AI classes
-    require_once $pluginPath . '/includes/ai/class-jtb-ai-core.php';
-    require_once $pluginPath . '/includes/ai/class-jtb-ai-schema.php';
-    require_once $pluginPath . '/includes/ai/class-jtb-ai-context.php';
-    require_once $pluginPath . '/includes/ai/class-jtb-ai-prompts.php';
-    require_once $pluginPath . '/includes/ai/class-jtb-ai-knowledge.php'; // Complete AI knowledge base
-
-    // Content & styling classes (MUST be loaded before compiler!)
-    require_once $pluginPath . '/includes/ai/class-jtb-ai-pexels.php';   // Pexels API integration
-    require_once $pluginPath . '/includes/ai/class-jtb-ai-styles.php';   // Professional styles
-    require_once $pluginPath . '/includes/ai/class-jtb-ai-design-tokens.php'; // Design tokens for AI prompts
-    require_once $pluginPath . '/includes/ai/class-jtb-ai-content.php';  // Content generation - BEFORE compiler!
-    require_once $pluginPath . '/includes/ai/class-jtb-ai-images.php';
-
-    // Auto-fix and quality classes
-    require_once $pluginPath . '/includes/ai/class-jtb-ai-autofix.php';  // Auto-fix engine
-    require_once $pluginPath . '/includes/ai/class-jtb-ai-confidence.php'; // Confidence scoring + stop conditions
-    require_once $pluginPath . '/includes/ai/class-jtb-ai-normalizer.php'; // CRITICAL: Normalizes AI attrs to JTB format
-
-    // Legacy compositional system
-    require_once $pluginPath . '/includes/ai/class-jtb-ai-composer.php';        // Compositional system
-    require_once $pluginPath . '/includes/ai/class-jtb-ai-pattern-renderer.php'; // Pattern renderer
-
-    // Layout AST pipeline (NEW)
-    require_once $pluginPath . '/includes/ai/class-jtb-ai-layout-ast.php';      // AST schema & validation
-    require_once $pluginPath . '/includes/ai/class-jtb-ai-layout-engine.php';   // AI-driven layout generation
-    require_once $pluginPath . '/includes/ai/class-jtb-ai-layout-compiler.php'; // AST → JTB compilation
-
-    // Main generator (uses all above)
-    require_once $pluginPath . '/includes/ai/class-jtb-ai-generator.php';
-
-    // Direct AI generation (NEW - Divi-style)
-    require_once $pluginPath . '/includes/ai/class-jtb-ai-direct.php';
-
-    // Theme Builder AI (header/footer/body templates)
-    require_once $pluginPath . '/includes/ai/class-jtb-ai-theme.php';
-
-    // Website Builder AI (generates complete website: header + footer + pages)
-    require_once $pluginPath . '/includes/ai/class-jtb-ai-website.php';
-
-    // Multi-Agent System (NEW - Mockup → Build flow)
-    require_once $pluginPath . '/includes/ai/class-jtb-ai-multiagent.php';    // Orchestrator
-    require_once $pluginPath . '/includes/ai/class-jtb-ai-agent-mockup.php';  // Mockup Designer agent
-    require_once $pluginPath . '/includes/ai/class-jtb-ai-agent-architect.php'; // Architect agent
-    require_once $pluginPath . '/includes/ai/class-jtb-ai-agent-content.php';  // Content/Copywriter agent
-    require_once $pluginPath . '/includes/ai/class-jtb-ai-agent-stylist.php'; // Stylist agent
-    require_once $pluginPath . '/includes/ai/class-jtb-ai-agent-seo.php';     // SEO agent
-    require_once $pluginPath . '/includes/ai/class-jtb-ai-agent-images.php';  // Images agent
-}
-
-file_put_contents('/tmp/jtb_router_debug.log', "[" . date('Y-m-d H:i:s') . "] API file: $apiFile, exists: " . (file_exists($apiFile) ? 'yes' : 'no') . "\n", FILE_APPEND);
-
 if (file_exists($apiFile)) {
-    file_put_contents('/tmp/jtb_router_debug.log', "[" . date('Y-m-d H:i:s') . "] Including: $apiFile\n", FILE_APPEND);
     require_once $apiFile;
 } else {
     http_response_code(500);

@@ -213,7 +213,9 @@ class JTB_Module_ContactForm extends JTB_Element
             $innerHtml .= '<h3 class="jtb-contact-form-title">' . $title . '</h3>';
         }
 
-        $innerHtml .= '<form class="jtb-contact-form" id="' . $formId . '" method="post" data-success-message="' . $successMessage . '">';
+        $csrfToken = function_exists('csrf_token') ? csrf_token() : '';
+        $innerHtml .= '<form class="jtb-contact-form" id="' . $formId . '" method="post" action="/api/contact" data-success-message="' . $successMessage . '">';
+        $innerHtml .= '<input type="hidden" name="csrf_token" value="' . $this->esc($csrfToken) . '">';
 
         if ($showName) {
             $innerHtml .= '<div class="jtb-form-field">';

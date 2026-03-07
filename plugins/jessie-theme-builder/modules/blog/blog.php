@@ -265,22 +265,27 @@ class JTB_Module_Blog extends JTB_Element
 
         $innerHtml = '<div class="jtb-blog-container ' . $layoutClass . '">';
 
-        // Sample blog posts (in real implementation, would fetch from database)
-        $samplePosts = [
-            ['title' => 'Sample Blog Post Title', 'excerpt' => 'This is a sample excerpt for the blog post. In a real implementation, this would be fetched from your CMS database.', 'date' => date('F j, Y'), 'author' => 'Admin', 'categories' => ['News', 'Updates'], 'comments' => 5, 'image' => ''],
-            ['title' => 'Another Blog Post', 'excerpt' => 'Another sample excerpt demonstrating how blog posts will appear in this module.', 'date' => date('F j, Y', strtotime('-1 day')), 'author' => 'Admin', 'categories' => ['Tutorial'], 'comments' => 3, 'image' => ''],
-            ['title' => 'Third Post Example', 'excerpt' => 'A third sample post to show the grid layout functionality.', 'date' => date('F j, Y', strtotime('-2 days')), 'author' => 'Admin', 'categories' => ['News'], 'comments' => 0, 'image' => ''],
-        ];
+        // Fetch real posts from DB
+        $posts = $this->fetchPosts($attrs);
 
-        foreach ($samplePosts as $post) {
+        if (empty($posts)) {
+            $innerHtml .= '<p class="jtb-blog-empty">No posts found.</p>';
+        }
+
+        foreach ($posts as $post) {
+            $postUrl  = '/article/' . $this->esc($post['slug'] ?? '');
+            $postDate = !empty($post['published_at']) ? date('F j, Y', strtotime($post['published_at'])) : '';
+            $author   = $this->esc($post['author_name'] ?? 'Admin');
+            $catName  = $this->esc($post['category_name'] ?? '');
+
             $innerHtml .= '<article class="jtb-blog-post">';
 
             // Thumbnail
             if ($showThumbnail) {
                 $innerHtml .= '<div class="jtb-blog-thumbnail">';
-                $innerHtml .= '<a href="#">';
-                if (!empty($post['image'])) {
-                    $innerHtml .= '<img src="' . $this->esc($post['image']) . '" alt="' . $this->esc($post['title']) . '" />';
+                $innerHtml .= '<a href="' . $postUrl . '">';
+                if (!empty($post['featured_image'])) {
+                    $innerHtml .= '<img src="' . $this->esc($post['featured_image']) . '" alt="' . $this->esc($post['featured_image_alt'] ?? $post['title']) . '" loading="lazy">';
                 } else {
                     $innerHtml .= '<div class="jtb-blog-thumbnail-placeholder"></div>';
                 }
@@ -295,36 +300,41 @@ class JTB_Module_Blog extends JTB_Element
 
             // Title
             $innerHtml .= '<' . $headerLevel . ' class="jtb-blog-title">';
-            $innerHtml .= '<a href="#">' . $this->esc($post['title']) . '</a>';
+            $innerHtml .= '<a href="' . $postUrl . '">' . $this->esc($post['title']) . '</a>';
             $innerHtml .= '</' . $headerLevel . '>';
 
             // Meta
             $meta = [];
-            if ($showDate) {
-                $meta[] = '<span class="jtb-blog-date">' . $post['date'] . '</span>';
+            if ($showDate && $postDate) {
+                $meta[] = '<span class="jtb-blog-date">' . $postDate . '</span>';
             }
             if ($showAuthor) {
-                $meta[] = '<span class="jtb-blog-author">by ' . $this->esc($post['author']) . '</span>';
+                $meta[] = '<span class="jtb-blog-author">by ' . $author . '</span>';
             }
-            if ($showCategories && !empty($post['categories'])) {
-                $meta[] = '<span class="jtb-blog-categories">' . implode(', ', array_map([$this, 'esc'], $post['categories'])) . '</span>';
+            if ($showCategories && $catName) {
+                $meta[] = '<span class="jtb-blog-categories">' . $catName . '</span>';
             }
             if ($showComments) {
-                $meta[] = '<span class="jtb-blog-comments">' . $post['comments'] . ' comments</span>';
+                $commentCount = (int)($post['comment_count'] ?? 0);
+                $meta[] = '<span class="jtb-blog-comments">' . $commentCount . ' comment' . ($commentCount !== 1 ? 's' : '') . '</span>';
             }
 
             if (!empty($meta)) {
-                $innerHtml .= '<div class="jtb-blog-meta">' . implode(' | ', $meta) . '</div>';
+                $innerHtml .= '<div class="jtb-blog-meta">' . implode(' <span class="jtb-meta-sep">·</span> ', $meta) . '</div>';
             }
 
             // Excerpt
             if ($showContent) {
-                $innerHtml .= '<div class="jtb-blog-excerpt">' . $this->esc($post['excerpt']) . '</div>';
+                $excerpt = $post['excerpt'] ?? '';
+                if (empty($excerpt) && !empty($post['content'])) {
+                    $excerpt = mb_substr(strip_tags($post['content']), 0, 160) . '…';
+                }
+                $innerHtml .= '<div class="jtb-blog-excerpt">' . $this->esc($excerpt) . '</div>';
             }
 
             // Read more
             if ($showMore) {
-                $innerHtml .= '<a href="#" class="jtb-blog-more">Read More</a>';
+                $innerHtml .= '<a href="' . $postUrl . '" class="jtb-blog-more">Read More</a>';
             }
 
             $innerHtml .= '</div>';
@@ -333,14 +343,26 @@ class JTB_Module_Blog extends JTB_Element
 
         $innerHtml .= '</div>';
 
-        // Pagination
-        if ($showPagination) {
-            $innerHtml .= '<div class="jtb-blog-pagination">';
-            $innerHtml .= '<span class="jtb-page-number current">1</span>';
-            $innerHtml .= '<a href="#" class="jtb-page-number">2</a>';
-            $innerHtml .= '<a href="#" class="jtb-page-number">3</a>';
-            $innerHtml .= '<a href="#" class="jtb-page-next">Next »</a>';
-            $innerHtml .= '</div>';
+        // Pagination (simple prev/next based on offset)
+        if ($showPagination && !empty($posts)) {
+            $postsNumber = (int)($attrs['posts_number'] ?? 10);
+            $offset      = (int)($attrs['offset_number'] ?? 0);
+            $currentPage = max(1, (int)(($offset / $postsNumber) + 1));
+            $totalPosts  = $this->countPosts($attrs);
+            $totalPages  = (int)ceil($totalPosts / $postsNumber);
+
+            if ($totalPages > 1) {
+                $innerHtml .= '<div class="jtb-blog-pagination">';
+                for ($p = 1; $p <= min($totalPages, 10); $p++) {
+                    $pageOffset = ($p - 1) * $postsNumber;
+                    if ($p === $currentPage) {
+                        $innerHtml .= '<span class="jtb-page-number current">' . $p . '</span>';
+                    } else {
+                        $innerHtml .= '<a href="?blog_offset=' . $pageOffset . '" class="jtb-page-number">' . $p . '</a>';
+                    }
+                }
+                $innerHtml .= '</div>';
+            }
         }
 
         return $this->renderWrapper($innerHtml, $attrs);
@@ -378,6 +400,85 @@ class JTB_Module_Blog extends JTB_Element
         $css .= parent::generateCss($attrs, $selector);
 
         return $css;
+    }
+
+    /**
+     * Fetch real posts from DB
+     */
+    private function fetchPosts(array $attrs): array
+    {
+        try {
+            $pdo    = db();
+            $limit  = max(1, (int)($attrs['posts_number'] ?? 10));
+            $offset = (int)($_GET['blog_offset'] ?? $attrs['offset_number'] ?? 0);
+
+            $where  = ["a.status = 'published'"];
+            $params = [];
+
+            // Category filter
+            if (!empty($attrs['include_categories'])) {
+                $catIds = array_filter(array_map('intval', explode(',', $attrs['include_categories'])));
+                if ($catIds) {
+                    $placeholders = implode(',', array_fill(0, count($catIds), '?'));
+                    $where[]  = "a.category_id IN ($placeholders)";
+                    $params   = array_merge($params, $catIds);
+                }
+            }
+
+            $whereClause = implode(' AND ', $where);
+            $params[]    = $limit;
+            $params[]    = $offset;
+
+            $sql = "
+                SELECT a.id, a.slug, a.title, a.excerpt, a.content,
+                       a.featured_image, a.featured_image_alt, a.published_at,
+                       c.name AS category_name, c.slug AS category_slug,
+                       u.display_name AS author_name,
+                       (SELECT COUNT(*) FROM comments cm WHERE cm.article_id = a.id AND cm.status = 'approved') AS comment_count
+                FROM articles a
+                LEFT JOIN article_categories c ON a.category_id = c.id
+                LEFT JOIN users u ON a.author_id = u.id
+                WHERE $whereClause
+                ORDER BY a.published_at DESC
+                LIMIT ? OFFSET ?
+            ";
+
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute($params);
+            return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+        } catch (\Throwable $e) {
+            return [];
+        }
+    }
+
+    /**
+     * Count total posts matching filters (for pagination)
+     */
+    private function countPosts(array $attrs): int
+    {
+        try {
+            $pdo    = db();
+            $where  = ["a.status = 'published'"];
+            $params = [];
+
+            if (!empty($attrs['include_categories'])) {
+                $catIds = array_filter(array_map('intval', explode(',', $attrs['include_categories'])));
+                if ($catIds) {
+                    $placeholders = implode(',', array_fill(0, count($catIds), '?'));
+                    $where[]  = "a.category_id IN ($placeholders)";
+                    $params   = array_merge($params, $catIds);
+                }
+            }
+
+            $whereClause = implode(' AND ', $where);
+            $stmt = $pdo->prepare("SELECT COUNT(*) FROM articles a WHERE $whereClause");
+            $stmt->execute($params);
+            return (int)$stmt->fetchColumn();
+
+        } catch (\Throwable $e) {
+            return 0;
+        }
     }
 }
 

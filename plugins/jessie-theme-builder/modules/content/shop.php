@@ -199,34 +199,36 @@ class JTB_Module_Shop extends JTB_Element
         $showAddToCart = $attrs['show_add_to_cart'] ?? true;
         $showSaleBadge = $attrs['show_sale_badge'] ?? true;
 
-        // Sample products
-        $products = [
-            ['title' => 'Premium Headphones', 'price' => 149.99, 'sale_price' => 99.99, 'rating' => 4.5, 'on_sale' => true],
-            ['title' => 'Wireless Mouse', 'price' => 49.99, 'sale_price' => null, 'rating' => 4.0, 'on_sale' => false],
-            ['title' => 'Mechanical Keyboard', 'price' => 129.99, 'sale_price' => null, 'rating' => 4.8, 'on_sale' => false],
-            ['title' => 'USB-C Hub', 'price' => 79.99, 'sale_price' => 59.99, 'rating' => 4.2, 'on_sale' => true],
-            ['title' => 'Laptop Stand', 'price' => 39.99, 'sale_price' => null, 'rating' => 4.6, 'on_sale' => false],
-            ['title' => 'Monitor Light Bar', 'price' => 89.99, 'sale_price' => null, 'rating' => 4.4, 'on_sale' => false],
-            ['title' => 'Webcam HD', 'price' => 79.99, 'sale_price' => 49.99, 'rating' => 3.9, 'on_sale' => true],
-            ['title' => 'Desk Mat XL', 'price' => 29.99, 'sale_price' => null, 'rating' => 4.7, 'on_sale' => false]
-        ];
+        // Fetch real products from DB
+        $products = $this->fetchProducts($attrs);
 
         $innerHtml = '<div class="jtb-shop-container">';
         $innerHtml .= '<div class="jtb-products-grid jtb-shop-cols-' . $columns . '">';
+
+        if (empty($products)) {
+            $innerHtml .= '<p class="jtb-shop-empty">No products found.</p>';
+        }
 
         $count = 0;
         foreach ($products as $product) {
             if ($count >= $postsNumber) break;
 
+            $productUrl = '/shop/product/' . $this->esc($product['slug'] ?? '');
+
             $innerHtml .= '<div class="jtb-product-item">';
             $innerHtml .= '<div class="jtb-product-image">';
 
-            // Placeholder image
-            $hue = ($count * 45 + 180) % 360;
-            $innerHtml .= '<div class="jtb-product-image-placeholder" style="background: hsl(' . $hue . ', 40%, 85%);"></div>';
+            // Product image
+            if (!empty($product['image'])) {
+                $innerHtml .= '<a href="' . $productUrl . '"><img src="' . $this->esc($product['image']) . '" alt="' . $this->esc($product['name'] ?? '') . '" loading="lazy"></a>';
+            } else {
+                $hue = ($count * 45 + 180) % 360;
+                $innerHtml .= '<a href="' . $productUrl . '"><div class="jtb-product-image-placeholder" style="background: hsl(' . $hue . ', 40%, 85%);"></div></a>';
+            }
 
             // Sale badge
-            if ($showSaleBadge && $product['on_sale']) {
+            $hasSale = !empty($product['sale_price']) && (float)$product['sale_price'] < (float)$product['price'];
+            if ($showSaleBadge && $hasSale) {
                 $innerHtml .= '<span class="jtb-product-sale-badge">Sale!</span>';
             }
 
@@ -243,47 +245,54 @@ class JTB_Module_Shop extends JTB_Element
             $innerHtml .= '<div class="jtb-product-info">';
 
             // Rating - using SVG stars
+            $rating = (float)($product['avg_rating'] ?? 0);
             if ($showRating) {
                 $starFilled = '<svg class="jtb-star jtb-star-filled" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>';
                 $starEmpty = '<svg class="jtb-star jtb-star-empty" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>';
                 $starHalf = '<svg class="jtb-star jtb-star-half" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1"><defs><linearGradient id="half-grad"><stop offset="50%" stop-color="currentColor"/><stop offset="50%" stop-color="transparent"/></linearGradient></defs><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" fill="url(#half-grad)"></polygon></svg>';
 
                 $innerHtml .= '<div class="jtb-product-rating">';
-                $fullStars = floor($product['rating']);
-                $halfStar = $product['rating'] - $fullStars >= 0.5;
+                $fullStars = (int)floor($rating);
+                $halfStar  = ($rating - $fullStars) >= 0.5;
                 for ($i = 0; $i < 5; $i++) {
                     if ($i < $fullStars) {
                         $innerHtml .= $starFilled;
-                    } elseif ($i == $fullStars && $halfStar) {
+                    } elseif ($i === $fullStars && $halfStar) {
                         $innerHtml .= $starHalf;
                     } else {
                         $innerHtml .= $starEmpty;
                     }
                 }
-                $innerHtml .= '<span class="jtb-rating-count">(' . number_format($product['rating'], 1) . ')</span>';
+                $reviewCount = (int)($product['review_count'] ?? 0);
+                $innerHtml .= '<span class="jtb-rating-count">(' . $reviewCount . ')</span>';
                 $innerHtml .= '</div>';
             }
 
             // Title
             if ($showTitle) {
-                $innerHtml .= '<h3 class="jtb-product-title"><a href="#">' . $this->esc($product['title']) . '</a></h3>';
+                $innerHtml .= '<h3 class="jtb-product-title"><a href="' . $productUrl . '">' . $this->esc($product['name'] ?? '') . '</a></h3>';
             }
 
             // Price
             if ($showPrice) {
+                $price     = (float)($product['price'] ?? 0);
+                $salePrice = !empty($product['sale_price']) ? (float)$product['sale_price'] : null;
+                $currency  = $attrs['currency'] ?? '$';
+
                 $innerHtml .= '<div class="jtb-product-price">';
-                if ($product['on_sale'] && $product['sale_price']) {
-                    $innerHtml .= '<span class="jtb-price-original">$' . number_format($product['price'], 2) . '</span>';
-                    $innerHtml .= '<span class="jtb-price-sale">$' . number_format($product['sale_price'], 2) . '</span>';
+                if ($salePrice && $salePrice < $price) {
+                    $innerHtml .= '<span class="jtb-price-original">' . $currency . number_format($price, 2) . '</span>';
+                    $innerHtml .= '<span class="jtb-price-sale">' . $currency . number_format($salePrice, 2) . '</span>';
                 } else {
-                    $innerHtml .= '<span class="jtb-price-current">$' . number_format($product['price'], 2) . '</span>';
+                    $innerHtml .= '<span class="jtb-price-current">' . $currency . number_format($price, 2) . '</span>';
                 }
                 $innerHtml .= '</div>';
             }
 
             // Add to cart
             if ($showAddToCart) {
-                $innerHtml .= '<button class="jtb-button jtb-add-to-cart">Add to Cart</button>';
+                $productId = (int)($product['id'] ?? 0);
+                $innerHtml .= '<button class="jtb-button jtb-add-to-cart" data-product-id="' . $productId . '">Add to Cart</button>';
             }
 
             $innerHtml .= '</div>';
@@ -375,6 +384,52 @@ class JTB_Module_Shop extends JTB_Element
         $css .= parent::generateCss($attrs, $selector);
 
         return $css;
+    }
+
+    /**
+     * Fetch real products from DB
+     */
+    private function fetchProducts(array $attrs): array
+    {
+        try {
+            $pdo   = db();
+            $limit = max(1, (int)($attrs['posts_number'] ?? 8));
+
+            $where  = ["p.status = 'published'"];
+            $params = [];
+
+            if (!empty($attrs['category_id'])) {
+                $where[]  = 'p.category_id = ?';
+                $params[] = (int)$attrs['category_id'];
+            }
+
+            if (!empty($attrs['featured_only'])) {
+                $where[] = 'p.is_featured = 1';
+            }
+
+            $whereClause = implode(' AND ', $where);
+            $params[]    = $limit;
+
+            $sql = "
+                SELECT p.id, p.slug, p.name, p.short_description,
+                       p.price, p.sale_price, p.image, p.stock, p.type,
+                       COALESCE(AVG(pr.rating), 0) AS avg_rating,
+                       COUNT(pr.id) AS review_count
+                FROM products p
+                LEFT JOIN product_reviews pr ON pr.product_id = p.id AND pr.status = 'approved'
+                WHERE $whereClause
+                GROUP BY p.id
+                ORDER BY p.created_at DESC
+                LIMIT ?
+            ";
+
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute($params);
+            return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+        } catch (\Throwable $e) {
+            return [];
+        }
     }
 }
 

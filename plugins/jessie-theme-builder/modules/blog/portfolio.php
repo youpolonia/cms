@@ -153,25 +153,23 @@ class JTB_Module_Portfolio extends JTB_Element
 
         $innerHtml = '<div class="jtb-portfolio-container jtb-portfolio-cols-' . $columns . '">';
 
-        // Sample portfolio items
-        $sampleItems = [
-            ['title' => 'Project Alpha', 'categories' => ['Web Design'], 'image' => ''],
-            ['title' => 'Project Beta', 'categories' => ['Branding'], 'image' => ''],
-            ['title' => 'Project Gamma', 'categories' => ['Web Design', 'Development'], 'image' => ''],
-            ['title' => 'Project Delta', 'categories' => ['Photography'], 'image' => ''],
-            ['title' => 'Project Epsilon', 'categories' => ['Branding'], 'image' => ''],
-            ['title' => 'Project Zeta', 'categories' => ['Development'], 'image' => ''],
-            ['title' => 'Project Eta', 'categories' => ['Web Design'], 'image' => ''],
-            ['title' => 'Project Theta', 'categories' => ['Photography'], 'image' => ''],
-        ];
+        // Fetch real portfolio projects from DB
+        $items = $this->fetchProjects($attrs);
 
-        foreach ($sampleItems as $item) {
+        if (empty($items)) {
+            $innerHtml .= '<p class="jtb-portfolio-empty">No projects found.</p>';
+        }
+
+        foreach ($items as $item) {
+            $itemUrl = '/portfolio/' . $this->esc($item['slug'] ?? '');
+            $catName = $this->esc($item['category_name'] ?? '');
+
             $innerHtml .= '<div class="jtb-portfolio-item">';
             $innerHtml .= '<div class="jtb-portfolio-image">';
-            $innerHtml .= '<a href="#">';
+            $innerHtml .= '<a href="' . $itemUrl . '">';
 
-            if (!empty($item['image'])) {
-                $innerHtml .= '<img src="' . $this->esc($item['image']) . '" alt="' . $this->esc($item['title']) . '" />';
+            if (!empty($item['cover_image'])) {
+                $innerHtml .= '<img src="' . $this->esc($item['cover_image']) . '" alt="' . $this->esc($item['title']) . '" loading="lazy">';
             } else {
                 $innerHtml .= '<div class="jtb-portfolio-placeholder"></div>';
             }
@@ -183,8 +181,8 @@ class JTB_Module_Portfolio extends JTB_Element
                 $innerHtml .= '<h3 class="jtb-portfolio-title">' . $this->esc($item['title']) . '</h3>';
             }
 
-            if ($showCategories && !empty($item['categories'])) {
-                $innerHtml .= '<div class="jtb-portfolio-categories">' . implode(', ', array_map([$this, 'esc'], $item['categories'])) . '</div>';
+            if ($showCategories && $catName) {
+                $innerHtml .= '<div class="jtb-portfolio-categories">' . $catName . '</div>';
             }
 
             $innerHtml .= '<span class="jtb-portfolio-zoom">+</span>';
@@ -258,6 +256,46 @@ class JTB_Module_Portfolio extends JTB_Element
         $css .= parent::generateCss($attrs, $selector);
 
         return $css;
+    }
+
+    private function fetchProjects(array $attrs): array
+    {
+        try {
+            $pdo    = db();
+            $limit  = max(1, (int)($attrs['posts_number'] ?? 8));
+            $where  = ["p.status = 'published'"];
+            $params = [];
+
+            if (!empty($attrs['category_id'])) {
+                $where[]  = 'p.category_id = ?';
+                $params[] = (int)$attrs['category_id'];
+            }
+
+            if (!empty($attrs['featured_only'])) {
+                $where[] = 'p.is_featured = 1';
+            }
+
+            $whereClause = implode(' AND ', $where);
+            $params[]    = $limit;
+
+            $sql = "
+                SELECT p.id, p.slug, p.title, p.short_description,
+                       p.cover_image, p.project_url, p.is_featured,
+                       c.name AS category_name, c.slug AS category_slug
+                FROM portfolio_projects p
+                LEFT JOIN portfolio_categories c ON p.category_id = c.id
+                WHERE $whereClause
+                ORDER BY p.sort_order ASC, p.created_at DESC
+                LIMIT ?
+            ";
+
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute($params);
+            return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+        } catch (\Throwable $e) {
+            return [];
+        }
     }
 }
 
