@@ -1227,10 +1227,15 @@ if (!function_exists('render_seo_meta')) {
         if (empty($ogImage)) {
             $activeTheme = function_exists('get_active_theme') ? get_active_theme() : '';
             if ($activeTheme) {
-                $thumbPath = (defined('CMS_ROOT') ? CMS_ROOT : dirname(__DIR__, 2)) . '/themes/' . $activeTheme . '/thumbnail.svg';
-                if (file_exists($thumbPath)) {
-                    $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
-                    $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
+                $themeBase = (defined('CMS_ROOT') ? CMS_ROOT : dirname(__DIR__, 2)) . '/themes/' . $activeTheme;
+                $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
+                $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
+                // Prefer PNG OG image over SVG thumbnail (crawlers handle PNG better)
+                $ogPng = $themeBase . '/assets/img/og-image.png';
+                $thumbSvg = $themeBase . '/thumbnail.svg';
+                if (file_exists($ogPng)) {
+                    $ogImage = $protocol . '://' . $host . '/themes/' . $activeTheme . '/assets/img/og-image.png';
+                } elseif (file_exists($thumbSvg)) {
                     $ogImage = $protocol . '://' . $host . '/themes/' . $activeTheme . '/thumbnail.svg';
                 }
             }
